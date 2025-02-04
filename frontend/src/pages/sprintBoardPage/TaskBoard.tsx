@@ -9,14 +9,9 @@ import {
 } from "@mui/material";
 import { TASK_STATUSES } from "../../constants";
 import StatusConfig from "./StatusConfig";
-import TaskCard from "./TaskCard";
-import {
-  closestCenter,
-  DndContext,
-  DragEndEvent,
-  useDroppable,
-} from "@dnd-kit/core";
+import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 
+import Column from "./Column";
 import TicketRow from "./TicketRow";
 
 interface Task {
@@ -72,6 +67,22 @@ const TaskBoard = () => {
     );
   };
 
+  const addTaskToTicket = (ticketId: string) => {
+    const newTask: Task = {
+      id: Math.random().toString(36).substr(2, 9), // Generar un ID temporal
+      title: `New Task ${Math.floor(Math.random() * 100)}`, // Placeholder title
+      status: "To Do",
+    };
+
+    setTickets((prevTickets) =>
+      prevTickets.map((ticket) =>
+        ticket.id === ticketId
+          ? { ...ticket, tasks: [...ticket.tasks, newTask] }
+          : ticket
+      )
+    );
+  };
+
   return (
     <Container>
       <StatusConfig
@@ -112,9 +123,16 @@ const TaskBoard = () => {
                   <Column
                     key={status}
                     id={status}
+                    ticketId={ticket.id}
                     tasks={ticket.tasks.filter(
                       (task) => task.status === status
                     )}
+                    setTickets={setTickets}
+                    addTask={
+                      status === "To Do"
+                        ? () => addTaskToTicket(ticket.id)
+                        : undefined
+                    }
                   />
                 ))}
               </TableRow>
@@ -127,22 +145,3 @@ const TaskBoard = () => {
 };
 
 export default TaskBoard;
-
-// Componente Drop Zone para cada columna
-const Column = ({ id, tasks }: { id: string; tasks: Task[] }) => {
-  const { setNodeRef } = useDroppable({ id });
-
-  return (
-    <TableCell
-      ref={setNodeRef}
-      sx={{
-        borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-        width: "20%",
-      }}
-    >
-      {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
-      ))}
-    </TableCell>
-  );
-};
