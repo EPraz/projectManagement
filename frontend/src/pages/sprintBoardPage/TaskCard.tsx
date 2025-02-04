@@ -1,13 +1,13 @@
 import { Paper, Typography } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
 
-interface TicketProps {
-  ticket: { id: string; title: string };
+interface TaskProps {
+  task: { id: string; title: string };
 }
 
-const TicketCard = ({ ticket }: TicketProps) => {
+const TaskCard = ({ task }: TaskProps) => {
   const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: ticket.id,
+    id: task.id,
   });
 
   return (
@@ -24,9 +24,9 @@ const TicketCard = ({ ticket }: TicketProps) => {
           : "none",
       }}
     >
-      <Typography>{ticket.title}</Typography>
+      <Typography>{task.title}</Typography>
     </Paper>
   );
 };
 
-export default TicketCard;
+export default TaskCard;

@@ -6,12 +6,18 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  Select,
-  MenuItem,
-  Paper,
 } from "@mui/material";
-import { TASK_STATUSES, TICKET_STATUSES } from "../../constants";
+import { TASK_STATUSES } from "../../constants";
 import StatusConfig from "./StatusConfig";
+import TaskCard from "./TaskCard";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  useDroppable,
+} from "@dnd-kit/core";
+
+import TicketRow from "./TicketRow";
 
 interface Task {
   id: string;
@@ -49,80 +55,94 @@ const TaskBoard = () => {
     );
   };
 
+  const onDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const taskId = active.id as string;
+    const newStatus = over.id as string;
+
+    setTickets((prevTickets) =>
+      prevTickets.map((ticket) => ({
+        ...ticket,
+        tasks: ticket.tasks.map((task) =>
+          task.id === taskId ? { ...task, status: newStatus } : task
+        ),
+      }))
+    );
+  };
+
   return (
     <Container>
       <StatusConfig
         selectedStatuses={selectedStatuses}
         setSelectedStatuses={setSelectedStatuses}
       />
-      <Table sx={{ width: "100%", border: "1px solid rgba(0, 0, 0, 0.2)" }}>
-        <TableHead>
-          <TableRow>
-            <TableCell sx={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}>
-              Tickets
-            </TableCell>
-            {selectedStatuses.map((status) => (
+      <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+        <Table stickyHeader aria-label="sticky table" width="100%">
+          <TableHead>
+            <TableRow>
               <TableCell
-                key={status}
-                sx={{
-                  borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-                  width: `${100 / (selectedStatuses.length + 1)}%`,
-                }}
+                style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
               >
-                {status}
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tickets.map((ticket) => (
-            <TableRow key={ticket.id}>
-              <TableCell
-                sx={{
-                  borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-                  width: `${100 / (selectedStatuses.length + 1)}%`,
-                }}
-              >
-                <Paper sx={{ padding: 1 }}>
-                  {ticket.title}
-                  <Select
-                    value={ticket.status}
-                    onChange={(e) =>
-                      changeTicketStatus(ticket.id, e.target.value)
-                    }
-                    fullWidth
-                  >
-                    {TICKET_STATUSES.map((status) => (
-                      <MenuItem key={status} value={status}>
-                        {status}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </Paper>
+                Tickets
               </TableCell>
               {selectedStatuses.map((status) => (
                 <TableCell
                   key={status}
-                  sx={{
-                    borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-                    width: `${100 / (selectedStatuses.length + 1)}%`,
-                  }}
+                  style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
                 >
-                  {ticket.tasks
-                    .filter((task) => task.status === status)
-                    .map((task) => (
-                      <Paper key={task.id} sx={{ padding: 1, marginBottom: 1 }}>
-                        {task.title}
-                      </Paper>
-                    ))}
+                  {status}
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {tickets.map((ticket) => (
+              <TableRow key={ticket.id}>
+                <TableCell
+                  style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
+                >
+                  <TicketRow
+                    ticket={ticket}
+                    changeTicketStatus={changeTicketStatus}
+                  />
+                </TableCell>
+                {selectedStatuses.map((status) => (
+                  <Column
+                    key={status}
+                    id={status}
+                    tasks={ticket.tasks.filter(
+                      (task) => task.status === status
+                    )}
+                  />
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DndContext>
     </Container>
   );
 };
 
 export default TaskBoard;
+
+// Componente Drop Zone para cada columna
+const Column = ({ id, tasks }: { id: string; tasks: Task[] }) => {
+  const { setNodeRef } = useDroppable({ id });
+
+  return (
+    <TableCell
+      ref={setNodeRef}
+      sx={{
+        borderRight: "1px solid rgba(0, 0, 0, 0.2)",
+        width: "20%",
+      }}
+    >
+      {tasks.map((task) => (
+        <TaskCard key={task.id} task={task} />
+      ))}
+    </TableCell>
+  );
+};
