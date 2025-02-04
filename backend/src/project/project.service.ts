@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, Project } from '@prisma/client';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ProjectService {

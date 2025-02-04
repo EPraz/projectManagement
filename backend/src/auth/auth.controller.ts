@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Role } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +13,7 @@ export class AuthController {
       name: string;
       email: string;
       password: string;
-      role: string;
+      role: Role;
     },
   ) {
     return this.authService.register(

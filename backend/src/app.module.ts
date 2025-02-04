@@ -7,12 +7,19 @@ import { EpicModule } from './epic/epic.module';
 import { FeatureModule } from './feature/feature.module';
 import { TicketModule } from './ticket/ticket.module';
 import { TaskModule } from './task/task.module';
-import { ProjectUserService } from './project-user/project-user.service';
 import { ProjectUserModule } from './project-user/project-user.module';
 
 @Module({
-  imports: [AuthModule, ProjectModule, EpicModule, FeatureModule, TicketModule, TaskModule, ProjectUserModule],
+  imports: [
+    AuthModule,
+    ProjectModule,
+    EpicModule,
+    FeatureModule,
+    TicketModule,
+    TaskModule,
+    ProjectUserModule,
+  ],
   controllers: [AppController],
-  providers: [AppService, ProjectUserService],
+  providers: [AppService],
 })
 export class AppModule {}

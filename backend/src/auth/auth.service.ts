@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, User, Role } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -19,7 +19,7 @@ export class AuthService {
     name: string,
     email: string,
     password: string,
-    role: string,
+    role: Role,
   ): Promise<User> {
     const hashedPassword: string = await bcrypt.hash(password, 10);
     try {
