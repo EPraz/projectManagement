@@ -8,6 +8,7 @@ import { FeatureModule } from './feature/feature.module';
 import { TicketModule } from './ticket/ticket.module';
 import { TaskModule } from './task/task.module';
 import { ProjectUserModule } from './project-user/project-user.module';
+import { SprintModule } from './sprint/sprint.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ProjectUserModule } from './project-user/project-user.module';
     TicketModule,
     TaskModule,
     ProjectUserModule,
+    SprintModule,
   ],
   controllers: [AppController],
   providers: [AppService],
