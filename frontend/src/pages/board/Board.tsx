@@ -1,5 +1,12 @@
+import { Taskboard } from "..";
+
 const Board = () => {
-  return <h1>Task Board</h1>;
+  return (
+    <div>
+      <h1>Task Board</h1>
+      <Taskboard />
+    </div>
+  );
 };
 
 export default Board;

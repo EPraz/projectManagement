@@ -6,3 +6,4 @@ export { default as Login } from "./login/Login";
 export { default as ProjectList } from "./projectList/ProjectList";
 export { default as Retrospective } from "./retrospective/Retrospective";
 export { default as Dashboard } from "./dashboard/Dashboard";
+export { default as Taskboard } from "./board/taskboard/Taskboard";

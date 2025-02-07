@@ -1,13 +1,14 @@
 import { Paper, Typography, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { TICKET_STATUSES } from "../../constants";
+import { Ticket } from "../../types";
 
-interface TicketProps {
-  ticket: { id: string; title: string; status: string };
+interface TicketRowProps {
+  ticket: Ticket;
   changeTicketStatus: (ticketId: string, newStatus: string) => void;
 }
 
-const TicketRow = ({ ticket, changeTicketStatus }: TicketProps) => {
+const TicketRow = ({ ticket, changeTicketStatus }: TicketRowProps) => {
   const [statusOpen, setStatusOpen] = useState(false);
 
   return (
