@@ -32,13 +32,19 @@ export class TaskService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error creating task');
+      throw error;
     }
   }
 
   //   Get All Tasks
   async findAllByTicket(ticketId: number) {
     try {
+      const ticket = await this.prisma.ticket.findUnique({
+        where: { id: ticketId },
+      });
+
+      if (!ticket) throw new NotFoundException('Ticket not found');
+
       return await this.prisma.task.findMany({
         where: { ticketId },
       });
@@ -48,7 +54,7 @@ export class TaskService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error fetching tasks');
+      throw error;
     }
   }
 
@@ -63,7 +69,7 @@ export class TaskService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error fetching task');
+      throw error;
     }
   }
 
@@ -73,7 +79,7 @@ export class TaskService {
         where: { id: request.id },
       });
 
-      if (!task) throw new InternalServerErrorException('Task not found');
+      if (!task) throw new NotFoundException('Task not found');
 
       return await this.prisma.task.update({
         where: { id: request.id },
@@ -85,7 +91,7 @@ export class TaskService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error updating task');
+      throw error;
     }
   }
 
@@ -100,7 +106,7 @@ export class TaskService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error deleting task');
+      throw error;
     }
   }
 }

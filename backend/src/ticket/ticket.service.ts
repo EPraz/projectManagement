@@ -30,7 +30,7 @@ export class TicketService {
           `Prisma Error: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error creating ticket');
+      throw error;
     }
   }
 
@@ -45,7 +45,7 @@ export class TicketService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error fetching tickets');
+      throw error;
     }
   }
 
@@ -60,13 +60,19 @@ export class TicketService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error fetching ticket');
+      throw error;
     }
   }
 
   async update(request: UpdateTicketDto): Promise<Ticket> {
     try {
-      return this.prisma.ticket.update({
+      const ticket = await this.prisma.ticket.findUnique({
+        where: { id: request.id },
+      });
+
+      if (!ticket) throw new NotFoundException('Ticket not found');
+
+      return await this.prisma.ticket.update({
         where: { id: request.id },
         data: { ...request },
       });
@@ -76,7 +82,7 @@ export class TicketService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error updating ticket');
+      throw error;
     }
   }
 
@@ -91,7 +97,7 @@ export class TicketService {
           `Error Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error deleting ticket');
+      throw error;
     }
   }
 }

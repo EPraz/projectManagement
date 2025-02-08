@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma, Project } from '@prisma/client';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -12,7 +16,9 @@ export class ProjectService {
     try {
       return await this.prisma.project.create({
         data: {
-          ...request,
+          title: request.title,
+          createdBy: request.createdBy,
+          description: request.description,
         },
       });
     } catch (error: unknown) {
@@ -21,7 +27,7 @@ export class ProjectService {
           `Error de Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error creating project');
+      throw error;
     }
   }
 
@@ -35,29 +41,40 @@ export class ProjectService {
           `Error de Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error fetching projects');
+      throw error;
     }
   }
 
   // Get Project By ID
   async findOne(id: string): Promise<Project | null> {
     try {
-      return await this.prisma.project.findUnique({
+      const project = await this.prisma.project.findUnique({
         where: { id },
       });
+
+      if (!project) throw new NotFoundException(`Project #${id} not found!`);
+
+      return project;
     } catch (error: unknown) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         throw new InternalServerErrorException(
           `Error de Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error fetching project');
+      throw error;
     }
   }
 
   // Update Project
   async update(request: UpdateProjectDto): Promise<Project> {
     try {
+      const project = await this.prisma.project.findUnique({
+        where: { id: request.id },
+      });
+
+      if (!project)
+        throw new NotFoundException(`Project #${request.id} not found!`);
+
       return await this.prisma.project.update({
         where: { id: request.id },
         data: { ...request },
@@ -68,7 +85,7 @@ export class ProjectService {
           `Error de Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error updating project');
+      throw error;
     }
   }
 
@@ -84,7 +101,7 @@ export class ProjectService {
           `Error de Prisma: ${error.message}`,
         );
       }
-      throw new InternalServerErrorException('Error deleting project');
+      throw error;
     }
   }
 }

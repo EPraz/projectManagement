@@ -4,8 +4,8 @@ import {
   Post,
   Body,
   Param,
-  Patch,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { Project } from '@prisma/client';
@@ -18,6 +18,7 @@ export class ProjectController {
   // Crear un nuevo proyecto
   @Post()
   async create(@Body() createProjectDto: CreateProjectDto): Promise<Project> {
+    console.log(createProjectDto);
     return await this.projectService.create(createProjectDto);
   }
 
@@ -34,7 +35,7 @@ export class ProjectController {
   }
 
   // Actualizar un proyecto
-  @Patch(':id')
+  @Put(':id')
   async update(
     @Param('id') id: string,
     @Body() updateProjectDto: UpdateProjectDto,
