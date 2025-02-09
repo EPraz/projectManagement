@@ -146,7 +146,7 @@ model ProjectUser {
 
 model EpicStatus {
   id String @id @default(uuid())
-  name String @unique
+  name String 
   position Int @default(0)
   color String @default("#000000")
   projectId String?
@@ -156,7 +156,7 @@ model EpicStatus {
 
 model FeatureStatus {
   id String @id @default(uuid())
-  name String @unique
+  name String 
   position Int @default(0)
   color String @default("#000000")
   projectId String?
@@ -165,7 +165,7 @@ model FeatureStatus {
 }
 model TicketStatus {
   id String @id @default(uuid())
-  name String @unique
+  name String 
   position Int @default(0)
   color String @default("#000000")
   projectId String?
@@ -175,7 +175,7 @@ model TicketStatus {
 
 model TaskStatus {
   id String @id @default(uuid())
-  name String @unique
+  name String 
   position Int @default(0)
   color String @default("#000000")
   projectId String?

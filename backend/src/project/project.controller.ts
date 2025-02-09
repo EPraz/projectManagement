@@ -20,7 +20,6 @@ export class ProjectController {
   async create(
     @Body() createProjectDto: CreateProjectDto,
   ): Promise<Project | null> {
-    console.log(createProjectDto);
     return await this.projectService.create(createProjectDto);
   }
 
