@@ -5,7 +5,7 @@ import {
   Body,
   Param,
   Delete,
-  Put,
+  Patch,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { Project } from '@prisma/client';
@@ -17,7 +17,9 @@ export class ProjectController {
 
   // Crear un nuevo proyecto
   @Post()
-  async create(@Body() createProjectDto: CreateProjectDto): Promise<Project> {
+  async create(
+    @Body() createProjectDto: CreateProjectDto,
+  ): Promise<Project | null> {
     console.log(createProjectDto);
     return await this.projectService.create(createProjectDto);
   }
@@ -30,12 +32,12 @@ export class ProjectController {
 
   // Obtener un proyecto por ID
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Project | null> {
+  async findOne(@Param('id') id: string): Promise<Project> {
     return await this.projectService.findOne(id);
   }
 
   // Actualizar un proyecto
-  @Put(':id')
+  @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updateProjectDto: UpdateProjectDto,
@@ -45,7 +47,7 @@ export class ProjectController {
 
   // Eliminar un proyecto
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<Project> {
+  async remove(@Param('id') id: string): Promise<boolean> {
     return await this.projectService.remove(id);
   }
 }

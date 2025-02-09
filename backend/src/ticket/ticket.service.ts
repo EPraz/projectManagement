@@ -1,70 +1,79 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTicketDto, UpdateTicketDto } from 'src/dto';
-import { Prisma, Ticket } from '@prisma/client';
+import { CreateTicketDto, GetAllTicketsDto, UpdateTicketDto } from 'src/dto';
+import { Ticket } from '@prisma/client';
+import {
+  getNewStatus,
+  handlePrismaError,
+  validateFeatureOrSprint,
+} from 'src/helper';
 
 @Injectable()
 export class TicketService {
   constructor(private prisma: PrismaService) {}
 
-  async create(request: CreateTicketDto): Promise<Ticket> {
-    const feature = await this.prisma.feature.findUnique({
-      where: { id: request.featureId },
-    });
-
-    if (!feature) {
-      throw new NotFoundException('Feature not found');
-    }
-
+  async create(request: CreateTicketDto): Promise<Ticket | null> {
     try {
-      return this.prisma.ticket.create({
-        data: { ...request },
-      });
-    } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Prisma Error: ${error.message}`,
+      return await this.prisma.$transaction(async (prisma) => {
+        const projectId = await validateFeatureOrSprint(
+          this.prisma,
+          request.featureId,
+          request.sprintId,
         );
-      }
-      throw error;
+
+        const statusId = projectId
+          ? await getNewStatus(this.prisma, projectId)
+          : null;
+
+        return await prisma.ticket.create({
+          data: {
+            ...request,
+            projectId,
+            statusId,
+          },
+          include: { _count: true, status: true, tasks: true },
+        });
+      });
+    } catch (error) {
+      handlePrismaError(error);
     }
   }
 
-  async findAllByFeature(featureId: string): Promise<Ticket[]> {
+  async findAllTickets(request: GetAllTicketsDto): Promise<Ticket[]> {
     try {
+      await validateFeatureOrSprint(
+        this.prisma,
+        request.featureId,
+        request.sprintId,
+      );
+
       return this.prisma.ticket.findMany({
-        where: { featureId },
+        where: {
+          ...(request.featureId && { featureId: request.featureId }),
+          ...(request.sprintId && { sprintId: request.sprintId }),
+        },
+        include: { status: true, _count: true, tasks: true },
       });
-    } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Error Prisma: ${error.message}`,
-        );
-      }
-      throw error;
+    } catch (error) {
+      handlePrismaError(error);
     }
   }
 
   async findOne(id: number): Promise<Ticket | null> {
     try {
-      return await this.prisma.ticket.findUnique({
+      const ticket = await this.prisma.ticket.findUnique({
         where: { id },
+        include: { _count: true, tasks: true, status: true },
       });
-    } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Error Prisma: ${error.message}`,
-        );
-      }
-      throw error;
+
+      if (!ticket) throw new NotFoundException(`Ticket #${id} not found`);
+      return ticket;
+    } catch (error) {
+      handlePrismaError(error);
     }
   }
 
-  async update(request: UpdateTicketDto): Promise<Ticket> {
+  async update(request: UpdateTicketDto): Promise<Ticket | null> {
     try {
       const ticket = await this.prisma.ticket.findUnique({
         where: { id: request.id },
@@ -76,28 +85,21 @@ export class TicketService {
         where: { id: request.id },
         data: { ...request },
       });
-    } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Error Prisma: ${error.message}`,
-        );
-      }
-      throw error;
+    } catch (error) {
+      handlePrismaError(error);
     }
   }
 
-  async delete(id: number): Promise<Ticket> {
+  async delete(id: number): Promise<boolean> {
     try {
-      return this.prisma.ticket.delete({
-        where: { id },
-      });
-    } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Error Prisma: ${error.message}`,
-        );
-      }
-      throw error;
+      const ticket = await this.prisma.ticket.findUnique({ where: { id } });
+
+      if (!ticket) throw new NotFoundException('Ticket not found');
+
+      await this.prisma.ticket.delete({ where: { id } });
+      return true;
+    } catch (error) {
+      handlePrismaError(error);
     }
   }
 }

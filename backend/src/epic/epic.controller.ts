@@ -8,37 +8,38 @@ import {
   Delete,
 } from '@nestjs/common';
 import { EpicService } from './epic.service';
-import { CreateEpicDto, UpdateEpicDto } from 'src/dto';
+import { CreateEpicDto, GetAllEpicsDto, UpdateEpicDto } from 'src/dto';
+import { Epic } from '@prisma/client';
 
-@Controller('projects/:projectId/epics')
+@Controller('epics')
 export class EpicController {
   constructor(private readonly epicService: EpicService) {}
 
   @Post()
-  async create(
-    @Param('projectId') projectId: string,
-    @Body() request: CreateEpicDto,
-  ) {
-    return await this.epicService.create({ ...request, projectId });
+  async create(@Body() request: CreateEpicDto): Promise<Epic> {
+    return await this.epicService.create(request);
   }
 
   @Get()
-  async findAll(@Param('projectId') projectId: string) {
-    return await this.epicService.findAll(projectId);
+  async findAll(@Body() request: GetAllEpicsDto): Promise<Epic[]> {
+    return await this.epicService.findAll(request.projectId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Epic | null> {
     return await this.epicService.findOne(id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() request: UpdateEpicDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() request: UpdateEpicDto,
+  ): Promise<Epic> {
     return await this.epicService.update({ ...request, id });
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<boolean> {
     return await this.epicService.delete(id);
   }
 }

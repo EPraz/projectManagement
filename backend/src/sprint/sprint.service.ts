@@ -1,10 +1,7 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
-import { Prisma, Sprint } from '@prisma/client';
-import { CreateSprintDto } from 'src/dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Sprint } from '@prisma/client';
+import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
+import { handlePrismaError } from 'src/helper';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -13,25 +10,22 @@ export class SprintService {
 
   // Create Sprint
   async create(request: CreateSprintDto): Promise<Sprint> {
-    const project = await this.prisma.project.findUnique({
-      where: { id: request.projectId },
-    });
-
-    if (!project) {
-      throw new NotFoundException('Project not found');
-    }
-
     try {
+      const project = await this.prisma.project.findUnique({
+        where: { id: request.projectId },
+      });
+
+      if (!project) throw new NotFoundException('Project not found');
+
       return await this.prisma.sprint.create({
         data: { ...request },
+        include: {
+          _count: true,
+          tickets: true,
+        },
       });
     } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Error Prisma: ${error.message}`,
-        );
-      }
-      throw new InternalServerErrorException('Error creating sprint');
+      handlePrismaError(error);
     }
   }
 
@@ -41,21 +35,71 @@ export class SprintService {
         where: { id: projectId },
       });
 
-      if (!project) {
-        throw new NotFoundException('Project not found');
-      }
+      if (!project) throw new NotFoundException('Project not found');
 
       return await this.prisma.sprint.findMany({
         where: { projectId },
         orderBy: { createdAt: 'desc' },
+        include: {
+          _count: true,
+          tickets: true,
+        },
       });
-    } catch (error: any) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        throw new InternalServerErrorException(
-          `Error Prisma: ${error.message}`,
-        );
-      }
-      throw error;
+    } catch (error: unknown) {
+      handlePrismaError(error);
+    }
+  }
+
+  async findOne(id: string): Promise<Sprint> {
+    try {
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id },
+      });
+
+      if (!sprint) throw new NotFoundException('Sprint not found');
+
+      return sprint;
+    } catch (error: unknown) {
+      handlePrismaError(error);
+    }
+  }
+
+  async update(request: UpdateSprintDto): Promise<Sprint> {
+    try {
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: request.id },
+      });
+
+      if (!sprint) throw new NotFoundException('Sprint not found');
+
+      return await this.prisma.sprint.update({
+        where: { id: request.id },
+        data: { ...request },
+        include: {
+          _count: true,
+          tickets: true,
+        },
+      });
+    } catch (error: unknown) {
+      handlePrismaError(error);
+    }
+  }
+
+  async delete(id: string): Promise<boolean> {
+    try {
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id },
+      });
+
+      if (!sprint) throw new NotFoundException('Sprint not found');
+
+      await this.prisma.sprint.delete({
+        where: { id },
+      });
+
+      return true;
+    } catch (error: unknown) {
+      handlePrismaError(error);
     }
   }
 }

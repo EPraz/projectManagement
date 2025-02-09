@@ -1,21 +1,43 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { SprintService } from './sprint.service';
-import { CreateSprintDto } from 'src/dto';
+import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
+import { Sprint } from '@prisma/client';
+import { GetAllSprintsDto } from 'src/dto/getAll/GetAllSprintsDto';
 
-@Controller('projects/:projectId/sprints')
+@Controller('sprints')
 export class SprintController {
   constructor(private readonly sprintService: SprintService) {}
 
-  @Get()
-  async findAll(@Param('projectId') projectId: string) {
-    return await this.sprintService.getSprintsByProject(projectId);
+  @Post()
+  async create(@Body() request: CreateSprintDto): Promise<Sprint> {
+    return await this.sprintService.create(request);
   }
 
-  @Post()
-  async create(
-    @Param('projectId') projectId: string,
-    request: CreateSprintDto,
-  ) {
-    return await this.sprintService.create({ ...request, projectId });
+  @Get()
+  async findAll(@Body() request: GetAllSprintsDto): Promise<Sprint[]> {
+    return await this.sprintService.getSprintsByProject(request.projectId);
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return await this.sprintService.findOne(id);
+  }
+
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() request: UpdateSprintDto) {
+    return await this.sprintService.update({ ...request, id });
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.sprintService.delete(id);
   }
 }

@@ -1,15 +1,16 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateProjectDto {
   @IsString({ message: 'updatedBy must be a string' })
-  @IsNotEmpty({ message: 'must provide updatedBy' })
+  @IsNotEmpty({ message: 'updatedBy is required' })
+  @IsEmail({}, { message: 'updatedBy Invalid email' })
   updatedBy: string;
 
-  id?: string;
+  id: string; // Se asignará en el controlador
 
   @IsString({ message: 'title must be a string' })
-  @IsNotEmpty({ message: 'must provide title' })
-  title: string;
+  @IsOptional()
+  title?: string;
 
   @IsOptional()
   @IsString({ message: 'description must be a string' })

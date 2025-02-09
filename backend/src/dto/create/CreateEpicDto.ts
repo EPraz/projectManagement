@@ -1,27 +1,28 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class CreateEpicDto {
-  @IsString()
+  @IsString({ message: 'projectId must be a string' })
+  @IsNotEmpty({ message: 'projectId is required' })
   projectId: string; // Se asignará en el controlador
 
-  @IsString()
+  @IsString({ message: 'title must be a string' })
+  @IsNotEmpty({ message: 'title is required' })
   title: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'description must be a string' })
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'acceptanceCriteria must be a string' })
   acceptanceCriteria?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'discussion must be a string' })
   discussion?: string;
 
-  @IsString()
+  @IsString({ message: 'createdBy must be a string' })
+  @IsNotEmpty({ message: 'createdBy is required' })
+  @IsEmail({}, { message: 'createdBy Invalid email' })
   createdBy: string;
-
-  @IsString()
-  updatedBy: string;
 }

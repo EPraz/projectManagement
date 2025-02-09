@@ -9,6 +9,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { TaskModule } from './task/task.module';
 import { ProjectUserModule } from './project-user/project-user.module';
 import { SprintModule } from './sprint/sprint.module';
+import { EpicStatusModule } from './epic-status/epic-status.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SprintModule } from './sprint/sprint.module';
     TaskModule,
     ProjectUserModule,
     SprintModule,
+    EpicStatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

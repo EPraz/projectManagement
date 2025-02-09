@@ -1,0 +1,15 @@
+-- AlterTable
+ALTER TABLE "EpicStatus" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '#000000',
+ADD COLUMN     "position" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "FeatureStatus" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '#000000',
+ADD COLUMN     "position" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "TaskStatus" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '#000000',
+ADD COLUMN     "position" INTEGER NOT NULL DEFAULT 0;
+
+-- AlterTable
+ALTER TABLE "TicketStatus" ADD COLUMN     "color" TEXT NOT NULL DEFAULT '#000000',
+ADD COLUMN     "position" INTEGER NOT NULL DEFAULT 0;

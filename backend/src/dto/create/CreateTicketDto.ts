@@ -1,31 +1,34 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateTicketDto {
-  @IsNotEmpty()
-  @IsString()
+  @IsString({ message: 'title must be a string' })
+  @IsNotEmpty({ message: 'title is required' })
   title: string;
 
-  @IsNotEmpty()
-  @IsString()
-  status: string; // Ejemplo: "To Do", "In Progress", "Done"
+  statusId?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'description must be a string' })
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'acceptanceCriteria must be a string' })
   acceptanceCriteria?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'acceptanceCriteria must be a string' })
   discussion?: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsString({ message: 'createdBy must be a string' })
+  @IsNotEmpty({ message: 'createdBy is required' })
+  @IsEmail({}, { message: 'createdBy Invalid email' })
   createdBy: string;
 
-  @IsNotEmpty()
-  @IsString()
-  featureId: string; // Se asignará en el controlador
+  @IsOptional()
+  @IsString({ message: 'featureId must be a string' })
+  featureId: string;
+
+  @IsOptional()
+  @IsString({ message: 'sprintId must be a string' })
+  sprintId: string;
 }

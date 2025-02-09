@@ -1,27 +1,28 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateFeatureDto {
-  @IsNotEmpty()
-  @IsString()
+  @IsString({ message: 'title must be a string' })
+  @IsNotEmpty({ message: 'title is required' })
   title: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'description must be a string' })
   description?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'acceptanceCriteria must be a string' })
   acceptanceCriteria?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'discussion must be a string' })
   discussion?: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @IsString({ message: 'createdBy must be a string' })
+  @IsNotEmpty({ message: 'createdBy is required' })
+  @IsEmail({}, { message: 'createdBy Invalid email' })
   createdBy: string;
 
-  @IsNotEmpty()
-  @IsString()
-  epicId: string; // Se asignará en el controlador
+  @IsString({ message: 'epicId must be a string' })
+  @IsNotEmpty({ message: 'epicId is required' })
+  epicId: string;
 }

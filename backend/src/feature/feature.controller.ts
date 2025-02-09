@@ -4,41 +4,42 @@ import {
   Get,
   Param,
   Body,
-  Patch,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { FeatureService } from './feature.service';
-import { CreateFeatureDto, UpdateFeatureDto } from 'src/dto';
+import { CreateFeatureDto, GetAllFeaturesDto, UpdateFeatureDto } from 'src/dto';
+import { Feature } from '@prisma/client';
 
-@Controller('epics/:epicId/features')
+@Controller('features')
 export class FeatureController {
   constructor(private readonly featureService: FeatureService) {}
 
   @Post()
-  async create(
-    @Param('epicId') epicId: string,
-    @Body() request: CreateFeatureDto,
-  ) {
-    return await this.featureService.create({ ...request, epicId });
+  async create(@Body() request: CreateFeatureDto): Promise<Feature> {
+    return await this.featureService.create(request);
   }
 
   @Get()
-  async findAll(@Param('epicId') epicId: string) {
-    return await this.featureService.findAllByEpic(epicId);
+  async findAll(@Body() request: GetAllFeaturesDto): Promise<Feature[]> {
+    return await this.featureService.findAllByEpic(request.epicId);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Feature | null> {
     return await this.featureService.findOne(id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, request: UpdateFeatureDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() request: UpdateFeatureDto,
+  ): Promise<Feature> {
     return await this.featureService.update({ ...request, id });
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: string): Promise<boolean> {
     return await this.featureService.delete(id);
   }
 }

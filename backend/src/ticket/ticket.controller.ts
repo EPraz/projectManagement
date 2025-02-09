@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,24 +9,30 @@ import {
   Post,
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
-import { CreateTicketDto, UpdateTicketDto } from 'src/dto';
+import { CreateTicketDto, GetAllTicketsDto, UpdateTicketDto } from 'src/dto';
 import { TicketService } from './ticket.service';
 
-@Controller('features/:featureId/tickets')
+@Controller('tickets')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
   @Post()
-  async create(
-    @Param('featureId') featureId: string,
-    @Body() newTicket: CreateTicketDto,
-  ): Promise<Ticket> {
-    return await this.ticketService.create({ ...newTicket, featureId });
+  async create(@Body() newTicket: CreateTicketDto): Promise<Ticket | null> {
+    return await this.ticketService.create(newTicket);
   }
 
   @Get()
-  async findAll(@Param('featureId') featureId: string): Promise<Ticket[]> {
-    return await this.ticketService.findAllByFeature(featureId);
+  async findAll(@Body() request: GetAllTicketsDto): Promise<Ticket[]> {
+    if (!request.featureId && !request.sprintId && !request.ticketStatusId) {
+      throw new BadRequestException('Either featureId or sprintId is required');
+    }
+    if (request.featureId && request.sprintId && request.ticketStatusId) {
+      throw new BadRequestException(
+        'Either featureId or sprintId, not both of them',
+      );
+    }
+
+    return await this.ticketService.findAllTickets(request);
   }
 
   @Get(':id')
@@ -37,12 +44,12 @@ export class TicketController {
   async update(
     @Param('id') id: number,
     request: UpdateTicketDto,
-  ): Promise<Ticket> {
+  ): Promise<Ticket | null> {
     return await this.ticketService.update({ ...request, id });
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<Ticket> {
+  async delete(@Param('id') id: number): Promise<boolean> {
     return await this.ticketService.delete(id);
   }
 }
