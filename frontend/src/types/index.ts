@@ -1,4 +1,2 @@
-export * from "./SprintContextProps";
-export * from "./Sprint";
-export * from "./Task";
-export * from "./Ticket";
+export * from "./contextProps";
+export * from "./models";

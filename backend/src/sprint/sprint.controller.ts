@@ -10,7 +10,7 @@ import {
 import { SprintService } from './sprint.service';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
 import { Sprint } from '@prisma/client';
-import { GetAllSprintsDto } from 'src/dto/getAll/GetAllSprintsDto';
+// import { GetAllSprintsDto } from 'src/dto/getAll/GetAllSprintsDto';
 
 @Controller('sprints')
 export class SprintController {
@@ -21,9 +21,9 @@ export class SprintController {
     return await this.sprintService.create(request);
   }
 
-  @Get()
-  async findAll(@Body() request: GetAllSprintsDto): Promise<Sprint[]> {
-    return await this.sprintService.getSprintsByProject(request.projectId);
+  @Get('project/:projectId')
+  async findAll(@Param(':projectId') projectId: string): Promise<Sprint[]> {
+    return await this.sprintService.getSprintsByProject(projectId);
   }
 
   @Get(':id')

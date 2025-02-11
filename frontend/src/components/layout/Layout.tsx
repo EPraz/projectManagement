@@ -3,14 +3,15 @@ import { Box, Container } from "@mui/material";
 import Sidebar from "../sidebar/Sidebar";
 import SprintSelector from "../sprintSelector/SprintSelector";
 import { useEffect } from "react";
+import { useApi } from "../../context";
 
 const Layout = () => {
   const { id } = useParams(); // Obtiene el ID del proyecto desde la URL
-
+  const { apiUrl } = useApi();
   // const [projects, setProjects] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/projects", {
+    fetch(`${apiUrl}/projects`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     })
@@ -22,7 +23,7 @@ const Layout = () => {
 
   const createProject = async (title: string, description: string) => {
     try {
-      const response = await fetch("http://localhost:3000/projects", {
+      const response = await fetch(`${apiUrl}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

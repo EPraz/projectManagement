@@ -1,15 +1,17 @@
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import AppRoutes from "./routes";
 import theme from "./utils/theme";
-import { SprintProvider } from "./context";
+import { ApiProvider, SprintProvider } from "./context";
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <SprintProvider>
-        <CssBaseline />
-        <AppRoutes />
-      </SprintProvider>
+      <ApiProvider>
+        <SprintProvider>
+          <CssBaseline />
+          <AppRoutes />
+        </SprintProvider>
+      </ApiProvider>
     </ThemeProvider>
   );
 }

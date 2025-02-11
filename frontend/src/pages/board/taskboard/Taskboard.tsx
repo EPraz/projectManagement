@@ -11,7 +11,7 @@ import {
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import StatusConfig from "../../sprintBoardPage/StatusConfig";
 import { TASK_STATUSES } from "../../../constants";
-import { useSprint } from "../../../context";
+import { useApi, useSprint } from "../../../context";
 import TicketRow from "../../sprintBoardPage/TicketRow";
 import Column from "../../sprintBoardPage/Column";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 
 const TaskBoard = () => {
   const { projectId } = useParams<{ projectId: string }>();
+  const { apiUrl } = useApi();
   const { tickets: dbTickets } = useSprint();
   const [tickets, setTickets] = useState<Ticket[]>(dbTickets);
   const [selectedStatuses, setSelectedStatuses] = useState(TASK_STATUSES);
@@ -33,7 +34,7 @@ const TaskBoard = () => {
 
     try {
       await fetch(
-        `http://localhost:3000/projects/${projectId}/tickets/${ticketId}/status`,
+        `${apiUrl}/projects/${projectId}/tickets/${ticketId}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -63,7 +64,7 @@ const TaskBoard = () => {
     setTickets(updatedTickets);
 
     try {
-      await fetch(`http://localhost:3000/projects/1/tasks/${taskId}/status`, {
+      await fetch(`${apiUrl}/projects/1/tasks/${taskId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
