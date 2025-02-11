@@ -25,6 +25,7 @@ const ProjectList = () => {
 
   // 📌 Cargar proyectos desde el backend
   const loadProjects = useCallback(async () => {
+    console.log("insde");
     setLoading(true);
     setError(null);
     try {
@@ -43,6 +44,7 @@ const ProjectList = () => {
   useEffect(() => {
     loadProjects();
   }, [loadProjects]);
+  console.log("outside");
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>

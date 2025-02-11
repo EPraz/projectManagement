@@ -2,24 +2,25 @@ import { Outlet, useParams } from "react-router-dom";
 import { Box, Container } from "@mui/material";
 import Sidebar from "../sidebar/Sidebar";
 import SprintSelector from "../sprintSelector/SprintSelector";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useApi } from "../../context";
 
 const Layout = () => {
   const { id } = useParams(); // Obtiene el ID del proyecto desde la URL
   const { apiUrl } = useApi();
+  // const { taskStatuses, ticketStatuses } = useProject();
   // const [projects, setProjects] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetch(`${apiUrl}/projects`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      // .then((data) => setProjects(data))
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error loading projects:", error));
-  }, []);
+  // useEffect(() => {
+  //   fetch(`${apiUrl}/projects`, {
+  //     method: "GET",
+  //     headers: { "Content-Type": "application/json" },
+  //   })
+  //     .then((res) => res.json())
+  //     // .then((data) => setProjects(data))
+  //     .then((data) => console.log(data))
+  //     .catch((error) => console.error("Error loading projects:", error));
+  // }, []);
 
   const createProject = async (title: string, description: string) => {
     try {

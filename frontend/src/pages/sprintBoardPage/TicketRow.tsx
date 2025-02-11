@@ -5,7 +5,7 @@ import { Ticket, TicketStatus } from "../../types";
 interface TicketRowProps {
   ticket: Ticket;
   changeTicketStatus: (ticketId: number, newStatus: string) => void;
-  ticketStatuses: TicketStatus[];
+  ticketStatuses: TicketStatus[] | undefined;
 }
 
 const TicketRow = ({
@@ -34,7 +34,7 @@ const TicketRow = ({
         size="small"
         fullWidth
       >
-        {ticketStatuses.map((status) => (
+        {ticketStatuses?.map((status) => (
           <MenuItem key={status.id} value={status.id}>
             {status.name}
           </MenuItem>

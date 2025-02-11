@@ -10,7 +10,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import { TaskStatus } from "../../types";
 
 interface StatusConfigProps {
-  selectedStatuses: TaskStatus[];
+  selectedStatuses: TaskStatus[] | undefined;
   setSelectedStatuses: (statuses: TaskStatus[]) => void;
 }
 
@@ -21,11 +21,13 @@ const StatusConfig = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const toggleStatus = (status: TaskStatus) => {
-    setSelectedStatuses(
-      selectedStatuses.includes(status)
-        ? selectedStatuses.filter((s) => s.id !== status.id)
-        : [...selectedStatuses, status]
-    );
+    if (selectedStatuses) {
+      setSelectedStatuses(
+        selectedStatuses.includes(status)
+          ? selectedStatuses.filter((s) => s.id !== status.id)
+          : [...selectedStatuses, status]
+      );
+    }
   };
 
   return (
@@ -38,19 +40,20 @@ const StatusConfig = ({
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        {selectedStatuses.map((status) => (
-          <MenuItem key={status.id}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={selectedStatuses.includes(status)}
-                  onChange={() => toggleStatus(status)}
-                />
-              }
-              label={status.name}
-            />
-          </MenuItem>
-        ))}
+        {selectedStatuses &&
+          selectedStatuses.map((status) => (
+            <MenuItem key={status.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectedStatuses.includes(status)}
+                    onChange={() => toggleStatus(status)}
+                  />
+                }
+                label={status.name}
+              />
+            </MenuItem>
+          ))}
       </Menu>
     </>
   );

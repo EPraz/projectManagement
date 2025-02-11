@@ -20,8 +20,10 @@ import { TaskColumn } from "../../../components";
 const TaskBoard = () => {
   const { apiUrl } = useApi();
   const { tickets, loadTickets } = useSprint();
-  const { taskStatuses, ticketStatuses } = useProject();
-  const [selectedStatuses, setSelectedStatuses] = useState(taskStatuses);
+  const { project } = useProject();
+  const [selectedStatuses, setSelectedStatuses] = useState(
+    project?.taskStatuses
+  );
   const [localTickets, setLocalTickets] = useState<Ticket[]>(tickets);
 
   // Sincronizar Tickets con los del Backend al cambiar Sprint
@@ -88,7 +90,7 @@ const TaskBoard = () => {
           title: "New Task",
           ticketId,
           createdBy: "xana",
-          statusId: taskStatuses.find((s) => s.name === "TODO")?.id,
+          statusId: project?.taskStatuses.find((s) => s.name === "TODO")?.id,
         }),
       });
       if (!response.ok) throw new Error("Failed to create task");
@@ -113,14 +115,15 @@ const TaskBoard = () => {
               >
                 Tickets
               </TableCell>
-              {selectedStatuses.map((status) => (
-                <TableCell
-                  key={status.id}
-                  style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
-                >
-                  {status.name}
-                </TableCell>
-              ))}
+              {selectedStatuses &&
+                selectedStatuses.map((status) => (
+                  <TableCell
+                    key={status.id}
+                    style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
+                  >
+                    {status.name}
+                  </TableCell>
+                ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -132,24 +135,25 @@ const TaskBoard = () => {
                   <TicketRow
                     ticket={ticket}
                     changeTicketStatus={changeTicketStatus}
-                    ticketStatuses={ticketStatuses}
+                    ticketStatuses={project?.ticketStatuses}
                   />
                 </TableCell>
-                {selectedStatuses.map((status) => (
-                  <TaskColumn
-                    key={status.id}
-                    id={status.name}
-                    ticketId={ticket.id}
-                    tasks={ticket.tasks.filter(
-                      (task) => task.statusId === status.id
-                    )}
-                    addTask={
-                      status.name === "TODO"
-                        ? () => addTaskToTicket(ticket.id)
-                        : undefined
-                    }
-                  />
-                ))}
+                {selectedStatuses &&
+                  selectedStatuses.map((status) => (
+                    <TaskColumn
+                      key={status.id}
+                      id={status.name}
+                      ticketId={ticket.id}
+                      tasks={ticket.tasks.filter(
+                        (task) => task.statusId === status.id
+                      )}
+                      addTask={
+                        status.name === "TODO"
+                          ? () => addTaskToTicket(ticket.id)
+                          : undefined
+                      }
+                    />
+                  ))}
               </TableRow>
             ))}
           </TableBody>
