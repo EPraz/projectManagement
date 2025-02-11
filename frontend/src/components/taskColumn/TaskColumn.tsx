@@ -1,18 +1,19 @@
 import { TableCell, IconButton } from "@mui/material";
 import { useDroppable } from "@dnd-kit/core";
-import TaskCard from "./TaskCard";
 import AddIcon from "@mui/icons-material/Add";
-import { Task, Ticket } from "../../types";
+import { Task } from "../../types";
+import TaskCard from "../taskCard/TaskCard";
 
-interface ColumnProps {
-  id: string;
+interface TaskColumnProps {
+  // status: string;
   ticketId: number;
   tasks: Task[];
-  setTickets: (callback: (prevTickets: Ticket[]) => Ticket[]) => void;
+  // setTickets: (callback: (prevTickets: Ticket[]) => Ticket[]) => void;
   addTask?: () => void;
+  id: string;
 }
 
-const Column = ({ id, tasks, addTask }: ColumnProps) => {
+const TaskColumn = ({ tasks, addTask, id }: TaskColumnProps) => {
   const { setNodeRef } = useDroppable({ id });
 
   return (
@@ -44,4 +45,4 @@ const Column = ({ id, tasks, addTask }: ColumnProps) => {
   );
 };
 
-export default Column;
+export default TaskColumn;

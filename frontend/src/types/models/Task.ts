@@ -11,6 +11,7 @@ export type Task = {
   updatedBy?: string;
   createdAt: string;
   updatedAt: string;
+  statusId: string;
   status: TaskStatus;
   ticketId: number;
   ticket: Ticket;

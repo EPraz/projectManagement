@@ -1,14 +1,18 @@
 import { Paper, Typography, Select, MenuItem } from "@mui/material";
 import { useState } from "react";
-import { TICKET_STATUSES } from "../../constants";
-import { Ticket } from "../../types";
+import { Ticket, TicketStatus } from "../../types";
 
 interface TicketRowProps {
   ticket: Ticket;
-  changeTicketStatus: (ticketId: string, newStatus: string) => void;
+  changeTicketStatus: (ticketId: number, newStatus: string) => void;
+  ticketStatuses: TicketStatus[];
 }
 
-const TicketRow = ({ ticket, changeTicketStatus }: TicketRowProps) => {
+const TicketRow = ({
+  ticket,
+  changeTicketStatus,
+  ticketStatuses,
+}: TicketRowProps) => {
   const [statusOpen, setStatusOpen] = useState(false);
 
   return (
@@ -21,7 +25,8 @@ const TicketRow = ({ ticket, changeTicketStatus }: TicketRowProps) => {
     >
       <Typography>{ticket.title}</Typography>
       <Select
-        value={ticket.status}
+        value={ticket.status.id}
+        renderValue={() => ticket.status.name}
         onChange={(e) => changeTicketStatus(ticket.id, e.target.value)}
         onOpen={() => setStatusOpen(true)}
         onClose={() => setStatusOpen(false)}
@@ -29,9 +34,9 @@ const TicketRow = ({ ticket, changeTicketStatus }: TicketRowProps) => {
         size="small"
         fullWidth
       >
-        {TICKET_STATUSES.map((status) => (
-          <MenuItem key={status} value={status}>
-            {status}
+        {ticketStatuses.map((status) => (
+          <MenuItem key={status.id} value={status.id}>
+            {status.name}
           </MenuItem>
         ))}
       </Select>

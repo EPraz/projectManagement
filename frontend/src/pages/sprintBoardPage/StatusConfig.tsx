@@ -7,11 +7,11 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { TASK_STATUSES } from "../../constants";
+import { TaskStatus } from "../../types";
 
 interface StatusConfigProps {
-  selectedStatuses: string[];
-  setSelectedStatuses: (statuses: string[]) => void;
+  selectedStatuses: TaskStatus[];
+  setSelectedStatuses: (statuses: TaskStatus[]) => void;
 }
 
 const StatusConfig = ({
@@ -20,10 +20,10 @@ const StatusConfig = ({
 }: StatusConfigProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const toggleStatus = (status: string) => {
+  const toggleStatus = (status: TaskStatus) => {
     setSelectedStatuses(
       selectedStatuses.includes(status)
-        ? selectedStatuses.filter((s) => s !== status)
+        ? selectedStatuses.filter((s) => s.id !== status.id)
         : [...selectedStatuses, status]
     );
   };
@@ -38,8 +38,8 @@ const StatusConfig = ({
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}
       >
-        {TASK_STATUSES.map((status) => (
-          <MenuItem key={status}>
+        {selectedStatuses.map((status) => (
+          <MenuItem key={status.id}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -47,7 +47,7 @@ const StatusConfig = ({
                   onChange={() => toggleStatus(status)}
                 />
               }
-              label={status}
+              label={status.name}
             />
           </MenuItem>
         ))}

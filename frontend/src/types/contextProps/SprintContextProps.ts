@@ -1,12 +1,12 @@
-import { Sprint } from "./Sprint";
-import { Ticket } from "./Ticket";
+import { Sprint, Ticket } from "../models";
 
 export interface SprintContextProps {
   sprint: Sprint | null;
-  sprints: Sprint[];
+  // sprints: Sprint[];
   tickets: Ticket[];
+  // loading: boolean;
 
   setSprint: (sprint: Sprint) => void;
-  loadSprints: (projectId: string) => Promise<void>;
+  // loadSprints: (projectId: string) => Promise<void>;
   loadTickets: () => Promise<void>;
 }

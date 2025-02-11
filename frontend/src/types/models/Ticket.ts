@@ -15,6 +15,7 @@ export type Ticket = {
   createdAt: string;
   updatedAt: string;
   status: TicketStatus;
+  statusId: string;
   featureId?: string;
   feature?: Feature;
   projectId?: string;

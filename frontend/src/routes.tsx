@@ -9,7 +9,7 @@ import {
   Dashboard,
   DashboardPage,
   Epics,
-  Login,
+  // Login,
   ProjectList,
   Retrospective,
   SprintBoardPage,
@@ -20,7 +20,7 @@ const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/projects" element={<ProjectList />} />
         <Route path="/projects/:id" element={<Layout />}>
           <Route index element={<Navigate to="board" />} /> {/* Redirección */}

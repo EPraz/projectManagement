@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Table,
@@ -6,103 +6,96 @@ import {
   TableRow,
   TableCell,
   TableBody,
-  IconButton,
+  // IconButton,
 } from "@mui/material";
 import { closestCenter, DndContext, DragEndEvent } from "@dnd-kit/core";
 import StatusConfig from "../../sprintBoardPage/StatusConfig";
-import { TASK_STATUSES } from "../../../constants";
-import { useApi, useSprint } from "../../../context";
+import { useApi, useProject, useSprint } from "../../../context";
 import TicketRow from "../../sprintBoardPage/TicketRow";
-import Column from "../../sprintBoardPage/Column";
-import AddIcon from "@mui/icons-material/Add";
+// import Column from "../../sprintBoardPage/Column";
+// import AddIcon from "@mui/icons-material/Add";
 import { Ticket } from "../../../types";
-import { useParams } from "react-router-dom";
+import { TaskColumn } from "../../../components";
 
 const TaskBoard = () => {
-  const { projectId } = useParams<{ projectId: string }>();
   const { apiUrl } = useApi();
-  const { tickets: dbTickets } = useSprint();
-  const [tickets, setTickets] = useState<Ticket[]>(dbTickets);
-  const [selectedStatuses, setSelectedStatuses] = useState(TASK_STATUSES);
+  const { tickets, loadTickets } = useSprint();
+  const { taskStatuses, ticketStatuses } = useProject();
+  const [selectedStatuses, setSelectedStatuses] = useState(taskStatuses);
+  const [localTickets, setLocalTickets] = useState<Ticket[]>(tickets);
 
-  const changeTicketStatus = async (ticketId: string, newStatus: string) => {
-    // Optimistic UI Update
-    const updatedTicket = tickets.map((t) =>
-      t.id === ticketId ? { ...t, status: newStatus } : t
+  // Sincronizar Tickets con los del Backend al cambiar Sprint
+  useEffect(() => {
+    setLocalTickets(tickets);
+  }, [tickets]);
+
+  // 🔹 Manejar cambios de Status en los Tickets
+  const changeTicketStatus = async (ticketId: number, newStatusId: string) => {
+    const updatedTickets = localTickets.map((t) =>
+      t.id === ticketId ? { ...t, statusId: newStatusId } : t
     );
-    setTickets(updatedTicket);
+    setLocalTickets(updatedTickets);
 
     try {
-      await fetch(
-        `${apiUrl}/projects/${projectId}/tickets/${ticketId}/status`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ updatedBy: "xana", status: newStatus }),
-        }
-      );
+      await fetch(`${apiUrl}/tickets/${ticketId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ updatedBy: "xana", statusId: newStatusId }),
+      });
+      loadTickets(); // Recargar datos reales
     } catch (error) {
       console.error("Error updating ticket status:", error);
-      setTickets(tickets); // ❌ Revertir cambio si falla
+      setLocalTickets(tickets); // Revertir en caso de error
     }
   };
 
+  // 🔹 Manejar Drag & Drop de Tasks entre Columnas
   const onDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const taskId = active.id as string;
-    const newStatus = over.id as string;
+    const taskId = active.id as number;
+    const newStatusId = over.id as string;
 
-    // Optimistic UI Update
-    const updatedTickets = tickets.map((ticket) => ({
+    const updatedTickets = localTickets.map((ticket) => ({
       ...ticket,
       tasks: ticket.tasks.map((task) =>
-        task.id === taskId ? { ...task, status: newStatus } : task
+        task.id === taskId ? { ...task, statusId: newStatusId } : task
       ),
     }));
-    setTickets(updatedTickets);
+    setLocalTickets(updatedTickets);
 
     try {
-      await fetch(`${apiUrl}/projects/1/tasks/${taskId}/status`, {
+      await fetch(`${apiUrl}/tasks/${taskId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify({ statusId: newStatusId }),
       });
+      loadTickets(); // Recargar Tickets con Tasks actualizados
     } catch (error) {
       console.error("Error updating task status:", error);
-      setTickets(tickets); // Revert changes on failure
+      setLocalTickets(tickets); // Revertir cambios
     }
   };
 
-  const addTaskToTicket = (ticketId: string) => {
-    const newTask = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: `New Task ${Math.floor(Math.random() * 100)}`,
-      status: "To Do",
-    };
-
-    setTickets((prevTickets) =>
-      prevTickets.map((ticket) =>
-        ticket.id === ticketId
-          ? { ...ticket, tasks: [...ticket.tasks, newTask] }
-          : ticket
-      )
-    );
-  };
-
-  const addTicketToBoard = () => {
-    const newTicket: Ticket = {
-      id: Math.random().toString(36).substr(2, 9),
-      title: `New Task ${Math.floor(Math.random() * 100)}`,
-      status: "New",
-      tasks: [],
-    };
-
-    const updateTickets = tickets.map((x) => ({ ...x, newTicket }));
-
-    setTickets(updateTickets);
-    console.log(updateTickets);
+  // 🔹 Agregar un nuevo Task a un Ticket en "To Do"
+  const addTaskToTicket = async (ticketId: number) => {
+    try {
+      const response = await fetch(`${apiUrl}/tasks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "New Task",
+          ticketId,
+          createdBy: "xana",
+          statusId: taskStatuses.find((s) => s.name === "TODO")?.id,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to create task");
+      loadTickets();
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
   return (
@@ -111,19 +104,8 @@ const TaskBoard = () => {
         selectedStatuses={selectedStatuses}
         setSelectedStatuses={setSelectedStatuses}
       />
-      <IconButton
-        onClick={() => addTicketToBoard()}
-        sx={{
-          height: "35px",
-          width: "35px",
-          border: "1px solid green",
-          borderRadius: "8px",
-        }}
-      >
-        <AddIcon />
-      </IconButton>
       <DndContext collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-        <Table stickyHeader aria-label="sticky table" width="100%">
+        <Table stickyHeader aria-label="TaskBoard" width="100%">
           <TableHead>
             <TableRow>
               <TableCell
@@ -133,16 +115,16 @@ const TaskBoard = () => {
               </TableCell>
               {selectedStatuses.map((status) => (
                 <TableCell
-                  key={status}
+                  key={status.id}
                   style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
                 >
-                  {status}
+                  {status.name}
                 </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {tickets.map((ticket) => (
+            {localTickets.map((ticket) => (
               <TableRow key={ticket.id}>
                 <TableCell
                   style={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
@@ -150,19 +132,19 @@ const TaskBoard = () => {
                   <TicketRow
                     ticket={ticket}
                     changeTicketStatus={changeTicketStatus}
+                    ticketStatuses={ticketStatuses}
                   />
                 </TableCell>
-                {selectedStatuses.map((status, statusIndex) => (
-                  <Column
-                    key={statusIndex}
-                    id={status}
+                {selectedStatuses.map((status) => (
+                  <TaskColumn
+                    key={status.id}
+                    id={status.name}
                     ticketId={ticket.id}
                     tasks={ticket.tasks.filter(
-                      (task) => task.status === status
+                      (task) => task.statusId === status.id
                     )}
-                    setTickets={setTickets}
                     addTask={
-                      status === "To Do"
+                      status.name === "TODO"
                         ? () => addTaskToTicket(ticket.id)
                         : undefined
                     }

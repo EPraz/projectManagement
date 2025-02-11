@@ -1,8 +1,9 @@
 import { Paper, Typography } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
+import { Task } from "../../types";
 
 interface TaskProps {
-  task: { id: string; title: string };
+  task: Task;
 }
 
 const TaskCard = ({ task }: TaskProps) => {
