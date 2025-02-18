@@ -17,6 +17,7 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   const { apiUrl } = useApi();
   const { project, loading: projectLoading } = useProject(); // Obtenemos `project` y `loading`
   const [sprint, setSprint] = useState<Sprint | null>(null);
+  const [listOfSprints, setListOfSprints] = useState<Sprint[] | null>(null);
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true); // Loading para el Sprint
 
@@ -29,12 +30,15 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
       return;
     }
 
-    const today = new Date();
-    const activeSprint = project.sprints.find(
-      (s) => new Date(s.startDate) <= today && new Date(s.endDate) >= today
-    );
+    if (project.sprints.length > 0) {
+      const today = new Date();
+      const activeSprint = project.sprints.find(
+        (s) => new Date(s.startDate) <= today && new Date(s.endDate) >= today
+      );
 
-    setSprint(activeSprint || project.sprints[0]); // Si no hay Sprint activo, usa el primero
+      setListOfSprints(project.sprints);
+      setSprint(activeSprint || project.sprints[0]); // Si no hay Sprint activo, usa el primero
+    }
     setLoading(false);
   }, [project, projectLoading]);
 
@@ -60,7 +64,15 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   if (loading) return <Loading message="Cargando sprint y tickets..." />;
 
   return (
-    <SprintContext.Provider value={{ sprint, setSprint, tickets, loadTickets }}>
+    <SprintContext.Provider
+      value={{
+        listOfSprints,
+        sprint,
+        setSprint,
+        tickets,
+        loadTickets,
+      }}
+    >
       {children}
     </SprintContext.Provider>
   );

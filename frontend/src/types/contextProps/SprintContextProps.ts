@@ -2,7 +2,7 @@ import { Sprint, Ticket } from "../models";
 
 export interface SprintContextProps {
   sprint: Sprint | null;
-  // sprints: Sprint[];
+  listOfSprints: Sprint[] | null;
   tickets: Ticket[];
   // loading: boolean;
 
