@@ -1,44 +1,39 @@
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
+
   Drawer,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  TextField,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import CategoryIcon from "@mui/icons-material/Category";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+// import { useState } from "react";
 
 const Sidebar = ({
   projectId,
-  onProjectCreate,
+  // onProjectCreate,
 }: {
   projectId: string;
   onProjectCreate: (title: string, description: string) => void;
 }) => {
   const navigate = useNavigate();
-  const [openDialog, setOpenDialog] = useState(false);
+  // const [openDialog, setOpenDialog] = useState(false);
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  // const [title, setTitle] = useState("");
+  // const [description, setDescription] = useState("");
 
-  const handleCreate = () => {
-    if (title.trim()) {
-      onProjectCreate(title, description);
-      setTitle("");
-      setDescription("");
-      setOpenDialog(false);
-    }
-  };
+  // const handleCreate = () => {
+  //   if (title.trim()) {
+  //     onProjectCreate(title, description);
+  //     setTitle("");
+  //     setDescription("");
+  //     setOpenDialog(false);
+  //   }
+  // };
 
   const menuItems = [
     {
@@ -78,45 +73,19 @@ const Sidebar = ({
             <ListItemText primary={text} />
           </ListItemButton>
         ))}
-        <ListItemButton onClick={() => setOpenDialog(true)}>
-          {/* <Button
+        {/* <ListItemButton onClick={() => setOpenDialog(true)}>
+          <Button
             fullWidth
             variant="contained"
             color="primary"
             onClick={() => setOpenDialog(true)}
-          > */}
+          >
           + New Project
-          {/* </Button> */}
-        </ListItemButton>
+          </Button>
+        </ListItemButton> */}
       </List>
 
-      {/* Modal para Crear Proyecto */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Create New Project</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Project Title"
-            fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <TextField
-            label="Description"
-            fullWidth
-            multiline
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            style={{ marginTop: "10px" }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-          <Button onClick={handleCreate} color="primary" variant="contained">
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
     </Drawer>
   );
 };
