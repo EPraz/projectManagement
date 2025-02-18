@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -6,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { SprintService } from './sprint.service';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
@@ -21,8 +23,11 @@ export class SprintController {
     return await this.sprintService.create(request);
   }
 
-  @Get('project/:projectId')
-  async findAll(@Param(':projectId') projectId: string): Promise<Sprint[]> {
+  @Get()
+  async findAll(@Query('projectId') projectId: string): Promise<Sprint[]> {
+    if (!projectId) {
+      throw new BadRequestException('Project ID is required');
+    }
     return await this.sprintService.getSprintsByProject(projectId);
   }
 

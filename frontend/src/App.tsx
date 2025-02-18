@@ -1,7 +1,7 @@
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import AppRoutes from "./routes";
 import theme from "./utils/theme";
-import { ApiProvider, ProjectProvider, SprintProvider } from "./context";
+import { ApiProvider } from "./context";
 import { SnackbarProvider } from "./context/snackbarContext";
 
 function App() {
@@ -9,12 +9,8 @@ function App() {
     <ThemeProvider theme={theme}>
       <SnackbarProvider>
         <ApiProvider>
-          <ProjectProvider>
-            <SprintProvider>
-              <CssBaseline />
-              <AppRoutes />
-            </SprintProvider>
-          </ProjectProvider>
+          <CssBaseline />
+          <AppRoutes />
         </ApiProvider>
       </SnackbarProvider>
     </ThemeProvider>

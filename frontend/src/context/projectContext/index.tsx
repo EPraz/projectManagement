@@ -5,6 +5,7 @@ import {
   ReactNode,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 import { useParams } from "react-router-dom";
 import { Project } from "../../types";
@@ -16,22 +17,29 @@ const ProjectContext = createContext<{
   loading: boolean;
 }>({
   project: null,
-  loading: false, // 🔹 Cambiamos el default a false para evitar bloqueos
+  loading: false,
 });
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
-  const { projectId } = useParams<{ projectId?: string }>(); // 🔹 Puede ser `undefined`
+  const { id } = useParams();
   const { apiUrl } = useApi();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const isProjectPage = /^\/projects\/[^/]+/.test(window.location.pathname);
+  // 🔹 Verificar si estamos en una página de proyecto antes de cargar datos
+  const isProjectPage = useMemo(
+    () => /^\/projects\/[^/]+/.test(window.location.pathname),
+    [window.location.pathname]
+  );
 
   const loadProject = useCallback(async () => {
-    if (!projectId || !isProjectPage) return; // 🔹 No cargamos en páginas sin `projectId`
+    if (!id || !isProjectPage) return;
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/projects/${projectId}`);
+      const response = await fetch(`${apiUrl}/projects/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
       if (!response.ok) throw new Error("Failed to fetch project");
       const data = await response.json();
       setProject(data);
@@ -40,16 +48,18 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  }, [projectId, apiUrl, isProjectPage]);
+  }, [id, apiUrl, isProjectPage]);
 
   useEffect(() => {
     loadProject();
   }, [loadProject]);
 
+  const memoizedProject = useMemo(() => project, [project]);
+
   if (loading) return <Loading message="Cargando proyecto..." />;
 
   return (
-    <ProjectContext.Provider value={{ project, loading }}>
+    <ProjectContext.Provider value={{ project: memoizedProject, loading }}>
       {children}
     </ProjectContext.Provider>
   );

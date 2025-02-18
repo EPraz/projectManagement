@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
 import { CreateTicketDto, GetAllTicketsDto, UpdateTicketDto } from 'src/dto';
@@ -22,18 +23,26 @@ export class TicketController {
   }
 
   @Get()
-  async findAll(@Body() request: GetAllTicketsDto): Promise<Ticket[]> {
-    if (!request.featureId && !request.sprintId && !request.ticketStatusId) {
-      throw new BadRequestException('Either featureId or sprintId is required');
-    }
-    if (request.featureId && request.sprintId && request.ticketStatusId) {
+  async findAll(
+    @Query('featureId') featureId?: string,
+    @Query('sprintId') sprintId?: string,
+    @Query('ticketStatusId') ticketStatusId?: string
+  ): Promise<Ticket[]> {
+    if (!featureId && !sprintId && !ticketStatusId) {
       throw new BadRequestException(
-        'Either featureId or sprintId, not both of them',
+        'Either featureId, sprintId, or ticketStatusId is required'
       );
     }
-
-    return await this.ticketService.findAllTickets(request);
+  
+    if ((featureId && sprintId) || (featureId && ticketStatusId) || (sprintId && ticketStatusId)) {
+      throw new BadRequestException(
+        'Only one of featureId, sprintId, or ticketStatusId should be provided'
+      );
+    }
+  
+    return await this.ticketService.findAllTickets({ featureId, sprintId, ticketStatusId });
   }
+  
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Ticket | null> {

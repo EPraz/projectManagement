@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useApi } from "../context/apiContext";
-import { useSnackbar } from "../context/snackbarContext";
+import { useSnackbar } from "../context";
 
 export const useCreateProject = () => {
   const { apiUrl } = useApi();
-  const { showMessage } = useSnackbar();
+  const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
   const createProject = async (title: string, description: string) => {
@@ -19,10 +19,10 @@ export const useCreateProject = () => {
       if (!response.ok) throw new Error("Failed to create project");
 
       const newProject = await response.json();
-      showMessage("Project created successfully!", "success");
+      showSnackbarMessage("Project created successfully!", "success");
       return newProject;
     } catch (error) {
-      showMessage("Error creating project", "error");
+      showSnackbarMessage("Error creating project", "error");
       return null;
     } finally {
       setLoading(false);

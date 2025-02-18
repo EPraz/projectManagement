@@ -48,7 +48,6 @@ const NewProjectDialog: React.FC<Props> = ({ openDialog, setOpenDialog }) => {
     console.log(openDialog);
   };
 
-  console.log("re");
   return (
     <Dialog open={openDialog} onClose={handleClose}>
       <DialogTitle>Create New Project</DialogTitle>

@@ -24,7 +24,6 @@ export class TaskService {
         },
       });
 
-      console.log(newTaskStatus);
       return await this.prisma.task.create({
         data: { ...request, statusId: newTaskStatus?.id },
         include: {

@@ -14,15 +14,15 @@ import {
   Retrospective,
   SprintBoardPage,
 } from "./pages";
-import { Layout } from "./components";
+import { ProjectLayout } from "./components";
 
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
         {/* <Route path="/login" element={<Login />} /> */}
-        <Route  path="/projects" element={<ProjectList />} />
-        <Route path="/projects/:id" element={<Layout />}>
+        <Route path="/projects" element={<ProjectList />} />
+        <Route path="/projects/:id" element={<ProjectLayout />}>
           <Route index element={<Navigate to="board" />} /> {/* Redirección */}
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="board" element={<Board />} />

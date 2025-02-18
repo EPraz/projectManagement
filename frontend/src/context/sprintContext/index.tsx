@@ -5,6 +5,8 @@ import {
   ReactNode,
   useEffect,
   useCallback,
+  useMemo,
+  useRef,
 } from "react";
 import { Sprint, SprintContextProps, Ticket } from "../../types";
 import { useApi } from "../apiContext";
@@ -15,38 +17,79 @@ const SprintContext = createContext<SprintContextProps | undefined>(undefined);
 
 export const SprintProvider = ({ children }: { children: ReactNode }) => {
   const { apiUrl } = useApi();
-  const { project, loading: projectLoading } = useProject(); // Obtenemos `project` y `loading`
+  const { project, loading: projectLoading } = useProject();
   const [sprint, setSprint] = useState<Sprint | null>(null);
-  const [listOfSprints, setListOfSprints] = useState<Sprint[] | null>(null);
+  const [listOfSprints, setListOfSprints] = useState<Sprint[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true); // Loading para el Sprint
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Memorizar project para evitar renders innecesarios
+  const projectData = useMemo(() => project, [project]);
+  // 🔹 Evitar doble ejecución del efecto con `useRef`
+  const effectRan = useRef(false);
 
   useEffect(() => {
-    if (projectLoading) return; // 🔹 Esperamos a que `project` termine de cargar
+    if (effectRan.current || projectLoading || !projectData) return;
+    effectRan.current = true;
 
-    if (!project || project.sprints.length === 0) {
+    if (!projectData || projectData.sprints.length === 0) {
       setSprint(null);
       setLoading(false);
       return;
     }
 
-    if (project.sprints.length > 0) {
-      const today = new Date();
-      const activeSprint = project.sprints.find(
-        (s) => new Date(s.startDate) <= today && new Date(s.endDate) >= today
-      );
+    const today = new Date();
+    const activeSprint = projectData.sprints.find(
+      (s) => new Date(s.startDate) <= today && new Date(s.endDate) >= today
+    );
 
-      setListOfSprints(project.sprints);
-      setSprint(activeSprint || project.sprints[0]); // Si no hay Sprint activo, usa el primero
-    }
+    setListOfSprints(projectData.sprints);
+    setSprint(activeSprint || projectData.sprints[0]);
     setLoading(false);
-  }, [project, projectLoading]);
+  }, [projectData, projectLoading]);
 
-  const loadTickets = useCallback(async () => {
+  const loadSprints = useCallback(async () => {
+    if (projectLoading || !projectData?.id) return;
+    try {
+      const response = await fetch(
+        `${apiUrl}/sprints?projectId=${projectData.id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch sprints");
+      const data = await response.json();
+
+      setListOfSprints(data);
+
+      // 🔹 Verificar si el sprint actual sigue siendo válido
+      if (!sprint || !data.find((s: Sprint) => s.id === sprint.id)) {
+        const today = new Date();
+        const activeSprint = data.find(
+          (s: Sprint) =>
+            new Date(s.startDate) <= today && new Date(s.endDate) >= today
+        );
+
+        setSprint(activeSprint || data[0] || null);
+      }
+    } catch (error) {
+      console.error("Error loading sprints:", error);
+    }
+  }, [projectData?.id, apiUrl, sprint]);
+
+  useEffect(() => {
+    loadSprints();
+  }, [loadSprints]);
+
+  const loadTicketsBySprint = useCallback(async () => {
     if (!sprint?.id) return;
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/tickets?sprintId=${sprint.id}`);
+      const response = await fetch(`${apiUrl}/tickets?sprintId=${sprint.id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
       if (!response.ok) throw new Error("Failed to fetch tickets");
       const data = await response.json();
       setTickets(data);
@@ -58,10 +101,11 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   }, [sprint, apiUrl]);
 
   useEffect(() => {
-    loadTickets();
-  }, [loadTickets]);
+    loadTicketsBySprint();
+  }, [loadTicketsBySprint]);
 
-  if (loading) return <Loading message="Cargando sprint y tickets..." />;
+  if (loading || projectLoading)
+    return <Loading message="Cargando sprint y tickets..." />;
 
   return (
     <SprintContext.Provider
@@ -70,7 +114,8 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
         sprint,
         setSprint,
         tickets,
-        loadTickets,
+        loadTicketsBySprint,
+        loadSprints,
       }}
     >
       {children}

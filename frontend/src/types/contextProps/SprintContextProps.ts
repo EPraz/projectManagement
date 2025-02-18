@@ -7,6 +7,6 @@ export interface SprintContextProps {
   // loading: boolean;
 
   setSprint: (sprint: Sprint) => void;
-  // loadSprints: (projectId: string) => Promise<void>;
-  loadTickets: () => Promise<void>;
+  loadSprints: () => Promise<void>;
+  loadTicketsBySprint: () => Promise<void>;
 }

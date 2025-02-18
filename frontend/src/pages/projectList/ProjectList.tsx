@@ -15,7 +15,9 @@ import { Project } from "../../types";
 import { useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import { NewProjectDialog } from "../../components";
+import { DialogForm } from "../../components";
+import { projectSchema } from "../../validations";
+import { useCreateProject } from "../../hooks";
 
 const ProjectList = () => {
   const { apiUrl } = useApi();
@@ -24,6 +26,7 @@ const ProjectList = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const { createProject, loading: postProjectLoading } = useCreateProject();
 
   // 📌 Cargar proyectos desde el backend
   const loadProjects = useCallback(async () => {
@@ -47,6 +50,13 @@ const ProjectList = () => {
     loadProjects();
   }, [loadProjects]);
 
+  const handleCreateProject = async (data: Partial<Project>) => {
+    await createProject(data.title ?? "", data?.description ?? "");
+    // if (newProject) {
+    //   handleClose();
+    // }
+  };
+
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
@@ -57,7 +67,7 @@ const ProjectList = () => {
       {error && <Alert severity="error">{error}</Alert>}
 
       {/* Cargando proyectos */}
-      {loading ? (
+      {loading || postProjectLoading ? (
         <CircularProgress sx={{ display: "block", mx: "auto", mt: 4 }} />
       ) : (
         <Grid container spacing={3}>
@@ -116,9 +126,21 @@ const ProjectList = () => {
       )}
 
       {openDialog && (
-        <NewProjectDialog
-          openDialog={openDialog}
-          setOpenDialog={setOpenDialog}
+        // <NewProjectDialog
+        //   openDialog={openDialog}
+        //   setOpenDialog={setOpenDialog}
+        // />
+        <DialogForm
+          open={openDialog}
+          title="Create Project"
+          onClose={() => setOpenDialog(false)}
+          onSubmit={handleCreateProject}
+          schema={projectSchema}
+          disabled={postProjectLoading}
+          defaultValues={{
+            title: "",
+            description: "",
+          }}
         />
       )}
     </Container>
