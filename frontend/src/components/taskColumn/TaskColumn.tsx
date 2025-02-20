@@ -3,6 +3,7 @@ import { useDroppable } from "@dnd-kit/core";
 import AddIcon from "@mui/icons-material/Add";
 import { Task } from "../../types";
 import TaskCard from "../taskCard/TaskCard";
+import { memo } from "react";
 
 interface TaskColumnProps {
   // status: string;
@@ -21,7 +22,7 @@ const TaskColumn = ({ tasks, addTask, id }: TaskColumnProps) => {
       ref={setNodeRef}
       sx={{
         borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-        width: "20%",
+        minWidth: "125px",
         position: "relative",
       }}
     >
@@ -45,4 +46,4 @@ const TaskColumn = ({ tasks, addTask, id }: TaskColumnProps) => {
   );
 };
 
-export default TaskColumn;
+export default memo(TaskColumn);

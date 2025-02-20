@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useApi } from "../context/apiContext";
-import { useSnackbar } from "../context";
+import { useApi } from "../../context/apiContext";
+import { useSnackbar } from "../../context";
 
 export const useCreateProject = () => {
   const { apiUrl } = useApi();
@@ -13,7 +13,11 @@ export const useCreateProject = () => {
       const response = await fetch(`${apiUrl}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, createdBy: "test-user@example.com" }),
+        body: JSON.stringify({
+          title,
+          description,
+          createdBy: "test-user@example.com",
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to create project");

@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Ticket" ADD COLUMN     "order" INTEGER NOT NULL DEFAULT 0;

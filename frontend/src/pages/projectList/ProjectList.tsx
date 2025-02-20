@@ -51,10 +51,14 @@ const ProjectList = () => {
   }, [loadProjects]);
 
   const handleCreateProject = async (data: Partial<Project>) => {
-    await createProject(data.title ?? "", data?.description ?? "");
-    // if (newProject) {
-    //   handleClose();
-    // }
+    const newProject = await createProject(
+      data.title ?? "",
+      data?.description ?? ""
+    );
+    if (newProject) {
+      setOpenDialog(false);
+      setProjects([...projects, newProject]);
+    }
   };
 
   return (

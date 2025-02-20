@@ -9,7 +9,7 @@ export class TaskService {
   constructor(private prisma: PrismaService) {}
 
   // Create Task
-  async create(request: CreateTaskDto): Promise<Task> {
+  public async create(request: CreateTaskDto): Promise<Task> {
     try {
       const ticket = await this.prisma.ticket.findUnique({
         where: { id: request.ticketId },
@@ -36,7 +36,7 @@ export class TaskService {
   }
 
   //   Get All Tasks
-  async findAllByTicket(ticketId: number): Promise<Task[]> {
+  public async findAllByTicket(ticketId: number): Promise<Task[]> {
     try {
       const ticket = await this.prisma.ticket.findUnique({
         where: { id: ticketId },
@@ -55,7 +55,7 @@ export class TaskService {
     }
   }
 
-  async findOne(id: number): Promise<Task> {
+  public async findOne(id: number): Promise<Task> {
     try {
       const task = await this.prisma.task.findUnique({
         where: { id },
@@ -71,7 +71,7 @@ export class TaskService {
     }
   }
 
-  async update(request: UpdateTaskDto): Promise<Task> {
+  public async update(request: UpdateTaskDto): Promise<Task> {
     try {
       const task = await this.prisma.task.findUnique({
         where: { id: request.id },
@@ -82,9 +82,11 @@ export class TaskService {
 
       if (!task) throw new NotFoundException('Task not found');
 
+      const { id, ...updateData } = request;
+
       return await this.prisma.task.update({
-        where: { id: request.id },
-        data: { ...request },
+        where: { id },
+        data: { ...updateData },
         include: {
           status: true,
         },
@@ -94,7 +96,7 @@ export class TaskService {
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  public async delete(id: number): Promise<boolean> {
     try {
       const task = await this.prisma.task.findUnique({
         where: { id },

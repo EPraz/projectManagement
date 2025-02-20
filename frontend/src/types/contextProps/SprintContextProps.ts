@@ -4,9 +4,9 @@ export interface SprintContextProps {
   sprint: Sprint | null;
   listOfSprints: Sprint[] | null;
   tickets: Ticket[];
-  // loading: boolean;
+  loadingTickets: boolean;
 
   setSprint: (sprint: Sprint) => void;
   loadSprints: () => Promise<void>;
-  loadTicketsBySprint: () => Promise<void>;
+  loadTicketsBySprint: (id?: string) => Promise<void>;
 }

@@ -1,6 +1,7 @@
 import { Paper, Typography } from "@mui/material";
 import { useDraggable } from "@dnd-kit/core";
 import { Task } from "../../types";
+import { formatStatusName } from "../../helpers";
 
 interface TaskProps {
   task: Task;
@@ -25,7 +26,7 @@ const TaskCard = ({ task }: TaskProps) => {
           : "none",
       }}
     >
-      <Typography>{task.title}</Typography>
+      <Typography>{formatStatusName(task.title)}</Typography>
     </Paper>
   );
 };

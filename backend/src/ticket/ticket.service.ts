@@ -1,6 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTicketDto, GetAllTicketsDto, UpdateTicketDto } from 'src/dto';
+import {
+  BulkUpdateTicketsDto,
+  CreateTicketDto,
+  GetAllTicketsDto,
+  UpdateTicketDto,
+} from 'src/dto';
 import { Ticket } from '@prisma/client';
 import {
   getNewStatus,
@@ -12,7 +17,7 @@ import {
 export class TicketService {
   constructor(private prisma: PrismaService) {}
 
-  async create(request: CreateTicketDto): Promise<Ticket | null> {
+  public async create(request: CreateTicketDto): Promise<Ticket | null> {
     try {
       return await this.prisma.$transaction(async (prisma) => {
         const projectId = await validateFeatureOrSprint(
@@ -25,11 +30,24 @@ export class TicketService {
           ? await getNewStatus(this.prisma, projectId)
           : null;
 
+        const maxOrder = await prisma.ticket.aggregate({
+          _max: {
+            order: true,
+          },
+          where: {
+            sprintId: request.sprintId ?? undefined,
+            featureId: request.featureId ?? undefined,
+          },
+        });
+
+        const nextOrder = (maxOrder._max.order ?? 0) + 1;
+
         return await prisma.ticket.create({
           data: {
             ...request,
             projectId,
             statusId,
+            order: nextOrder,
           },
           include: { _count: true, status: true, tasks: true },
         });
@@ -39,7 +57,7 @@ export class TicketService {
     }
   }
 
-  async findAllTickets(request: GetAllTicketsDto): Promise<Ticket[]> {
+  public async findAllTickets(request: GetAllTicketsDto): Promise<Ticket[]> {
     try {
       await validateFeatureOrSprint(
         this.prisma,
@@ -52,18 +70,37 @@ export class TicketService {
           ...(request.featureId && { featureId: request.featureId }),
           ...(request.sprintId && { sprintId: request.sprintId }),
         },
-        include: { status: true, _count: true, tasks: true },
+        include: {
+          status: true,
+          _count: true,
+          tasks: {
+            include: {
+              status: true,
+            },
+          },
+        },
+        orderBy: {
+          order: 'asc',
+        },
       });
     } catch (error) {
       handlePrismaError(error);
     }
   }
 
-  async findOne(id: number): Promise<Ticket | null> {
+  public async findOne(id: number): Promise<Ticket | null> {
     try {
       const ticket = await this.prisma.ticket.findUnique({
         where: { id },
-        include: { _count: true, tasks: true, status: true },
+        include: {
+          _count: true,
+          tasks: {
+            include: {
+              status: true,
+            },
+          },
+          status: true,
+        },
       });
 
       if (!ticket) throw new NotFoundException(`Ticket #${id} not found`);
@@ -73,7 +110,7 @@ export class TicketService {
     }
   }
 
-  async update(request: UpdateTicketDto): Promise<Ticket | null> {
+  public async update(request: UpdateTicketDto): Promise<Ticket | null> {
     try {
       const ticket = await this.prisma.ticket.findUnique({
         where: { id: request.id },
@@ -81,16 +118,46 @@ export class TicketService {
 
       if (!ticket) throw new NotFoundException('Ticket not found');
 
+      const { id, ...updateData } = request;
+
       return await this.prisma.ticket.update({
-        where: { id: request.id },
-        data: { ...request },
+        where: { id },
+        data: {
+          ...updateData,
+        },
+        include: {
+          status: true,
+          tasks: true,
+          sprint: true,
+        },
       });
     } catch (error) {
       handlePrismaError(error);
     }
   }
 
-  async delete(id: number): Promise<boolean> {
+  public async bulkUpdate(request: UpdateTicketDto[]): Promise<Ticket[]> {
+    try {
+      const updatedTickets = await this.prisma.$transaction(
+        request.map((ticket) =>
+          this.prisma.ticket.update({
+            where: { id: ticket.id },
+            data: { ...ticket },
+          }),
+        ),
+      );
+
+      return updatedTickets;
+    } catch (error) {
+      handlePrismaError(error);
+    }
+  }
+
+  async deleteAll(): Promise<void> {
+    await this.prisma.ticket.deleteMany();
+  }
+
+  public async delete(id: number): Promise<boolean> {
     try {
       const ticket = await this.prisma.ticket.findUnique({ where: { id } });
 

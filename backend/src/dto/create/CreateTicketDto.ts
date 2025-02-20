@@ -5,7 +5,7 @@ export class CreateTicketDto {
   @IsNotEmpty({ message: 'title is required' })
   title: string;
 
-  statusId?: string;
+  // statusId?: string;
 
   @IsOptional()
   @IsString({ message: 'description must be a string' })

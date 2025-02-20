@@ -1,3 +1,4 @@
+import { Ticket } from '@prisma/client';
 import { IsString, IsDate, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class UpdateSprintDto {
@@ -8,6 +9,9 @@ export class UpdateSprintDto {
   @IsString()
   @IsOptional()
   name: string;
+
+  @IsOptional()
+  tickets: Ticket[];
 
   @IsDate()
   @IsOptional()

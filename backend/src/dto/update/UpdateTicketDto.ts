@@ -14,9 +14,13 @@ export class UpdateTicketDto {
   @IsOptional()
   title: string;
 
-  @IsString({ message: 'status must be a string' })
-  @IsNotEmpty({ message: 'status is required' })
-  statusId: string;
+  @IsString({ message: 'statusId must be a string' })
+  @IsOptional()
+  statusId?: string;
+
+  @IsNumber()
+  @IsOptional()
+  order?: number;
 
   @IsOptional()
   @IsString({ message: 'description must be a string' })

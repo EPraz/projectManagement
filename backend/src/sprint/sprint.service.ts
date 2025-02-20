@@ -9,7 +9,7 @@ export class SprintService {
   constructor(private prisma: PrismaService) {}
 
   // Create Sprint
-  async create(request: CreateSprintDto): Promise<Sprint> {
+  public async create(request: CreateSprintDto): Promise<Sprint> {
     try {
       const project = await this.prisma.project.findUnique({
         where: { id: request.projectId },
@@ -29,7 +29,7 @@ export class SprintService {
     }
   }
 
-  async getSprintsByProject(projectId: string): Promise<Sprint[]> {
+  public async getSprintsByProject(projectId: string): Promise<Sprint[]> {
     try {
       const project = await this.prisma.project.findUnique({
         where: { id: projectId },
@@ -50,7 +50,7 @@ export class SprintService {
     }
   }
 
-  async findOne(id: string): Promise<Sprint> {
+  public async findOne(id: string): Promise<Sprint> {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id },
@@ -64,7 +64,7 @@ export class SprintService {
     }
   }
 
-  async update(request: UpdateSprintDto): Promise<Sprint> {
+  public async update(request: UpdateSprintDto): Promise<Sprint> {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id: request.id },
@@ -72,12 +72,35 @@ export class SprintService {
 
       if (!sprint) throw new NotFoundException('Sprint not found');
 
+      const { tickets, ...updateData } = request;
+
       return await this.prisma.sprint.update({
         where: { id: request.id },
-        data: { ...request },
+        data: {
+          ...updateData,
+          ...(tickets && {
+            tickets: {
+              updateMany: tickets.map((ticket) => ({
+                where: { id: ticket.id },
+                data: {
+                  ...tickets,
+                },
+              })),
+            },
+          }),
+        },
         include: {
           _count: true,
-          tickets: true,
+          tickets: {
+            include: {
+              tasks: {
+                include: {
+                  status: true,
+                },
+              },
+              status: true,
+            },
+          },
         },
       });
     } catch (error: unknown) {
@@ -85,7 +108,7 @@ export class SprintService {
     }
   }
 
-  async delete(id: string): Promise<boolean> {
+  public async delete(id: string): Promise<boolean> {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id },

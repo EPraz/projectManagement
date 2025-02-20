@@ -4,13 +4,19 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
-import { CreateTicketDto, GetAllTicketsDto, UpdateTicketDto } from 'src/dto';
+import {
+  BulkUpdateTicketsDto,
+  CreateTicketDto,
+  UpdateTicketDto,
+} from 'src/dto';
 import { TicketService } from './ticket.service';
 
 @Controller('tickets')
@@ -26,35 +32,53 @@ export class TicketController {
   async findAll(
     @Query('featureId') featureId?: string,
     @Query('sprintId') sprintId?: string,
-    @Query('ticketStatusId') ticketStatusId?: string
+    @Query('ticketStatusId') ticketStatusId?: string,
   ): Promise<Ticket[]> {
     if (!featureId && !sprintId && !ticketStatusId) {
       throw new BadRequestException(
-        'Either featureId, sprintId, or ticketStatusId is required'
+        'Either featureId, sprintId, or ticketStatusId is required',
       );
     }
-  
-    if ((featureId && sprintId) || (featureId && ticketStatusId) || (sprintId && ticketStatusId)) {
+
+    if (
+      (featureId && sprintId) ||
+      (featureId && ticketStatusId) ||
+      (sprintId && ticketStatusId)
+    ) {
       throw new BadRequestException(
-        'Only one of featureId, sprintId, or ticketStatusId should be provided'
+        'Only one of featureId, sprintId, or ticketStatusId should be provided',
       );
     }
-  
-    return await this.ticketService.findAllTickets({ featureId, sprintId, ticketStatusId });
+
+    return await this.ticketService.findAllTickets({
+      featureId,
+      sprintId,
+      ticketStatusId,
+    });
   }
-  
 
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<Ticket | null> {
     return await this.ticketService.findOne(id);
   }
 
+  @Patch('bulk-update')
+  async bulkUpdate(@Body() request: UpdateTicketDto[]): Promise<Ticket[]> {
+    return await this.ticketService.bulkUpdate(request);
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: number,
-    request: UpdateTicketDto,
+    @Body() request: UpdateTicketDto,
   ): Promise<Ticket | null> {
     return await this.ticketService.update({ ...request, id });
+  }
+
+  @Delete('all')
+  @HttpCode(HttpStatus.NO_CONTENT) // 204 No Content
+  async deleteAll(): Promise<void> {
+    await this.ticketService.deleteAll();
   }
 
   @Delete(':id')

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useApi, useProject, useSnackbar, useSprint } from "../context";
-import { Ticket } from "../types";
+import { useApi, useSnackbar } from "../../context";
+import { Ticket } from "../../types";
 
 export const useCreateTicket = () => {
   const { apiUrl } = useApi();
-  const { project } = useProject();
-  const { sprint, loadTickets } = useSprint();
+  // const { project } = useProject();
+  // const { loadTicketsBySprint } = useSprint();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -17,14 +17,14 @@ export const useCreateTicket = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
-          statusId: project?.ticketStatuses.find((s) => s.name === "NEW")?.id,
+          // statusId: project?.ticketStatuses.find((s) => s.name === "NEW")?.id,
         }),
       });
 
       if (!response.ok) throw new Error("Failed to create ticket");
 
       const newTicket = await response.json();
-      loadTickets(); // 🔹 Recargar los tickets solo si la creación es exitosa
+      // await loadTicketsBySprint(); // 🔹 Recargar los tickets solo si la creación es exitosa
       showSnackbarMessage("Ticket created successfully", "success");
       return newTicket;
     } catch (error) {

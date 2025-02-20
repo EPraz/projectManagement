@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../context";
-import { useSprint } from "../context/sprintContext";
-import { Sprint } from "../types";
+import { useApi, useSnackbar } from "../../context";
+import { useSprint } from "../../context/sprintContext";
+import { Sprint } from "../../types";
 
 export const useCreateSprint = () => {
   const { apiUrl } = useApi();

@@ -8,9 +8,14 @@ async function bootstrap() {
   // ✅ Habilitar validaciones globalmente
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // Elimina propiedades no definidas en los DTOs
-      forbidNonWhitelisted: true, // Lanza error si se envían propiedades no permitidas
-      transform: true, // Convierte automáticamente los tipos de datos
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      // Agrega esta opción para aceptar arrays:
+      disableErrorMessages: false,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 

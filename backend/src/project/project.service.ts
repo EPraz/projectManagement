@@ -135,6 +135,16 @@ export class ProjectService {
       return await this.prisma.project.update({
         where: { id: request.id },
         data: { ...request },
+        include: {
+          epics: true,
+          epicStatuses: true,
+          featureStatuses: true,
+          sprints: true,
+          taskStatuses: true,
+          tickets: true,
+          ticketStatuses: true,
+          users: true,
+        },
       });
     } catch (error: unknown) {
       handlePrismaError(error);

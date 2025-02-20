@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -15,7 +15,7 @@ import { useParams } from "react-router-dom";
 
 const SprintSelector = () => {
   const { id: projectId } = useParams<{ id: string }>();
-  const { sprint, setSprint, listOfSprints } = useSprint();
+  const { sprint, setSprint, listOfSprints, loadTicketsBySprint } = useSprint();
   const { createSprint, loading: loadingCreateSprint } = useCreateSprint();
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -25,6 +25,15 @@ const SprintSelector = () => {
     if (newSprint) {
       setSprint(newSprint);
       setOpenDialog(false);
+      if (!sprint) setSprint(newSprint);
+    }
+  };
+
+  const handleChangeSprint = async (newSprintId: string) => {
+    const newSprint = listOfSprints?.find((s) => s.id === newSprintId);
+    if (newSprint && newSprint.id !== sprint?.id) {
+      setSprint(newSprint);
+      await loadTicketsBySprint(newSprint.id); // Solo carga tickets, no cambia todo el contexto
     }
   };
 
@@ -35,11 +44,12 @@ const SprintSelector = () => {
       </Typography>
       <Autocomplete
         value={sprint ? sprint : undefined}
-        onChange={(_, newValue) => newValue && setSprint(newValue)}
+        onChange={(_, newValue) => handleChangeSprint(newValue.id)}
         options={listOfSprints || []}
         getOptionLabel={(option) => option?.name}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         disableClearable
+        disabled={!listOfSprints?.length}
         renderInput={(params) => (
           <TextField {...params} label="Select Sprint" />
         )}
@@ -53,21 +63,15 @@ const SprintSelector = () => {
             sx: {
               "& .MuiAutocomplete-listbox": {
                 "& .MuiAutocomplete-option": {
-                  maxHeight: "200px", // ✅ Permite mostrar hasta 6 elementos con scroll
+                  maxHeight: "200px",
                   overflowY: "auto",
                 },
               },
             },
           },
         }}
-        // ListboxProps={{
-        //   style: {
-        //     maxHeight: "200px", // ✅ Permite mostrar hasta 6 elementos con scroll
-        //     overflowY: "auto",
-        //   },
-        // }}
         sx={{ width: 250, backgroundColor: "white" }}
-        popupIcon={null} // ❌ Oculta el icono de dropdown para un diseño más limpio
+        popupIcon={null}
       />
       <Button
         variant="contained"
@@ -93,4 +97,4 @@ const SprintSelector = () => {
   );
 };
 
-export default SprintSelector;
+export default memo(SprintSelector);

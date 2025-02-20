@@ -23,4 +23,5 @@ export type Ticket = {
   tasks: Task[];
   sprintId?: string;
   sprint?: Sprint;
+  order: number;
 };

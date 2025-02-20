@@ -47,8 +47,6 @@ const DialogForm = <T extends Record<string, any>>({
     onClose();
   };
 
-  console.log(errors);
-
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{title}</DialogTitle>

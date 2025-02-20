@@ -1,4 +1,2 @@
-export * from './useCreateProject'
-export * from './useCreateTask'
-export * from './useCreateTickets'
-export * from './useCreateSprint'
+export * from "./useCreate";
+export * from "./useUpdate";

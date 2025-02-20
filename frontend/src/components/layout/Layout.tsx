@@ -47,7 +47,7 @@ const Layout = () => {
   return (
     <div style={{ display: "flex", border: "1px solid green" }}>
       <Sidebar projectId={id!} onProjectCreate={createProject} />
-      <Container sx={{ marginLeft: "250px", padding: "20px", width: "100%" }}>
+      <Container sx={{ padding: "20px", width: "100%" }}>
         <Box sx={{ marginBottom: 2 }}>
           <SprintSelector />
         </Box>

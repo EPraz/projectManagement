@@ -13,97 +13,96 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 model Project {
-  id String @id @default(uuid())
-  title String
-  description String?
-  createdBy String
-  updatedBy String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  epics Epic[]
-  tickets Ticket[]
-  users ProjectUser[]
-  sprints Sprint[]
-  ticketStatuses TicketStatus[]
-  taskStatuses TaskStatus[]
-  epicStatuses EpicStatus[]
+  id              String          @id @default(uuid())
+  title           String
+  description     String?
+  createdBy       String
+  updatedBy       String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  epics           Epic[]
+  tickets         Ticket[]
+  users           ProjectUser[]
+  sprints         Sprint[]
+  ticketStatuses  TicketStatus[]
+  taskStatuses    TaskStatus[]
+  epicStatuses    EpicStatus[]
   featureStatuses FeatureStatus[]
 }
 
-
 model Epic {
-  id String @id @default(uuid())
-  title String 
-  description String?
+  id                 String      @id @default(uuid())
+  title              String
+  description        String?
   acceptanceCriteria String?
-  discussion String?
-  createdBy String
-  updatedBy String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  statusId String?
-  status EpicStatus? @relation(fields: [statusId], references: [id])
-  projectId String
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  features Feature[]
+  discussion         String?
+  createdBy          String
+  updatedBy          String?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  statusId           String?
+  status             EpicStatus? @relation(fields: [statusId], references: [id])
+  projectId          String
+  project            Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  features           Feature[]
 }
 
 model Feature {
-  id String @id @default(uuid())
-  title String
-  description String?
+  id                 String         @id @default(uuid())
+  title              String
+  description        String?
   acceptanceCriteria String?
-  discussion String?
-  createdBy String
-  updatedBy String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  statusId String?
-  status FeatureStatus? @relation(fields: [statusId], references: [id])
-  epicId String
-  epic Epic @relation(fields: [epicId], references: [id], onDelete: Cascade )
-  tickets Ticket[]
+  discussion         String?
+  createdBy          String
+  updatedBy          String?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  statusId           String?
+  status             FeatureStatus? @relation(fields: [statusId], references: [id])
+  epicId             String
+  epic               Epic           @relation(fields: [epicId], references: [id], onDelete: Cascade)
+  tickets            Ticket[]
 }
 
 model Ticket {
-  id Int @id @default(autoincrement())
-  title String 
-  description String?
+  id                 Int           @id @default(autoincrement())
+  title              String
+  description        String?
   acceptanceCriteria String?
-  discussion String?
-  createdBy String
-  updatedBy String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  statusId String?
-  status TicketStatus? @relation(fields: [statusId], references: [id])
-  featureId String?
-  feature Feature? @relation(fields: [featureId], references: [id], onDelete: Cascade)
-  projectId String?
-  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tasks Task[]
-  sprintId String?
-  sprint Sprint?  @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  discussion         String?
+  createdBy          String
+  updatedBy          String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  order              Int           @default(0) // 🔹 Nuevo campo de orden
+  statusId           String?
+  status             TicketStatus? @relation(fields: [statusId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  featureId          String?
+  feature            Feature?      @relation(fields: [featureId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  projectId          String?
+  project            Project?      @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  tasks              Task[]
+  sprintId           String?
+  sprint             Sprint?       @relation(fields: [sprintId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 }
 
 model Task {
-  id Int @id @default(autoincrement())
-  title String
-  description String?
+  id                 Int         @id @default(autoincrement())
+  title              String
+  description        String?
   acceptanceCriteria String?
-  discussion String?
-  createdBy String
-  updatedBy String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  statusId String?
-  status TaskStatus? @relation(fields: [statusId], references: [id])
-  ticketId Int
-  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  discussion         String?
+  createdBy          String
+  updatedBy          String?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  statusId           String?
+  status             TaskStatus? @relation(fields: [statusId], references: [id])
+  ticketId           Int
+  ticket             Ticket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 }
 
 model Sprint {
@@ -118,69 +117,69 @@ model Sprint {
   updatedAt DateTime @updatedAt
 }
 
-
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 model User {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  role Role 
-  project ProjectUser[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        String        @id @default(uuid())
+  name      String
+  email     String        @unique
+  password  String
+  role      Role
+  project   ProjectUser[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 }
 
 model ProjectUser {
-  id String @id @default(uuid())
-  userId String
+  id        String  @id @default(uuid())
+  userId    String
   projectId String
-  role Role
-  user User @relation(fields: [userId], references: [id])
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  role      Role
+  user      User    @relation(fields: [userId], references: [id])
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
 model EpicStatus {
-  id String @id @default(uuid())
-  name String 
-  position Int @default(0)
-  color String @default("#000000")
+  id        String   @id @default(uuid())
+  name      String
+  position  Int      @default(0)
+  color     String   @default("#000000")
   projectId String?
-  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  epics Epic[]
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  epics     Epic[]
 }
 
 model FeatureStatus {
-  id String @id @default(uuid())
-  name String 
-  position Int @default(0)
-  color String @default("#000000")
+  id        String    @id @default(uuid())
+  name      String
+  position  Int       @default(0)
+  color     String    @default("#000000")
   projectId String?
-  project Project? @relation(fields: [projectId], references: [id],  onDelete: Cascade)
-  features Feature[]
+  project   Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  features  Feature[]
 }
+
 model TicketStatus {
-  id String @id @default(uuid())
-  name String 
-  position Int @default(0)
-  color String @default("#000000")
+  id        String   @id @default(uuid())
+  name      String
+  position  Int      @default(0)
+  color     String   @default("#000000")
   projectId String?
-  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tickets Ticket[]
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tickets   Ticket[]
 }
 
 model TaskStatus {
-  id String @id @default(uuid())
-  name String 
-  position Int @default(0)
-  color String @default("#000000")
+  id        String   @id @default(uuid())
+  name      String
+  position  Int      @default(0)
+  color     String   @default("#000000")
   projectId String?
-  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tasks Task[]
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks     Task[]
 }
 
 ///////////////////////////////////////////////////////
