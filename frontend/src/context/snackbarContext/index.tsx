@@ -1,12 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Snackbar, Alert } from "@mui/material";
-
-type SnackbarContextType = {
-  showSnackbarMessage: (
-    message: string,
-    type?: "success" | "error" | "info"
-  ) => void;
-};
+import { SnackbarContextType } from "../../types";
 
 const SnackbarContext = createContext<SnackbarContextType | undefined>(
   undefined

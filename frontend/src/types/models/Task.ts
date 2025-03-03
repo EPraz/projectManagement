@@ -1,5 +1,6 @@
 import { TaskStatus } from "./TaskStatus";
 import { Ticket } from "./Ticket";
+import { User } from "./User";
 
 export type Task = {
   id: number;
@@ -9,10 +10,14 @@ export type Task = {
   discussion?: string;
   createdBy: string;
   updatedBy?: string;
-  createdAt: string;
+  createdAt?: string;
   updatedAt: string;
-  statusId: string;
-  status: TaskStatus;
-  ticketId: number;
-  ticket: Ticket;
+  statusId?: string;
+  status?: TaskStatus;
+  ticketId?: number;
+  ticket?: Ticket;
+  order: number;
+  // priority: string;
+  assignedTo?: string;
+  assignedUser?: User;
 };

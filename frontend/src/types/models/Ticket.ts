@@ -1,8 +1,10 @@
+import { TicketPriority, TicketType } from "../../constants";
 import { Feature } from "./Feature";
 import { Project } from "./Project";
 import { Sprint } from "./Sprint";
 import { Task } from "./Task";
 import { TicketStatus } from "./TicketStatus";
+import { User } from "./User";
 
 export type Ticket = {
   id: number;
@@ -24,4 +26,19 @@ export type Ticket = {
   sprintId?: string;
   sprint?: Sprint;
   order: number;
+  additionalDetails?: string;
+  designInformation?: string;
+  notes?: string;
+  priority: TicketPriority;
+  type: TicketType;
+  assignedTo?: string;
+  assignedUser?: User;
+  estimatedHours?: number;
+  remainingHours?: number;
+  completedHours?: number;
+  storyPoints?: number;
+  dueDate?: string;
+  isBlocked?: boolean;
+  blockingTicket?: number;
+  tags?: string[];
 };

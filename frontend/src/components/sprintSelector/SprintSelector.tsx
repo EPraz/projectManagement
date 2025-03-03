@@ -1,99 +1,132 @@
-import { memo, useState } from "react";
+import { memo } from "react";
+import { Autocomplete, ListItemIcon } from "@mui/material";
+import { LayoutContextProps } from "../../types";
+import { useOutletContext } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import {
-  Autocomplete,
-  Box,
-  Button,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useSprint } from "../../context";
-import { sprintSchema } from "../../validations";
-import { useCreateSprint } from "../../hooks";
-import DialogForm from "../dialogForm/DialogForm";
-import { Sprint } from "../../types";
-import { useParams } from "react-router-dom";
+  DeleteButton,
+  SelectorContainer,
+  SprintIcon,
+  SprintMenuItem,
+  SprintNameContainer,
+  StyledTextField,
+} from "./SprintSelector.styles";
 
 const SprintSelector = () => {
-  const { id: projectId } = useParams<{ id: string }>();
-  const { sprint, setSprint, listOfSprints, loadTicketsBySprint } = useSprint();
-  const { createSprint, loading: loadingCreateSprint } = useCreateSprint();
-  const [openDialog, setOpenDialog] = useState(false);
-
-  const handleCreateSprint = async (data: Partial<Sprint>) => {
-    console.log("he");
-    const newSprint = await createSprint({ ...data, projectId: projectId });
-    if (newSprint) {
-      setSprint(newSprint);
-      setOpenDialog(false);
-      if (!sprint) setSprint(newSprint);
-    }
-  };
-
-  const handleChangeSprint = async (newSprintId: string) => {
-    const newSprint = listOfSprints?.find((s) => s.id === newSprintId);
-    if (newSprint && newSprint.id !== sprint?.id) {
-      setSprint(newSprint);
-      await loadTicketsBySprint(newSprint.id); // Solo carga tickets, no cambia todo el contexto
-    }
-  };
+  const {
+    loadingDeleteSprint,
+    handleChangeSprint,
+    listOfSprints,
+    setSelectedSprint,
+    setOpenCreateSprintDialog,
+    setOpenDeleteSprintDialog,
+    sprint,
+  } = useOutletContext<LayoutContextProps>();
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", padding: 2 }}>
-      <Typography variant="h6" sx={{ marginRight: 2 }}>
-        Active Sprint:
-      </Typography>
+    <SelectorContainer>
+      <SprintIcon />
       <Autocomplete
         value={sprint ? sprint : undefined}
-        onChange={(_, newValue) => handleChangeSprint(newValue.id)}
-        options={listOfSprints || []}
+        onChange={(_, newValue) => {
+          if (newValue && newValue.id !== "new") {
+            handleChangeSprint(newValue.id);
+          }
+        }}
+        // onChange={(_, newValue) => handleChangeSprint(newValue.id)}
+        options={[...(listOfSprints || []), { id: "new", name: "New Sprint" }]}
         getOptionLabel={(option) => option?.name}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         disableClearable
         disabled={!listOfSprints?.length}
         renderInput={(params) => (
-          <TextField {...params} label="Select Sprint" />
+          <StyledTextField
+            {...params}
+            placeholder={
+              listOfSprints?.length ? "Select Sprint" : "No Sprints Available"
+            }
+            size="small"
+          />
         )}
-        renderOption={(props, option) => (
-          <li {...props} key={option.id}>
-            {option.name}
-          </li>
-        )}
+        renderOption={(props, option) => {
+          if (option.id === "new") {
+            return (
+              <SprintMenuItem
+                {...props}
+                key="new-sprint"
+                className="new-sprint"
+                onClick={(e) => {
+                  e.stopPropagation(); // Evita seleccionar la opción de "New Sprint"
+                  setOpenCreateSprintDialog(true);
+                }}
+              >
+                <ListItemIcon>
+                  <AddIcon sx={{ fontSize: 18 }} />
+                </ListItemIcon>
+                New Sprint
+              </SprintMenuItem>
+            );
+          }
+
+          return (
+            <SprintMenuItem {...props} key={option.id}>
+              <SprintNameContainer>{option.name}</SprintNameContainer>
+              {"projectId" in option && (
+                <DeleteButton
+                  size="small"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Evita cerrar el Autocomplete al eliminar un sprint
+                    setSelectedSprint(option);
+                    setOpenDeleteSprintDialog(true);
+                  }}
+                  disabled={loadingDeleteSprint}
+                >
+                  <DeleteIcon fontSize="small" color="error" />
+                </DeleteButton>
+              )}
+            </SprintMenuItem>
+          );
+        }}
+        sx={{
+          width: 200,
+          "& .MuiOutlinedInput-root": {
+            height: 32,
+            fontSize: "0.875rem",
+            backgroundColor: "transparent",
+            "& fieldset": {
+              border: "none",
+            },
+            "&:hover fieldset": {
+              border: "none",
+            },
+            "&.Mui-focused fieldset": {
+              border: "none",
+            },
+            "& .MuiOutlinedInput-input": {
+              padding: 1,
+            },
+          },
+          "& .MuiAutocomplete-endAdornment": {
+            display: "none",
+          },
+        }}
         slotProps={{
           paper: {
+            elevation: 4,
             sx: {
+              mt: 0.5,
               "& .MuiAutocomplete-listbox": {
+                p: 0.5,
                 "& .MuiAutocomplete-option": {
-                  maxHeight: "200px",
-                  overflowY: "auto",
+                  p: 0,
                 },
               },
             },
           },
         }}
-        sx={{ width: 250, backgroundColor: "white" }}
-        popupIcon={null}
       />
-      <Button
-        variant="contained"
-        sx={{ marginLeft: 2 }}
-        onClick={() => setOpenDialog(true)}
-      >
-        Add New Sprint
-      </Button>
-
-      {/* 🔹 DialogForm para crear Sprint */}
-      {openDialog && (
-        <DialogForm
-          open={openDialog}
-          title="Create Sprint"
-          onClose={() => setOpenDialog(false)}
-          onSubmit={handleCreateSprint}
-          schema={sprintSchema}
-          disabled={loadingCreateSprint}
-          defaultValues={{ name: "", startDate: null, endDate: null }}
-        />
-      )}
-    </Box>
+    </SelectorContainer>
   );
 };
 

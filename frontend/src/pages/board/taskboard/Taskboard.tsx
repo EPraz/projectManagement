@@ -1,269 +1,126 @@
-import { useState, useEffect, memo, useCallback } from "react";
-import {
-  Container,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
+import { memo } from "react";
+import { Box, TableHead, TableRow, TableBody, IconButton } from "@mui/material";
 import { closestCenter, DndContext } from "@dnd-kit/core";
-import StatusConfig from "../../sprintBoardPage/StatusConfig";
-import { useProject, useSprint } from "../../../context";
-import TicketRow from "../../sprintBoardPage/TicketRow";
-import { DialogForm, Portal, TaskColumn } from "../../../components";
-import AddIcon from "@mui/icons-material/Add";
-import { Ticket } from "../../../types";
-import { ticketSchema, taskSchema } from "../../../validations";
-import {
-  useBulkUpdateTickets,
-  useCreateTask,
-  useCreateTicket,
-  useUpdateTask,
-  useUpdateTicket,
-} from "../../../hooks";
+import { TaskColumn } from "../../../components";
 import { formatStatusName } from "../../../helpers";
-import {
-  changeTicketStatusHandler,
-  createTaskHandler,
-  createTicketHandler,
-  onDragEndHandler,
-  updateTicketOrderHandler,
-} from "./taskboard.helpers";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { useOutletContext } from "react-router-dom";
+import type { LayoutContextProps } from "../../../types";
+import {
+  StyledTable,
+  HeaderCell,
+  BodyCell,
+  OrderButtons,
+  BoardContainer,
+  TableWrapper,
+} from "./TaskBoard.styles";
+import TicketCard from "./TicketCard";
 
 const TaskBoard = () => {
-  const { tickets, sprint, listOfSprints } = useSprint();
-  const { project } = useProject();
-  const { createTask, loading: loadingPostTasks } = useCreateTask();
-  const { createTicket, loading: loadingPostTickets } = useCreateTicket();
-  const { updateTicket } = useUpdateTicket();
-  const { updateTask } = useUpdateTask();
-  const { bulkUpdateTickets } = useBulkUpdateTickets();
-  const [selectedStatuses, setSelectedStatuses] = useState(
-    project?.taskStatuses
-  );
-  const [localTickets, setLocalTickets] = useState<Ticket[]>(tickets);
-  const [openTicketDialog, setOpenTicketDialog] = useState<boolean>(false);
-
-  const [openTaskDialog, setOpenTaskDialog] = useState<boolean>(false);
-  const [selectedTicketId, setSelectedTicketId] = useState<number>(0);
-
-  useEffect(() => {
-    setLocalTickets(tickets);
-  }, [tickets]);
-
-  const handleCreateTask = useCallback(
-    createTaskHandler(
-      createTask,
-      setOpenTaskDialog,
-      setLocalTickets,
-      selectedTicketId
-    ),
-    [createTask, setOpenTaskDialog, setLocalTickets, selectedTicketId]
-  );
-
-  const handleCreateTicket = useCallback(
-    createTicketHandler(
-      createTicket,
-      setOpenTicketDialog,
-      setLocalTickets,
-      sprint?.id
-    ),
-    [createTicket, setOpenTicketDialog, setLocalTickets, sprint?.id]
-  );
-
-  const handleChangeTicketStatus = useCallback(
-    changeTicketStatusHandler(
-      updateTicket,
-      setLocalTickets,
-      localTickets,
-      tickets
-    ),
-    [updateTicket, setLocalTickets, localTickets, tickets]
-  );
-
-  const handleOnDragEnd = useCallback(
-    onDragEndHandler(
-      updateTask,
-      setLocalTickets,
-      localTickets,
-      tickets,
-      project?.taskStatuses
-    ),
-    [updateTask, setLocalTickets, localTickets, tickets, project?.taskStatuses]
-  );
-
-  const handleUpdateTicketOrder = useCallback(
-    updateTicketOrderHandler(setLocalTickets, localTickets, bulkUpdateTickets),
-    [setLocalTickets, localTickets, updateTicket]
-  );
-
-  const isDisabled = !listOfSprints?.length;
+  const {
+    project,
+    loadingBulkUpdateTickets,
+    localTickets,
+    setSelectedTicketId,
+    setOpenEditTicketDialog,
+    setSelectedTicket,
+    selectedTasksStatuses,
+    setOpenTaskDialog,
+    setOpenEditTaskDialog,
+    setSelectedTask,
+    handleUpdateTicketOrder,
+    handleUpdateTicketStatus,
+    handleOnDragEndTask,
+  } = useOutletContext<LayoutContextProps>();
 
   return (
-    <Container sx={{ border: "1px solid black" }}>
-      <StatusConfig
-        selectedStatuses={selectedStatuses}
-        setSelectedStatuses={setSelectedStatuses}
-        items={project?.taskStatuses}
-      />
-      <Tooltip
-        title={isDisabled ? "You must create a Sprint first" : ""}
-        arrow
-        sx={{ width: "fit-content" }}
-        placement="bottom"
-      >
-        <span>
-          <IconButton
-            onClick={() => !isDisabled && setOpenTicketDialog(true)}
-            disabled={isDisabled}
-            sx={{
-              height: "35px",
-              width: "fit-content",
-              border: "1px solid green",
-              borderRadius: "8px",
-              fontSize: "12px",
-              display: "flex",
-              gap: "8px",
-              color: isDisabled ? "gray" : "inherit",
-              borderColor: isDisabled ? "gray" : "green",
-            }}
-          >
-            Add New Item
-            <AddIcon />
-          </IconButton>
-        </span>
-      </Tooltip>
+    <BoardContainer>
+      <TableWrapper>
+        <DndContext
+          collisionDetection={closestCenter}
+          onDragEnd={handleOnDragEndTask}
+        >
+          <StyledTable>
+            <TableHead>
+              <TableRow>
+                <HeaderCell>Tickets</HeaderCell>
+                {selectedTasksStatuses?.map((status) => (
+                  <HeaderCell key={status.id}>
+                    {formatStatusName(status.name)}
+                  </HeaderCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {localTickets
+                .slice()
+                .sort((a, b) => a.order - b.order)
+                .map((ticket, index) => {
+                  const isFirst = index === 0;
+                  const isLast = index === localTickets.length - 1;
 
-      <Portal>
-        {openTicketDialog && (
-          <DialogForm
-            open={openTicketDialog}
-            title="Create Ticket"
-            onClose={() => setOpenTicketDialog(false)}
-            onSubmit={handleCreateTicket}
-            schema={ticketSchema}
-            disabled={loadingPostTickets}
-            defaultValues={{
-              title: "",
-              description: "",
-            }}
-          />
-        )}
-
-        {openTaskDialog && (
-          <DialogForm
-            open={openTaskDialog}
-            title="Create Task"
-            onClose={() => setOpenTaskDialog(false)}
-            onSubmit={handleCreateTask}
-            schema={taskSchema}
-            disabled={loadingPostTasks}
-            defaultValues={{
-              title: "",
-              description: "",
-            }}
-          />
-        )}
-      </Portal>
-
-      <DndContext
-        collisionDetection={closestCenter}
-        onDragEnd={handleOnDragEnd}
-      >
-        <Table stickyHeader aria-label="TaskBoard" width="100%">
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}>
-                Tickets
-              </TableCell>
-              {selectedStatuses?.map((status) => (
-                <TableCell
-                  key={status.id}
-                  sx={{
-                    borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-                    fontSize: " 12px",
-                  }}
-                >
-                  {formatStatusName(status.name)}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {localTickets
-              .slice()
-              .sort((a, b) => a.order - b.order)
-              .map((ticket, index) => {
-                const isFirst = index === 0;
-                const isLast = index === localTickets.length - 1;
-
-                return (
-                  <TableRow key={ticket.id}>
-                    <TableCell
-                      sx={{ borderRight: "1px solid rgba(0, 0, 0, 0.2)" }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            handleUpdateTicketOrder(ticket.id, "up")
-                          }
-                          disabled={isFirst}
-                        >
-                          <ArrowUpwardIcon />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            handleUpdateTicketOrder(ticket.id, "down")
-                          }
-                          disabled={isLast}
-                        >
-                          <ArrowDownwardIcon />
-                        </IconButton>
-                        <TicketRow
-                          ticket={ticket}
-                          onChange={handleChangeTicketStatus}
-                          ticketStatuses={project?.ticketStatuses}
-                        />
-                      </div>
-                    </TableCell>
-                    {selectedStatuses?.map((status) => (
-                      <TaskColumn
-                        key={status.id}
-                        id={status.name}
-                        ticketId={ticket.id}
-                        tasks={ticket.tasks.filter(
-                          (task) => task.statusId === status.id
-                        )}
-                        addTask={
-                          status.name === "TODO"
-                            ? () => {
-                                setOpenTaskDialog(true);
-                                setSelectedTicketId(ticket.id);
+                  return (
+                    <TableRow key={ticket.id}>
+                      <BodyCell>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <OrderButtons>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleUpdateTicketOrder(ticket.id, "up")
                               }
-                            : undefined
-                        }
-                      />
-                    ))}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      </DndContext>
-    </Container>
+                              disabled={isFirst || loadingBulkUpdateTickets}
+                            >
+                              <ArrowUpwardIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleUpdateTicketOrder(ticket.id, "down")
+                              }
+                              disabled={isLast || loadingBulkUpdateTickets}
+                            >
+                              <ArrowDownwardIcon fontSize="small" />
+                            </IconButton>
+                          </OrderButtons>
+                          <TicketCard
+                            ticket={ticket}
+                            onChange={handleUpdateTicketStatus}
+                            ticketStatuses={project?.ticketStatuses}
+                            setSelectedTicket={setSelectedTicket}
+                            setOpenEditTicketDialog={setOpenEditTicketDialog}
+                          />
+                        </Box>
+                      </BodyCell>
+                      {selectedTasksStatuses?.map((status) => (
+                        <TaskColumn
+                          key={status.id}
+                          id={status.name}
+                          ticketId={ticket.id}
+                          setSelectedTask={setSelectedTask}
+                          setOpenEditTaskDialog={setOpenEditTaskDialog}
+                          tasks={ticket.tasks.filter(
+                            (task) => task.statusId === status.id
+                          )}
+                          addTask={
+                            status.name === "TODO"
+                              ? () => {
+                                  setOpenTaskDialog(true);
+                                  setSelectedTicketId(ticket.id);
+                                }
+                              : undefined
+                          }
+                        />
+                      ))}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </StyledTable>
+        </DndContext>
+      </TableWrapper>
+    </BoardContainer>
   );
 };
 

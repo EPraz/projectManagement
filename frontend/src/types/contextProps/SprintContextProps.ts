@@ -6,7 +6,7 @@ export interface SprintContextProps {
   tickets: Ticket[];
   loadingTickets: boolean;
 
-  setSprint: (sprint: Sprint) => void;
+  setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>;
   loadSprints: () => Promise<void>;
   loadTicketsBySprint: (id?: string) => Promise<void>;
 }

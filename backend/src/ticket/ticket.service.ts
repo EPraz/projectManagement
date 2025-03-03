@@ -48,8 +48,25 @@ export class TicketService {
             projectId,
             statusId,
             order: nextOrder,
+            tags: request.tags
+              ? {
+                  connectOrCreate: request.tags.map((tag) => ({
+                    where: { name: tag }, // Asegúrate de que en la tabla `Tag` haya un campo `name`
+                    create: { name: tag },
+                  })),
+                }
+              : undefined,
           },
-          include: { _count: true, status: true, tasks: true },
+          include: {
+            _count: true,
+            status: true,
+            tasks: true,
+            assignedUser: true,
+            blockedTickets: true,
+            blockingTicket: true,
+            sprint: true,
+            tags: true,
+          },
         });
       });
     } catch (error) {
@@ -78,6 +95,13 @@ export class TicketService {
               status: true,
             },
           },
+          sprint: true,
+          assignedUser: true,
+          blockedTickets: true,
+          blockingTicket: true,
+          feature: true,
+          project: true,
+          tags: true,
         },
         orderBy: {
           order: 'asc',
@@ -100,6 +124,13 @@ export class TicketService {
             },
           },
           status: true,
+          sprint: true,
+          assignedUser: true,
+          blockedTickets: true,
+          blockingTicket: true,
+          feature: true,
+          project: true,
+          tags: true,
         },
       });
 
@@ -124,11 +155,25 @@ export class TicketService {
         where: { id },
         data: {
           ...updateData,
+          tags: request.tags
+            ? {
+                connectOrCreate: request.tags.map((tag) => ({
+                  where: { name: tag }, // Asegúrate de que en la tabla `Tag` haya un campo `name`
+                  create: { name: tag },
+                })),
+              }
+            : undefined,
         },
         include: {
           status: true,
           tasks: true,
           sprint: true,
+          assignedUser: true,
+          blockedTickets: true,
+          blockingTicket: true,
+          feature: true,
+          project: true,
+          tags: true,
         },
       });
     } catch (error) {
@@ -142,7 +187,17 @@ export class TicketService {
         request.map((ticket) =>
           this.prisma.ticket.update({
             where: { id: ticket.id },
-            data: { ...ticket },
+            data: {
+              ...ticket,
+              tags: ticket.tags
+                ? {
+                    connectOrCreate: ticket.tags.map((tag) => ({
+                      where: { name: tag }, // Asegúrate de que en la tabla `Tag` haya un campo `name`
+                      create: { name: tag },
+                    })),
+                  }
+                : undefined,
+            },
           }),
         ),
       );

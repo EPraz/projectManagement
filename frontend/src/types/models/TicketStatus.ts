@@ -5,8 +5,8 @@ export type TicketStatus = {
   id: string;
   name: string;
   position: number;
-  color: string;
+  color?: string;
   projectId?: string;
   project?: Project;
-  tickets: Ticket[];
+  tickets?: Ticket[];
 };

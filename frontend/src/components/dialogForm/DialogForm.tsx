@@ -1,30 +1,25 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-} from "@mui/material";
-import { useForm, Controller, DefaultValues, Path } from "react-hook-form";
+import { TextField, Button, Box, Typography, Tooltip } from "@mui/material";
+import { useForm, Controller, type Path } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { DatePicker } from "@mui/x-date-pickers";
 
-interface DialogFormProps<T extends Record<string, any>> {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (data: T) => void;
-  schema: yup.ObjectSchema<T>;
-  defaultValues: DefaultValues<T>;
-  title: string;
-  disabled: boolean;
-}
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { DialogFormProps } from "../../types";
+import {
+  CloseButton,
+  DeleteButton,
+  DialogHeader,
+  StyledDatePicker,
+  StyledDialog,
+  StyledDialogActions,
+  StyledDialogContent,
+} from "./DialogForm.styles";
 
 const DialogForm = <T extends Record<string, any>>({
   open,
   onClose,
   onSubmit,
+  onDelete,
   schema,
   defaultValues,
   title,
@@ -35,7 +30,7 @@ const DialogForm = <T extends Record<string, any>>({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<T>({
     resolver: yupResolver(schema) as any,
     defaultValues,
@@ -47,62 +42,141 @@ const DialogForm = <T extends Record<string, any>>({
     onClose();
   };
 
-  return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
-        {Object.keys(defaultValues).map((key) => {
-          const fieldName = key as Path<T>;
+  const handleDelete = () => {
+    reset();
+    onDelete && onDelete();
+  };
 
-          if (fieldName === "startDate" || fieldName === "endDate") {
+  return (
+    <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <DialogHeader>
+        <Typography variant="h6" component="h2">
+          {title}
+        </Typography>
+        <Tooltip title="Close" arrow>
+          <CloseButton onClick={handleClose} size="small">
+            <CloseIcon fontSize="small" />
+          </CloseButton>
+        </Tooltip>
+      </DialogHeader>
+
+      <StyledDialogContent>
+        <Box
+          component="form"
+          noValidate
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
+          {Object.entries(defaultValues).map(([key]) => {
+            const fieldName = key as Path<T>;
+            const label = key
+              .split(/(?=[A-Z])|_/)
+              .map(
+                (word) =>
+                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+              )
+              .join(" ");
+
+            if (fieldName === "startDate" || fieldName === "endDate") {
+              return (
+                <Controller
+                  key={key}
+                  name={fieldName}
+                  control={control}
+                  render={({ field }) => (
+                    <StyledDatePicker
+                      label={label}
+                      value={field.value ? new Date(field.value) : null}
+                      onChange={(newValue) =>
+                        field.onChange(newValue ? newValue.toISOString() : null)
+                      }
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: !!errors[fieldName],
+                          helperText:
+                            (errors[fieldName]?.message as string) || "",
+                          size: "small",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              );
+            }
+
             return (
-              <Controller
+              <TextField
                 key={key}
-                name={fieldName}
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    label={key.charAt(0).toUpperCase() + key.slice(1)}
-                    value={field.value ? new Date(field.value) : null} // ✅ Usa Date en lugar de dayjs
-                    onChange={(newValue) => field.onChange(newValue)}
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        margin: "dense",
-                        error: !!errors[fieldName],
-                        helperText:
-                          (errors[fieldName]?.message as string) || "",
-                      },
-                    }}
-                  />
-                )}
+                label={label}
+                {...register(fieldName)}
+                fullWidth
+                error={!!errors[fieldName]}
+                helperText={(errors[fieldName]?.message as string) || ""}
+                disabled={disabled}
+                size="small"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 1,
+                  },
+                }}
               />
             );
-          }
+          })}
+        </Box>
+      </StyledDialogContent>
 
-          return (
-            <TextField
-              key={key}
-              label={key.charAt(0).toUpperCase() + key.slice(1)}
-              {...register(fieldName)}
-              fullWidth
-              error={!!errors[fieldName]}
-              helperText={(errors[fieldName]?.message as string) || ""}
-              margin="dense"
+      <StyledDialogActions>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          {onDelete && (
+            <Tooltip
+              title={disabled ? "Cannot delete at this moment" : "Delete"}
+              arrow
+            >
+              <Box>
+                <DeleteButton
+                  variant="outlined"
+                  startIcon={<DeleteOutlineIcon />}
+                  onClick={handleDelete}
+                  disabled={disabled}
+                >
+                  Delete
+                </DeleteButton>
+              </Box>
+            </Tooltip>
+          )}
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Button
+              variant="outlined"
+              onClick={handleClose}
               disabled={disabled}
-            />
-          );
-        })}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} disabled={disabled}>
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit(onSubmit)} disabled={disabled}>
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+            >
+              Cancel
+            </Button>
+            <Tooltip title={!isDirty ? "No changes to save" : ""} arrow>
+              <span>
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={disabled || !isDirty}
+                  sx={{
+                    minWidth: 100,
+                  }}
+                >
+                  Save
+                </Button>
+              </span>
+            </Tooltip>
+          </Box>
+        </Box>
+      </StyledDialogActions>
+    </StyledDialog>
   );
 };
 

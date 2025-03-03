@@ -1,9 +1,10 @@
-export { default as DashboardPage } from "./dashboardPage/DashboardPage";
-export { default as SprintBoardPage } from "./sprintBoardPage/SprintBoardPage";
 export { default as Board } from "./board/Board";
-export { default as Epics } from "./epics/Epics";
+export { default as Epics } from "./epicsAndFeatures/EpicsAndFeatures";
 export { default as Login } from "./login/Login";
 export { default as ProjectList } from "./projectList/ProjectList";
-export { default as Retrospective } from "./retrospective/Retrospective";
-export { default as Dashboard } from "./dashboard/Dashboard";
-export { default as Taskboard } from "./board/taskboard/Taskboard";
+export { default as Retrospective } from "./retrospectivePage/RetrospectivePage";
+export { default as Dashboard } from "./dashBoard/Dashboard";
+export { default as Taskboard } from "./board/taskBoard/TaskBoard";
+export { default as SettingsPage } from "./settingsPage/SettingsPage";
+export { default as RetrospectivePage } from "./retrospectivePage/RetrospectivePage";
+export { default as TeamMembersPage } from "./teamMembersPage/TeamMembersPage";

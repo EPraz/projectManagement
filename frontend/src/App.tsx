@@ -1,19 +1,38 @@
-import { ThemeProvider, CssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 import AppRoutes from "./routes";
-import theme from "./utils/theme";
-import { ApiProvider } from "./context";
-import { SnackbarProvider } from "./context/snackbarContext";
+import {
+  ApiProvider,
+  SnackbarProvider,
+  ThemeProvider,
+  useTheme,
+} from "./context";
+import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
+import { createAppTheme } from "./utils";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <SnackbarProvider>
-        <ApiProvider>
-          <CssBaseline />
-          <AppRoutes />
-        </ApiProvider>
-      </SnackbarProvider>
+    <ThemeProvider>
+      <MuiTheme />
     </ThemeProvider>
+  );
+}
+
+function MuiTheme() {
+  const { mode } = useTheme();
+  const theme = createAppTheme(mode);
+
+  return (
+    <MuiThemeProvider theme={theme}>
+      <StyledComponentsThemeProvider theme={theme}>
+        <SnackbarProvider>
+          <ApiProvider>
+            <CssBaseline />
+            <AppRoutes />
+          </ApiProvider>
+        </SnackbarProvider>
+      </StyledComponentsThemeProvider>
+    </MuiThemeProvider>
   );
 }
 

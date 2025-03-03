@@ -8,5 +8,5 @@ export type TaskStatus = {
   color: string;
   projectId?: string;
   project?: Project;
-  tasks: Task[];
+  tasks?: Task[];
 };

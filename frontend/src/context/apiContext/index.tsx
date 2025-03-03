@@ -1,10 +1,6 @@
 import { createContext, useContext } from "react";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
-interface ApiContextType {
-  apiUrl: string;
-}
+import { API_URL } from "../../constants";
+import { ApiContextType } from "../../types";
 
 const ApiContext = createContext<ApiContextType>({ apiUrl: API_URL });
 

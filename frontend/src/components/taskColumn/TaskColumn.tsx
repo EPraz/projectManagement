@@ -1,48 +1,43 @@
-import { TableCell, IconButton } from "@mui/material";
+import type React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import AddIcon from "@mui/icons-material/Add";
-import { Task } from "../../types";
+import type { Task, TaskColumnProps } from "../../types";
 import TaskCard from "../taskCard/TaskCard";
 import { memo } from "react";
+import { AddTaskButton, BodyCell, TaskContainer } from "./TaskColumn.styles";
 
-interface TaskColumnProps {
-  // status: string;
-  ticketId: number;
-  tasks: Task[];
-  // setTickets: (callback: (prevTickets: Ticket[]) => Ticket[]) => void;
-  addTask?: () => void;
-  id: string;
-}
-
-const TaskColumn = ({ tasks, addTask, id }: TaskColumnProps) => {
+const TaskColumn: React.FC<TaskColumnProps> = ({
+  tasks,
+  addTask,
+  id,
+  setSelectedTask,
+  setOpenEditTaskDialog,
+}) => {
   const { setNodeRef } = useDroppable({ id });
 
+  const handleOpenEdit = (task: Task) => {
+    setSelectedTask(task);
+    setOpenEditTaskDialog(true);
+  };
+
   return (
-    <TableCell
-      ref={setNodeRef}
-      sx={{
-        borderRight: "1px solid rgba(0, 0, 0, 0.2)",
-        minWidth: "125px",
-        position: "relative",
-      }}
-    >
-      {tasks.map((task) => (
-        <TaskCard key={task.id} task={task} />
-      ))}
+    <BodyCell ref={setNodeRef}>
+      <TaskContainer>
+        {tasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            task={task}
+            onClick={() => handleOpenEdit(task)}
+          />
+        ))}
+      </TaskContainer>
+
       {addTask && (
-        <IconButton
-          onClick={addTask}
-          sx={{
-            height: "35px",
-            width: "35px",
-            border: "1px solid green",
-            borderRadius: "8px",
-          }}
-        >
+        <AddTaskButton onClick={addTask}>
           <AddIcon />
-        </IconButton>
+        </AddTaskButton>
       )}
-    </TableCell>
+    </BodyCell>
   );
 };
 

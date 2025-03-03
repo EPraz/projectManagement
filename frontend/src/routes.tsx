@@ -7,12 +7,12 @@ import {
 import {
   Board,
   Dashboard,
-  DashboardPage,
   Epics,
   // Login,
   ProjectList,
   Retrospective,
-  SprintBoardPage,
+  SettingsPage,
+  TeamMembersPage,
 } from "./pages";
 import { ProjectLayout } from "./components";
 
@@ -23,17 +23,19 @@ const AppRoutes = () => {
         {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/projects" element={<ProjectList />} />
         <Route path="/projects/:id" element={<ProjectLayout />}>
-          <Route index element={<Navigate to="board" />} /> {/* Redirección */}
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route index element={<Navigate to="overview" replace />} />{" "}
+          {/* ✅ FIX */}
+          <Route path="overview" element={<Dashboard />} />
           <Route path="board" element={<Board />} />
           <Route path="retrospective" element={<Retrospective />} />
           <Route path="epics" element={<Epics />} />
+          <Route path="teammembers" element={<TeamMembersPage />} />
+          <Route path="settings" element={<SettingsPage />} />
         </Route>
+
         <Route path="*" element={<Navigate to="/projects" />} />
 
         {/* <Route path="/" element={<Login />} /> */}
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/sprint-board" element={<SprintBoardPage />} />
       </Routes>
     </Router>
   );

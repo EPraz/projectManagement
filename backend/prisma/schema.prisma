@@ -68,25 +68,42 @@ model Feature {
 }
 
 model Ticket {
-  id                 Int           @id @default(autoincrement())
+  id                 Int             @id @default(autoincrement())
   title              String
   description        String?
   acceptanceCriteria String?
   discussion         String?
   createdBy          String
   updatedBy          String?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  order              Int           @default(0) // 🔹 Nuevo campo de orden
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+  order              Int             @default(0)
   statusId           String?
-  status             TicketStatus? @relation(fields: [statusId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  status             TicketStatus?   @relation(fields: [statusId], references: [id], onUpdate: Cascade, onDelete: SetNull)
   featureId          String?
-  feature            Feature?      @relation(fields: [featureId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  feature            Feature?        @relation(fields: [featureId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   projectId          String?
-  project            Project?      @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  project            Project?        @relation(fields: [projectId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   tasks              Task[]
   sprintId           String?
-  sprint             Sprint?       @relation(fields: [sprintId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  sprint             Sprint?         @relation(fields: [sprintId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  type               TicketType      @default(PRODUCT_BACKLOG_ITEM)
+  tags               Tag[]
+  priority           TicketPriority? @default(LOW)
+  assignedTo         String?
+  assignedUser       User?           @relation(fields: [assignedTo], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  estimatedHours     Float?
+  remainingHours     Float?
+  completedHours     Float?
+  storyPoints        Int?
+  dueDate            DateTime?
+  isBlocked          Boolean         @default(false)
+  blockedBy          Int?
+  blockingTicket     Ticket?         @relation("Blocking", fields: [blockedBy], references: [id], onDelete: SetNull)
+  blockedTickets     Ticket[]        @relation("Blocking")
+  additionalDetails  String?
+  designInformation  String?
+  notes              String?
 }
 
 model Task {
@@ -128,6 +145,7 @@ model User {
   project   ProjectUser[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+  tickets   Ticket[]
 }
 
 model ProjectUser {
@@ -182,6 +200,13 @@ model TaskStatus {
   tasks     Task[]
 }
 
+model Tag {
+  id      Int      @id @default(autoincrement())
+  name    String   @unique
+  color   String   @default("#000000")
+  tickets Ticket[]
+}
+
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
@@ -192,4 +217,26 @@ enum Role {
   BUSINESS_ANALYST
   DEVELOPER
   QUALITY_ASSURANCE
+}
+
+enum TicketType {
+  PRODUCT_BACKLOG_ITEM
+  BUG_TICKET
+  TECHNICAL_TICKET
+  SPIKE
+  CHANGE_REQUEST
+  DEPLOYMENT
+  CODE_REVIEW
+  DOCUMENTATION
+  HOTFIX
+  PERFORMANCE_IMPROVEMENT
+  UI_UX_IMPROVEMENT
+  SECURITY_FIX
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }
