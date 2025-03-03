@@ -37,7 +37,7 @@ import { useApi } from "../../context";
 import type { Project } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { DialogForm } from "../../components";
-import { projectSchema } from "../../validations";
+import { createProjectSchema } from "../../validations";
 import { useCreateProject } from "../../hooks";
 import {
   EmptyState,
@@ -404,7 +404,7 @@ export default function ProjectList({
           title="Create Project"
           onClose={() => setOpenDialog(false)}
           onSubmit={handleCreateProject}
-          schema={projectSchema}
+          schema={createProjectSchema}
           disabled={postProjectLoading}
           defaultValues={{
             title: "",

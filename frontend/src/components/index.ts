@@ -10,3 +10,4 @@ export { default as Portal } from "./portal/Portal";
 export { default as EditDialogForm } from "./editDialogForm/EditDialogForm";
 export { default as Header } from "./header/Header";
 export { default as DeleteConfirmationModal } from "./deleteConfirmationModal/DeleteConfirmationModal";
+export * from "./statusIndicator/StatusIndicator";

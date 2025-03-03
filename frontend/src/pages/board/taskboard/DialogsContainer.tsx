@@ -9,9 +9,9 @@ import {
 import {
   editTaskSchema,
   editTicketSchema,
-  sprintSchema,
-  taskSchema,
-  ticketSchema,
+  createSprintSchema,
+  createTaskSchema,
+  createTicketSchema,
 } from "../../../validations";
 import { TicketPriority, TicketType } from "../../../constants";
 import { DialogsContainerProps } from "../../../types";
@@ -70,7 +70,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           title="Create Ticket"
           onClose={() => setOpenCreateTicketDialog(false)}
           onSubmit={handleCreateTicket}
-          schema={ticketSchema}
+          schema={createTicketSchema}
           disabled={loadingPostTickets}
           defaultValues={{ title: "", description: "" }}
         />
@@ -81,7 +81,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           title="Create Task"
           onClose={() => setOpenTaskDialog(false)}
           onSubmit={handleCreateTask}
-          schema={taskSchema}
+          schema={createTaskSchema}
           disabled={loadingPostTasks}
           defaultValues={{ title: "", description: "" }}
         />
@@ -92,7 +92,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           title="Create Sprint"
           onClose={() => setOpenCreateSprintDialog(false)}
           onSubmit={handleCreateSprint}
-          schema={sprintSchema}
+          schema={createSprintSchema}
           disabled={loadingCreateSprint || loadingDeleteSprint}
           defaultValues={{ name: "", startDate: null, endDate: null }}
         />

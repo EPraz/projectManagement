@@ -15,7 +15,6 @@ import {
   getTypeIcon,
   truncatedTitle,
 } from "../../../helpers";
-import { StatusIndicator } from "../../sprintBoardPage/TaskBoard";
 import {
   MetricItem,
   PriorityChip,
@@ -26,6 +25,7 @@ import {
   TicketTitle,
 } from "./TaskBoard.styles";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import { StatusIndicator } from "../../../components";
 
 const TicketCard: React.FC<TicketCardProps> = ({
   ticket,
