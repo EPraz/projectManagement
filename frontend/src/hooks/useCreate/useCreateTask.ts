@@ -4,8 +4,6 @@ import { Task } from "../../types";
 
 export const useCreateTask = () => {
   const { apiUrl } = useApi();
-  // const { project } = useProject();
-  // const { loadTicketsBySprint } = useSprint();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -19,14 +17,12 @@ export const useCreateTask = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...data,
-          // statusId: project?.taskStatuses.find((s) => s.name === "TODO")?.id,
         }),
       });
 
       if (!response.ok) throw new Error("Failed to create task");
 
       const newTask = await response.json();
-      // await loadTicketsBySprint(); // 🔹 Recargar los tickets solo si la creación es exitosa
       showSnackbarMessage("Task created successfully", "success");
       return newTask;
     } catch (error) {

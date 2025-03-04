@@ -61,9 +61,28 @@ export class ProjectService {
           where: { id: newProject.id },
           include: {
             _count: true,
-            epics: true,
+            epics: {
+              include: {
+                _count: true,
+                features: true,
+                status: true,
+              },
+            },
             users: true,
-            sprints: true,
+            sprints: {
+              include: {
+                tickets: {
+                  include: {
+                    status: true,
+                    tasks: {
+                      include: {
+                        status: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
             ticketStatuses: true,
             taskStatuses: true,
             epicStatuses: true,
@@ -81,9 +100,29 @@ export class ProjectService {
     try {
       return await this.prisma.project.findMany({
         include: {
-          epics: true,
+          _count: true,
+          epics: {
+            include: {
+              _count: true,
+              features: true,
+              status: true,
+            },
+          },
           users: true,
-          sprints: true,
+          sprints: {
+            include: {
+              tickets: {
+                include: {
+                  status: true,
+                  tasks: {
+                    include: {
+                      status: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           ticketStatuses: true,
           taskStatuses: true,
           epicStatuses: true,
@@ -101,9 +140,29 @@ export class ProjectService {
       const project = await this.prisma.project.findUnique({
         where: { id },
         include: {
-          epics: true,
+          _count: true,
+          epics: {
+            include: {
+              _count: true,
+              features: true,
+              status: true,
+            },
+          },
           users: true,
-          sprints: true,
+          sprints: {
+            include: {
+              tickets: {
+                include: {
+                  status: true,
+                  tasks: {
+                    include: {
+                      status: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
           ticketStatuses: true,
           taskStatuses: true,
           epicStatuses: true,
@@ -136,14 +195,33 @@ export class ProjectService {
         where: { id: request.id },
         data: { ...request },
         include: {
-          epics: true,
+          _count: true,
+          epics: {
+            include: {
+              _count: true,
+              features: true,
+              status: true,
+            },
+          },
+          users: true,
+          sprints: {
+            include: {
+              tickets: {
+                include: {
+                  status: true,
+                  tasks: {
+                    include: {
+                      status: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          ticketStatuses: true,
+          taskStatuses: true,
           epicStatuses: true,
           featureStatuses: true,
-          sprints: true,
-          taskStatuses: true,
-          tickets: true,
-          ticketStatuses: true,
-          users: true,
         },
       });
     } catch (error: unknown) {

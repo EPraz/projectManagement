@@ -20,13 +20,13 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [listOfSprints, setListOfSprints] = useState<Sprint[]>([]);
   const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loadingSprint, setLoadingSprint] = useState(true); // ✅ Para la carga inicial del Sprint
-  const [loadingTickets, setLoadingTickets] = useState(false); // ✅ Para la carga de Tickets
+  const [loadingSprint, setLoadingSprint] = useState(true);
+  const [loadingTickets, setLoadingTickets] = useState(false); // Para la carga de Tickets
 
-  // 🔹 Memorizar `project` para evitar renders innecesarios
+  //  Memorizar `project` para evitar renders innecesarios
   const projectData = useMemo(() => project, [project]);
 
-  // ✅ Sprint inicial solo se ejecuta una vez al montar el componente
+  // Sprint inicial solo se ejecuta una vez al montar el componente
   useEffect(() => {
     if (projectLoading || !projectData) return;
 
@@ -36,6 +36,13 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
       setLoadingSprint(false);
       return;
     }
+
+    const storedSprintId = localStorage.getItem("selectedSprintId");
+
+    // Buscar el Sprint previamente seleccionado
+    const lastSelectedSprint = projectData.sprints.find(
+      (s) => s.id === storedSprintId
+    );
 
     // Buscar el Sprint activo
     const today = new Date();
@@ -48,11 +55,11 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     );
 
     setListOfSprints(projectData.sprints);
-    setSprint(activeSprint || projectData.sprints[0]);
+    setSprint(lastSelectedSprint || activeSprint || projectData.sprints[0]);
     setLoadingSprint(false);
   }, [projectData, projectLoading]);
 
-  // ✅ Cargar Sprints desde el Backend (cuando se llama manualmente)
+  // Cargar Sprints desde el Backend (cuando se llama manualmente)
   const loadSprints = useCallback(async () => {
     if (projectLoading || !projectData?.id) return;
     try {
@@ -68,7 +75,13 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
 
       setListOfSprints(data);
 
-      // 🔹 Verificar si el Sprint actual sigue siendo válido
+      // Intentamos usar el sprint guardado
+      const storedSprintId = localStorage.getItem("selectedSprintId");
+      const lastSelectedSprint = data.find(
+        (s: Sprint) => s.id === storedSprintId
+      );
+
+      //  Verificar si el Sprint actual sigue siendo válido
       if (!sprint || !data.find((s: Sprint) => s.id === sprint.id)) {
         const today = new Date();
         const activeSprint = data.find(
@@ -79,19 +92,19 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
             new Date(s.endDate) >= today
         );
 
-        setSprint(activeSprint || data[0] || null);
+        setSprint(lastSelectedSprint || activeSprint || data[0] || null);
       }
     } catch (error) {
       console.error("Error loading sprints:", error);
     }
   }, [projectData?.id, apiUrl, sprint]);
 
-  // ✅ Cargar Tickets según el Sprint seleccionado
+  // Cargar Tickets según el Sprint seleccionado
   const loadTicketsBySprint = useCallback(
     async (sprintId?: string) => {
       const id = sprintId || sprint?.id;
       if (!id) return;
-      setLoadingTickets(true); // ✅ Solo afecta la sección de tickets
+      setLoadingTickets(true); // Solo afecta la sección de tickets
       try {
         const response = await fetch(`${apiUrl}/tickets?sprintId=${id}`, {
           method: "GET",
@@ -113,7 +126,7 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     loadTicketsBySprint();
   }, [loadTicketsBySprint]);
 
-  // ✅ Loading solo para el Sprint, no para toda la página
+  // Loading solo para el Sprint, no para toda la página
   if (loadingSprint || projectLoading) return <Loading message="Cargando..." />;
 
   return (
@@ -125,7 +138,7 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
         tickets,
         loadTicketsBySprint,
         loadSprints,
-        loadingTickets, // ✅ Loading solo para Tickets
+        loadingTickets, // Loading solo para Tickets
       }}
     >
       {children}

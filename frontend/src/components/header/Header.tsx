@@ -1,5 +1,4 @@
-import type React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MENU_ITEMS } from "../../constants/menuItems";
 import {

@@ -1,12 +1,13 @@
-import { Ticket } from "../../types";
+import { Sprint, Ticket } from "../../types";
 
-// 🔹 Delete Ticket Handler
+//  Delete Ticket Handler
 export const deleteTicketHandler =
   (
     deleteTicket: (data: Partial<Ticket>) => Promise<boolean>,
     setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
     localTickets: Ticket[],
-    originalTickets: Ticket[]
+    originalTickets: Ticket[],
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (data: Partial<Ticket>) => {
     // Actualización optimista
@@ -22,6 +23,10 @@ export const deleteTicketHandler =
     // Actualización final basada en la respuesta del backend
     if (!success) {
       setLocalTickets(originalTickets); // Revertir en caso de error
+      setSprint((prev) => {
+        if (!prev) return prev;
+        return { ...prev, tickets: originalTickets };
+      });
     }
     return success;
   };

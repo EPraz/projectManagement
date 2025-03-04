@@ -1,7 +1,7 @@
 import { Task, Ticket } from "../../types";
 import { removeTaskFromTickets } from "../utilityTicketsTasksHelpers";
 
-// 🔹 Delete Task Handler
+//  Delete Task Handler
 export const deleteTaskHandler =
   (
     deleteTask: (task: Partial<Task>) => Promise<boolean>,

@@ -11,6 +11,7 @@ export type Sprint = {
   tickets: Ticket[];
   createdAt: string;
   updatedAt: string;
+  goals?: any;
 };
 
 export type CreateSprintFormData = {

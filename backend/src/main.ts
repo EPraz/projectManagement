@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Habilitar validaciones globalmente
+  // Habilitar validaciones globalmente
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -19,7 +19,7 @@ async function bootstrap() {
     }),
   );
 
-  // ✅ Habilitar CORS para permitir requests desde el frontend
+  // Habilitar CORS para permitir requests desde el frontend
   app.enableCors({
     origin: 'http://localhost:5173', // ⚠️ Asegúrate de que este es el puerto de tu React/Vite
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',

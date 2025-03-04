@@ -24,7 +24,7 @@ const AppRoutes = () => {
         <Route path="/projects" element={<ProjectList />} />
         <Route path="/projects/:id" element={<ProjectLayout />}>
           <Route index element={<Navigate to="overview" replace />} />{" "}
-          {/* ✅ FIX */}
+          {/* FIX */}
           <Route path="overview" element={<Dashboard />} />
           <Route path="board" element={<Board />} />
           <Route path="retrospective" element={<Retrospective />} />

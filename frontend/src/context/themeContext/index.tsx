@@ -16,7 +16,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<PaletteMode>("light");
   const [systemPreference, setSystemPreference] = useState<boolean>(true);
 
-  // 🔹 Cargar preferencias del tema desde localStorage
+  //  Cargar preferencias del tema desde localStorage
   useEffect(() => {
     if (typeof window === "undefined") return; // Evitar errores en SSR
 
@@ -36,7 +36,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // 🔹 Escuchar cambios en la preferencia del sistema
+  //  Escuchar cambios en la preferencia del sistema
   useEffect(() => {
     if (!systemPreference) return;
 
@@ -48,7 +48,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [systemPreference]);
 
-  // ✅ Cambiar manualmente el modo de tema
+  // Cambiar manualmente el modo de tema
   const handleSetMode = useCallback((newMode: PaletteMode) => {
     setMode(newMode);
     localStorage.setItem("theme-mode", newMode);
@@ -56,7 +56,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     setSystemPreference(false);
   }, []);
 
-  // ✅ Usar la preferencia del sistema
+  // Usar la preferencia del sistema
   const handleSetSystemPreference = useCallback((useSystem: boolean) => {
     setSystemPreference(useSystem);
     localStorage.setItem("theme-system-preference", String(useSystem));
@@ -70,7 +70,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // 🔹 Memorizar valores para evitar renders innecesarios
+  //  Memorizar valores para evitar renders innecesarios
   const contextValue = useMemo(
     () => ({
       mode,
@@ -88,7 +88,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// 🔹 Hook personalizado para acceder al tema
+//  Hook personalizado para acceder al tema
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {

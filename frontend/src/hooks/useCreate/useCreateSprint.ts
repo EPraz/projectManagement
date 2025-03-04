@@ -22,16 +22,13 @@ export const useCreateSprint = () => {
             ? new Date(data.startDate).toISOString()
             : null,
           endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
-          // projectId: "selected_project_id", // Ajusta según el contexto
-          // startDate: new Date().toISOString(),
-          // endDate: new Date(new Date().setDate(new Date().getDate() + 14)).toISOString(), // 2 semanas
         }),
       });
       console.log(response);
       if (!response.ok) throw new Error("Failed to create sprint");
 
       const sprint = await response.json();
-      await loadSprints(); // 🔄 Refrescar lista de Sprints
+      await loadSprints();
       showSnackbarMessage("Sprint created successfully", "success");
       return sprint;
     } catch (error) {

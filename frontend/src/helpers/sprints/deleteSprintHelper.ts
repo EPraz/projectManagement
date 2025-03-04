@@ -1,6 +1,6 @@
 import { Sprint } from "../../types";
 
-// 🔹 Delete Sprint Handler
+//  Delete Sprint Handler
 export const deleteSprintHandler =
   (
     deleteSprint: (data: Partial<Sprint>) => Promise<boolean>,

@@ -26,7 +26,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // 🔹 Verificar si estamos en una página de proyecto antes de cargar datos
+  //  Verificar si estamos en una página de proyecto antes de cargar datos
   const isProjectPage = useMemo(
     () => /^\/projects\/[^/]+/.test(window.location.pathname),
     [window.location.pathname]

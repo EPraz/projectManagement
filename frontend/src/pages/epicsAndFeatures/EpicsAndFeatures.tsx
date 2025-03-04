@@ -1,76 +1,183 @@
-import type React from "react";
 import { useState, useMemo } from "react";
 import {
   Box,
+  Card,
   Typography,
   Button,
   IconButton,
   Menu,
   MenuItem,
   TextField,
+  Chip,
+  Avatar,
   Collapse,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
+  Tooltip,
   useTheme,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,
   FilterList as FilterListIcon,
   KeyboardArrowDown as KeyboardArrowDownIcon,
   KeyboardArrowRight as KeyboardArrowRightIcon,
+  DragIndicator as DragIndicatorIcon,
   Search as SearchIcon,
 } from "@mui/icons-material";
-import { Epic } from "../../types";
-import {
-  Container,
-  Content,
-  DragHandle,
-  EpicCard,
-  FeatureCard,
-  Header,
-  ItemContent,
-  ItemHeader,
-  SearchBar,
-} from "./EpicsAndFeatures.styles";
+
+const Container = styled(Box)(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  backgroundColor: theme.palette.background.default,
+}));
+
+const Header = styled(Card)(({ theme }) => ({
+  padding: theme.spacing(3),
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  marginBottom: theme.spacing(3),
+}));
+
+const SearchBar = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+  [theme.breakpoints.down("sm")]: {
+    flexDirection: "column",
+    alignItems: "stretch",
+  },
+}));
+
+const Content = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  flex: 1,
+  overflowY: "auto",
+  "&::-webkit-scrollbar": {
+    width: 6,
+  },
+  "&::-webkit-scrollbar-track": {
+    backgroundColor: "transparent",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: theme.palette.grey[300],
+    borderRadius: 3,
+    "&:hover": {
+      backgroundColor: theme.palette.grey[400],
+    },
+  },
+}));
+
+const EpicCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  border: `1px solid ${theme.palette.divider}`,
+  transition: "all 0.2s ease-in-out",
+  "&:hover": {
+    borderColor: theme.palette.primary.main,
+    transform: "translateY(-1px)",
+    boxShadow: theme.shadows[2],
+  },
+}));
+
+const FeatureCard = styled(Card)(({ theme }) => ({
+  marginLeft: theme.spacing(7),
+  marginBottom: theme.spacing(1),
+  border: `1px solid ${theme.palette.divider}`,
+  transition: "all 0.2s ease-in-out",
+  "&:hover": {
+    borderColor: theme.palette.primary.main,
+    transform: "translateX(4px)",
+    boxShadow: theme.shadows[1],
+  },
+}));
+
+const ItemHeader = styled(Box)(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  padding: theme.spacing(2),
+  gap: theme.spacing(1),
+}));
+
+const DragHandle = styled(DragIndicatorIcon)(({ theme }) => ({
+  color: theme.palette.text.disabled,
+  cursor: "grab",
+  "&:hover": {
+    color: theme.palette.text.secondary,
+  },
+}));
+
+const ItemContent = styled(Box)(({ theme }) => ({
+  flex: 1,
+  display: "flex",
+  alignItems: "center",
+  gap: theme.spacing(2),
+  [theme.breakpoints.down("sm")]: {
+    flexWrap: "wrap",
+  },
+}));
+
+interface Epic {
+  id: string;
+  title: string;
+  status: string;
+  assignee: { name: string; avatar: string };
+  startDate: string;
+  endDate: string;
+  features: Feature[];
+}
+
+interface Feature {
+  id: string;
+  title: string;
+  status: string;
+  assignee: { name: string; avatar: string };
+  priority: "High" | "Medium" | "Low";
+}
 
 const mockData: Epic[] = [
-  // {
-  //   id: "EPIC-1",
-  //   title: "User Authentication System",
-  //   // status: "In Progress",
-  //   assignee: {
-  //     name: "John Doe",
-  //     avatar: "/placeholder.svg?height=32&width=32",
-  //   },
-  //   startDate: "2024-01-01",
-  //   endDate: "2024-03-31",
-  //   features: [
-  //     {
-  //       id: "FEAT-1",
-  //       title: "Login System",
-  //       // status: "In Progress",
-  //       // assignee: {
-  //       //   name: "Jane Smith",
-  //       //   avatar: "/placeholder.svg?height=32&width=32",
-  //       // },
-  //       // priority: "High",
-  //     },
-  //     {
-  //       id: "FEAT-2",
-  //       title: "Password Recovery",
-  //       // status: "To Do",
-  //       as: {
-  //         name: "Mike Johnson",
-  //         avatar: "/placeholder.svg?height=32&width=32",
-  //       },
-  //       priority: "Medium",
-  //     },
-  //   ],
-  // },
+  {
+    id: "EPIC-1",
+    title: "User Authentication System",
+    status: "In Progress",
+    assignee: {
+      name: "John Doe",
+      avatar: "/placeholder.svg?height=32&width=32",
+    },
+    startDate: "2024-01-01",
+    endDate: "2024-03-31",
+    features: [
+      {
+        id: "FEAT-1",
+        title: "Login System",
+        status: "In Progress",
+        assignee: {
+          name: "Jane Smith",
+          avatar: "/placeholder.svg?height=32&width=32",
+        },
+        priority: "High",
+      },
+      {
+        id: "FEAT-2",
+        title: "Password Recovery",
+        status: "To Do",
+        assignee: {
+          name: "Mike Johnson",
+          avatar: "/placeholder.svg?height=32&width=32",
+        },
+        priority: "Medium",
+      },
+    ],
+  },
 ];
+
+//LA PAGINA NO FNCA TODAVIA
 
 export default function EpicsAndFeaturesPage() {
   const theme = useTheme();
@@ -220,8 +327,8 @@ export default function EpicsAndFeaturesPage() {
                 <Typography variant="subtitle1" fontWeight="medium">
                   {epic.title}
                 </Typography>
-                {/* <Chip
-                  label={epic?.status || ''}
+                <Chip
+                  label={epic.status}
                   size="small"
                   sx={{
                     bgcolor: `${getStatusColor(epic.status)}14`,
@@ -235,14 +342,14 @@ export default function EpicsAndFeaturesPage() {
                     alt={epic.assignee.name}
                     sx={{ width: 28, height: 28 }}
                   />
-                </Tooltip> */}
-                {/* <Typography
+                </Tooltip>
+                <Typography
                   variant="caption"
                   color="text.secondary"
                   sx={{ ml: "auto" }}
                 >
-                  {epic?.startDate} - {epic?.endDate}
-                </Typography> */}
+                  {epic.startDate} - {epic.endDate}
+                </Typography>
               </ItemContent>
               <IconButton
                 size="small"
@@ -258,7 +365,7 @@ export default function EpicsAndFeaturesPage() {
                     <DragHandle />
                     <ItemContent>
                       <Typography variant="body2">{feature.title}</Typography>
-                      {/* <Chip
+                      <Chip
                         label={feature.status}
                         size="small"
                         sx={{
@@ -266,8 +373,8 @@ export default function EpicsAndFeaturesPage() {
                           color: getStatusColor(feature.status),
                           fontWeight: 500,
                         }}
-                      /> */}
-                      {/* <Chip
+                      />
+                      <Chip
                         label={feature.priority}
                         size="small"
                         color={getPriorityColor(feature.priority) as any}
@@ -279,7 +386,7 @@ export default function EpicsAndFeaturesPage() {
                           alt={feature.assignee.name}
                           sx={{ width: 28, height: 28 }}
                         />
-                      </Tooltip> */}
+                      </Tooltip>
                     </ItemContent>
                     <IconButton
                       size="small"

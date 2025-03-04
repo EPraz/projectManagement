@@ -6,6 +6,7 @@ import { Sprint } from "./Sprint";
 import { TaskStatus } from "./TaskStatus";
 import { Ticket } from "./Ticket";
 import { TicketStatus } from "./TicketStatus";
+import { User } from "./User";
 
 export type Project = {
   id: string;
@@ -23,4 +24,7 @@ export type Project = {
   taskStatuses: TaskStatus[];
   epicStatuses: EpicStatus[];
   featureStatuses: FeatureStatus[];
+  type: string;
+  productManagers: User[];
+  endDate?: string;
 };

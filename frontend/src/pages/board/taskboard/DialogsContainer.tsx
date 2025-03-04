@@ -193,7 +193,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             {
               name: "assignedTo",
               label: "Assigned To",
-              options: [], // 🔹 Opciones a llenar con los usuarios cuando se implemente
+              options: [], //  Opciones a llenar con los usuarios cuando se implemente
             },
           ]}
           topCenterFields={[

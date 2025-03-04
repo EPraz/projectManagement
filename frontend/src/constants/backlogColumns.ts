@@ -1,4 +1,3 @@
-// Actualiza tu interfaz para incluir una propiedad de orden
 export interface BacklogColumnsProps {
   key: string;
   label: string;

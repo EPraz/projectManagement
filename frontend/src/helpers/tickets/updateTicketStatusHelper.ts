@@ -1,4 +1,4 @@
-import { Ticket } from "../../types";
+import { Sprint, Ticket } from "../../types";
 import { pickProps } from "../selectPropsHelper";
 
 /**
@@ -10,7 +10,8 @@ export const updateTicketStatusHandler =
     updateTicket: (data: Partial<Ticket>) => Promise<Ticket | null | undefined>,
     setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
     localTickets: Ticket[],
-    originalTickets: Ticket[]
+    originalTickets: Ticket[],
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (ticketId: number, newStatusId: string) => {
     // Actualización optimista
@@ -36,7 +37,20 @@ export const updateTicketStatusHandler =
       setLocalTickets((prevTickets) =>
         prevTickets.map((t) => (t.id === updatedTicket.id ? updatedTicket : t))
       );
+      setSprint((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          tickets: prev.tickets.map((t) =>
+            t.id === updatedTicket.id ? updatedTicket : t
+          ),
+        };
+      });
     } else {
       setLocalTickets(originalTickets); // Revertir en caso de error
+      setSprint((prev) => {
+        if (!prev) return prev;
+        return { ...prev, tickets: originalTickets };
+      });
     }
   };

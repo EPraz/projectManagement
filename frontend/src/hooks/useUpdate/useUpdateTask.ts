@@ -1,12 +1,10 @@
 import { useState } from "react";
-// import { useSprint } from "../../context/sprintContext";
 import { Task } from "../../types";
 import { useSnackbar } from "../../context/snackbarContext";
 import { useApi } from "../../context";
 
 export const useUpdateTask = () => {
   const { apiUrl } = useApi();
-  // const { loadTicketsBySprint } = useSprint();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 

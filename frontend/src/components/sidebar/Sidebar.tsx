@@ -1,5 +1,4 @@
-import type React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { List, Avatar, Box } from "@mui/material";
 import { MENU_ITEMS } from "../../constants";

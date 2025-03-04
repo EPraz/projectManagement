@@ -138,24 +138,48 @@ const Layout = () => {
       createTicket,
       setOpenCreateTicketDialog,
       setLocalTickets,
-      sprint?.id
+      sprint?.id,
+      setSprint
     ),
-    [createTicket, setOpenCreateTicketDialog, setLocalTickets, sprint?.id]
+    [
+      createTicket,
+      setOpenCreateTicketDialog,
+      setLocalTickets,
+      sprint?.id,
+      setSprint,
+    ]
   );
 
   const handleEditTicket = useCallback(
-    editTicketHandler(updateTicket, setLocalTickets, localTickets, tickets),
-    [updateTicket, setLocalTickets, localTickets, tickets]
+    editTicketHandler(
+      updateTicket,
+      setLocalTickets,
+      localTickets,
+      tickets,
+      setSprint
+    ),
+    [updateTicket, setLocalTickets, localTickets, tickets, setSprint]
   );
 
   const handleDeleteTicket = useCallback(
-    deleteTicketHandler(deleteTicket, setLocalTickets, localTickets, tickets),
-    [deleteTicket, setLocalTickets, localTickets, tickets]
+    deleteTicketHandler(
+      deleteTicket,
+      setLocalTickets,
+      localTickets,
+      tickets,
+      setSprint
+    ),
+    [deleteTicket, setLocalTickets, localTickets, tickets, setSprint]
   );
 
   const handleUpdateTicketOrder = useCallback(
-    updateTicketOrderHandler(setLocalTickets, localTickets, bulkUpdateTickets),
-    [setLocalTickets, localTickets, updateTicket]
+    updateTicketOrderHandler(
+      setLocalTickets,
+      localTickets,
+      bulkUpdateTickets,
+      setSprint
+    ),
+    [setLocalTickets, localTickets, updateTicket, setSprint]
   );
 
   const handleUpdateTicketStatus = useCallback(
@@ -163,9 +187,10 @@ const Layout = () => {
       updateTicket,
       setLocalTickets,
       localTickets,
-      tickets
+      tickets,
+      setSprint
     ),
-    [updateTicket, setLocalTickets, localTickets, tickets]
+    [updateTicket, setLocalTickets, localTickets, tickets, setSprint]
   );
 
   // Functions -> Tasks

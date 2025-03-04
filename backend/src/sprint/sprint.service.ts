@@ -21,7 +21,16 @@ export class SprintService {
         data: { ...request },
         include: {
           _count: true,
-          tickets: true,
+          tickets: {
+            include: {
+              tasks: {
+                include: {
+                  status: true,
+                },
+              },
+              status: true,
+            },
+          },
         },
       });
     } catch (error: unknown) {
@@ -42,7 +51,16 @@ export class SprintService {
         orderBy: { createdAt: 'desc' },
         include: {
           _count: true,
-          tickets: true,
+          tickets: {
+            include: {
+              tasks: {
+                include: {
+                  status: true,
+                },
+              },
+              status: true,
+            },
+          },
         },
       });
     } catch (error: unknown) {
@@ -54,6 +72,19 @@ export class SprintService {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id },
+        include: {
+          _count: true,
+          tickets: {
+            include: {
+              tasks: {
+                include: {
+                  status: true,
+                },
+              },
+              status: true,
+            },
+          },
+        },
       });
 
       if (!sprint) throw new NotFoundException('Sprint not found');
@@ -68,6 +99,19 @@ export class SprintService {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id: request.id },
+        include: {
+          _count: true,
+          tickets: {
+            include: {
+              tasks: {
+                include: {
+                  status: true,
+                },
+              },
+              status: true,
+            },
+          },
+        },
       });
 
       if (!sprint) throw new NotFoundException('Sprint not found');

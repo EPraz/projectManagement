@@ -1,4 +1,3 @@
-import type React from "react";
 import {
   Box,
   Button,
@@ -18,7 +17,7 @@ import {
   TicketPriority,
   TicketType,
 } from "../../../constants";
-import type { BoardHeaderProps } from "../../../types";
+import { BoardHeaderProps } from "../../../types";
 import {
   ColumnToggleContainer,
   ColumnToggleHeader,

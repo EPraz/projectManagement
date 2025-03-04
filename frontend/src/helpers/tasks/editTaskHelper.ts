@@ -1,7 +1,7 @@
 import { Task, Ticket } from "../../types";
 import { updateTaskInTickets } from "../utilityTicketsTasksHelpers";
 
-// 🔹 Edit Task Handler
+//  Edit Task Handler
 export const editTaskHandler =
   (
     updateTask: (data: Partial<Task>) => Promise<Task | null | undefined>,

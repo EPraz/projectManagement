@@ -1,4 +1,4 @@
-import { Ticket } from "../../types";
+import { Sprint, Ticket } from "../../types";
 
 export const updateTicketOrderHandler =
   (
@@ -6,7 +6,8 @@ export const updateTicketOrderHandler =
     localTickets: Ticket[],
     bulkUpdateTickets: (
       data: Partial<Ticket>[]
-    ) => Promise<Ticket[] | null | undefined>
+    ) => Promise<Ticket[] | null | undefined>,
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (ticketId: number, direction: "up" | "down") => {
     const index = localTickets.findIndex((t) => t.id === ticketId);
@@ -38,9 +39,18 @@ export const updateTicketOrderHandler =
     }));
 
     setLocalTickets([...updatedTickets]);
+    setSprint((prev) => {
+      if (!prev) return prev;
+      return { ...prev, tickets: updatedTickets };
+    });
 
     const updatedTasks = await bulkUpdateTickets(updatedData);
+
     if (!updatedTasks) {
       setLocalTickets([...localTickets]);
+      setSprint((prev) => {
+        if (!prev) return prev;
+        return { ...prev, tickets: localTickets };
+      });
     }
   };

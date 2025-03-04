@@ -2,12 +2,9 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import CategoryIcon from "@mui/icons-material/Category";
-import ChatIcon from "@mui/icons-material/Chat";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-// 📌 Interfaz para los ítems del menú
 export interface MenuItem {
   text: string;
   icon: React.ElementType;
@@ -35,16 +32,7 @@ export const MENU_ITEMS: MenuItem[] = [
     icon: CategoryIcon,
     path: "epics",
   },
-  //   {
-  //     text: "Chat",
-  //     icon: ChatIcon,
-  //     path: "chat",
-  //   },
-  //   {
-  //     text: "Calendar",
-  //     icon: CalendarMonthIcon,
-  //     path: "calendar",
-  //   },
+
   {
     text: "Team Members",
     icon: PeopleIcon,
@@ -57,7 +45,6 @@ export const MENU_ITEMS: MenuItem[] = [
   },
 ];
 
-// 📌 Interfaz para los tabs principales
 export interface MainTab {
   text: string;
   path: string;
@@ -90,7 +77,6 @@ export const MAIN_TABS: MainTab[] = [
   },
 ];
 
-// 📌 Interfaz para los proyectos
 export interface Project {
   name: string;
   count: number;

@@ -1,6 +1,6 @@
 import { Sprint } from "../../types";
 
-// 🔹 Change Sprint Handler
+//  Change Sprint Handler
 export const changeSprintHandler =
   (
     listOfSprints: Sprint[] | null,
@@ -13,5 +13,6 @@ export const changeSprintHandler =
     if (newSprint && newSprint.id !== sprint?.id) {
       setSprint(newSprint);
       await loadTicketsBySprint(newSprint.id);
+      localStorage.setItem("selectedSprintId", newSprint.id);
     }
   };

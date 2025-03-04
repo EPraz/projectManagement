@@ -1,6 +1,6 @@
 import { Sprint } from "../../types";
 
-// 🔹 Create Sprint Handler
+//  Create Sprint Handler
 export const createSprintHandler =
   (
     createSprint: (data: Partial<Sprint>) => Promise<Sprint | null>,

@@ -1,11 +1,6 @@
-"use client";
-
-import type React from "react";
-
 import { useState, useMemo } from "react";
 import {
   Box,
-  Card,
   Typography,
   Button,
   Avatar,
@@ -20,13 +15,11 @@ import {
   TextField,
   Table,
   TableBody,
-  TableCell,
   TableContainer,
   TableHead,
   TableRow,
   useTheme,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
 import {
   Add as AddIcon,
   MoreVert as MoreVertIcon,

@@ -1,7 +1,7 @@
-import type React from "react";
+import React from "react";
 import { useDroppable } from "@dnd-kit/core";
 import AddIcon from "@mui/icons-material/Add";
-import type { Task, TaskColumnProps } from "../../types";
+import { Task, TaskColumnProps } from "../../types";
 import TaskCard from "../taskCard/TaskCard";
 import { memo } from "react";
 import { AddTaskButton, BodyCell, TaskContainer } from "./TaskColumn.styles";
