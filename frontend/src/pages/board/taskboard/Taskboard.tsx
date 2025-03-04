@@ -23,12 +23,8 @@ const TaskBoard = () => {
     loadingBulkUpdateTickets,
     localTickets,
     setSelectedTicketId,
-    setOpenEditTicketDialog,
-    setSelectedTicket,
     selectedTasksStatuses,
     setOpenTaskDialog,
-    setOpenEditTaskDialog,
-    setSelectedTask,
     handleUpdateTicketOrder,
     handleUpdateTicketStatus,
     handleOnDragEndTask,
@@ -88,8 +84,6 @@ const TaskBoard = () => {
                             ticket={ticket}
                             onChange={handleUpdateTicketStatus}
                             ticketStatuses={project?.ticketStatuses}
-                            setSelectedTicket={setSelectedTicket}
-                            setOpenEditTicketDialog={setOpenEditTicketDialog}
                           />
                         </Box>
                       </BodyCell>
@@ -98,8 +92,6 @@ const TaskBoard = () => {
                           key={status.id}
                           id={status.name}
                           ticketId={ticket.id}
-                          setSelectedTask={setSelectedTask}
-                          setOpenEditTaskDialog={setOpenEditTaskDialog}
                           tasks={ticket.tasks.filter(
                             (task) => task.statusId === status.id
                           )}

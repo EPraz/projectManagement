@@ -17,7 +17,7 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "./BacklogBoard.styles";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 import { backlogColumns, initialBacklogColumns } from "../../../constants";
 import {
   getColumnWidth,
@@ -30,29 +30,38 @@ const BacklogBoard = () => {
   const {
     localTickets,
     setSelectedTicket,
-    setOpenEditTicketDialog,
+    // setOpenEditTicketDialog,
     // handleDeleteTicket,
     setOpenDeleteTicketDialog,
     setSelectedTask,
-    setOpenEditTaskDialog,
+    // setOpenEditTaskDialog,
     setOpenDeleteTaskDialog,
     visibleColumns,
     filters,
   } = useMemo(() => outletContext, [outletContext]);
   const [expandedTicketId, setExpandedTicketId] = useState<number | null>(null);
+  const [_, setSearchParams] = useSearchParams();
 
   const toggleExpand = (ticketId: number) => {
     setExpandedTicketId((prev) => (prev === ticketId ? null : ticketId));
   };
 
   const handleOpenEditTicket = (ticket: Ticket) => {
-    setSelectedTicket(ticket);
-    setOpenEditTicketDialog(true);
+    setSearchParams(
+      { tab: "backlog", ticketId: ticket.id.toString() },
+      { replace: true }
+    );
+    // setSelectedTicket(ticket);
+    // setOpenEditTicketDialog(true);
   };
 
   const handleOpenEditTask = (task: Task) => {
-    setSelectedTask(task);
-    setOpenEditTaskDialog(true);
+    setSearchParams(
+      { tab: "backlog", taskId: task.id.toString() },
+      { replace: true }
+    );
+    // setSelectedTask(task);
+    // setOpenEditTaskDialog(true);
   };
 
   const handleOpenDeleteTicket = (ticket: Ticket) => {

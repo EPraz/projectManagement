@@ -5,19 +5,17 @@ import { Task, TaskColumnProps } from "../../types";
 import TaskCard from "../taskCard/TaskCard";
 import { memo } from "react";
 import { AddTaskButton, BodyCell, TaskContainer } from "./TaskColumn.styles";
+import { useSearchParams } from "react-router-dom";
 
-const TaskColumn: React.FC<TaskColumnProps> = ({
-  tasks,
-  addTask,
-  id,
-  setSelectedTask,
-  setOpenEditTaskDialog,
-}) => {
+const TaskColumn: React.FC<TaskColumnProps> = ({ tasks, addTask, id }) => {
   const { setNodeRef } = useDroppable({ id });
+  const [_, setSearchParams] = useSearchParams();
 
   const handleOpenEdit = (task: Task) => {
-    setSelectedTask(task);
-    setOpenEditTaskDialog(true);
+    setSearchParams(
+      { tab: "board", taskId: task.id.toString() },
+      { replace: true }
+    );
   };
 
   return (

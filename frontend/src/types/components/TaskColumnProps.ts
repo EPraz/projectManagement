@@ -5,6 +5,4 @@ export interface TaskColumnProps {
   tasks: Task[];
   addTask?: () => void;
   id: string;
-  setSelectedTask: React.Dispatch<React.SetStateAction<Task | null>>;
-  setOpenEditTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }

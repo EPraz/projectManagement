@@ -109,6 +109,19 @@ const Layout = () => {
     setTabValue(newValue);
   };
 
+  // useEffect(() => {
+  //   const currentTab = searchParams.get("tab");
+  //   const newTab = TabPanels[tabValue].label.toLowerCase();
+  //   const isBoardRoute = location.pathname.endsWith("/board");
+
+  //   if (isBoardRoute) {
+  //     if (currentTab !== newTab) {
+  //       setSearchParams({ tab: newTab }, { replace: true });
+  //     }
+  //   } else {
+  //     setSearchParams({}, { replace: true });
+  //   }
+  // }, [tabValue, searchParams, setSearchParams, location.pathname]);
   useEffect(() => {
     const currentTab = searchParams.get("tab");
     const newTab = TabPanels[tabValue].label.toLowerCase();
@@ -121,7 +134,40 @@ const Layout = () => {
     } else {
       setSearchParams({}, { replace: true });
     }
-  }, [tabValue, searchParams, setSearchParams, location.pathname]);
+
+    const ticketId = searchParams.get("ticketId");
+    const taskId = searchParams.get("taskId");
+
+    if (ticketId) {
+      const foundTicket = project?.tickets.find(
+        (t) => t.id.toString() === ticketId
+      );
+      if (foundTicket) {
+        setSelectedTicket(foundTicket);
+        setOpenEditTicketDialog(true);
+      }
+    } else {
+      setSelectedTicket(null);
+    }
+
+    if (taskId) {
+      const foundTask = project?.tickets
+        .flatMap((t) => t.tasks)
+        .find((task) => task.id.toString() === taskId);
+      if (foundTask) {
+        setSelectedTask(foundTask);
+        setOpenEditTaskDialog(true);
+      }
+    } else {
+      setSelectedTask(null);
+    }
+  }, [
+    tabValue,
+    searchParams,
+    setSearchParams,
+    location.pathname,
+    project?.tickets,
+  ]);
 
   // Local States -> Sprint
   const [openCreateSprintDialog, setOpenCreateSprintDialog] =

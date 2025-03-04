@@ -25,23 +25,25 @@ import {
 } from "./TaskBoard.styles";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { StatusIndicator } from "../../../components";
+import { useSearchParams } from "react-router-dom";
 
 const TicketCard: React.FC<TicketCardProps> = ({
   ticket,
   onChange,
   ticketStatuses,
-  setOpenEditTicketDialog,
-  setSelectedTicket,
 }) => {
   const [statusOpen, setStatusOpen] = useState<boolean>(false);
+  const [_, setSearchParams] = useSearchParams();
 
   const currentStatus = ticketStatuses?.find(
     (status) => status.id === ticket.statusId
   );
 
   const handleOpenEdit = (ticket: Ticket) => {
-    setSelectedTicket(ticket);
-    setOpenEditTicketDialog(true);
+    setSearchParams(
+      { tab: "board", ticketId: ticket.id.toString() },
+      { replace: true }
+    );
   };
 
   return (

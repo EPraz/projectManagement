@@ -15,6 +15,7 @@ import {
 } from "../../../validations";
 import { TicketPriority, TicketType } from "../../../constants";
 import { DialogsContainerProps } from "../../../types";
+import { useSearchParams } from "react-router-dom";
 
 const DialogsContainer: React.FC<DialogsContainerProps> = ({
   //Tasks
@@ -61,6 +62,15 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   loadingCreateSprint,
   loadingDeleteSprint,
 }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleCloseCleanUrl = (param: "ticketId" | "taskId") => {
+    const currentTab = searchParams.get("tab") || "board";
+    const newParams = new URLSearchParams(searchParams);
+    newParams.delete(param);
+    setSearchParams({ tab: currentTab }, { replace: true });
+  };
+
   return (
     <Portal>
       {/* Create Section */}
@@ -103,7 +113,10 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
       {selectedTask && openEditTaskDialog && (
         <EditDialogForm
           open={openEditTaskDialog}
-          onClose={() => setOpenEditTaskDialog(false)}
+          onClose={() => {
+            setOpenEditTaskDialog(false);
+            handleCloseCleanUrl("taskId");
+          }}
           onSubmit={handleEditTask}
           onDelete={handleDeleteTask}
           schema={editTaskSchema}
@@ -135,7 +148,10 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
       {selectedTicket && openEditTicketDialog && (
         <EditDialogForm
           open={openEditTicketDialog}
-          onClose={() => setOpenEditTicketDialog(false)}
+          onClose={() => {
+            setOpenEditTicketDialog(false);
+            handleCloseCleanUrl("ticketId");
+          }}
           onSubmit={handleEditTicket}
           onDelete={handleDeleteTicket}
           schema={editTicketSchema}
@@ -237,7 +253,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
       {selectedSprint && openDeleteSprintDialog && (
         <DeleteConfirmationModal
           open={openDeleteSprintDialog}
-          onClose={() => setOpenDeleteTaskDialog(false)}
+          onClose={() => setOpenDeleteSprintDialog(false)}
           onConfirm={() => handleDeleteSprint(selectedSprint)}
           itemName={selectedSprint.name}
         />

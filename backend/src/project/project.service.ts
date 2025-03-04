@@ -163,6 +163,16 @@ export class ProjectService {
               },
             },
           },
+          tickets: {
+            include: {
+              status: true,
+              tasks: {
+                include: {
+                  status: true,
+                },
+              },
+            },
+          },
           ticketStatuses: true,
           taskStatuses: true,
           epicStatuses: true,
