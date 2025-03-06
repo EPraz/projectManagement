@@ -5,31 +5,51 @@ import Sidebar from "../sidebar/Sidebar";
 import {
   useBulkUpdateTickets,
   useCreateSprint,
+  useCreateSprintGoal,
   useCreateTask,
+  useCreateGoalTask,
   useCreateTicket,
   useDeleteSprint,
+  useDeleteSprintGoal,
   useDeleteTask,
+  useDeleteGoalTask,
   useDeleteTicket,
+  useUpdateSprintGoal,
   useUpdateTask,
+  useUpdateGoalTask,
   useUpdateTicket,
 } from "../../hooks";
 import { useCallback, useEffect, useState } from "react";
-import { FilterProps, Sprint, Task, TaskStatus, Ticket } from "../../types";
+import {
+  FilterProps,
+  GoalTask,
+  Sprint,
+  SprintGoal,
+  Task,
+  TaskStatus,
+  Ticket,
+} from "../../types";
 import {
   changeSprintHandler,
+  createSprintGoalHandler,
   createSprintHandler,
   createTaskHandler,
+  createTaskToSprintGoalHandler,
   createTicketHandler,
+  deleteSprintGoalHandler,
   deleteSprintHandler,
+  deleteGoalTaskHandler,
   deleteTaskHandler,
   deleteTicketHandler,
+  editSprintGoalHandler,
+  editGoalTaskHandler,
   editTaskHandler,
   editTicketHandler,
   onDragEndTaskHandler,
   updateTicketOrderHandler,
   updateTicketStatusHandler,
+  toggleTaskCompletionHandler,
 } from "../../helpers";
-import DialogsContainer from "../../pages/board/taskBoard/DialogsContainer";
 import { initialBacklogColumns, TabPanels } from "../../constants";
 import {
   LayoutRoot,
@@ -37,12 +57,13 @@ import {
   MainContent,
   PageContent,
 } from "./Layout.styles";
+import DialogsContainer from "../dialogsContainer/DialogsContainer";
 
 const Layout = () => {
   // Providers
   const { project, loading: loadingProject } = useProject();
 
-  const { tickets, sprint, listOfSprints, setSprint, loadTicketsBySprint } =
+  const { tickets, sprint, listOfSprints, setSprint, updateSprintInState } =
     useSprint();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
@@ -59,6 +80,20 @@ const Layout = () => {
 
   const { createSprint, loading: loadingCreateSprint } = useCreateSprint();
   const { deleteSprint, loading: loadingDeleteSprint } = useDeleteSprint();
+
+  const { createSprintGoal, loading: loadingCreateSprintGoal } =
+    useCreateSprintGoal();
+  const { deleteSprintGoal, loading: loadingDeleteSprintGoal } =
+    useDeleteSprintGoal();
+  const { updateSprintGoal, loading: loadingUpdateSprintGoal } =
+    useUpdateSprintGoal();
+
+  const { createGoalTask, loading: loadingCreateGoalTask } =
+    useCreateGoalTask();
+  const { updateGoalTask, loading: loadingUpdateGoalTask } =
+    useUpdateGoalTask();
+  const { deleteGoalTask, loading: loadingDeleteGoalTask } =
+    useDeleteGoalTask();
 
   // Local States -> Sidebar
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -109,19 +144,6 @@ const Layout = () => {
     setTabValue(newValue);
   };
 
-  // useEffect(() => {
-  //   const currentTab = searchParams.get("tab");
-  //   const newTab = TabPanels[tabValue].label.toLowerCase();
-  //   const isBoardRoute = location.pathname.endsWith("/board");
-
-  //   if (isBoardRoute) {
-  //     if (currentTab !== newTab) {
-  //       setSearchParams({ tab: newTab }, { replace: true });
-  //     }
-  //   } else {
-  //     setSearchParams({}, { replace: true });
-  //   }
-  // }, [tabValue, searchParams, setSearchParams, location.pathname]);
   useEffect(() => {
     const currentTab = searchParams.get("tab");
     const newTab = TabPanels[tabValue].label.toLowerCase();
@@ -176,6 +198,34 @@ const Layout = () => {
     useState<boolean>(false);
   const [selectedSprint, setSelectedSprint] = useState<Sprint | null>(null);
 
+  // Local States ->  Goal Board
+  const [selectedSprintGoal, setSelectedSprintGoal] =
+    useState<SprintGoal | null>(null);
+  const [selectedGoalTask, setSelectedGoalTask] = useState<GoalTask | null>(
+    null
+  );
+  const [localSprintGoals, setLocalSprintGoals] = useState<SprintGoal[]>(
+    sprint?.sprintGoal || []
+  );
+
+  useEffect(() => {
+    setLocalSprintGoals(sprint?.sprintGoal || []);
+    updateSprintInState(sprint);
+  }, [sprint]);
+
+  const [openCreateSprintGoalDialog, setOpenCreateSprintGoalDialog] =
+    useState(false);
+  const [openEditSprintGoalDialog, setOpenEditSprintGoalDialog] =
+    useState(false);
+  const [openDeleteSprintGoalDialog, setOpenDeleteSprintGoalDialog] =
+    useState(false);
+
+  const [openCreateTaskToSprintGoalDialog, setOpenCreateGoalTaskDialog] =
+    useState(false);
+  const [openEditGoalTaskDialog, setOpenEditGoalTaskDialog] = useState(false);
+  const [openDeleteGoalTaskDialog, setOpenDeleteGoalTaskDialog] =
+    useState(false);
+
   // Functions
 
   // Functions -> Tickets
@@ -208,14 +258,8 @@ const Layout = () => {
   );
 
   const handleDeleteTicket = useCallback(
-    deleteTicketHandler(
-      deleteTicket,
-      setLocalTickets,
-      localTickets,
-      tickets,
-      setSprint
-    ),
-    [deleteTicket, setLocalTickets, localTickets, tickets, setSprint]
+    deleteTicketHandler(deleteTicket, setLocalTickets, localTickets, setSprint),
+    [deleteTicket, setLocalTickets, localTickets, setSprint]
   );
 
   const handleUpdateTicketOrder = useCallback(
@@ -256,8 +300,8 @@ const Layout = () => {
   );
 
   const handleDeleteTask = useCallback(
-    deleteTaskHandler(deleteTask, setLocalTickets, localTickets, tickets),
-    [deleteTask, setLocalTickets, localTickets, tickets]
+    deleteTaskHandler(deleteTask, setLocalTickets, localTickets, setSprint),
+    [deleteTask, setLocalTickets, localTickets, setSprint]
   );
 
   const handleOnDragEndTask = useCallback(
@@ -283,13 +327,111 @@ const Layout = () => {
   );
 
   const handleChangeSprint = useCallback(
-    changeSprintHandler(listOfSprints, sprint, setSprint, loadTicketsBySprint),
-    [listOfSprints, sprint, setSprint, loadTicketsBySprint]
+    changeSprintHandler(listOfSprints, sprint, setSprint),
+    [listOfSprints, sprint, setSprint]
   );
 
   const handleDeleteSprint = useCallback(
     deleteSprintHandler(deleteSprint, setSprint),
     [deleteSprint, setSprint]
+  );
+
+  // Functions -> Goal Board -> Sprint Goal
+  // const handleCreateSprintGoal = async (data: Partial<SprintGoal>) => {
+  //   createSprintGoalHandler(data);
+  // };
+  const handleCreateSprintGoal = useCallback(
+    createSprintGoalHandler(
+      createSprintGoal,
+      setSprint,
+      setOpenCreateSprintGoalDialog,
+      sprint?.id,
+      setLocalSprintGoals
+    ),
+    [
+      createSprintGoal,
+      setSprint,
+      setOpenCreateSprintGoalDialog,
+      sprint?.id,
+      ,
+      setLocalSprintGoals,
+    ]
+  );
+
+  const handleDeleteSprintGoal = useCallback(
+    deleteSprintGoalHandler(deleteSprintGoal, setSprint, setLocalSprintGoals),
+    [deleteSprintGoal, setSprint, setLocalSprintGoals]
+  );
+
+  const handleEditSprintGoal = useCallback(
+    editSprintGoalHandler(
+      updateSprintGoal,
+      selectedSprintGoal,
+      setSprint,
+      setOpenEditSprintGoalDialog,
+      setLocalSprintGoals
+    ),
+    [
+      updateSprintGoal,
+      selectedSprintGoal,
+      setSprint,
+      setOpenEditSprintGoalDialog,
+      setLocalSprintGoals,
+    ]
+  );
+
+  const handleCreateGoalTask = useCallback(
+    createTaskToSprintGoalHandler(
+      createGoalTask,
+      setSprint,
+      setOpenCreateGoalTaskDialog,
+      setLocalSprintGoals,
+      selectedSprintGoal
+    ),
+    [
+      createGoalTask,
+      setSprint,
+      setOpenCreateGoalTaskDialog,
+      setLocalSprintGoals,
+      selectedSprintGoal,
+    ]
+  );
+
+  const handleEditGoalTask = useCallback(
+    editGoalTaskHandler(
+      updateGoalTask,
+      setSprint,
+      setLocalSprintGoals,
+      setOpenEditGoalTaskDialog,
+      selectedGoalTask
+    ),
+    [
+      updateGoalTask,
+      setSprint,
+      setLocalSprintGoals,
+      setOpenEditGoalTaskDialog,
+      selectedGoalTask,
+    ]
+  );
+
+  const handleDeleteGoalTask = useCallback(
+    deleteGoalTaskHandler(
+      deleteGoalTask,
+      setSprint,
+      setLocalSprintGoals,
+      setOpenEditGoalTaskDialog
+    ),
+    [deleteGoalTask, setSprint, setLocalSprintGoals, setOpenEditGoalTaskDialog]
+  );
+
+  const handleToggleGoalTaskCompletion = useCallback(
+    toggleTaskCompletionHandler(
+      updateGoalTask,
+      updateSprintGoal,
+      setSprint,
+      setLocalSprintGoals
+    ),
+    [updateGoalTask, updateSprintGoal, setSprint, setLocalSprintGoals]
   );
 
   return (
@@ -375,6 +517,26 @@ const Layout = () => {
                 setSelectedSprint,
                 loadingCreateSprint,
                 loadingDeleteSprint,
+                // Local States ->  Goal Board
+                localSprintGoals,
+                setLocalSprintGoals,
+                selectedSprintGoal,
+                setSelectedSprintGoal,
+                selectedGoalTask,
+                setSelectedGoalTask,
+                openCreateSprintGoalDialog,
+                setOpenCreateSprintGoalDialog,
+                openEditSprintGoalDialog,
+                setOpenEditSprintGoalDialog,
+                openDeleteSprintGoalDialog,
+                setOpenDeleteSprintGoalDialog,
+                openCreateTaskToSprintGoalDialog,
+                setOpenCreateGoalTaskDialog,
+                openDeleteGoalTaskDialog,
+                setOpenDeleteGoalTaskDialog,
+                openEditGoalTaskDialog,
+                setOpenEditGoalTaskDialog,
+
                 // Functions
                 // Functions -> Tickets
                 handleCreateTicket,
@@ -387,6 +549,9 @@ const Layout = () => {
                 handleEditTask,
                 handleDeleteTask,
                 handleOnDragEndTask,
+                // Functions -> Sprint Goal
+                handleCreateSprintGoal,
+                handleToggleGoalTaskCompletion,
               }}
             />
           </PageContent>
@@ -435,6 +600,35 @@ const Layout = () => {
           selectedSprint={selectedSprint}
           loadingDeleteSprint={loadingDeleteSprint}
           loadingCreateSprint={loadingDeleteSprint}
+          // Sprint Goal
+          loadingCreateSprintGoal={loadingCreateSprintGoal}
+          openCreateSprintGoalDialog={openCreateSprintGoalDialog}
+          setOpenCreateSprintGoalDialog={setOpenCreateSprintGoalDialog}
+          handleCreateSprintGoal={handleCreateSprintGoal}
+          selectedSprintGoal={selectedSprintGoal}
+          openDeleteSprintGoalDialog={openDeleteSprintGoalDialog}
+          setOpenDeleteSprintGoalDialog={setOpenDeleteSprintGoalDialog}
+          setSelectedSprintGoal={setSelectedSprintGoal}
+          handleDeleteSprintGoal={handleDeleteSprintGoal}
+          handleEditSprintGoal={handleEditSprintGoal}
+          loadingDeleteSprintGoal={loadingDeleteSprintGoal}
+          loadingUpdateSprintGoal={loadingUpdateSprintGoal}
+          openEditSprintGoalDialog={openEditSprintGoalDialog}
+          setOpenEditSprintGoalDialog={setOpenEditSprintGoalDialog}
+          setOpenCreateGoalTaskDialog={setOpenCreateGoalTaskDialog}
+          openCreateTaskToSprintGoalDialog={openCreateTaskToSprintGoalDialog}
+          handleCreateGoalTask={handleCreateGoalTask}
+          loadingCreateGoalTask={loadingCreateGoalTask}
+          handleEditGoalTask={handleEditGoalTask}
+          loadingUpdateGoalTask={loadingUpdateGoalTask}
+          openDeleteGoalTaskDialog={openDeleteGoalTaskDialog}
+          setOpenDeleteGoalTaskDialog={setOpenDeleteGoalTaskDialog}
+          openEditGoalTaskDialog={openEditGoalTaskDialog}
+          setOpenEditGoalTaskDialog={setOpenEditGoalTaskDialog}
+          loadingDeleteGoalTask={loadingDeleteGoalTask}
+          handleDeleteGoalTask={handleDeleteGoalTask}
+          selectedGoalTask={selectedGoalTask}
+          setSelectedGoalTask={setSelectedGoalTask}
         />
       </LayoutRoot>
     </LayoutWrapper>

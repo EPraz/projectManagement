@@ -12,7 +12,6 @@ import {
 import { SprintService } from './sprint.service';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
 import { Sprint } from '@prisma/client';
-// import { GetAllSprintsDto } from 'src/dto/getAll/GetAllSprintsDto';
 
 @Controller('sprints')
 export class SprintController {
@@ -32,17 +31,20 @@ export class SprintController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<Sprint> {
     return await this.sprintService.findOne(id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() request: UpdateSprintDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() request: UpdateSprintDto,
+  ): Promise<Sprint> {
     return await this.sprintService.update({ ...request, id });
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: string): Promise<boolean> {
     return await this.sprintService.delete(id);
   }
 }

@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { Task } from "../types";
+import { Task } from "../../types";
 
 export const editTaskSchema: yup.ObjectSchema<Partial<Task>> = yup.object({
   id: yup.number().required("Task ID is required"),

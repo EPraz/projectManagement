@@ -1,17 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  BulkUpdateTicketsDto,
-  CreateTicketDto,
-  GetAllTicketsDto,
-  UpdateTicketDto,
-} from 'src/dto';
+import { CreateTicketDto, GetAllTicketsDto, UpdateTicketDto } from 'src/dto';
 import { Ticket } from '@prisma/client';
 import {
   getNewStatus,
   handlePrismaError,
   validateFeatureOrSprint,
 } from 'src/helper';
+import { TICKET_INCLUDE } from 'src/constants';
 
 @Injectable()
 export class TicketService {
@@ -57,16 +53,7 @@ export class TicketService {
                 }
               : undefined,
           },
-          include: {
-            _count: true,
-            status: true,
-            tasks: true,
-            assignedUser: true,
-            blockedTickets: true,
-            blockingTicket: true,
-            sprint: true,
-            tags: true,
-          },
+          include: TICKET_INCLUDE,
         });
       });
     } catch (error) {
@@ -87,22 +74,7 @@ export class TicketService {
           ...(request.featureId && { featureId: request.featureId }),
           ...(request.sprintId && { sprintId: request.sprintId }),
         },
-        include: {
-          status: true,
-          _count: true,
-          tasks: {
-            include: {
-              status: true,
-            },
-          },
-          sprint: true,
-          assignedUser: true,
-          blockedTickets: true,
-          blockingTicket: true,
-          feature: true,
-          project: true,
-          tags: true,
-        },
+        include: TICKET_INCLUDE,
         orderBy: {
           order: 'asc',
         },
@@ -116,22 +88,7 @@ export class TicketService {
     try {
       const ticket = await this.prisma.ticket.findUnique({
         where: { id },
-        include: {
-          _count: true,
-          tasks: {
-            include: {
-              status: true,
-            },
-          },
-          status: true,
-          sprint: true,
-          assignedUser: true,
-          blockedTickets: true,
-          blockingTicket: true,
-          feature: true,
-          project: true,
-          tags: true,
-        },
+        include: TICKET_INCLUDE,
       });
 
       if (!ticket) throw new NotFoundException(`Ticket #${id} not found`);
@@ -164,17 +121,7 @@ export class TicketService {
               }
             : undefined,
         },
-        include: {
-          status: true,
-          tasks: true,
-          sprint: true,
-          assignedUser: true,
-          blockedTickets: true,
-          blockingTicket: true,
-          feature: true,
-          project: true,
-          tags: true,
-        },
+        include: TICKET_INCLUDE,
       });
     } catch (error) {
       handlePrismaError(error);

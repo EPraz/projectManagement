@@ -12,11 +12,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
-import {
-  BulkUpdateTicketsDto,
-  CreateTicketDto,
-  UpdateTicketDto,
-} from 'src/dto';
+import { CreateTicketDto, UpdateTicketDto } from 'src/dto';
 import { TicketService } from './ticket.service';
 
 @Controller('tickets')

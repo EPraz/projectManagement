@@ -5,6 +5,7 @@ import {
   defaultFeatureStatuses,
   defaultTaskStatuses,
   defaultTicketStatuses,
+  PROJECT_INCLUDE,
 } from 'src/constants';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
 import { checkDuplicateTitle, handlePrismaError } from 'src/helper';
@@ -59,35 +60,7 @@ export class ProjectService {
         // Retornar el Proyecto con los Status creados
         return prisma.project.findUnique({
           where: { id: newProject.id },
-          include: {
-            _count: true,
-            epics: {
-              include: {
-                _count: true,
-                features: true,
-                status: true,
-              },
-            },
-            users: true,
-            sprints: {
-              include: {
-                tickets: {
-                  include: {
-                    status: true,
-                    tasks: {
-                      include: {
-                        status: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-            ticketStatuses: true,
-            taskStatuses: true,
-            epicStatuses: true,
-            featureStatuses: true,
-          },
+          include: PROJECT_INCLUDE,
         });
       });
     } catch (error: unknown) {
@@ -99,35 +72,7 @@ export class ProjectService {
   async findAll(): Promise<Project[]> {
     try {
       return await this.prisma.project.findMany({
-        include: {
-          _count: true,
-          epics: {
-            include: {
-              _count: true,
-              features: true,
-              status: true,
-            },
-          },
-          users: true,
-          sprints: {
-            include: {
-              tickets: {
-                include: {
-                  status: true,
-                  tasks: {
-                    include: {
-                      status: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          ticketStatuses: true,
-          taskStatuses: true,
-          epicStatuses: true,
-          featureStatuses: true,
-        },
+        include: PROJECT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -139,45 +84,7 @@ export class ProjectService {
     try {
       const project = await this.prisma.project.findUnique({
         where: { id },
-        include: {
-          _count: true,
-          epics: {
-            include: {
-              _count: true,
-              features: true,
-              status: true,
-            },
-          },
-          users: true,
-          sprints: {
-            include: {
-              tickets: {
-                include: {
-                  status: true,
-                  tasks: {
-                    include: {
-                      status: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          tickets: {
-            include: {
-              status: true,
-              tasks: {
-                include: {
-                  status: true,
-                },
-              },
-            },
-          },
-          ticketStatuses: true,
-          taskStatuses: true,
-          epicStatuses: true,
-          featureStatuses: true,
-        },
+        include: PROJECT_INCLUDE,
       });
 
       if (!project) throw new NotFoundException(`Project #${id} not found!`);
@@ -204,35 +111,7 @@ export class ProjectService {
       return await this.prisma.project.update({
         where: { id: request.id },
         data: { ...request },
-        include: {
-          _count: true,
-          epics: {
-            include: {
-              _count: true,
-              features: true,
-              status: true,
-            },
-          },
-          users: true,
-          sprints: {
-            include: {
-              tickets: {
-                include: {
-                  status: true,
-                  tasks: {
-                    include: {
-                      status: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          ticketStatuses: true,
-          taskStatuses: true,
-          epicStatuses: true,
-          featureStatuses: true,
-        },
+        include: PROJECT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);

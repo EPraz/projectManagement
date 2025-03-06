@@ -54,7 +54,7 @@ const SprintSelector = () => {
             return (
               <SprintMenuItem
                 {...props}
-                key="new-sprint"
+                key={option.id}
                 className="new-sprint"
                 onClick={(e) => {
                   e.stopPropagation(); // Evita seleccionar la opción de "New Sprint"
@@ -70,7 +70,7 @@ const SprintSelector = () => {
           }
 
           return (
-            <SprintMenuItem {...props} key={option.id}>
+            <SprintMenuItem {...props} key={`${option.id}_${option.name}`}>
               <SprintNameContainer>{option.name}</SprintNameContainer>
               {"projectId" in option && (
                 <DeleteButton

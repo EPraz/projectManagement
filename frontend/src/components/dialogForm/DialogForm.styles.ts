@@ -5,9 +5,11 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Box,
+  Typography,
+  styled,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
-import styled from "styled-components";
 
 export const StyledDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
@@ -57,4 +59,24 @@ export const StyledDatePicker = styled(DatePicker)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
     borderRadius: theme.shape.borderRadius,
   },
+}));
+
+export const FormFieldContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing(0.5),
+  width: "100%",
+}));
+
+export const FieldLabel = styled(Typography)(({ theme }) => ({
+  fontSize: "0.875rem",
+  fontWeight: 500,
+  color: theme.palette.text.primary,
+  marginBottom: theme.spacing(0.5),
+}));
+
+export const FieldError = styled(Typography)(({ theme }) => ({
+  fontSize: "0.75rem",
+  color: theme.palette.error.main,
+  marginTop: theme.spacing(0.5),
 }));

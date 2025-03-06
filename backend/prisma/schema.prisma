@@ -123,15 +123,16 @@ model Task {
 }
 
 model Sprint {
-  id        String   @id @default(uuid())
-  name      String
-  startDate DateTime
-  endDate   DateTime
-  projectId String
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tickets   Ticket[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String       @id @default(uuid())
+  name       String
+  startDate  DateTime
+  endDate    DateTime
+  projectId  String
+  project    Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tickets    Ticket[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  sprintGoal SprintGoal[]
 }
 
 ///////////////////////////////////////////////////////
@@ -207,6 +208,27 @@ model Tag {
   tickets Ticket[]
 }
 
+model SprintGoal {
+  id          String     @id @default(uuid())
+  sprintId    String
+  sprint      Sprint     @relation(fields: [sprintId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  title       String
+  description String?
+  progress    Int        @default(0) // Porcentaje de progreso
+  goalsStatus GoalStatus @default(IN_PROGRESS)
+  goalTask    GoalTask[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model GoalTask {
+  id        String     @id @default(uuid())
+  goalId    String
+  goal      SprintGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean    @default(false)
+}
+
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
@@ -239,4 +261,10 @@ enum TicketPriority {
   MEDIUM
   HIGH
   CRITICAL
+}
+
+enum GoalStatus {
+  COMPLETED
+  IN_PROGRESS
+  AT_RISK
 }

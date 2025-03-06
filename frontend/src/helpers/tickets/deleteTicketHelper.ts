@@ -1,32 +1,24 @@
 import { Sprint, Ticket } from "../../types";
 
-//  Delete Ticket Handler
 export const deleteTicketHandler =
   (
     deleteTicket: (data: Partial<Ticket>) => Promise<boolean>,
     setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
     localTickets: Ticket[],
-    originalTickets: Ticket[],
     setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (data: Partial<Ticket>) => {
-    // Actualización optimista
-    const updatedTickets = localTickets.filter((t) => t.id !== data.id);
-    setLocalTickets(updatedTickets);
+    const success = await deleteTicket(data);
 
-    // Llamada al Backend
-    const success = await deleteTicket({
-      ...data,
-      updatedBy: "xana@xana.com",
-    });
-
-    // Actualización final basada en la respuesta del backend
-    if (!success) {
-      setLocalTickets(originalTickets); // Revertir en caso de error
+    if (success) {
+      const updatedTickets = localTickets.filter((t) => t.id !== data.id);
+      setLocalTickets(updatedTickets);
       setSprint((prev) => {
         if (!prev) return prev;
-        return { ...prev, tickets: originalTickets };
+        return {
+          ...prev,
+          tickets: prev.tickets.filter((ticket) => ticket.id !== data.id),
+        };
       });
     }
-    return success;
   };

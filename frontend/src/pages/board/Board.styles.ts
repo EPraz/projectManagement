@@ -72,7 +72,6 @@ export const TabsWrapper = styled(Box)(({ theme }) => ({
   alignItems: "center",
   padding: theme.spacing(1, 2),
   gap: theme.spacing(2),
-  backgroundColor: theme.palette.grey[50],
 }));
 
 export const TabButton = styled(Box, {

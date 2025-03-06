@@ -2,11 +2,10 @@ import { Sprint, Ticket } from "../models";
 
 export interface SprintContextProps {
   sprint: Sprint | null;
-  listOfSprints: Sprint[] | null;
+  listOfSprints: Sprint[];
   tickets: Ticket[];
-  loadingTickets: boolean;
 
   setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>;
-  loadSprints: () => Promise<void>;
-  loadTicketsBySprint: (id?: string) => Promise<void>;
+  updateSprintInState: (updatedSprint: Sprint | null) => void;
+  removeSprintFromState: (sprintId: string) => void;
 }

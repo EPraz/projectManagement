@@ -1,4 +1,12 @@
-import { Sprint, Task, TaskStatus, Ticket, TicketStatus } from "../models";
+import {
+  GoalTask,
+  Sprint,
+  SprintGoal,
+  Task,
+  TaskStatus,
+  Ticket,
+  TicketStatus,
+} from "../models";
 
 export interface DialogsContainerProps {
   //Tasks
@@ -6,7 +14,7 @@ export interface DialogsContainerProps {
   setOpenTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   openEditTaskDialog: boolean;
   handleCreateTask: (data: Partial<Task>) => void;
-  handleDeleteTask: (data: Partial<Task>) => Promise<boolean | undefined>;
+  handleDeleteTask: (data: Partial<Task>) => Promise<void>;
   loadingPostTasks: boolean;
   setOpenEditTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleEditTask: (data: Partial<Task>) => void;
@@ -26,7 +34,7 @@ export interface DialogsContainerProps {
   setOpenDeleteTicketDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleCreateTicket: (data: Partial<Ticket>) => void;
   handleEditTicket: (data: Partial<Ticket>) => void;
-  handleDeleteTicket: (data: Partial<Ticket>) => Promise<boolean | undefined>;
+  handleDeleteTicket: (data: Partial<Ticket>) => Promise<void>;
   loadingPostTickets: boolean;
   loadingUpdateTickets: boolean;
   loadingDeleteTicket: boolean;
@@ -43,4 +51,37 @@ export interface DialogsContainerProps {
   selectedSprint: Sprint | null;
   loadingCreateSprint: boolean;
   loadingDeleteSprint: boolean;
+
+  // Local States -> SprintGoal -> Goal Board
+  openCreateSprintGoalDialog: boolean;
+  loadingCreateSprintGoal: boolean;
+  handleCreateSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  setOpenCreateSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedSprintGoal: SprintGoal | null;
+  openDeleteSprintGoalDialog: boolean;
+  setOpenDeleteSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedSprintGoal: React.Dispatch<
+    React.SetStateAction<SprintGoal | null>
+  >;
+  handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  loadingDeleteSprintGoal: boolean;
+  loadingUpdateSprintGoal: boolean;
+  openEditSprintGoalDialog: boolean;
+  setOpenEditSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
+
+  openCreateTaskToSprintGoalDialog: boolean;
+  setOpenCreateGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  handleCreateGoalTask: (data: Partial<GoalTask>) => Promise<void>;
+  loadingCreateGoalTask: boolean;
+  loadingUpdateGoalTask: boolean;
+  handleEditGoalTask: (data: Partial<GoalTask>) => Promise<void>;
+  openEditGoalTaskDialog: boolean;
+  setOpenEditGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  openDeleteGoalTaskDialog: boolean;
+  setOpenDeleteGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  loadingDeleteGoalTask: boolean;
+  handleDeleteGoalTask: (goalTask: Partial<GoalTask>) => Promise<void>;
+  selectedGoalTask: GoalTask | null;
+  setSelectedGoalTask: React.Dispatch<React.SetStateAction<GoalTask | null>>;
 }

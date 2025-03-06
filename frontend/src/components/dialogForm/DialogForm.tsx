@@ -1,14 +1,25 @@
-import { TextField, Button, Box, Typography, Tooltip } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  Tooltip,
+  MenuItem,
+  Select,
+} from "@mui/material";
 import { useForm, Controller, type Path } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import { DialogFormProps } from "../../types";
+import type { DialogFormProps } from "../../types";
 import {
   CloseButton,
   DeleteButton,
   DialogHeader,
+  FieldError,
+  FieldLabel,
+  FormFieldContainer,
   StyledDatePicker,
   StyledDialog,
   StyledDialogActions,
@@ -24,6 +35,7 @@ const DialogForm = <T extends Record<string, any>>({
   defaultValues,
   title,
   disabled,
+  fieldConfig = {}, // Default empty object to avoid undefined errors
 }: DialogFormProps<T>) => {
   const {
     control,
@@ -46,11 +58,123 @@ const DialogForm = <T extends Record<string, any>>({
     reset();
     onDelete && onDelete();
   };
+  //  Función para obtener el campo correcto basado en `fieldConfig`
+  const getFieldComponent = (key: Path<T>) => {
+    const fieldOptions = fieldConfig[key];
+    const label = fieldOptions?.label || key.replace(/([A-Z])/g, " $1").trim();
+    const isSelectField = fieldOptions?.type === "select";
+    const isDateField =
+      fieldOptions?.label === "startDate" || fieldOptions?.label === "endDate";
+    const fieldName = key;
+
+    if (isDateField) {
+      return (
+        <FormFieldContainer key={key}>
+          <FieldLabel>{label}</FieldLabel>
+          <Controller
+            name={fieldName}
+            control={control}
+            render={({ field }) => (
+              <StyledDatePicker
+                value={field.value ? new Date(field.value) : null}
+                onChange={(newValue) =>
+                  field.onChange(newValue ? newValue.toISOString() : null)
+                }
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    error: !!errors[fieldName],
+                    size: "small",
+                    placeholder: fieldOptions?.placeholder || "",
+                    InputLabelProps: { shrink: false },
+                    variant: "outlined",
+                  },
+                }}
+              />
+            )}
+          />
+          {errors[fieldName] && (
+            <FieldError>{errors[fieldName]?.message as string}</FieldError>
+          )}
+        </FormFieldContainer>
+      );
+    }
+
+    if (isSelectField) {
+      return (
+        <FormFieldContainer key={key}>
+          <FieldLabel>{label}</FieldLabel>
+          <Controller
+            name={fieldName}
+            control={control}
+            render={({ field }) => (
+              <Select
+                {...field}
+                fullWidth
+                size="small"
+                error={!!errors[fieldName]}
+                disabled={disabled || fieldOptions?.disabled}
+                displayEmpty={fieldOptions?.placeholder !== undefined}
+                sx={{
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderRadius: 1,
+                  },
+                }}
+              >
+                {fieldOptions?.placeholder && (
+                  <MenuItem value="" disabled>
+                    {fieldOptions.placeholder}
+                  </MenuItem>
+                )}
+                {fieldOptions?.options?.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            )}
+          />
+          {errors[fieldName] && (
+            <FieldError>{errors[fieldName]?.message as string}</FieldError>
+          )}
+        </FormFieldContainer>
+      );
+    }
+
+    return (
+      <FormFieldContainer key={key}>
+        <FieldLabel>{label}</FieldLabel>
+        <TextField
+          {...register(fieldName)}
+          fullWidth
+          error={!!errors[fieldName]}
+          disabled={disabled || fieldOptions?.disabled}
+          size="small"
+          placeholder={fieldOptions?.placeholder || ""}
+          multiline={fieldOptions?.multiline}
+          rows={fieldOptions?.rows || 1}
+          type={fieldOptions?.type || "text"}
+          InputLabelProps={{ shrink: false }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              display: "none",
+            },
+          }}
+        />
+        {errors[fieldName] && (
+          <FieldError>{errors[fieldName]?.message as string}</FieldError>
+        )}
+      </FormFieldContainer>
+    );
+  };
 
   return (
     <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogHeader>
-        <Typography variant="h6" component="h2">
+        <Typography fontWeight={"600"} textTransform={"uppercase"}>
           {title}
         </Typography>
         <Tooltip title="Close" arrow>
@@ -66,62 +190,9 @@ const DialogForm = <T extends Record<string, any>>({
           noValidate
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
-          {Object.entries(defaultValues).map(([key]) => {
-            const fieldName = key as Path<T>;
-            const label = key
-              .split(/(?=[A-Z])|_/)
-              .map(
-                (word) =>
-                  word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-              )
-              .join(" ");
-
-            if (fieldName === "startDate" || fieldName === "endDate") {
-              return (
-                <Controller
-                  key={key}
-                  name={fieldName}
-                  control={control}
-                  render={({ field }) => (
-                    <StyledDatePicker
-                      label={label}
-                      value={field.value ? new Date(field.value) : null}
-                      onChange={(newValue) =>
-                        field.onChange(newValue ? newValue.toISOString() : null)
-                      }
-                      slotProps={{
-                        textField: {
-                          fullWidth: true,
-                          error: !!errors[fieldName],
-                          helperText:
-                            (errors[fieldName]?.message as string) || "",
-                          size: "small",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              );
-            }
-
-            return (
-              <TextField
-                key={key}
-                label={label}
-                {...register(fieldName)}
-                fullWidth
-                error={!!errors[fieldName]}
-                helperText={(errors[fieldName]?.message as string) || ""}
-                disabled={disabled}
-                size="small"
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    borderRadius: 1,
-                  },
-                }}
-              />
-            );
-          })}
+          {Object.keys(defaultValues).map((key) =>
+            getFieldComponent(key as Path<T>)
+          )}
         </Box>
       </StyledDialogContent>
 
@@ -165,9 +236,7 @@ const DialogForm = <T extends Record<string, any>>({
                   variant="contained"
                   onClick={handleSubmit(onSubmit)}
                   disabled={disabled || !isDirty}
-                  sx={{
-                    minWidth: 100,
-                  }}
+                  sx={{ minWidth: 100 }}
                 >
                   Save
                 </Button>

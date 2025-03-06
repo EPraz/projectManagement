@@ -4,4 +4,5 @@ export * from './UpdateFeatureDto';
 export * from './UpdateSprintDto';
 export * from './UpdateTicketDto';
 export * from './UpdateTaskDto';
-export * from './BulkUpdateDto';
+export * from './UpdateGoalTaskDto';
+export * from './UpdateSprintGoalDto';

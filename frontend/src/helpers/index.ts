@@ -6,3 +6,5 @@ export * from "./tickets";
 export * from "./onDragEnd";
 export * from "./getTypeIcon";
 export * from "./sprints";
+export * from "./sprintGoals";
+export * from "./goalTask";

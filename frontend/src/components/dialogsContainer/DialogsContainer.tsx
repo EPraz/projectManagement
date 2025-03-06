@@ -5,17 +5,22 @@ import {
   DialogForm,
   EditDialogForm,
   Portal,
-} from "../../../components";
+} from "..";
 import {
   editTaskSchema,
   editTicketSchema,
   createSprintSchema,
   createTaskSchema,
   createTicketSchema,
-} from "../../../validations";
-import { TicketPriority, TicketType } from "../../../constants";
-import { DialogsContainerProps } from "../../../types";
+  createSprintGoalSchema,
+  editSprintGoalSchema,
+  createGoalTaskSchema,
+  editGoalTaskSchema,
+} from "../../validations";
+import { SprintGoalStatus, TicketPriority, TicketType } from "../../constants";
+import { DialogsContainerProps } from "../../types";
 import { useSearchParams } from "react-router-dom";
+import { formatStatusName } from "../../helpers";
 
 const DialogsContainer: React.FC<DialogsContainerProps> = ({
   //Tasks
@@ -61,6 +66,34 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   selectedSprint,
   loadingCreateSprint,
   loadingDeleteSprint,
+
+  // Local States -> SprintGoal -> Goal Board
+  openCreateSprintGoalDialog,
+  setOpenCreateSprintGoalDialog,
+  handleCreateSprintGoal,
+  loadingCreateSprintGoal,
+  selectedSprintGoal,
+  openDeleteSprintGoalDialog,
+  setOpenDeleteSprintGoalDialog,
+  setSelectedSprintGoal,
+  handleDeleteSprintGoal,
+  setOpenEditSprintGoalDialog,
+  openEditSprintGoalDialog,
+  handleEditSprintGoal,
+  loadingUpdateSprintGoal,
+  openCreateTaskToSprintGoalDialog,
+  setOpenCreateGoalTaskDialog,
+  handleCreateGoalTask,
+  loadingCreateGoalTask,
+  loadingUpdateGoalTask,
+  openEditGoalTaskDialog,
+  selectedGoalTask,
+  handleEditGoalTask,
+  setOpenEditGoalTaskDialog,
+  openDeleteGoalTaskDialog,
+  setSelectedGoalTask,
+  setOpenDeleteGoalTaskDialog,
+  handleDeleteGoalTask,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -105,6 +138,35 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           schema={createSprintSchema}
           disabled={loadingCreateSprint || loadingDeleteSprint}
           defaultValues={{ name: "", startDate: null, endDate: null }}
+        />
+      )}
+
+      {openCreateSprintGoalDialog && (
+        <DialogForm
+          open={openCreateSprintGoalDialog}
+          title="Add Goal"
+          onClose={() => setOpenCreateSprintGoalDialog(false)}
+          onSubmit={handleCreateSprintGoal}
+          schema={createSprintGoalSchema}
+          disabled={loadingCreateSprintGoal}
+          defaultValues={{
+            title: "",
+            description: "",
+          }}
+        />
+      )}
+
+      {openCreateTaskToSprintGoalDialog && selectedSprintGoal && (
+        <DialogForm
+          open={openCreateTaskToSprintGoalDialog}
+          title={`Add task for ${selectedSprintGoal?.title}`}
+          onClose={() => setOpenCreateGoalTaskDialog(false)}
+          onSubmit={handleCreateGoalTask}
+          schema={createGoalTaskSchema}
+          disabled={loadingCreateGoalTask}
+          defaultValues={{
+            title: "",
+          }}
         />
       )}
 
@@ -231,6 +293,62 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         />
       )}
 
+      {selectedSprintGoal && openEditSprintGoalDialog && (
+        <DialogForm
+          open={openEditSprintGoalDialog}
+          title="Edit Goal"
+          onClose={() => {
+            setOpenEditSprintGoalDialog(false);
+            setSelectedSprintGoal(null);
+          }}
+          onSubmit={handleEditSprintGoal}
+          schema={editSprintGoalSchema}
+          disabled={loadingUpdateSprintGoal}
+          // defaultValues={selectedSprintGoal}
+          defaultValues={{
+            title: selectedSprintGoal.title,
+            description: selectedSprintGoal.description || "",
+            goalsStatus: selectedSprintGoal.goalsStatus,
+          }}
+          fieldConfig={{
+            goalsStatus: {
+              type: "select",
+              options: [
+                {
+                  value: SprintGoalStatus.IN_PROGRESS,
+                  label: formatStatusName(SprintGoalStatus.IN_PROGRESS),
+                },
+                {
+                  value: SprintGoalStatus.COMPLETED,
+                  label: formatStatusName(SprintGoalStatus.COMPLETED),
+                },
+                {
+                  value: SprintGoalStatus.AT_RISK,
+                  label: formatStatusName(SprintGoalStatus.AT_RISK),
+                },
+              ],
+            },
+          }}
+        />
+      )}
+
+      {openEditGoalTaskDialog && selectedGoalTask && (
+        <DialogForm
+          open={openEditGoalTaskDialog}
+          title={`Edit task ${selectedGoalTask?.title}`}
+          onClose={() => {
+            setSelectedGoalTask(null);
+            setOpenEditGoalTaskDialog(false);
+          }}
+          onSubmit={handleEditGoalTask}
+          schema={editGoalTaskSchema}
+          disabled={loadingUpdateGoalTask}
+          defaultValues={{
+            title: selectedGoalTask.title,
+          }}
+        />
+      )}
+
       {/* Delete Section */}
 
       {selectedTicket && openDeleteTicketDialog && (
@@ -250,12 +368,36 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           itemName={selectedTask.title}
         />
       )}
+
       {selectedSprint && openDeleteSprintDialog && (
         <DeleteConfirmationModal
           open={openDeleteSprintDialog}
           onClose={() => setOpenDeleteSprintDialog(false)}
           onConfirm={() => handleDeleteSprint(selectedSprint)}
           itemName={selectedSprint.name}
+        />
+      )}
+
+      {selectedSprintGoal && openDeleteSprintGoalDialog && (
+        <DeleteConfirmationModal
+          open={openDeleteSprintGoalDialog}
+          onClose={() => {
+            setOpenDeleteSprintGoalDialog(false);
+            setSelectedSprintGoal(null);
+          }}
+          onConfirm={() => handleDeleteSprintGoal(selectedSprintGoal)}
+          itemName={selectedSprintGoal.title}
+        />
+      )}
+      {selectedGoalTask && openDeleteGoalTaskDialog && (
+        <DeleteConfirmationModal
+          open={openDeleteGoalTaskDialog}
+          onClose={() => {
+            setOpenDeleteGoalTaskDialog(false);
+            setSelectedGoalTask(null);
+          }}
+          onConfirm={() => handleDeleteGoalTask(selectedGoalTask)}
+          itemName={selectedGoalTask.title}
         />
       )}
     </Portal>

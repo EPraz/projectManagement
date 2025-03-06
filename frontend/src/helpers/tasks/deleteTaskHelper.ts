@@ -1,23 +1,27 @@
-import { Task, Ticket } from "../../types";
+import { Sprint, Task, Ticket } from "../../types";
 import { removeTaskFromTickets } from "../utilityTicketsTasksHelpers";
 
-//  Delete Task Handler
 export const deleteTaskHandler =
   (
     deleteTask: (task: Partial<Task>) => Promise<boolean>,
     setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
     localTickets: Ticket[],
-    originalTickets: Ticket[]
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (task: Partial<Task>) => {
     if (!task.id) return;
-    const updatedTickets = removeTaskFromTickets(localTickets, task?.id);
-    setLocalTickets(updatedTickets);
-
     const success = await deleteTask(task);
 
-    if (!success) {
-      setLocalTickets(originalTickets);
+    if (success) {
+      const updatedTickets = removeTaskFromTickets(localTickets, task.id);
+      setLocalTickets(updatedTickets);
+      setSprint((prev) => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          tickets: updatedTickets,
+        };
+      });
     }
-    return success;
   };

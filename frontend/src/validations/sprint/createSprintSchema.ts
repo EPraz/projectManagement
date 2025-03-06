@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { CreateSprintFormData } from "../types";
+import { CreateSprintFormData } from "../../types";
 
 export const createSprintSchema: yup.ObjectSchema<CreateSprintFormData> =
   yup.object({

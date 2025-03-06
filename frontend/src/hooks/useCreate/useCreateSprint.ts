@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useApi, useSnackbar } from "../../context";
-import { useSprint } from "../../context/sprintContext";
 import { Sprint } from "../../types";
+
+//verify if still working after refactor
 
 export const useCreateSprint = () => {
   const { apiUrl } = useApi();
-  const { loadSprints } = useSprint();
   const [loading, setLoading] = useState(false);
   const { showSnackbarMessage } = useSnackbar();
 
   const createSprint = async (data: Partial<Sprint>) => {
     setLoading(true);
     try {
-      console.log("ins");
       const response = await fetch(`${apiUrl}/sprints`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -24,11 +23,9 @@ export const useCreateSprint = () => {
           endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         }),
       });
-      console.log(response);
       if (!response.ok) throw new Error("Failed to create sprint");
 
       const sprint = await response.json();
-      await loadSprints();
       showSnackbarMessage("Sprint created successfully", "success");
       return sprint;
     } catch (error) {

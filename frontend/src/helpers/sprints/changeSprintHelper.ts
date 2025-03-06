@@ -5,14 +5,12 @@ export const changeSprintHandler =
   (
     listOfSprints: Sprint[] | null,
     sprint: Sprint | null,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    loadTicketsBySprint: (sprintId: string) => Promise<void>
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (newSprintId: string) => {
     const newSprint = listOfSprints?.find((s) => s.id === newSprintId);
     if (newSprint && newSprint.id !== sprint?.id) {
       setSprint(newSprint);
-      await loadTicketsBySprint(newSprint.id);
       localStorage.setItem("selectedSprintId", newSprint.id);
     }
   };

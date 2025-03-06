@@ -32,7 +32,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
     <TaskPaper
       ref={setNodeRef}
       elevation={0}
-      isDragging={isDragging}
+      isdragging={isDragging}
       sx={{
         transform: transform
           ? `translate(${transform.x}px, ${transform.y}px)`

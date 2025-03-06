@@ -1,5 +1,13 @@
 import { DragEndEvent } from "@dnd-kit/core";
-import { Sprint, Task, TaskStatus, Ticket, User } from "../models";
+import {
+  GoalTask,
+  Sprint,
+  SprintGoal,
+  Task,
+  TaskStatus,
+  Ticket,
+  User,
+} from "../models";
 import { useProject, useSprint } from "../../context";
 import {
   useBulkUpdateTickets,
@@ -124,6 +132,32 @@ export interface LayoutContextProps {
   loadingCreateSprint: boolean;
   loadingDeleteSprint: boolean;
 
+  // Local States -> SprintGoal -> Goal Board
+  localSprintGoals: SprintGoal[];
+  setLocalSprintGoals: React.Dispatch<React.SetStateAction<SprintGoal[]>>;
+  selectedSprintGoal: SprintGoal | null;
+  setSelectedSprintGoal: React.Dispatch<
+    React.SetStateAction<SprintGoal | null>
+  >;
+  selectedGoalTask: GoalTask | null;
+  setSelectedGoalTask: React.Dispatch<React.SetStateAction<GoalTask | null>>;
+  openCreateSprintGoalDialog: boolean;
+  setOpenCreateSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  openEditSprintGoalDialog: boolean;
+  setOpenEditSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  openDeleteSprintGoalDialog: boolean;
+  setOpenDeleteSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  openCreateTaskToSprintGoalDialog: boolean;
+  setOpenCreateGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  openDeleteGoalTaskDialog: boolean;
+  setOpenDeleteGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  loadingCreateSprintGoal: boolean;
+  loadingDeleteSprintGoal: boolean;
+  loadingUpdateSprintGoal: boolean;
+
+  openEditGoalTaskDialog: boolean;
+  setOpenEditGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
+
   // Functions
   // Functions -> Tickets
   handleCreateTicket: (data: Partial<Ticket>) => Promise<void>;
@@ -143,4 +177,12 @@ export interface LayoutContextProps {
   handleEditTask: (data: Partial<Task>) => Promise<void>;
   handleDeleteTask: (task: Partial<Task>) => Promise<boolean | undefined>;
   handleOnDragEndTask: (event: DragEndEvent) => Promise<void>;
+
+  // Functions -> Goal Board -> Sprint Goal
+  handleCreateSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleToggleGoalTaskCompletion: (
+    goalTask: Partial<GoalTask>
+  ) => Promise<void>;
 }

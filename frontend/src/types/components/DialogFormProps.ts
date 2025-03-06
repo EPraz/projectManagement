@@ -10,4 +10,21 @@ export interface DialogFormProps<T extends Record<string, any>> {
   defaultValues: DefaultValues<T>;
   title: string;
   disabled: boolean;
+  fieldConfig?: Record<string, FieldConfig>;
+}
+
+export interface SelectOption {
+  value: string | number;
+  label: string;
+}
+
+export interface FieldConfig {
+  label?: string;
+  placeholder?: string;
+  type?: "text" | "number" | "email" | "password" | "select" | "textarea";
+  options?: SelectOption[];
+  disabled?: boolean;
+  multiline?: boolean;
+  rows?: number;
+  required?: boolean;
 }

@@ -33,6 +33,7 @@ const Board = () => {
     handleChangeTabValue,
     selectedTasksStatuses,
     setSelectedTasksStatuses,
+    setOpenCreateSprintGoalDialog,
   } = useOutletContext<LayoutContextProps>();
 
   const isDisabled = !listOfSprints?.length;
@@ -59,28 +60,53 @@ const Board = () => {
             sx={{ borderColor: "#888888" }}
           />
 
-          <ActionContainer>
-            <AddButtonWrapper>
-              <Tooltip
-                title={isDisabled ? "You must create a Sprint first" : ""}
-                arrow
-                placement="bottom"
-              >
-                <span>
-                  <AddButton
-                    onClick={() =>
-                      !isDisabled && setOpenCreateTicketDialog(true)
-                    }
-                    disabled={isDisabled}
-                  >
-                    Add New Item
-                    <AddIcon fontSize="small" />
-                  </AddButton>
-                </span>
-              </Tooltip>
-            </AddButtonWrapper>
-          </ActionContainer>
+          {tabValue === 0 && (
+            <ActionContainer>
+              <AddButtonWrapper>
+                <Tooltip
+                  title={isDisabled ? "You must create a Sprint first" : ""}
+                  arrow
+                  placement="bottom"
+                >
+                  <span>
+                    <AddButton
+                      onClick={() =>
+                        !isDisabled && setOpenCreateTicketDialog(true)
+                      }
+                      disabled={isDisabled}
+                    >
+                      Add New Item
+                      <AddIcon fontSize="small" />
+                    </AddButton>
+                  </span>
+                </Tooltip>
+              </AddButtonWrapper>
+            </ActionContainer>
+          )}
 
+          {tabValue === 3 && (
+            <ActionContainer>
+              <AddButtonWrapper>
+                <Tooltip
+                  title={isDisabled ? "You must create a Sprint first" : ""}
+                  arrow
+                  placement="bottom"
+                >
+                  <span>
+                    <AddButton
+                      onClick={() =>
+                        !isDisabled && setOpenCreateSprintGoalDialog(true)
+                      }
+                      disabled={isDisabled}
+                    >
+                      Add New Goal
+                      <AddIcon fontSize="small" />
+                    </AddButton>
+                  </span>
+                </Tooltip>
+              </AddButtonWrapper>
+            </ActionContainer>
+          )}
           <Divider
             orientation="vertical"
             variant="middle"

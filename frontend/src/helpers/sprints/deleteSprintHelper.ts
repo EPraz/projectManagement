@@ -7,6 +7,6 @@ export const deleteSprintHandler =
     setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
   ) =>
   async (data: Partial<Sprint>) => {
-    await deleteSprint(data);
-    setSprint(null);
+    const success = await deleteSprint(data);
+    if (success) setSprint(null);
   };

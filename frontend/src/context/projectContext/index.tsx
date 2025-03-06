@@ -8,23 +8,23 @@ import {
   useMemo,
 } from "react";
 import { useParams } from "react-router-dom";
-import { Project } from "../../types";
+import { Project, Sprint } from "../../types";
 import { useApi } from "../apiContext";
 import { Loading } from "../../components";
 
 const ProjectContext = createContext<{
   project: Project | null;
   loading: boolean;
-}>({
-  project: null,
-  loading: false,
-});
+  listOfSprints: Sprint[];
+  setListOfSprints: React.Dispatch<React.SetStateAction<Sprint[]>>;
+} | null>(null);
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const { id } = useParams();
   const { apiUrl } = useApi();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
+  const [listOfSprints, setListOfSprints] = useState<Sprint[]>([]);
 
   //  Verificar si estamos en una página de proyecto antes de cargar datos
   const isProjectPage = useMemo(
@@ -41,8 +41,9 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         headers: { "Content-Type": "application/json" },
       });
       if (!response.ok) throw new Error("Failed to fetch project");
-      const data = await response.json();
+      const data: Project = await response.json();
       setProject(data);
+      setListOfSprints(data.sprints);
     } catch (error) {
       console.error("Error loading project:", error);
     } finally {
@@ -54,12 +55,26 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
     loadProject();
   }, [loadProject]);
 
+  useEffect(() => {
+    setProject((prev) => {
+      if (!prev) return prev;
+      return { ...prev, sprints: listOfSprints };
+    });
+  }, [listOfSprints]);
+
   const memoizedProject = useMemo(() => project, [project]);
 
   if (loading) return <Loading message="Cargando proyecto..." />;
 
   return (
-    <ProjectContext.Provider value={{ project: memoizedProject, loading }}>
+    <ProjectContext.Provider
+      value={{
+        project: memoizedProject,
+        loading,
+        listOfSprints,
+        setListOfSprints,
+      }}
+    >
       {children}
     </ProjectContext.Provider>
   );

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Sprint } from '@prisma/client';
+import { SPRINT_INCLUDE } from 'src/constants';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
 import { handlePrismaError } from 'src/helper';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -19,19 +20,7 @@ export class SprintService {
 
       return await this.prisma.sprint.create({
         data: { ...request },
-        include: {
-          _count: true,
-          tickets: {
-            include: {
-              tasks: {
-                include: {
-                  status: true,
-                },
-              },
-              status: true,
-            },
-          },
-        },
+        include: SPRINT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -49,19 +38,7 @@ export class SprintService {
       return await this.prisma.sprint.findMany({
         where: { projectId },
         orderBy: { createdAt: 'desc' },
-        include: {
-          _count: true,
-          tickets: {
-            include: {
-              tasks: {
-                include: {
-                  status: true,
-                },
-              },
-              status: true,
-            },
-          },
-        },
+        include: SPRINT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -72,19 +49,7 @@ export class SprintService {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id },
-        include: {
-          _count: true,
-          tickets: {
-            include: {
-              tasks: {
-                include: {
-                  status: true,
-                },
-              },
-              status: true,
-            },
-          },
-        },
+        include: SPRINT_INCLUDE,
       });
 
       if (!sprint) throw new NotFoundException('Sprint not found');
@@ -99,19 +64,7 @@ export class SprintService {
     try {
       const sprint = await this.prisma.sprint.findUnique({
         where: { id: request.id },
-        include: {
-          _count: true,
-          tickets: {
-            include: {
-              tasks: {
-                include: {
-                  status: true,
-                },
-              },
-              status: true,
-            },
-          },
-        },
+        include: SPRINT_INCLUDE,
       });
 
       if (!sprint) throw new NotFoundException('Sprint not found');
@@ -133,19 +86,7 @@ export class SprintService {
             },
           }),
         },
-        include: {
-          _count: true,
-          tickets: {
-            include: {
-              tasks: {
-                include: {
-                  status: true,
-                },
-              },
-              status: true,
-            },
-          },
-        },
+        include: SPRINT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);

@@ -4,17 +4,10 @@ import { TaskCard } from "./DashBoard.styles";
 
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
+import { SprintGoalStatus } from "../../constants";
+import { formatStatusName } from "../../helpers";
 
 const SprintGoalsAndMilestones = ({ sprint }: { sprint?: Sprint | null }) => {
-  // This would typically come from your data model
-  // For now, we'll use dummy data
-  const goals = [
-    { id: 1, title: "Complete user authentication flow", completed: true },
-    { id: 2, title: "Implement dashboard analytics", completed: false },
-    { id: 3, title: "Finalize payment integration", completed: false },
-    { id: 4, title: "Deploy beta version to staging", completed: false },
-  ];
-
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12 }}>
@@ -23,7 +16,7 @@ const SprintGoalsAndMilestones = ({ sprint }: { sprint?: Sprint | null }) => {
             Sprint Goal
           </Typography>
           <Typography variant="body1">
-            {sprint?.name || "Complete core functionality for MVP release"}
+            {sprint?.name || "Sprint name not defined"}
           </Typography>
         </Box>
         <Divider sx={{ mb: 3 }} />
@@ -32,13 +25,20 @@ const SprintGoalsAndMilestones = ({ sprint }: { sprint?: Sprint | null }) => {
         </Typography>
       </Grid>
 
-      {goals.map((goal, index) => (
+      {sprint?.sprintGoal.map((goal, index) => (
         <Grid size={{ xs: 12, md: 6 }} key={`${goal.id}_${index}`}>
           <TaskCard>
             <Avatar
-              sx={{ bgcolor: goal.completed ? "success.main" : "info.main" }}
+              sx={{
+                bgcolor:
+                  goal.goalsStatus == SprintGoalStatus.COMPLETED
+                    ? "success.main"
+                    : goal.goalsStatus == SprintGoalStatus.IN_PROGRESS
+                    ? "info.main"
+                    : "error.main",
+              }}
             >
-              {goal.completed ? (
+              {goal.goalsStatus == SprintGoalStatus.COMPLETED ? (
                 <TaskAltIcon width={20} height={20} />
               ) : (
                 <CrisisAlertIcon width={20} height={20} />
@@ -49,7 +49,7 @@ const SprintGoalsAndMilestones = ({ sprint }: { sprint?: Sprint | null }) => {
                 {goal.title}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {goal.completed ? "Completed" : "In progress"}
+                {formatStatusName(goal.goalsStatus).toLowerCase()}
               </Typography>
             </Box>
           </TaskCard>

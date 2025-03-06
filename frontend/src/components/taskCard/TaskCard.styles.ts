@@ -1,14 +1,14 @@
 import { alpha, Box, Paper, Select, Typography } from "@mui/material";
 import styled from "styled-components";
 
-export const TaskPaper = styled(Paper)<{ isDragging: boolean }>(
-  ({ theme, isDragging }) => ({
+export const TaskPaper = styled(Paper)<{ isdragging: boolean }>(
+  ({ theme, isdragging }) => ({
     position: "relative",
     maxWidth: "200px",
     display: "flex",
     padding: theme.spacing(1.5, 1),
     marginBottom: theme.spacing(1),
-    backgroundColor: isDragging
+    backgroundColor: isdragging
       ? alpha(theme.palette.background.paper, 0.8)
       : theme.palette.background.paper,
     border: `1px solid ${theme.palette.divider}`,

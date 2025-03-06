@@ -13,7 +13,6 @@ export const TopBar = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
   alignItems: "center",
   padding: theme.spacing(1.5, 2),
-  backgroundColor: theme.palette.grey[50],
 }));
 
 export const ProjectTitle = styled(Typography)(({ theme }) => ({

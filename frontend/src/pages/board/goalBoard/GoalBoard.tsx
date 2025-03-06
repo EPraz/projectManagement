@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo } from "react";
 import {
   Box,
   Typography,
@@ -25,205 +25,262 @@ import {
   StyledLinearProgress,
   TaskList,
 } from "./GoalBoard.styles";
+import { useOutletContext } from "react-router-dom";
 
-interface SprintGoal {
-  id: number;
-  title: string;
-  description: string;
-  progress: number;
-  status: "completed" | "in-progress" | "at-risk";
-  tasks: {
-    id: number;
-    title: string;
-    completed: boolean;
-  }[];
-}
-
-const mockData: SprintGoal[] = [
-  {
-    id: 1,
-    title: "Complete User Authentication Flow",
-    description: "Implement secure login, registration, and password recovery",
-    progress: 75,
-    status: "in-progress",
-    tasks: [
-      { id: 1, title: "Implement login form", completed: true },
-      { id: 2, title: "Add password recovery", completed: true },
-      { id: 3, title: "Set up email verification", completed: false },
-      { id: 4, title: "Add social login options", completed: false },
-    ],
-  },
-  {
-    id: 2,
-    title: "Optimize Application Performance",
-    description: "Improve loading times and reduce API response time",
-    progress: 30,
-    status: "at-risk",
-    tasks: [
-      { id: 5, title: "Analyze current performance", completed: true },
-      { id: 6, title: "Implement caching", completed: false },
-      { id: 7, title: "Optimize database queries", completed: false },
-    ],
-  },
-];
-
-const statusConfig = {
-  completed: { color: "success", label: "Completed" },
-  "in-progress": { color: "primary", label: "In Progress" },
-  "at-risk": { color: "error", label: "At Risk" },
-} as const;
+import { GoalTask, LayoutContextProps } from "../../../types";
+import { formatDateRange, statusConfig } from "./GoalBoard.helpers";
 
 const GoalBoard = () => {
-  const [goals, setGoals] = useState<SprintGoal[]>(mockData);
+  const {
+    sprint,
+    setOpenEditSprintGoalDialog,
+    setOpenDeleteSprintGoalDialog,
+    setOpenCreateGoalTaskDialog,
+    setSelectedSprintGoal,
+    localSprintGoals,
+    setOpenEditGoalTaskDialog,
+    setOpenDeleteGoalTaskDialog,
+    setSelectedGoalTask,
+    handleToggleGoalTaskCompletion,
+  } = useOutletContext<LayoutContextProps>();
+
+  const handleEditGoalTask = (task: GoalTask) => {
+    setSelectedGoalTask(task);
+    setOpenEditGoalTaskDialog(true);
+  };
+  const handleDeleteGoalTask = (task: GoalTask) => {
+    setSelectedGoalTask(task);
+    setOpenDeleteGoalTaskDialog(true);
+  };
 
   return (
     <BoardContainer>
       <Header>
-        <Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-            Sprint Goals
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Jun 11 - Jun 29 · Sprint 1
-          </Typography>
-        </Box>
-        <Button
-          startIcon={<AddIcon />}
-          variant="contained"
-          sx={{
-            px: 3,
-            py: 1,
-            borderRadius: 1,
-            textTransform: "none",
-            fontWeight: 500,
-          }}
-        >
-          Add goal
-        </Button>
+        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+          Sprint Goals
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {formatDateRange(sprint)}
+        </Typography>
       </Header>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {goals.map((goal) => (
-          <GoalCard key={goal.id}>
-            <GoalHeader>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  gap: 2,
-                }}
-              >
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                    {goal.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {goal.description}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                  <Chip
-                    label={statusConfig[goal.status].label}
-                    color={statusConfig[goal.status].color as any}
-                    size="small"
-                    sx={{ fontWeight: 500 }}
-                  />
-                  <Tooltip title="Edit goal" arrow>
-                    <ActionButton size="small">
-                      <EditIcon fontSize="small" />
-                    </ActionButton>
-                  </Tooltip>
-                  <Tooltip title="Delete goal" arrow>
-                    <DeleteButton size="small">
-                      <DeleteOutlineIcon fontSize="small" />
-                    </DeleteButton>
-                  </Tooltip>
-                </Box>
-              </Box>
-            </GoalHeader>
-
-            <GoalContent>
-              <GoalProgress>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mb: 1,
-                  }}
-                >
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    fontWeight={500}
+        {localSprintGoals.length > 0 ? (
+          localSprintGoals.map((goal) => {
+            const uiStatus = goal.goalsStatus;
+            return (
+              <GoalCard key={goal.id}>
+                <GoalHeader>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      gap: 2,
+                    }}
                   >
-                    Progress
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    fontWeight={500}
-                  >
-                    {goal.progress}%
-                  </Typography>
-                </Box>
-                <StyledLinearProgress
-                  variant="determinate"
-                  value={goal.progress}
-                  color={statusConfig[goal.status].color as any}
-                />
-              </GoalProgress>
-
-              <TaskList dense>
-                {goal.tasks.map((task) => (
-                  <ListItem
-                    key={task.id}
-                    secondaryAction={
-                      <Tooltip title="Edit task" arrow>
-                        <ActionButton edge="end" size="small">
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                        {goal.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {goal.description}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                      <Chip
+                        label={
+                          statusConfig[uiStatus as keyof typeof statusConfig]
+                            ?.label
+                        }
+                        color={
+                          statusConfig[uiStatus as keyof typeof statusConfig]
+                            ?.color
+                        }
+                        size="small"
+                        sx={{ fontWeight: 500 }}
+                      />
+                      <Tooltip title="Edit goal" arrow>
+                        <ActionButton
+                          size="small"
+                          onClick={() => {
+                            setSelectedSprintGoal(goal);
+                            setOpenEditSprintGoalDialog(true);
+                          }}
+                        >
                           <EditIcon fontSize="small" />
                         </ActionButton>
                       </Tooltip>
-                    }
-                  >
-                    <Tooltip
-                      title={
-                        task.completed
-                          ? "Mark as incomplete"
-                          : "Mark as complete"
-                      }
-                      arrow
-                    >
-                      <ActionButton size="small" sx={{ mr: 1 }}>
-                        {task.completed ? (
-                          <CheckCircleIcon color="success" fontSize="small" />
-                        ) : (
-                          <RadioButtonUncheckedIcon fontSize="small" />
-                        )}
-                      </ActionButton>
-                    </Tooltip>
-                    <ListItemText
-                      primary={task.title}
+                      <Tooltip title="Delete goal" arrow>
+                        <DeleteButton
+                          size="small"
+                          onClick={() => {
+                            setSelectedSprintGoal(goal);
+                            setOpenDeleteSprintGoalDialog(true);
+                          }}
+                        >
+                          <DeleteOutlineIcon fontSize="small" />
+                        </DeleteButton>
+                      </Tooltip>
+                    </Box>
+                  </Box>
+                </GoalHeader>
+
+                <GoalContent>
+                  <GoalProgress>
+                    <Box
                       sx={{
-                        "& .MuiTypography-root": {
-                          textDecoration: task.completed
-                            ? "line-through"
-                            : "none",
-                          color: task.completed
-                            ? "text.secondary"
-                            : "text.primary",
-                          transition: "all 0.2s ease-in-out",
-                        },
+                        display: "flex",
+                        justifyContent: "space-between",
+                        mb: 1,
                       }}
+                    >
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        fontWeight={500}
+                      >
+                        Progress
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        fontWeight={500}
+                      >
+                        {goal.progress}%
+                      </Typography>
+                    </Box>
+                    <StyledLinearProgress
+                      variant="determinate"
+                      value={goal.progress}
+                      color={
+                        statusConfig[uiStatus as keyof typeof statusConfig]
+                          ?.color
+                      }
                     />
-                  </ListItem>
-                ))}
-              </TaskList>
-            </GoalContent>
-          </GoalCard>
-        ))}
+                  </GoalProgress>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 1,
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontWeight={500}
+                    >
+                      Tasks
+                    </Typography>
+                    <Button
+                      size="small"
+                      startIcon={<AddIcon fontSize="small" />}
+                      onClick={() => {
+                        setSelectedSprintGoal(goal);
+                        setOpenCreateGoalTaskDialog(true);
+                      }}
+                    >
+                      Add Task
+                    </Button>
+                  </Box>
+
+                  <TaskList dense>
+                    {goal.goalTask && goal.goalTask.length > 0 ? (
+                      goal.goalTask.map((task) => (
+                        <ListItem
+                          key={task.id}
+                          secondaryAction={
+                            <>
+                              <Tooltip title="Edit task" arrow>
+                                <ActionButton
+                                  edge="end"
+                                  size="small"
+                                  onClick={() => handleEditGoalTask(task)}
+                                >
+                                  <EditIcon fontSize="small" />
+                                </ActionButton>
+                              </Tooltip>
+                              <Tooltip title="Delete task" arrow>
+                                <ActionButton
+                                  edge="end"
+                                  size="small"
+                                  onClick={() => handleDeleteGoalTask(task)}
+                                >
+                                  <DeleteOutlineIcon fontSize="small" />
+                                </ActionButton>
+                              </Tooltip>
+                            </>
+                          }
+                        >
+                          <Tooltip
+                            title={
+                              task.completed
+                                ? "Mark as incomplete"
+                                : "Mark as complete"
+                            }
+                            arrow
+                          >
+                            <ActionButton
+                              size="small"
+                              sx={{ mr: 1 }}
+                              onClick={() =>
+                                handleToggleGoalTaskCompletion(task)
+                              }
+                            >
+                              {task.completed ? (
+                                <CheckCircleIcon
+                                  color="success"
+                                  fontSize="small"
+                                />
+                              ) : (
+                                <RadioButtonUncheckedIcon fontSize="small" />
+                              )}
+                            </ActionButton>
+                          </Tooltip>
+                          <ListItemText
+                            primary={task.title}
+                            sx={{
+                              "& .MuiTypography-root": {
+                                textDecoration: task.completed
+                                  ? "line-through"
+                                  : "none",
+                                color: task.completed
+                                  ? "text.secondary"
+                                  : "text.primary",
+                                transition: "all 0.2s ease-in-out",
+                              },
+                            }}
+                          />
+                        </ListItem>
+                      ))
+                    ) : (
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ py: 2, textAlign: "center" }}
+                      >
+                        No tasks added yet
+                      </Typography>
+                    )}
+                  </TaskList>
+                </GoalContent>
+              </GoalCard>
+            );
+          })
+        ) : (
+          <Box sx={{ textAlign: "center", py: 4 }}>
+            <Typography variant="body1" color="text.secondary">
+              No localSprintGoals added yet. Click "Add goal" to create your
+              first sprint goal.
+            </Typography>
+          </Box>
+        )}
       </Box>
     </BoardContainer>
   );
 };
-export default GoalBoard;
+
+export default memo(GoalBoard);
