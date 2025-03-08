@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  CardContent,
   TextField,
   Typography,
   InputAdornment,
@@ -11,17 +10,53 @@ import {
   Stepper,
   Step,
   StepLabel,
+  CircularProgress,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { AuthCard, AuthWrapper, Form, Logo, LogoBox } from "./Register.styles";
-// import Link from "next/link";
+import {
+  Visibility,
+  VisibilityOff,
+  Person as PersonIcon,
+  Lock as LockIcon,
+  Badge as BadgeIcon,
+  Business as BusinessIcon,
+} from "@mui/icons-material";
+import { Link } from "react-router-dom";
+import {
+  AuthCard,
+  AuthWrapper,
+  Form,
+  Logo,
+  LogoBox,
+  LeftSection,
+  RightSection,
+  WelcomeText,
+  DiagonalShapes,
+  StepperContainer,
+} from "./Register.styles";
+import {
+  FieldLabel,
+  FormFieldContainer,
+} from "../../components/dialogForm/DialogForm.styles";
+import ReactIcon from "../../assets/react.svg";
+import { useAuth } from "../../context";
+import { handleRegisterSubmit } from "./Register.helper";
 
-const steps = ["Account", "Personal", "Workspace"];
+// const steps = ["Account", "Personal", "Workspace"];
+const steps = ["Account", "Personal"];
 
-export default function RegisterPage() {
+const Register = () => {
+  const { register, loading } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+
+  // Form fields
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  // const [jobTitle, setJobTitle] = useState("");
+  const [workspaceName, setWorkspaceName] = useState("");
+  const [teamSize, setTeamSize] = useState("");
 
   const handleNext = () => {
     setActiveStep((prevStep) => prevStep + 1);
@@ -32,24 +67,29 @@ export default function RegisterPage() {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (activeStep === steps.length - 1) {
-      // Implementar lógica de registro
-    } else {
-      handleNext();
-    }
+    handleRegisterSubmit(
+      event,
+      email,
+      password,
+      fullName,
+      register,
+      setError,
+      activeStep,
+      steps,
+      handleNext
+    );
   };
 
   return (
     <AuthWrapper>
       <AuthCard>
-        <CardContent sx={{ p: 4 }}>
+        <LeftSection>
           <LogoBox>
-            <Logo src="/logo.svg" alt="Logo" />
+            <Logo src={ReactIcon} alt="Logo" />
           </LogoBox>
 
-          <Typography variant="h4" align="center" gutterBottom>
-            Create an account
+          <Typography variant="h5" align="center" gutterBottom fontWeight="600">
+            Create your account
           </Typography>
           <Typography
             variant="body2"
@@ -57,19 +97,24 @@ export default function RegisterPage() {
             align="center"
             sx={{ mb: 4 }}
           >
-            Get started with our project management tool
+            Join our platform and start managing your projects
           </Typography>
 
-          <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 4 }}>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+          <StepperContainer>
+            <Stepper activeStep={activeStep} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </StepperContainer>
 
           {error && (
-            <Alert severity="error" sx={{ mb: 2 }}>
+            <Alert
+              severity="error"
+              sx={{ mb: 3, borderRadius: 2, alignItems: "center" }}
+            >
               {error}
             </Alert>
           )}
@@ -77,78 +122,246 @@ export default function RegisterPage() {
           <Form onSubmit={handleSubmit}>
             {activeStep === 0 && (
               <>
-                <TextField
-                  label="Email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  fullWidth
-                  autoFocus
-                />
-                <TextField
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  required
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                <FormFieldContainer>
+                  <FieldLabel>Email</FieldLabel>
+                  <TextField
+                    type="email"
+                    autoComplete="email"
+                    required
+                    fullWidth
+                    autoFocus
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <PersonIcon color="action" />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </FormFieldContainer>
+
+                <FormFieldContainer>
+                  <FieldLabel>Password</FieldLabel>
+                  <TextField
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="new-password"
+                    required
+                    fullWidth
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Create a password"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon color="action" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </FormFieldContainer>
               </>
             )}
 
             {activeStep === 1 && (
               <>
-                <TextField label="Full Name" required fullWidth autoFocus />
-                <TextField label="Job Title" required fullWidth />
+                <FormFieldContainer>
+                  <FieldLabel>Full Name</FieldLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    autoFocus
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Enter your full name"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BadgeIcon color="action" />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </FormFieldContainer>
+
+                {/* <FormFieldContainer>
+                  <FieldLabel>Job Title</FieldLabel>
+                  <TextField
+                    fullWidth
+                    value={jobTitle}
+                    onChange={(e) => setJobTitle(e.target.value)}
+                    placeholder="Enter your job title"
+                    size="small"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </FormFieldContainer> */}
               </>
             )}
 
             {activeStep === 2 && (
               <>
-                <TextField
-                  label="Workspace Name"
-                  required
-                  fullWidth
-                  autoFocus
-                />
-                <TextField label="Team Size" type="number" required fullWidth />
+                <FormFieldContainer>
+                  <FieldLabel>Workspace Name</FieldLabel>
+                  <TextField
+                    required
+                    fullWidth
+                    autoFocus
+                    value={workspaceName}
+                    onChange={(e) => setWorkspaceName(e.target.value)}
+                    placeholder="Enter workspace name"
+                    size="small"
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BusinessIcon color="action" />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </FormFieldContainer>
+
+                <FormFieldContainer>
+                  <FieldLabel>Team Size</FieldLabel>
+                  <TextField
+                    type="number"
+                    fullWidth
+                    value={teamSize}
+                    onChange={(e) => setTeamSize(e.target.value)}
+                    placeholder="How many team members?"
+                    size="small"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: 2,
+                      },
+                    }}
+                  />
+                </FormFieldContainer>
               </>
             )}
 
             <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
               {activeStep > 0 && (
-                <Button variant="outlined" fullWidth onClick={handleBack}>
+                <Button
+                  variant="outlined"
+                  onClick={handleBack}
+                  sx={{
+                    flex: 1,
+                    py: 1.5,
+                    borderRadius: 2,
+                    textTransform: "none",
+                  }}
+                  disabled={loading}
+                >
                   Back
                 </Button>
               )}
-              <Button type="submit" variant="contained" fullWidth>
-                {activeStep === steps.length - 1 ? "Create Account" : "Next"}
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  flex: 1,
+                  py: 1.5,
+                  borderRadius: 2,
+                  textTransform: "none",
+                }}
+                disabled={loading}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : activeStep === steps.length - 1 ? (
+                  "Create Account"
+                ) : (
+                  "Next"
+                )}
               </Button>
             </Box>
           </Form>
 
-          <Box sx={{ mt: 2, textAlign: "center" }}>
+          <Box sx={{ mt: 3, textAlign: "center" }}>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Want to try it out first?{" "}
+              <Link
+                to="/auth/instantLogin"
+                style={{
+                  color: "inherit",
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
+                Instant Login
+              </Link>
+            </Typography>
             <Typography variant="body2" color="text.secondary">
               Already have an account?{" "}
-              {/* <MuiLink component={Link} href="/auth/login">
+              <Link
+                to="/auth/login"
+                style={{
+                  color: "inherit",
+                  textDecoration: "none",
+                  fontWeight: 600,
+                }}
+              >
                 Sign in
-              </MuiLink> */}
+              </Link>
             </Typography>
           </Box>
-        </CardContent>
+        </LeftSection>
+
+        <RightSection>
+          <WelcomeText>
+            <h1>Join EPProject Management</h1>
+            <p>
+              Create your account and start managing your projects more
+              efficiently. Our platform helps teams collaborate, track progress,
+              and deliver results.
+            </p>
+          </WelcomeText>
+          <DiagonalShapes />
+        </RightSection>
       </AuthCard>
     </AuthWrapper>
   );
-}
+};
+
+export default Register;

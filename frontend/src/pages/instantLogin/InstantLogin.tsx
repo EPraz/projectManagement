@@ -10,7 +10,6 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import {
   AuthCard,
@@ -22,26 +21,23 @@ import {
   RightSection,
   WelcomeText,
   DiagonalShapes,
-} from "./Login.styles";
+} from "../login/Login.styles";
 import {
   FieldLabel,
   FormFieldContainer,
 } from "../../components/dialogForm/DialogForm.styles";
 import { useAuth } from "../../context";
-import { handleLoginSubmit } from "./Login.helper";
 import PersonIcon from "@mui/icons-material/Person";
-import LockIcon from "@mui/icons-material/Lock";
 import ReactIcon from "../../assets/react.svg";
+import { handleInstantLoginSubmit } from "./InstantLogin.helper";
 
 export default function LoginPage() {
-  const { login, loading } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+  const { instantLogin, loading } = useAuth();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmitLogin = async (event: React.FormEvent) => {
-    handleLoginSubmit(event, email, password, login, setError);
+    handleInstantLoginSubmit(event, email, instantLogin, setError);
   };
 
   return (
@@ -125,52 +121,6 @@ export default function LoginPage() {
                 />
               </FormFieldContainer>
 
-              <FormFieldContainer>
-                <FieldLabel>Password</FieldLabel>
-                <TextField
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  required
-                  fullWidth
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
-                  InputLabelProps={{ shrink: false }}
-                  size="small"
-                  disabled={loading}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => setShowPassword(!showPassword)}
-                          edge="end"
-                          disabled={loading}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      borderRadius: 2,
-                    },
-                  }}
-                  slotProps={{
-                    input: {
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <IconButton aria-label="description for action">
-                            <LockIcon />
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    },
-                  }}
-                />
-              </FormFieldContainer>
-
               <Button
                 type="submit"
                 variant="contained"
@@ -195,16 +145,16 @@ export default function LoginPage() {
 
             <Box sx={{ mt: 3, textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Want to try it out first?{" "}
+                Already have an account?{" "}
                 <Link
-                  to="/auth/instantLogin"
+                  to="/auth/login"
                   style={{
                     color: "inherit",
                     textDecoration: "none",
                     fontWeight: 600,
                   }}
                 >
-                  Instant Login
+                  Login
                 </Link>
               </Typography>
               <Typography variant="body2" color="text.secondary">

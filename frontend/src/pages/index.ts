@@ -8,3 +8,5 @@ export { default as Taskboard } from "./board/taskBoard/TaskBoard";
 export { default as SettingsPage } from "./settingsPage/SettingsPage";
 export { default as RetrospectivePage } from "./retrospectivePage/RetrospectivePage";
 export { default as TeamMembersPage } from "./teamMembersPage/TeamMembersPage";
+export { default as Register } from "./register/Register";
+export { default as InstantLogin } from "./instantLogin/InstantLogin";

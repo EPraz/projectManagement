@@ -6,16 +6,22 @@ import {
   Param,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
 import { Project } from '@prisma/client';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('projects')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   // Crear un nuevo proyecto
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN') // Solo los ADMIN pueden acceder
   @Post()
   async create(
     @Body() createProjectDto: CreateProjectDto,

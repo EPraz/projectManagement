@@ -12,7 +12,6 @@ export const useUpdateSprintGoal = () => {
     data: Partial<SprintGoal>
   ): Promise<SprintGoal | null> => {
     setLoading(true);
-    console.log(data);
     try {
       const response = await fetch(`${apiUrl}/sprint-goals/${data.id}`, {
         method: "PATCH",

@@ -3,3 +3,4 @@ export * from "./apiContext";
 export * from "./projectContext";
 export * from "./snackbarContext";
 export * from "./themeContext";
+export * from "./authContext";
