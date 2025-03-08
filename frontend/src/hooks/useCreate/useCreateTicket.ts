@@ -7,7 +7,9 @@ export const useCreateTicket = () => {
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
-  const createTicket = async (data: Partial<Ticket>) => {
+  const createTicket = async (
+    data: Partial<Ticket>
+  ): Promise<Ticket | null> => {
     setLoading(true);
     try {
       const response = await fetch(`${apiUrl}/tickets`, {
@@ -20,7 +22,7 @@ export const useCreateTicket = () => {
 
       if (!response.ok) throw new Error("Failed to create ticket");
 
-      const newTicket = await response.json();
+      const newTicket: Ticket = await response.json();
       showSnackbarMessage("Ticket created successfully", "success");
       return newTicket;
     } catch (error) {

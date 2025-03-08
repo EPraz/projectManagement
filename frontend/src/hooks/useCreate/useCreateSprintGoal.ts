@@ -22,7 +22,7 @@ export const useCreateSprintGoal = () => {
 
       if (!response.ok) throw new Error("Failed to create goal");
 
-      const newSprintGoal = await response.json();
+      const newSprintGoal: SprintGoal = await response.json();
       showSnackbarMessage("Sprint Goal created successfully", "success");
       return newSprintGoal;
     } catch (error) {

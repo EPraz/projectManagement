@@ -21,7 +21,7 @@ export const useUpdateSprintGoal = () => {
 
       if (!response.ok) throw new Error("Failed to update sprint goal");
 
-      const updatedSprint = await response.json();
+      const updatedSprint: SprintGoal = await response.json();
       showSnackbarMessage("Sprint Goal updated successfully", "success");
       return updatedSprint;
     } catch (error) {

@@ -20,7 +20,7 @@ export const useCreateGoalTask = () => {
 
       if (!response.ok) throw new Error("Failed to create task goal");
 
-      const newGoalTask = await response.json();
+      const newGoalTask: GoalTask = await response.json();
       showSnackbarMessage("Task Goal created successfully", "success");
       return newGoalTask;
     } catch (error) {

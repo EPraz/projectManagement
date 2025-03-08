@@ -8,9 +8,7 @@ export const useUpdateTask = () => {
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
-  const updateTask = async (
-    data: Partial<Task>
-  ): Promise<Task | null | undefined> => {
+  const updateTask = async (data: Partial<Task>): Promise<Task | null> => {
     setLoading(true);
 
     try {
@@ -29,6 +27,7 @@ export const useUpdateTask = () => {
     } catch (error) {
       console.error("Error updating task:", error);
       showSnackbarMessage("Failed to update task", "error");
+      return null;
     } finally {
       setLoading(false);
     }

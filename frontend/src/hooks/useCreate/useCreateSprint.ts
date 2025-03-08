@@ -9,7 +9,9 @@ export const useCreateSprint = () => {
   const [loading, setLoading] = useState(false);
   const { showSnackbarMessage } = useSnackbar();
 
-  const createSprint = async (data: Partial<Sprint>) => {
+  const createSprint = async (
+    data: Partial<Sprint>
+  ): Promise<Sprint | null> => {
     setLoading(true);
     try {
       const response = await fetch(`${apiUrl}/sprints`, {
@@ -25,12 +27,13 @@ export const useCreateSprint = () => {
       });
       if (!response.ok) throw new Error("Failed to create sprint");
 
-      const sprint = await response.json();
+      const sprint: Sprint = await response.json();
       showSnackbarMessage("Sprint created successfully", "success");
       return sprint;
     } catch (error) {
       console.error("Error creating sprint:", error);
       showSnackbarMessage("Failed to create sprint", "error");
+      return null;
     } finally {
       setLoading(false);
     }

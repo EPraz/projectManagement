@@ -7,9 +7,7 @@ export const useCreateTask = () => {
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
-  const createTask = async (
-    data: Partial<Task>
-  ): Promise<Task | null | undefined> => {
+  const createTask = async (data: Partial<Task>): Promise<Task | null> => {
     setLoading(true);
     try {
       const response = await fetch(`${apiUrl}/tasks`, {
@@ -22,12 +20,13 @@ export const useCreateTask = () => {
 
       if (!response.ok) throw new Error("Failed to create task");
 
-      const newTask = await response.json();
+      const newTask: Task = await response.json();
       showSnackbarMessage("Task created successfully", "success");
       return newTask;
     } catch (error) {
       console.error("Error creating task:", error);
       showSnackbarMessage("Failed to create task", "error");
+      return null;
     } finally {
       setLoading(false);
     }

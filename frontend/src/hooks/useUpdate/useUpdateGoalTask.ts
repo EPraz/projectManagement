@@ -23,7 +23,7 @@ export const useUpdateGoalTask = () => {
 
       if (!response.ok) throw new Error("Failed to update task goal");
 
-      const udpatedGoalTask = await response.json();
+      const udpatedGoalTask: GoalTask = await response.json();
       showSnackbarMessage("Task Goal updated successfully", "success");
       return udpatedGoalTask;
     } catch (error) {
