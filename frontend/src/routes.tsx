@@ -10,11 +10,11 @@ import {
   Epics,
   InstantLogin,
   Login,
-  ProjectList,
   Register,
   Retrospective,
   SettingsPage,
   TeamMembersPage,
+  Projects,
 } from "./pages";
 import { PrivateRoute, ProjectLayout } from "./components";
 import { AuthProvider } from "./context";
@@ -26,7 +26,7 @@ const AppRoutes = () => {
         <Routes>
           <Route element={<PrivateRoute />}>
             {/* <Route path="/login" element={<Login />} /> */}
-            <Route path="/projects" element={<ProjectList />} />
+            <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:id" element={<ProjectLayout />}>
               <Route index element={<Navigate to="overview" replace />} />{" "}
               {/* FIX */}
@@ -37,6 +37,7 @@ const AppRoutes = () => {
               <Route path="teammembers" element={<TeamMembersPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
+            {/* <Route path="profile" element={<SettingsPage />} /> */}
 
             <Route path="*" element={<Navigate to="/projects" />} />
           </Route>

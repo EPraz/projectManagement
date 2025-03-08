@@ -10,6 +10,7 @@ import {
   TopBar,
 } from "./Header.styles";
 import { HeaderProps } from "../../types";
+import UserMenu from "./UserMenu";
 
 const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
       >
         {tabs}
       </StyledTabs>
+      <UserMenu />
     </HeaderContainer>
   );
 };

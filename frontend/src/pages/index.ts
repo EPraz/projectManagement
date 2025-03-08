@@ -1,7 +1,7 @@
 export { default as Board } from "./board/Board";
 export { default as Epics } from "./epicsAndFeatures/EpicsAndFeatures";
 export { default as Login } from "./login/Login";
-export { default as ProjectList } from "./projectList/ProjectList";
+export { default as Projects } from "./projects/ProjectsPage";
 export { default as Retrospective } from "./retrospectivePage/RetrospectivePage";
 export { default as Dashboard } from "./dashBoard/Dashboard";
 export { default as Taskboard } from "./board/taskBoard/TaskBoard";

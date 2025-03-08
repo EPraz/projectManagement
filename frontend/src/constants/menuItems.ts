@@ -88,3 +88,8 @@ export const PROJECTS: Project[] = [
   { name: "Quantum", count: 2, color: "#1A73E8" },
   { name: "AeroSquare", count: 7, color: "#F9AB00" },
 ];
+
+export const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};

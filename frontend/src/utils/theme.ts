@@ -2,14 +2,9 @@ import {
   createTheme,
   type PaletteMode,
   type ThemeOptions,
-  Theme,
+  type Theme,
 } from "@mui/material";
-import {
-  type Components,
-  ComponentsProps,
-  ComponentsOverrides,
-  ComponentsVariants,
-} from "@mui/material/styles";
+import type { Components } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -35,6 +30,17 @@ declare module "@mui/material/styles" {
 }
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
+  // Definimos los colores principales
+  // Opción 1: Verde (original)
+  // const primaryColor = "#1E8E3E";
+  // const primaryDark = "#167F30";
+  // const primaryLight = "#2EA350";
+
+  // Opción 2: Púrpura (del login)
+  const primaryColor = "#8e2de2";
+  const primaryDark = "#4a00e0";
+  const primaryLight = "#a44cf6";
+
   const components: Components<Omit<Theme, "components">> = {
     MuiButton: {
       defaultProps: {
@@ -48,12 +54,10 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
           padding: "8px 16px",
         }),
         contained: ({ theme }: { theme: Theme }) => ({
-          backgroundColor:
-            theme.palette.mode === "light" ? "#FFFFFF" : "#1E2A2A",
-          color: theme.palette.mode === "light" ? "#1F2937" : "#FFFFFF",
+          backgroundColor: primaryColor,
+          color: "#FFFFFF",
           "&:hover": {
-            backgroundColor:
-              theme.palette.mode === "light" ? "#F9FAFB" : "#2A3A3A",
+            backgroundColor: primaryDark,
           },
         }),
       },
@@ -138,7 +142,7 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
           }`,
         }),
         indicator: {
-          backgroundColor: "#1E8E3E",
+          backgroundColor: primaryColor,
           height: 3,
         },
       },
@@ -155,15 +159,30 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         }),
       },
     },
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          margin: 0,
+          padding: 0,
+          boxSizing: "border-box",
+          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+          WebkitFontSmoothing: "antialiased",
+          MozOsxFontSmoothing: "grayscale",
+        },
+        "*": {
+          boxSizing: "border-box",
+        },
+      },
+    },
   };
 
   return {
     palette: {
       mode,
       primary: {
-        main: "#1E8E3E",
-        dark: "#167F30",
-        light: "#2EA350",
+        main: primaryColor,
+        dark: primaryDark,
+        light: primaryLight,
         contrastText: "#FFFFFF",
       },
       secondary: {

@@ -12,5 +12,7 @@ export { default as Header } from "./header/Header";
 export { default as DeleteConfirmationModal } from "./deleteConfirmationModal/DeleteConfirmationModal";
 export { default as DialogsContainer } from "./dialogsContainer/DialogsContainer";
 export { default as PrivateRoute } from "./privateRoute/PrivateRoute";
+export { default as UserMenu } from "./header/UserMenu";
 
 export * from "./statusIndicator/StatusIndicator";
+export * from "./projects";

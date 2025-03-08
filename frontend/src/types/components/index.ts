@@ -11,3 +11,4 @@ export * from "./BacklogboardHeaderProps";
 export * from "./TicketCardProps";
 export * from "./StatusConfigProps";
 export * from "./DialogsContainerProps";
+export * from "./ProjectsProps";

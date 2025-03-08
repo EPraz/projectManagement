@@ -24,10 +24,10 @@ function MuiTheme() {
 
   return (
     <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       <StyledComponentsThemeProvider theme={theme}>
         <SnackbarProvider>
           <ApiProvider>
-            <CssBaseline />
             <AppRoutes />
           </ApiProvider>
         </SnackbarProvider>

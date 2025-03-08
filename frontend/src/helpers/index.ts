@@ -8,3 +8,4 @@ export * from "./getTypeIcon";
 export * from "./sprints";
 export * from "./sprintGoals";
 export * from "./goalTask";
+export * from "./projectsPage";
