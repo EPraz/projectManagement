@@ -5,8 +5,8 @@ import {
   ProjectList,
   ProjectListItem,
 } from "./ProjectsPage.styles";
-import { ProjectListViewProps } from "../../types";
-import { cardVariants } from "../../constants";
+import { ProjectListViewProps } from "../../../types";
+import { cardVariants } from "../../../constants";
 import {
   Star as StarIcon,
   StarBorder as StarBorderIcon,
@@ -23,7 +23,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { formatProjectDate, getProjectProgress } from "../../helpers";
+import { formatProjectDate, getProjectProgress } from "../../../helpers";
 
 const ProjectListView = ({
   filteredProjects,

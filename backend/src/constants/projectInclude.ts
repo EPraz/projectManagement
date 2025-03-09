@@ -33,6 +33,11 @@ export const PROJECT_INCLUDE = {
           goalTask: true,
         },
       },
+      teamMemberCapacities: {
+        include: {
+          user: true,
+        },
+      },
     },
   },
   tickets: {

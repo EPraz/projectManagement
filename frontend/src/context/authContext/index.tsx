@@ -86,8 +86,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         } else {
           setUser(null);
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error en checkAuth:", error);
+        setLoading(false);
         setUser(null);
       } finally {
         setLoading(false);

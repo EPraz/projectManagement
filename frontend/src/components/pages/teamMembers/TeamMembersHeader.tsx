@@ -1,7 +1,7 @@
 import { Header } from "./TeamMembersPage.styles";
 import { Box, Button, Typography } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-import { TeamMembersHeaderProps } from "../../types";
+import { TeamMembersHeaderProps } from "../../../types";
 
 const TeamMembersHeader = ({ setOpenDialog }: TeamMembersHeaderProps) => {
   return (

@@ -48,10 +48,14 @@ declare module "@mui/material/styles" {
 }
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
+  // Opción 1: Verde (original)
+  const primaryColor = "#1E8E3E";
+  const primaryDark = "#167F30";
+  const primaryLight = "#2EA350";
   // Primary color (60%)
-  const primaryColor = "#8e2de2";
-  const primaryDark = "#4a00e0";
-  const primaryLight = "#a44cf6";
+  // const primaryColor = "#8e2de2";
+  // const primaryDark = "#4a00e0";
+  // const primaryLight = "#a44cf6";
 
   // Secondary color (30%)
   const secondaryColor = "#2d9cdb";

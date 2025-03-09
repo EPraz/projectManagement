@@ -16,6 +16,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/authContext";
+import { getInitials } from "../../helpers";
 
 const UserMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -45,17 +46,6 @@ const UserMenu = () => {
   const handleSettings = () => {
     // navigate("/settings");
     handleClose();
-  };
-
-  // Get initials from user name
-  const getInitials = () => {
-    if (!user?.name) return "U";
-    return user.name
-      .split(" ")
-      .map((name) => name[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
   };
 
   return (
@@ -88,7 +78,7 @@ const UserMenu = () => {
             fontWeight: "bold",
           }}
         >
-          {getInitials()}
+          {getInitials(user?.name)}
         </Avatar>
       </IconButton>
       <Menu

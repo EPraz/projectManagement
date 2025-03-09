@@ -1,7 +1,7 @@
 import { EmptyState } from "./ProjectsPage.styles";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { Add as AddIcon, Folder as FolderIcon } from "@mui/icons-material";
-import { ProjectEmptyViewProps } from "../../types";
+import { ProjectEmptyViewProps } from "../../../types";
 
 const ProjectEmptyView = ({
   canCreateProject,

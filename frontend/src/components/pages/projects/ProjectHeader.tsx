@@ -15,8 +15,8 @@ import {
   ViewModule as ViewModuleIcon,
   ViewList as ViewListIcon,
 } from "@mui/icons-material";
-import { UserMenu } from "..";
-import { ProjectHeaderProps } from "../../types";
+import { UserMenu } from "../..";
+import { ProjectHeaderProps } from "../../../types";
 
 const ProjectHeader = ({
   searchInput,

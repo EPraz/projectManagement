@@ -26,9 +26,9 @@ import {
   Close as CloseIcon,
   FilterAlt as FilterAltIcon,
 } from "@mui/icons-material";
-import { Role } from "../../constants";
-import { formatRoleName, getRoleColor } from "../../helpers";
-import { TeamMembersSearchBarProps } from "../../types";
+import { Role } from "../../../constants";
+import { formatRoleName, getRoleColor } from "../../../helpers";
+import { TeamMembersSearchBarProps } from "../../../types";
 
 const TeamMembersSearchBar = ({
   searchQuery,

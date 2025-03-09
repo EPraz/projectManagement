@@ -15,5 +15,4 @@ export { default as PrivateRoute } from "./privateRoute/PrivateRoute";
 export { default as UserMenu } from "./header/UserMenu";
 
 export * from "./statusIndicator/StatusIndicator";
-export * from "./projects";
-export * from "./teamMembers";
+export * from "./pages";

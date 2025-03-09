@@ -1,5 +1,5 @@
-import { ProjectContainerViewProps } from "../../types";
-import { Loading } from "..";
+import { ProjectContainerViewProps } from "../../../types";
+import { Loading } from "../..";
 import ProjectHeader from "./ProjectHeader";
 import { Container } from "@mui/material";
 import ProjectEmptyView from "./ProjectEmptyView";

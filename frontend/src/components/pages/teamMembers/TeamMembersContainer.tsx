@@ -1,13 +1,17 @@
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { Container } from "../../components/teamMembers/TeamMembersPage.styles";
-import { useProject } from "../../context";
-import { User } from "../../types";
-import { Role } from "../../constants";
-import { useCreateProjectUser, useDebounce, useLoadUsers } from "../../hooks";
+import { Container } from "./TeamMembersPage.styles";
+import { useProject } from "../../../context";
+import { User } from "../../../types";
+import { Role } from "../../../constants";
+import {
+  useCreateProjectUser,
+  useDebounce,
+  useLoadUsers,
+} from "../../../hooks";
 import TeamMembersHeader from "./TeamMembersHeader";
 import TeamMembersSearchBar from "./TeamMembersSearchBar";
 import TeamMembersTable from "./TeamMembersTable";
-import Portal from "../portal/Portal";
+import Portal from "../../portal/Portal";
 import TeamMembersMenu from "./TeamMembersMenu";
 import TeamMembersDialog from "./TeamMembersDialog";
 import { useTheme } from "@mui/material";

@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { TeamMembersDialogProps } from "../../types";
+import { TeamMembersDialogProps } from "../../../types";
 
 const TeamMembersDialog = ({
   openDialog,

@@ -1,4 +1,4 @@
-import { ProjectCardViewProps } from "../../types";
+import { ProjectCardViewProps } from "../../../types";
 import {
   Avatar,
   AvatarGroup,
@@ -15,7 +15,7 @@ import {
   Group as GroupIcon,
   Speed as SpeedIcon,
 } from "@mui/icons-material";
-import { getProjectProgress } from "../../helpers";
+import { getProjectProgress } from "../../../helpers";
 
 const ProjectCardView = ({
   project,

@@ -12,9 +12,9 @@ import {
 } from "@mui/icons-material";
 import { CardContent, Typography, useTheme } from "@mui/material";
 import ProjectCardView from "./ProjectCardView";
-import { cardVariants } from "../../constants";
-import { ProjectGridViewProps } from "../../types";
-import { formatProjectDate } from "../../helpers";
+import { cardVariants } from "../../../constants";
+import { ProjectGridViewProps } from "../../../types";
+import { formatProjectDate } from "../../../helpers";
 
 const ProjectGridView = ({
   filteredProjects,

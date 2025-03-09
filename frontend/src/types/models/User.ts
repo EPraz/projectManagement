@@ -1,6 +1,7 @@
 import { Role } from "../../constants";
 import { PairProgramming } from "./PairProgramming";
 import { Project } from "./Project";
+import { TeamMemberCapacity } from "./TeamMemberCapacity";
 import { Ticket } from "./Ticket";
 
 export type User = {
@@ -16,4 +17,5 @@ export type User = {
   isVerified?: boolean;
   refreshToken?: string;
   projects: Project[];
+  teamMemberCapacities?: TeamMemberCapacity[];
 };

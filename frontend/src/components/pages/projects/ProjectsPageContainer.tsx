@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { Project } from "../../types";
-import { useCreateProject, useDebounce, useLoadProject } from "../../hooks";
-import { useAuth } from "../../context";
-import { Role } from "../../constants";
+import { Project } from "../../../types";
+import { useCreateProject, useDebounce, useLoadProject } from "../../../hooks";
+import { useAuth } from "../../../context";
+import { Role } from "../../../constants";
 import { Box, useTheme } from "@mui/material";
-import { DialogForm, Loading, Portal } from "..";
+import { DialogForm, Loading, Portal } from "../..";
 import ProjectContainerView from "./ProjectContainerView";
 import { useNavigate } from "react-router-dom";
-import { createProjectSchema } from "../../validations";
+import { createProjectSchema } from "../../../validations";
 import ProjectMenu from "./ProjectMenu";
 
 const ProjectsPageContainer = () => {

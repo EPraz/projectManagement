@@ -124,33 +124,35 @@ model Task {
 }
 
 model Sprint {
-  id         String       @id @default(uuid())
-  name       String
-  startDate  DateTime
-  endDate    DateTime
-  projectId  String
-  project    Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  tickets    Ticket[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  sprintGoal SprintGoal[]
+  id                   String               @id @default(uuid())
+  name                 String
+  startDate            DateTime
+  endDate              DateTime
+  projectId            String
+  project              Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tickets              Ticket[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  sprintGoal           SprintGoal[]
+  teamMemberCapacities TeamMemberCapacity[] // Un sprint tiene muchos registros de capacidad (uno por usuario asignado)
 }
 
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 model User {
-  id              String            @id @default(uuid())
-  name            String
-  email           String            @unique
-  password        String
-  role            Role              @default(DEVELOPER)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  tickets         Ticket[]
-  pairProgramming PairProgramming[]
-  isVerified      Boolean           @default(false)
-  refreshToken    String?
-  projects        Project[]
+  id                   String               @id @default(uuid())
+  name                 String
+  email                String               @unique
+  password             String
+  role                 Role                 @default(DEVELOPER)
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  tickets              Ticket[]
+  pairProgramming      PairProgramming[]
+  isVerified           Boolean              @default(false)
+  refreshToken         String?
+  projects             Project[]
+  teamMemberCapacities TeamMemberCapacity[] // Un usuario puede tener muchos registros de capacidad
 }
 
 model PairProgramming {
@@ -159,6 +161,20 @@ model PairProgramming {
   userId   String
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   ticket   Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+model TeamMemberCapacity {
+  id            String   @id @default(uuid())
+  user          User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId        String
+  sprint        Sprint   @relation(fields: [sprintId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  sprintId      String
+  capacity      Int // Total de horas disponibles para el sprint
+  daysOff       Int // Número de días libres en el sprint
+  remainingWork Int // Horas de trabajo pendientes
+  createdAt     DateTime @default(now())
+
+  @@unique([userId, sprintId])
 }
 
 ///////////////////////////////////////////////////////

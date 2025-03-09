@@ -17,12 +17,12 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { formatRoleName, getRoleColor, getStatusColor } from "../../helpers";
+import { formatRoleName, getRoleColor, getStatusColor } from "../../../helpers";
 import {
   MoreVert as MoreVertIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
-import { TeamMembersTableProps } from "../../types";
+import { TeamMembersTableProps } from "../../../types";
 
 const TeamMembersTable = ({
   filteredMembers,

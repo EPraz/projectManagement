@@ -19,7 +19,7 @@ import {
 } from "../../validations";
 import { SprintGoalStatus, TicketPriority, TicketType } from "../../constants";
 import { DialogsContainerProps } from "../../types";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useParams, useSearchParams } from "react-router-dom";
 import { formatStatusName } from "../../helpers";
 
 const DialogsContainer: React.FC<DialogsContainerProps> = ({
@@ -96,6 +96,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   handleDeleteGoalTask,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { id: projectId } = useParams();
 
   const handleCloseCleanUrl = (param: "ticketId" | "taskId") => {
     const currentTab = searchParams.get("tab") || "board";
@@ -137,7 +138,19 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onSubmit={handleCreateSprint}
           schema={createSprintSchema}
           disabled={loadingCreateSprint || loadingDeleteSprint}
-          defaultValues={{ name: "", startDate: null, endDate: null }}
+          defaultValues={{
+            name: "",
+            startDate: null,
+            endDate: null,
+            projectId: projectId,
+          }}
+          fieldConfig={{
+            startDate: {
+              label: "startDate",
+            },
+            endDate: { label: "endDate" },
+            projectId: { disabled: true, hidden: true },
+          }}
         />
       )}
 

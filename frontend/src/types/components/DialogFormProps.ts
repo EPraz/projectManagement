@@ -21,10 +21,20 @@ export interface SelectOption {
 export interface FieldConfig {
   label?: string;
   placeholder?: string;
-  type?: "text" | "number" | "email" | "password" | "select" | "textarea";
+  type?: "number" | "select" | "textarea" | "text" | "email" | "password";
   options?: SelectOption[];
   disabled?: boolean;
   multiline?: boolean;
   rows?: number;
   required?: boolean;
+  hidden?: boolean;
 }
+// export interface FieldConfig {
+//   label?: string;
+//   type?: "number" | "select" | "textarea" | "text" | "email" | "password";
+//   placeholder?: string;
+//   disabled?: boolean;
+//   options?: { value: string; label: string }[];
+//   multiline?: boolean;
+//   rows?: number;
+// }

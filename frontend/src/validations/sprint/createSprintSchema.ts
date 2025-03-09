@@ -22,4 +22,5 @@ export const createSprintSchema: yup.ObjectSchema<CreateSprintFormData> =
       .transform((value, originalValue) => {
         return originalValue ? new Date(originalValue) : null;
       }),
+    projectId: yup.string(),
   });

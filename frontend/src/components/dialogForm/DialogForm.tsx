@@ -66,8 +66,9 @@ const DialogForm = <T extends Record<string, any>>({
     const isDateField =
       fieldOptions?.label === "startDate" || fieldOptions?.label === "endDate";
     const fieldName = key;
+    const isHidden = fieldOptions?.hidden;
 
-    if (isDateField) {
+    if (isDateField && !isHidden) {
       return (
         <FormFieldContainer key={key}>
           <FieldLabel>{label}</FieldLabel>
@@ -100,7 +101,7 @@ const DialogForm = <T extends Record<string, any>>({
       );
     }
 
-    if (isSelectField) {
+    if (isSelectField && !isHidden) {
       return (
         <FormFieldContainer key={key}>
           <FieldLabel>{label}</FieldLabel>
@@ -141,34 +142,36 @@ const DialogForm = <T extends Record<string, any>>({
       );
     }
 
-    return (
-      <FormFieldContainer key={key}>
-        <FieldLabel>{label}</FieldLabel>
-        <TextField
-          {...register(fieldName)}
-          fullWidth
-          error={!!errors[fieldName]}
-          disabled={disabled || fieldOptions?.disabled}
-          size="small"
-          placeholder={fieldOptions?.placeholder || ""}
-          multiline={fieldOptions?.multiline}
-          rows={fieldOptions?.rows || 1}
-          type={fieldOptions?.type || "text"}
-          InputLabelProps={{ shrink: false }}
-          sx={{
-            "& .MuiOutlinedInput-root": {
-              borderRadius: 1,
-            },
-            "& .MuiInputLabel-root": {
-              display: "none",
-            },
-          }}
-        />
-        {errors[fieldName] && (
-          <FieldError>{errors[fieldName]?.message as string}</FieldError>
-        )}
-      </FormFieldContainer>
-    );
+    if (!isHidden) {
+      return (
+        <FormFieldContainer key={key}>
+          <FieldLabel>{label}</FieldLabel>
+          <TextField
+            {...register(fieldName)}
+            fullWidth
+            error={!!errors[fieldName]}
+            disabled={disabled || fieldOptions?.disabled}
+            size="small"
+            placeholder={fieldOptions?.placeholder || ""}
+            multiline={fieldOptions?.multiline}
+            rows={fieldOptions?.rows || 1}
+            type={fieldOptions?.type || "text"}
+            InputLabelProps={{ shrink: false }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 1,
+              },
+              "& .MuiInputLabel-root": {
+                display: "none",
+              },
+            }}
+          />
+          {errors[fieldName] && (
+            <FieldError>{errors[fieldName]?.message as string}</FieldError>
+          )}
+        </FormFieldContainer>
+      );
+    }
   };
 
   return (

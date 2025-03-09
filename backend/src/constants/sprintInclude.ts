@@ -19,4 +19,9 @@ export const SPRINT_INCLUDE = {
       goalTask: true,
     },
   },
+  teamMemberCapacities: {
+    include: {
+      user: true,
+    },
+  },
 };

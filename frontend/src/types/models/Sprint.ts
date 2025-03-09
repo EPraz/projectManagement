@@ -1,5 +1,6 @@
 import { SprintGoalStatus } from "../../constants";
 import { Project } from "./Project";
+import { TeamMemberCapacity } from "./TeamMemberCapacity";
 import { Ticket } from "./Ticket";
 
 export type Sprint = {
@@ -13,6 +14,7 @@ export type Sprint = {
   createdAt: string;
   updatedAt: string;
   sprintGoal: SprintGoal[];
+  teamMemberCapacities?: TeamMemberCapacity[];
 };
 
 export type CreateSprintFormData = {
@@ -38,5 +40,6 @@ export interface SprintGoal {
   goalTask?: GoalTask[];
   createdAt: string;
   updatedAt?: string;
+
   // createdBy?: string;
 }

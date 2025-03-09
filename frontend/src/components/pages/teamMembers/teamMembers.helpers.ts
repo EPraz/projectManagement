@@ -1,4 +1,4 @@
-import { Project, User } from "../../types";
+import { Project, User } from "../../../types";
 
 export const addMembersHandler = async (
   selectedUser: string | null,

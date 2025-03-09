@@ -5,7 +5,7 @@ import {
   Work as WorkIcon,
   PowerSettingsNew as PowerIcon,
 } from "@mui/icons-material";
-import { TeamMembersMenuProps } from "../../types";
+import { TeamMembersMenuProps } from "../../../types";
 
 const TeamMembersMenu = ({
   anchorEl,

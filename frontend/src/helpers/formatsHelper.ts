@@ -14,3 +14,13 @@ const MAX_TITLE_LENGTH = 16;
 
 export const truncatedTitle = (text: string, maxSize = MAX_TITLE_LENGTH) =>
   text.length > maxSize ? `${text.slice(0, maxSize)}...` : text;
+
+export const getInitials = (name: string | undefined) => {
+  if (!name) return "U";
+  return name
+    .split(" ")
+    .map((name) => name[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2);
+};

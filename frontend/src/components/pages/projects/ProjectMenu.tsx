@@ -1,5 +1,5 @@
 import { Menu, MenuItem } from "@mui/material";
-import { ProjectMenuProps } from "../../types";
+import { ProjectMenuProps } from "../../../types";
 
 const ProjectMenu = ({ anchorEl, handleMenuClose }: ProjectMenuProps) => {
   return (
