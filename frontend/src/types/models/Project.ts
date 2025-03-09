@@ -1,7 +1,6 @@
 import { Epic } from "./Epic";
 import { EpicStatus } from "./EpicStatus";
 import { FeatureStatus } from "./FeatureStatus";
-import { ProjectUser } from "./ProjectUser";
 import { Sprint } from "./Sprint";
 import { TaskStatus } from "./TaskStatus";
 import { Ticket } from "./Ticket";
@@ -18,7 +17,7 @@ export type Project = {
   updatedAt: string;
   epics: Epic[];
   tickets: Ticket[];
-  users: ProjectUser[];
+  users: User[];
   sprints: Sprint[];
   ticketStatuses: TicketStatus[];
   taskStatuses: TaskStatus[];

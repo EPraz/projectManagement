@@ -16,3 +16,4 @@ export { default as UserMenu } from "./header/UserMenu";
 
 export * from "./statusIndicator/StatusIndicator";
 export * from "./projects";
+export * from "./teamMembers";

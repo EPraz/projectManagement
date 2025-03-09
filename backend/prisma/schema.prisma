@@ -25,7 +25,7 @@ model Project {
   updatedAt       DateTime        @updatedAt
   epics           Epic[]
   tickets         Ticket[]
-  users           ProjectUser[]
+  users           User[]
   sprints         Sprint[]
   ticketStatuses  TicketStatus[]
   taskStatuses    TaskStatus[]
@@ -144,22 +144,13 @@ model User {
   email           String            @unique
   password        String
   role            Role              @default(DEVELOPER)
-  project         ProjectUser[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   tickets         Ticket[]
   pairProgramming PairProgramming[]
   isVerified      Boolean           @default(false)
   refreshToken    String?
-}
-
-model ProjectUser {
-  id        String  @id @default(uuid())
-  userId    String
-  projectId String
-  role      Role
-  user      User    @relation(fields: [userId], references: [id])
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projects        Project[]
 }
 
 model PairProgramming {

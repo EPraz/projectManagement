@@ -94,7 +94,7 @@ export class AuthService {
 
     const refreshToken = this.jwtService.sign(
       { id: user.id },
-      { expiresIn: '15m' },
+      { expiresIn: process.env.EXPIRES_IN },
     );
 
     await this.prisma.user.update({

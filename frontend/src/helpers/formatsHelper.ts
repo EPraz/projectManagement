@@ -1,5 +1,14 @@
 export const formatStatusName = (name: string): string =>
-  name.replace(/_/g, " ");
+  name
+    .split("_")
+    .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
+    .join(" ");
+// name.replace(/_/g, " ");
+
+export const formatRoleName = (role: string): string => {
+  if (!role) return "No Role";
+  return formatStatusName(role);
+};
 
 const MAX_TITLE_LENGTH = 16;
 

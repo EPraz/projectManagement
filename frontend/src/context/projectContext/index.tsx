@@ -17,6 +17,7 @@ const ProjectContext = createContext<{
   loading: boolean;
   listOfSprints: Sprint[];
   setListOfSprints: React.Dispatch<React.SetStateAction<Sprint[]>>;
+  setProject: React.Dispatch<React.SetStateAction<Project | null>>;
 } | null>(null);
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
@@ -73,6 +74,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         loading,
         listOfSprints,
         setListOfSprints,
+        setProject,
       }}
     >
       {children}

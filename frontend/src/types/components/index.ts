@@ -12,3 +12,4 @@ export * from "./TicketCardProps";
 export * from "./StatusConfigProps";
 export * from "./DialogsContainerProps";
 export * from "./ProjectsProps";
+export * from "./TeamMembersProps";

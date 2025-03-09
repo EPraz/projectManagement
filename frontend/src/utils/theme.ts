@@ -16,6 +16,15 @@ declare module "@mui/material/styles" {
       textSecondary: string;
       border: string;
     };
+    roleColors: {
+      ADMIN: string;
+      PROJECT_MANAGER: string;
+      PRODUCT_OWNER: string;
+      BUSINESS_ANALYST: string;
+      DEVELOPER: string;
+      QUALITY_ASSURANCE: string;
+      default: string;
+    };
   }
   interface PaletteOptions {
     sidebar?: {
@@ -26,20 +35,33 @@ declare module "@mui/material/styles" {
       textSecondary: string;
       border: string;
     };
+    roleColors?: {
+      ADMIN: string;
+      PROJECT_MANAGER: string;
+      PRODUCT_OWNER: string;
+      BUSINESS_ANALYST: string;
+      DEVELOPER: string;
+      QUALITY_ASSURANCE: string;
+      default: string;
+    };
   }
 }
 
 const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
-  // Definimos los colores principales
-  // Opción 1: Verde (original)
-  // const primaryColor = "#1E8E3E";
-  // const primaryDark = "#167F30";
-  // const primaryLight = "#2EA350";
-
-  // Opción 2: Púrpura (del login)
+  // Primary color (60%)
   const primaryColor = "#8e2de2";
   const primaryDark = "#4a00e0";
   const primaryLight = "#a44cf6";
+
+  // Secondary color (30%)
+  const secondaryColor = "#2d9cdb";
+  const secondaryDark = "#1a73e8";
+  const secondaryLight = "#56ccf2";
+
+  // Accent color (10%)
+  const accentColor = "#f2994a";
+  const accentDark = "#f2784b";
+  const accentLight = "#f2c94c";
 
   const components: Components<Omit<Theme, "components">> = {
     MuiButton: {
@@ -186,9 +208,15 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         contrastText: "#FFFFFF",
       },
       secondary: {
-        main: "#1A73E8",
-        dark: "#1557B0",
-        light: "#4285F4",
+        main: secondaryColor,
+        dark: secondaryDark,
+        light: secondaryLight,
+        contrastText: "#FFFFFF",
+      },
+      warning: {
+        main: accentColor,
+        dark: accentDark,
+        light: accentLight,
         contrastText: "#FFFFFF",
       },
       background: {
@@ -213,6 +241,15 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         text: mode === "light" ? "#fff" : "#1F2937",
         textSecondary: mode === "light" ? "#6B7280" : "#9CA3AF",
         border: mode === "light" ? "#E5E7EB" : "rgba(255, 255, 255, 0.1)",
+      },
+      roleColors: {
+        ADMIN: "#8e2de2", // Primary - Admin gets primary color
+        PROJECT_MANAGER: "#2d9cdb", // Secondary - Project managers get secondary color
+        PRODUCT_OWNER: "#f2994a", // Accent - Product owners get accent color
+        BUSINESS_ANALYST: "#27ae60", // Green for business analysts
+        DEVELOPER: "#6366f1", // Indigo for developers
+        QUALITY_ASSURANCE: "#9c5700", // Brown for QA
+        default: "#64748b", // Default gray
       },
     },
     typography: {

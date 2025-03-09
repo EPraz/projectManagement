@@ -11,7 +11,7 @@ export const PROJECT_INCLUDE = {
       status: true,
     },
   },
-  users: true,
+  users: { include: { projects: true } },
   sprints: {
     include: {
       tickets: {

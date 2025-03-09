@@ -12,7 +12,7 @@ import { JwtStrategy } from './jwt.strategy';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET || 'supersecret',
-      signOptions: { expiresIn: '15m' }, // Token expira en 15 min
+      signOptions: { expiresIn: process.env.EXPIRES_IN }, // Token expira en 15 min
     }),
   ],
   controllers: [AuthController],

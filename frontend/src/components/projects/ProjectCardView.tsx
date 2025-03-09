@@ -98,8 +98,8 @@ const ProjectCardView = ({
           sx={{ "& .MuiAvatar-root": { width: 32, height: 32 } }}
         >
           {project.users?.map((user) => (
-            <Tooltip key={user.id} title={user.user.name}>
-              <Avatar src={user.user.email} alt={user.user.name} />
+            <Tooltip key={user.id} title={user.name}>
+              <Avatar src={user.email} alt={user.name} />
             </Tooltip>
           ))}
         </AvatarGroup>

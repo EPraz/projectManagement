@@ -4,3 +4,4 @@ export * from "./useCreateTicket";
 export * from "./useCreateSprint";
 export * from "./useCreateSprintGoal";
 export * from "./useCreateGoalTask";
+export * from "./useCreateProjectUser";

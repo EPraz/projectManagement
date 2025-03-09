@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
-import { Project } from '@prisma/client';
+import { Project, User } from '@prisma/client';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -54,5 +54,27 @@ export class ProjectController {
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<boolean> {
     return await this.projectService.remove(id);
+  }
+
+  // Asignar un usuario a un proyecto
+  //  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //  @Roles('ADMIN', 'PROJECT_MANAGER') // Por ejemplo, roles que pueden asignar usuarios
+  @Post(':projectId/users/:userId')
+  async assignUser(
+    @Param('projectId') projectId: string,
+    @Param('userId') userId: string,
+  ): Promise<User[]> {
+    return await this.projectService.assignUserToProject(projectId, userId);
+  }
+
+  // Remover un usuario de un proyecto
+  //  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  //  @Roles('ADMIN', 'PROJECT_MANAGER')
+  @Delete(':projectId/users/:userId')
+  async removeUser(
+    @Param('projectId') projectId: string,
+    @Param('userId') userId: string,
+  ) {
+    return await this.projectService.removeUserFromProject(projectId, userId);
   }
 }

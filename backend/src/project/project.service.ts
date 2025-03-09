@@ -1,5 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { Project } from '@prisma/client';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Project, User } from '@prisma/client';
 import {
   defaultEpicStatuses,
   defaultFeatureStatuses,
@@ -24,11 +28,9 @@ export class ProjectService {
         const newProject = await prisma.project.create({
           data: {
             ...request,
-            // Aquí se podrían agregar los usuarios si es necesario en el futuro
           },
         });
 
-        // Crear Status por defecto con `projectId`
         await prisma.epicStatus.createMany({
           data: defaultEpicStatuses.map((status) => ({
             ...status,
@@ -57,7 +59,6 @@ export class ProjectService {
           })),
         });
 
-        // Retornar el Proyecto con los Status creados
         return prisma.project.findUnique({
           where: { id: newProject.id },
           include: PROJECT_INCLUDE,
@@ -133,5 +134,62 @@ export class ProjectService {
     } catch (error: unknown) {
       handlePrismaError(error);
     }
+  }
+
+  async assignUserToProject(
+    projectId: string,
+    userId: string,
+  ): Promise<User[]> {
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+      include: { users: true },
+    });
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (project.users.some((u) => u.id === userId)) {
+      throw new ConflictException('User already assigned to this project');
+    }
+
+    const updatedProject = await this.prisma.project.update({
+      where: { id: projectId },
+      data: {
+        users: {
+          connect: { id: userId },
+        },
+      },
+      include: { users: true },
+    });
+
+    return updatedProject.users;
+  }
+
+  async removeUserFromProject(
+    projectId: string,
+    userId: string,
+  ): Promise<Project> {
+    const project = await this.prisma.project.findUnique({
+      where: { id: projectId },
+      include: { users: true },
+    });
+    if (!project) {
+      throw new NotFoundException('Project not found');
+    }
+
+    return await this.prisma.project.update({
+      where: { id: projectId },
+      data: {
+        users: {
+          disconnect: { id: userId },
+        },
+      },
+      include: { users: true },
+    });
   }
 }
