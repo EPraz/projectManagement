@@ -38,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
           }
           value={tab.path}
           disableRipple
+          disabled={tab?.disabled}
         />
       )),
     []

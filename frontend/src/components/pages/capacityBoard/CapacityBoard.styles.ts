@@ -60,7 +60,7 @@ export const StyledTableContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const StyledTable = styled(Table)(({ theme }) => ({
+export const StyledTable = styled(Table)(() => ({
   borderCollapse: "separate",
   borderSpacing: 0,
 }));

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { List, Avatar, Box } from "@mui/material";
 import { MENU_ITEMS } from "../../constants";
@@ -10,6 +10,7 @@ import {
   CollapseButton,
   Logo,
   LogoText,
+  SidebarPlaceholder,
   StyledDrawer,
   StyledListItemButton,
   StyledListItemIcon,
@@ -29,11 +30,16 @@ const Sidebar: React.FC<SidebarProps> = ({
   const [themeModalOpen, setThemeModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const menuItems = MENU_ITEMS.map((item) => ({
-    text: item.text,
-    icon: <item.icon />,
-    path: `/projects/${project.id}/${item.path}`,
-  }));
+  const menuItems = useMemo(
+    () =>
+      MENU_ITEMS.map((item) => ({
+        text: item.text,
+        icon: <item.icon />,
+        path: `/projects/${project.id}/${item.path}`,
+        disabled: item.disabled,
+      })),
+    [MENU_ITEMS]
+  );
 
   const toggleCollapse = () => {
     setSidebarOpen(!sidebarOpen);
@@ -41,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   return (
     <>
+      <SidebarPlaceholder $IsOpen={sidebarOpen} />
       <StyledDrawer variant="permanent" $IsOpen={sidebarOpen}>
         <Logo>
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -77,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </Logo>
 
         <List sx={{ padding: "8px 0" }}>
-          {menuItems.map(({ text, icon, path }) => (
+          {menuItems.map(({ text, icon, path, disabled }) => (
             <StyledListItemButton
               key={text}
               onClick={() => navigate(path)}
@@ -85,6 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 path === `/projects/${project.id}/dashboard` ? "active" : ""
               }
               sx={{ justifyContent: sidebarOpen ? "center" : "flex-start" }}
+              disabled={disabled}
             >
               <StyledListItemIcon sx={{ minWidth: sidebarOpen ? 0 : 40 }}>
                 {icon}

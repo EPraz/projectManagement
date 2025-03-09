@@ -34,7 +34,7 @@ export const Section = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const AvatarContainer = styled(Box)(({ theme }) => ({
+export const AvatarContainer = styled(Box)(() => ({
   position: "relative",
   width: "fit-content",
   "&:hover .avatar-overlay": {
@@ -42,7 +42,7 @@ export const AvatarContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const AvatarOverlay = styled(Box)(({ theme }) => ({
+export const AvatarOverlay = styled(Box)(() => ({
   position: "absolute",
   top: 0,
   left: 0,

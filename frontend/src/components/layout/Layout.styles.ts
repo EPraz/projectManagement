@@ -7,7 +7,7 @@ export const LayoutWrapper = styled("div")({
   alignItems: "center",
   minHeight: "99vh",
   width: "100%",
-  backgroundColor: "#f5f5f5",
+  // backgroundColor: "#f5f5f5",
 });
 
 export const LayoutRoot = styled("div")({

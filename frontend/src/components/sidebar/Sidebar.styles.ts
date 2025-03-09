@@ -1,3 +1,4 @@
+import { styled } from "@mui/material/styles";
 import {
   Box,
   Drawer,
@@ -7,123 +8,164 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import styled from "styled-components";
-import { StyledDrawerProps } from "../../types";
+import type { StyledDrawerProps } from "../../types";
 
-export const StyledDrawer = styled(Drawer)<StyledDrawerProps>`
-  & .MuiDrawer-paper {
-    width: ${({ $IsOpen }) => ($IsOpen ? "80px" : "250px")};
-    margin: 16px;
-    border-radius: 16px;
-    background-color: ${({ theme }) => theme.palette.sidebar.background};
-    color: ${({ theme }) => theme.palette.sidebar.text};
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    height: calc(100% - 32px);
-    transition: width 0.3s ease;
-    overflow-x: hidden;
-    position: relative;
-  }
-`;
+export const StyledDrawer = styled(Drawer, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen, theme }) => ({
+  "& .MuiDrawer-paper": {
+    width: $IsOpen ? "80px" : "250px",
+    margin: "16px",
+    borderRadius: "16px",
+    backgroundColor: theme.palette.sidebar.background,
+    color: theme.palette.sidebar.text,
+    boxSizing: "border-box",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+    height: "calc(100vh - 32px)",
+    maxHeight: "calc(100vh - 32px)",
+    transition: "width 0.3s ease",
+    overflowX: "hidden",
+    overflowY: "auto",
+    position: "fixed",
+    zIndex: 1200,
+    "&::-webkit-scrollbar": {
+      width: "4px",
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "rgba(0, 0, 0, 0.1)",
+      borderRadius: "4px",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "rgba(255, 255, 255, 0.2)",
+      borderRadius: "4px",
+    },
+  },
+  "& .MuiBackdrop-root": {
+    display: "none",
+  },
+}));
 
-export const Logo = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 16px;
-  margin-bottom: 8px;
-  position: relative;
-`;
+// Create a placeholder div to maintain layout when the drawer is fixed
+export const SidebarPlaceholder = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen }) => ({
+  width: $IsOpen ? "112px" : "282px", // 80px/250px + 32px margin
+  minWidth: $IsOpen ? "112px" : "282px",
+  transition: "width 0.3s ease, min-width 0.3s ease",
+  flexShrink: 0,
+}));
 
-export const LogoText = styled(Typography)<{ $IsOpen: boolean }>`
-  font-weight: bold;
-  margin-left: 8px;
-  font-size: 18px;
-  opacity: ${({ $IsOpen }) => ($IsOpen ? 0 : 1)};
-  transition: opacity 0.2s ease;
-  white-space: nowrap;
-`;
+export const SidebarContent = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+});
 
-export const StyledListItemButton = styled(ListItemButton)`
-  margin: 4px 8px;
-  border-radius: 8px;
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
-  &.active {
-    background-color: rgba(255, 255, 255, 0.08);
-  }
-`;
+export const Logo = styled("div")({
+  display: "flex",
+  alignItems: "center",
+  padding: "16px",
+  marginBottom: "8px",
+  position: "relative",
+});
 
-export const StyledListItemIcon = styled(ListItemIcon)`
-  min-width: 40px;
-  color: #9e9e9e;
-`;
+export const LogoText = styled(Typography, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen }) => ({
+  fontWeight: "bold",
+  marginLeft: "8px",
+  fontSize: "18px",
+  opacity: $IsOpen ? 0 : 1,
+  transition: "opacity 0.2s ease",
+  whiteSpace: "nowrap",
+}));
 
-export const StyledListItemText = styled(ListItemText)<{
-  $IsOpen: boolean;
-}>`
-  & .MuiListItemText-primary {
-    font-size: 14px;
-    opacity: ${({ $IsOpen }) => ($IsOpen ? 0 : 1)};
-    transition: opacity 0.2s ease;
-    white-space: nowrap;
-  }
-`;
+export const StyledListItemButton = styled(ListItemButton)({
+  margin: "4px 8px",
+  borderRadius: "8px",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+  },
+  "&.active": {
+    backgroundColor: "rgba(255, 255, 255, 0.08)",
+  },
+});
 
-export const UserSection = styled(Box)<{ $IsOpen: boolean }>`
-  margin-top: auto;
-  display: flex;
-  flex-direction: ${({ $IsOpen }) => ($IsOpen ? "column" : "row")};
-  align-items: center;
-  background-color: #0a1414;
-  justify-content: space-between;
-  transition: flex-direction 2s;
-`;
+export const StyledListItemIcon = styled(ListItemIcon)({
+  minWidth: "40px",
+  color: "#9e9e9e",
+});
 
-export const UserBox = styled(Box)<{ $IsOpen: boolean }>`
-  // margin-top: auto;
-  padding: ${({ $IsOpen }) => ($IsOpen ? "16px 8px" : "16px")};
-  display: flex;
-  align-items: center;
-  background-color: #0a1414;
-`;
+export const StyledListItemText = styled(ListItemText, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen }) => ({
+  "& .MuiListItemText-primary": {
+    fontSize: "14px",
+    opacity: $IsOpen ? 0 : 1,
+    transition: "opacity 0.2s ease",
+    whiteSpace: "nowrap",
+  },
+}));
 
-export const UserInfo = styled(Box)<{ $IsOpen: boolean }>`
-  margin-left: 12px;
-  opacity: ${({ $IsOpen }) => ($IsOpen ? 0 : 1)};
-  transition: opacity 0.2s ease;
-  white-space: nowrap;
-  display: ${({ $IsOpen }) => ($IsOpen ? "none" : "block")};
-`;
+export const UserSection = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen }) => ({
+  marginTop: "auto",
+  display: "flex",
+  flexDirection: $IsOpen ? "column" : "row",
+  alignItems: "center",
+  backgroundColor: "#0a1414",
+  justifyContent: "space-between",
+  transition: "flex-direction 0.3s",
+}));
 
-export const UserName = styled(Typography)`
-  font-size: 14px;
-  font-weight: 500;
-`;
+export const UserBox = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen }) => ({
+  padding: $IsOpen ? "16px 8px" : "16px",
+  display: "flex",
+  alignItems: "center",
+  backgroundColor: "#0a1414",
+}));
 
-export const WorkspaceText = styled(Typography)`
-  font-size: 12px;
-  color: #9e9e9e;
-`;
+export const UserInfo = styled(Box, {
+  shouldForwardProp: (prop) => prop !== "$IsOpen",
+})<StyledDrawerProps>(({ $IsOpen }) => ({
+  marginLeft: "12px",
+  opacity: $IsOpen ? 0 : 1,
+  transition: "opacity 0.2s ease",
+  whiteSpace: "nowrap",
+  display: $IsOpen ? "none" : "block",
+}));
 
-export const ThemeToggle = styled(IconButton)`
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  color: ${({ theme }) => theme.palette.sidebar.text};
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.sidebar.hover};
-  }
-`;
+export const UserName = styled(Typography)({
+  fontSize: "14px",
+  fontWeight: 500,
+});
 
-export const CollapseButton = styled(IconButton)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: ${({ theme }) => theme.palette.sidebar.text};
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.sidebar.hover};
-  }
-`;
+export const WorkspaceText = styled(Typography)({
+  fontSize: "12px",
+  color: "#9e9e9e",
+});
+
+export const ThemeToggle = styled(IconButton)(({ theme }) => ({
+  position: "absolute",
+  top: "16px",
+  right: "16px",
+  width: "32px",
+  height: "32px",
+  color: theme.palette.sidebar.text,
+  "&:hover": {
+    backgroundColor: theme.palette.sidebar.hover,
+  },
+}));
+
+export const CollapseButton = styled(IconButton)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  color: theme.palette.sidebar.text,
+  "&:hover": {
+    backgroundColor: theme.palette.sidebar.hover,
+  },
+}));

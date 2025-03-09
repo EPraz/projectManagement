@@ -76,11 +76,16 @@ const mockSettings: UserSettings = {
 };
 
 const navigationItems = [
-  { id: "profile", label: "Profile", icon: PersonIcon },
-  { id: "notifications", label: "Notifications", icon: NotificationsIcon },
-  { id: "security", label: "Security", icon: SecurityIcon },
-  { id: "appearance", label: "Appearance", icon: PaletteIcon },
-  { id: "language", label: "Language", icon: LanguageIcon },
+  { id: "profile", label: "Profile", icon: PersonIcon, disabled: true },
+  {
+    id: "notifications",
+    label: "Notifications",
+    icon: NotificationsIcon,
+    disabled: true,
+  },
+  { id: "security", label: "Security", icon: SecurityIcon, disabled: true },
+  { id: "appearance", label: "Appearance", icon: PaletteIcon, disabled: true },
+  { id: "language", label: "Language", icon: LanguageIcon, disabled: true },
 ];
 
 export default function SettingsPage() {
@@ -123,6 +128,7 @@ export default function SettingsPage() {
               <Button
                 variant="outlined"
                 startIcon={isEditing ? <SaveIcon /> : <EditIcon />}
+                disabled={true}
                 onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
               >
                 {isEditing ? "Save Changes" : "Edit Profile"}
@@ -162,6 +168,7 @@ export default function SettingsPage() {
                   color="error"
                   size="small"
                   startIcon={<DeleteIcon />}
+                  disabled={true}
                   sx={{ width: "fit-content" }}
                 >
                   Remove
@@ -224,6 +231,7 @@ export default function SettingsPage() {
                   <Switch
                     edge="end"
                     checked={value}
+                    disabled={true}
                     onChange={() =>
                       handleNotificationChange(
                         key as keyof UserSettings["notifications"]
@@ -257,7 +265,6 @@ export default function SettingsPage() {
           {navigationItems.map((item) => (
             <StyledListItem
               key={item.id}
-              button
               active={activeSection === item.id}
               onClick={() => setActiveSection(item.id)}
             >

@@ -9,6 +9,7 @@ export interface MenuItem {
   text: string;
   icon: React.ElementType;
   path: string;
+  disabled?: boolean;
 }
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -31,6 +32,7 @@ export const MENU_ITEMS: MenuItem[] = [
     text: "Epics & Features",
     icon: CategoryIcon,
     path: "epics",
+    disabled: true,
   },
 
   {
