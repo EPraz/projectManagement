@@ -6,3 +6,4 @@ export * from "./useCreateSprintGoal";
 export * from "./useCreateGoalTask";
 export * from "./useCreateProjectUser";
 export * from "./useCreateTeamMemberCapacity";
+export * from "./useCreateRetroCard";

@@ -7,3 +7,4 @@ export * from './CreateTaskDto';
 export * from './CreateSprintGoalDto';
 export * from './CreateGoalTaskDto';
 export * from './CreateTeamMemberCapacityDto';
+export * from './CreateRetroCardDto';

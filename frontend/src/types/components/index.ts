@@ -13,3 +13,4 @@ export * from "./StatusConfigProps";
 export * from "./DialogsContainerProps";
 export * from "./ProjectsProps";
 export * from "./TeamMembersProps";
+export * from "./RetrospectiveProps";

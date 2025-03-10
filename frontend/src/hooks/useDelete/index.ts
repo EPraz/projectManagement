@@ -4,3 +4,4 @@ export * from "./useDeleteTask";
 export * from "./useDeleteSpringGoal";
 export * from "./useDeleteGoalTask";
 export * from "./useDeleteTeamMemberCapacity";
+export * from "./useDeleteRetroCard";

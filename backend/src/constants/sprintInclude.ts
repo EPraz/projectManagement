@@ -24,4 +24,9 @@ export const SPRINT_INCLUDE = {
       user: true,
     },
   },
+  retroCard: {
+    include: {
+      author: true,
+    },
+  },
 };

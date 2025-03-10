@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "RetroCardType" ADD VALUE 'IMPROVEMENT';

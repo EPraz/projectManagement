@@ -5,3 +5,4 @@ export * from "./useBulkUpdateTickets";
 export * from "./useUpdateSprintGoal";
 export * from "./useUpdateGoalTask";
 export * from "./useUpdateTeamMemberCapacity";
+export * from "./useUpdateRetroCard";

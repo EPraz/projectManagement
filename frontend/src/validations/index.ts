@@ -5,3 +5,4 @@ export * from "./sprintGoal";
 export * from "./task";
 export * from "./ticket";
 export * from "./teamMemberCapacity";
+export * from "./retrospective";

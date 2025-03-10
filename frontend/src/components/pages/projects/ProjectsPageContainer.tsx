@@ -9,6 +9,7 @@ import ProjectContainerView from "./ProjectContainerView";
 import { useNavigate } from "react-router-dom";
 import { createProjectSchema } from "../../../validations";
 import ProjectMenu from "./ProjectMenu";
+import { ProjectsContainer } from "./ProjectsPage.styles";
 
 const ProjectsPageContainer = () => {
   const { user } = useAuth();
@@ -112,7 +113,7 @@ const ProjectsPageContainer = () => {
   }
 
   return (
-    <>
+    <ProjectsContainer>
       <ProjectContainerView
         projects={filteredProjects}
         loading={loading}
@@ -128,7 +129,6 @@ const ProjectsPageContainer = () => {
         navigate={navigate}
         setFavoriteId={setFavoriteId}
         theme={theme}
-        // Pasa aquí cualquier otra función o estado relevante
       />
       {anchorEl && (
         <Portal>
@@ -150,7 +150,7 @@ const ProjectsPageContainer = () => {
           }}
         />
       )}
-    </>
+    </ProjectsContainer>
   );
 };
 

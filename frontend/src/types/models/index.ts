@@ -11,3 +11,4 @@ export * from "./Ticket";
 export * from "./TicketStatus";
 export * from "./User";
 export * from "./TeamMemberCapacity";
+export * from "./RetroCard";

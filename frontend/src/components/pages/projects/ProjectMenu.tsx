@@ -17,10 +17,20 @@ const ProjectMenu = ({ anchorEl, handleMenuClose }: ProjectMenuProps) => {
         horizontal: "right",
       }}
     >
-      <MenuItem onClick={handleMenuClose}>Edit Project</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Manage Team</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Project Settings</MenuItem>
-      <MenuItem onClick={handleMenuClose} sx={{ color: "error.main" }}>
+      <MenuItem onClick={handleMenuClose} disabled={true}>
+        Edit Project
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose} disabled={true}>
+        Manage Team
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose} disabled={true}>
+        Project Settings
+      </MenuItem>
+      <MenuItem
+        onClick={handleMenuClose}
+        disabled={true}
+        sx={{ color: "error.main" }}
+      >
         Delete Project
       </MenuItem>
     </Menu>

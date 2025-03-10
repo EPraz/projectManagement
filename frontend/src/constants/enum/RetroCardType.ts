@@ -1,0 +1,5 @@
+export enum RetroTypes {
+  POSITIVE = "POSITIVE",
+  NEGATIVE = "NEGATIVE",
+  IMPROVEMENT = "IMPROVEMENT",
+}

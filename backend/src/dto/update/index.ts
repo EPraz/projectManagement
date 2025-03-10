@@ -7,3 +7,4 @@ export * from './UpdateTaskDto';
 export * from './UpdateGoalTaskDto';
 export * from './UpdateSprintGoalDto';
 export * from './UpdateTeamMemberCapacityDto';
+export * from './UpdateRetroCardDto';

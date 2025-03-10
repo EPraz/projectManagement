@@ -38,6 +38,11 @@ export const PROJECT_INCLUDE = {
           user: true,
         },
       },
+      retroCard: {
+        include: {
+          author: true,
+        },
+      },
     },
   },
   tickets: {

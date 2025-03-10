@@ -16,6 +16,7 @@ import {
   Speed as SpeedIcon,
 } from "@mui/icons-material";
 import { getProjectProgress } from "../../../helpers";
+import AvatarGroupsComponent from "./AvatarGroups";
 
 const ProjectCardView = ({
   project,
@@ -93,16 +94,7 @@ const ProjectCardView = ({
           alignItems: "center",
         }}
       >
-        <AvatarGroup
-          max={4}
-          sx={{ "& .MuiAvatar-root": { width: 32, height: 32 } }}
-        >
-          {project.users?.map((user) => (
-            <Tooltip key={user.id} title={user.name}>
-              <Avatar src={user.email} alt={user.name} />
-            </Tooltip>
-          ))}
-        </AvatarGroup>
+        <AvatarGroupsComponent max={4} projectUsers={project.users} />
         <IconButton
           size="small"
           onClick={(e) => handleMenuClick(e, project.id)}

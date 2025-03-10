@@ -1,5 +1,6 @@
 import { SprintGoalStatus } from "../../constants";
 import { Project } from "./Project";
+import { RetroCard } from "./RetroCard";
 import { TeamMemberCapacity } from "./TeamMemberCapacity";
 import { Ticket } from "./Ticket";
 
@@ -15,6 +16,7 @@ export type Sprint = {
   updatedAt: string;
   sprintGoal: SprintGoal[];
   teamMemberCapacities?: TeamMemberCapacity[];
+  retroCard?: RetroCard[];
 };
 
 export type CreateSprintFormData = {

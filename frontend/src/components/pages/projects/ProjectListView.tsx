@@ -14,16 +14,9 @@ import {
   Assignment as AssignmentIcon,
   Group as GroupIcon,
 } from "@mui/icons-material";
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  IconButton,
-  LinearProgress,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, LinearProgress, Typography } from "@mui/material";
 import { formatProjectDate, getProjectProgress } from "../../../helpers";
+import AvatarGroupsComponent from "./AvatarGroups";
 
 const ProjectListView = ({
   filteredProjects,
@@ -127,16 +120,7 @@ const ProjectListView = ({
                   width: "30%",
                 }}
               >
-                <AvatarGroup
-                  max={3}
-                  sx={{ "& .MuiAvatar-root": { width: 32, height: 32 } }}
-                >
-                  {project.users?.map((user) => (
-                    <Tooltip key={user.id} title={user.user.name}>
-                      <Avatar src={user.user.email} alt={user.user.name} />
-                    </Tooltip>
-                  ))}
-                </AvatarGroup>
+                <AvatarGroupsComponent max={3} projectUsers={project.users} />
 
                 <Typography variant="caption" color="text.secondary">
                   {formatProjectDate(project.createdAt)}

@@ -135,6 +135,7 @@ model Sprint {
   updatedAt            DateTime             @updatedAt
   sprintGoal           SprintGoal[]
   teamMemberCapacities TeamMemberCapacity[] // Un sprint tiene muchos registros de capacidad (uno por usuario asignado)
+  retroCard            RetroCard[]
 }
 
 ///////////////////////////////////////////////////////
@@ -153,6 +154,7 @@ model User {
   refreshToken         String?
   projects             Project[]
   teamMemberCapacities TeamMemberCapacity[] // Un usuario puede tener muchos registros de capacidad
+  retroCard            RetroCard[]
 }
 
 model PairProgramming {
@@ -175,6 +177,20 @@ model TeamMemberCapacity {
   createdAt     DateTime @default(now())
 
   @@unique([userId, sprintId])
+}
+
+model RetroCard {
+  id        String        @id @default(uuid())
+  content   String
+  type      RetroCardType
+  likes     Int           @default(0)
+  timestamp DateTime      @default(now())
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  // Opcional: si deseas asociarlo a un sprint
+  sprintId  String
+  sprint    Sprint        @relation(fields: [sprintId], references: [id], onDelete: Cascade)
+  likedBy   String[]
 }
 
 ///////////////////////////////////////////////////////
@@ -286,4 +302,10 @@ enum GoalStatus {
   COMPLETED
   IN_PROGRESS
   AT_RISK
+}
+
+enum RetroCardType {
+  POSITIVE
+  NEGATIVE
+  IMPROVEMENT
 }

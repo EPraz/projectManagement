@@ -12,6 +12,7 @@ import { EpicStatusModule } from './epic-status/epic-status.module';
 import { SprintGoalModule } from './sprint-goal/sprint-goal.module';
 import { UserModule } from './user/user.module';
 import { TeamMemberCapacityModule } from './team-member-capacity/team-member-capacity.module';
+import { RetrospectiveModule } from './retrospective/retrospective.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TeamMemberCapacityModule } from './team-member-capacity/team-member-cap
     SprintGoalModule,
     UserModule,
     TeamMemberCapacityModule,
+    RetrospectiveModule,
   ],
   controllers: [AppController],
   providers: [AppService],
