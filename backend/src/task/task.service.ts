@@ -48,6 +48,7 @@ export class TaskService {
         where: { ticketId },
         include: {
           status: true,
+          assignedUser: true,
         },
       });
     } catch (error: unknown) {
@@ -104,6 +105,9 @@ export class TaskService {
 
       if (!task) throw new NotFoundException('Task not found');
 
+      await this.prisma.task.delete({
+        where: { id },
+      });
       return true;
     } catch (error: unknown) {
       handlePrismaError(error);

@@ -20,4 +20,7 @@ export type Task = {
   // priority: string;
   assignedTo?: string;
   assignedUser?: User;
+  estimatedHours?: number;
+  remainingHours?: number;
+  completedHours?: number;
 };

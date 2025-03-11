@@ -93,9 +93,9 @@ const CapacityBoardHeader = ({
           borderRadius: 1,
           textTransform: "none",
           fontWeight: 500,
-          bgcolor: "warning.main",
+          bgcolor: "primary.main",
           "&:hover": {
-            bgcolor: "warning.dark",
+            bgcolor: "primary.dark",
           },
         }}
         onClick={handleOpenAddDialog}

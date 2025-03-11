@@ -10,14 +10,22 @@ export const removeTaskFromTickets = (
   }));
 };
 
-// Función auxiliar para actualizar la lista de tareas en localTickets para un ticket dado.
-export const updateTaskInTickets = (
+export const updateOrAddTaskInTickets = (
   tickets: Ticket[],
-  taskId: number,
-  updateFn: (task: Task) => Task
+  task: Task,
+  updateFn: (existingTask: Task) => Task
 ): Ticket[] => {
-  return tickets.map((ticket) => ({
-    ...ticket,
-    tasks: ticket.tasks.map((t) => (t.id === taskId ? updateFn(t) : t)),
-  }));
+  return tickets.map((ticket) => {
+    // Solo actualizamos el ticket que corresponde al task
+    if (ticket.id === task.ticketId) {
+      const taskExists = ticket.tasks.some((t) => t.id === task.id);
+      return {
+        ...ticket,
+        tasks: taskExists
+          ? ticket.tasks.map((t) => (t.id === task.id ? updateFn(t) : t))
+          : [...ticket.tasks, task],
+      };
+    }
+    return ticket;
+  });
 };

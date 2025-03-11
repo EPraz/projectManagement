@@ -76,7 +76,11 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
               <Avatar
                 src={task.assignedUser.email}
                 alt={task.assignedUser.name}
-                sx={{ width: 24, height: 24 }}
+                sx={{
+                  width: 24,
+                  height: 24,
+                  backgroundColor: "secondary.main",
+                }}
               />
             </Tooltip>
           ) : (
@@ -86,54 +90,6 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
               </Avatar>
             </Tooltip>
           )}
-
-          {/* <StyledSelect
-            value={task.assignedUser?.id || ""}
-            onChange={handleAssigneeChange}
-            onClick={handleSelectClick}
-            onOpen={() => setSelectOpen(true)}
-            onClose={() => setSelectOpen(false)}
-            open={selectOpen}
-            displayEmpty
-            size="small"
-            renderValue={(selected) => {
-              if (!selected) {
-                return (
-                  <Typography variant="caption" color="text.secondary">
-                    Assign
-                  </Typography>
-                )
-              }
-              const selectedUser = users.find((user) => user.id === selected)
-              return <Typography variant="caption">{selectedUser?.name || "Assigned"}</Typography>
-            }}
-          >
-            <MenuItem value="">
-              <em>Unassigned</em>
-            </MenuItem>
-            {users.map((user) => (
-              <MenuItem key={user.id} value={user.id}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Avatar src={user.email} alt={user.name} sx={{ width: 20, height: 20 }} />
-                  <Typography variant="body2">{user.name}</Typography>
-                </Box>
-              </MenuItem>
-            ))}
-          </StyledSelect> */}
-
-          {/* {task.status && (
-            <Chip
-              label={formatStatusName(task.status.name)}
-              size="small"
-              sx={{
-                height: 20,
-                fontSize: "0.75rem",
-                backgroundColor: alpha(task.status.color || "#9e9e9e", 0.1),
-                color: task.status.color || "text.secondary",
-                fontWeight: 500,
-              }}
-            />
-          )} */}
         </TaskFooter>
       </TaskContent>
     </TaskPaper>

@@ -14,3 +14,5 @@ export * from "./DialogsContainerProps";
 export * from "./ProjectsProps";
 export * from "./TeamMembersProps";
 export * from "./RetrospectiveProps";
+export * from "./TicketEditDialogProps";
+export * from "./TaskEditDialogProps";

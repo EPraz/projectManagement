@@ -39,6 +39,10 @@ export type Ticket = {
   storyPoints?: number;
   dueDate?: string;
   isBlocked?: boolean;
-  blockingTicket?: number;
+  blockedBy?: number | null;
+  blockingTicket?: Ticket;
   tags?: string[];
+  blockedTickets?: Ticket[];
+  _count: any;
+  pairProgrammingUsers: User[];
 };

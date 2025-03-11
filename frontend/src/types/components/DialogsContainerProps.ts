@@ -40,11 +40,12 @@ export interface DialogsContainerProps {
   loadingDeleteTicket: boolean;
   selectedTicket: Ticket | null;
   ticketStatuses: TicketStatus[] | undefined;
+
   //Sprint
   listOfSprints: Sprint[] | null;
   openCreateSprintDialog: boolean;
   setOpenCreateSprintDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateSprint: (data: Partial<Sprint>) => Promise<Sprint | null>;
+  handleCreateSprint: (data: Partial<Sprint>) => Promise<void>;
   handleDeleteSprint: (data: Partial<Sprint>) => Promise<void>;
   openDeleteSprintDialog: boolean;
   setOpenDeleteSprintDialog: React.Dispatch<React.SetStateAction<boolean>>;

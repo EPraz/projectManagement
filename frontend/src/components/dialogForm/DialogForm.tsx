@@ -58,6 +58,7 @@ const DialogForm = <T extends Record<string, any>>({
     reset();
     onDelete && onDelete();
   };
+
   //  Función para obtener el campo correcto basado en `fieldConfig`
   const getFieldComponent = (key: Path<T>) => {
     const fieldOptions = fieldConfig[key];
@@ -237,7 +238,10 @@ const DialogForm = <T extends Record<string, any>>({
               <span>
                 <Button
                   variant="contained"
-                  onClick={handleSubmit(onSubmit)}
+                  onClick={() => {
+                    handleSubmit(onSubmit);
+                    handleClose();
+                  }}
                   disabled={disabled || !isDirty}
                   sx={{ minWidth: 100 }}
                 >

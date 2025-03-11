@@ -11,6 +11,7 @@ import {
 import { Ticket, TicketCardProps } from "../../../types";
 import {
   formatStatusName,
+  getPriorityColor,
   getTypeIcon,
   truncatedTitle,
 } from "../../../helpers";
@@ -69,12 +70,6 @@ const TicketCard: React.FC<TicketCardProps> = ({
             </Tooltip>
           </TicketTitle>
           <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-            {/* <StatusChip
-              label={currentStatus?.name}
-              size="small"
-              statusColor={currentStatus?.color || ""}
-              onClick={(e) => e.stopPropagation()}
-            /> */}
             <StatusIndicator
               status={currentStatus?.name || ""}
               color={currentStatus?.color || ""}
@@ -93,6 +88,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
               open={statusOpen}
               size="small"
               onClick={(e) => e.stopPropagation()}
+              disabled={ticket.isBlocked}
               sx={{
                 minWidth: 130,
                 "& .MuiSelect-select": {
@@ -110,9 +106,6 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 </MenuItem>
               ))}
             </Select>
-            {/* <IconButton size="small" onClick={(e) => e.stopPropagation()}>
-              <MoreVertIcon />
-            </IconButton> */}
           </Box>
         </TicketHeader>
 
@@ -136,7 +129,11 @@ const TicketCard: React.FC<TicketCardProps> = ({
               <Tooltip title="Priority" arrow>
                 <MetricItem>
                   {/* <FlagIcon fontSize="small" /> */}
-                  <PriorityChip label={ticket.priority} size="small" />
+                  <PriorityChip
+                    size="small"
+                    label={ticket.priority}
+                    priorityColor={getPriorityColor(ticket.priority)}
+                  />
                   {/* {getTypeIcon(ticket.priority)} */}
                 </MetricItem>
               </Tooltip>
@@ -154,19 +151,16 @@ const TicketCard: React.FC<TicketCardProps> = ({
             )}
           </TicketMetrics>
 
-          {/* {ticket.assignedUser && ticket.assignedUser?.length > 0 && (
-            <AvatarGroup max={3} sx={{ "& .MuiAvatar-root": { width: 24, height: 24 } }}>
-              {ticket.assignedUser.map((assignee) => (
-                <Tooltip key={assignee.id} title={assignee.name} arrow>
-                  <Avatar src={assignee.avatar} alt={assignee.name} />
-                </Tooltip>
-              ))}
-            </AvatarGroup>
-          )} */}
-          {ticket.assignedUser && (
+          {ticket.assignedUser ? (
             <AvatarGroup
               max={3}
-              sx={{ "& .MuiAvatar-root": { width: 24, height: 24 } }}
+              sx={{
+                "& .MuiAvatar-root": {
+                  width: 24,
+                  height: 24,
+                  backgroundColor: "secondary.dark",
+                },
+              }}
             >
               <Tooltip
                 key={ticket.assignedUser.id}
@@ -179,6 +173,12 @@ const TicketCard: React.FC<TicketCardProps> = ({
                 />
               </Tooltip>
             </AvatarGroup>
+          ) : (
+            <Tooltip title="Unassigned" arrow>
+              <Avatar sx={{ width: 24, height: 24, fontSize: "0.75rem" }}>
+                ?
+              </Avatar>
+            </Tooltip>
           )}
         </Box>
       </TicketInfo>

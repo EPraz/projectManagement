@@ -121,6 +121,11 @@ model Task {
   status             TaskStatus? @relation(fields: [statusId], references: [id])
   ticketId           Int
   ticket             Ticket      @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  assignedTo         String?
+  assignedUser       User?       @relation(fields: [assignedTo], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  estimatedHours     Float?
+  remainingHours     Float?
+  completedHours     Float?
 }
 
 model Sprint {
@@ -155,6 +160,7 @@ model User {
   projects             Project[]
   teamMemberCapacities TeamMemberCapacity[] // Un usuario puede tener muchos registros de capacidad
   retroCard            RetroCard[]
+  tasks                Task[]
 }
 
 model PairProgramming {

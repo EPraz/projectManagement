@@ -1,13 +1,5 @@
 import { ProjectCardViewProps } from "../../../types";
-import {
-  Avatar,
-  AvatarGroup,
-  Box,
-  IconButton,
-  LinearProgress,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, IconButton, LinearProgress, Typography } from "@mui/material";
 import { MetricBox } from "./ProjectsPage.styles";
 import {
   MoreVert as MoreVertIcon,

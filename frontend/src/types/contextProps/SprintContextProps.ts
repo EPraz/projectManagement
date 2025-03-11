@@ -8,4 +8,5 @@ export interface SprintContextProps {
   setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>;
   updateSprintInState: (updatedSprint: Sprint | null) => void;
   removeSprintFromState: (sprintId: string) => void;
+  setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>;
 }

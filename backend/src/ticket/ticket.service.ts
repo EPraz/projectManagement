@@ -145,6 +145,7 @@ export class TicketService {
                   }
                 : undefined,
             },
+            include: TICKET_INCLUDE,
           }),
         ),
       );

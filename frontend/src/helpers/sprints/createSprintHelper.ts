@@ -4,16 +4,11 @@ import { Sprint } from "../../types";
 export const createSprintHandler =
   (
     createSprint: (data: Partial<Sprint>) => Promise<Sprint | null>,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>,
-    sprint: Sprint | null
+    updateSprintInState: (updatedSprint: Sprint | null) => void
   ) =>
   async (data: Partial<Sprint>) => {
     const newSprint = await createSprint(data);
     if (newSprint) {
-      setSprint(newSprint);
-      setOpenDialog(false);
-      if (!sprint) setSprint(newSprint);
+      updateSprintInState(newSprint);
     }
-    return newSprint;
   };

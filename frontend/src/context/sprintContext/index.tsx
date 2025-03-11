@@ -18,6 +18,8 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     loading: projectLoading,
     listOfSprints,
     setListOfSprints,
+    tickets,
+    setTickets,
   } = useProject();
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [loadingSprint, setLoadingSprint] = useState(true);
@@ -25,6 +27,23 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   //  Memoriza `project` para evitar renders innecesarios
   const projectData = useMemo(() => project, [project]);
 
+  const settingSprint = () => {
+    const storedSprintId = localStorage.getItem("selectedSprintId");
+    const lastSelectedSprint = projectData?.sprints.find(
+      (s) => s.id === storedSprintId
+    );
+    const today = new Date();
+    const activeSprint = projectData?.sprints.find(
+      (s) =>
+        s.startDate &&
+        s.endDate &&
+        new Date(s.startDate) <= today &&
+        new Date(s.endDate) >= today
+    );
+    setSprint(
+      lastSelectedSprint || activeSprint || projectData?.sprints[0] || null
+    );
+  };
   //  Manejo del Sprint Seleccionado
   useEffect(() => {
     if (projectLoading || !projectData) return;
@@ -38,22 +57,7 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     }
 
     // Intentamos recuperar el último Sprint seleccionado
-    const storedSprintId = localStorage.getItem("selectedSprintId");
-    const lastSelectedSprint = projectData.sprints.find(
-      (s) => s.id === storedSprintId
-    );
-
-    // Si no hay uno guardado, usamos el activo
-    const today = new Date();
-    const activeSprint = projectData.sprints.find(
-      (s) =>
-        s.startDate &&
-        s.endDate &&
-        new Date(s.startDate) <= today &&
-        new Date(s.endDate) >= today
-    );
-
-    setSprint(lastSelectedSprint || activeSprint || projectData.sprints[0]);
+    settingSprint();
     setLoadingSprint(false);
   }, [projectData, projectLoading]);
 
@@ -61,6 +65,7 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (sprint) {
       localStorage.setItem("selectedSprintId", sprint.id);
+      setTickets(sprint.tickets);
     }
   }, [sprint]);
 
@@ -83,7 +88,8 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     );
 
     if (sprint?.id === sprintId) {
-      setSprint(listOfSprints[0] || null);
+      // Si no hay uno guardado, usamos el activo
+      settingSprint();
     }
   };
 
@@ -96,7 +102,8 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
         listOfSprints,
         sprint,
         setSprint,
-        tickets: sprint?.tickets || [], //  Usamos `sprint.tickets` en lugar de llamadas a la API
+        tickets,
+        setTickets,
         updateSprintInState,
         removeSprintFromState,
       }}

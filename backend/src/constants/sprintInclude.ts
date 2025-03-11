@@ -2,16 +2,20 @@ export const SPRINT_INCLUDE = {
   _count: true,
   tickets: {
     include: {
+      status: true,
       tasks: {
         include: {
           status: true,
+          assignedUser: true,
         },
       },
-      status: true,
-      blockedTickets: true,
       assignedUser: true,
+      blockedTickets: true,
       blockingTicket: true,
+      feature: true,
+      pairProgrammingUsers: true,
       tags: true,
+      sprint: true,
     },
   },
   sprintGoal: {

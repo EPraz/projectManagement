@@ -96,4 +96,8 @@ export class UpdateTicketDto {
   @IsNotEmpty({ message: 'updatedBy is required' })
   @IsEmail({}, { message: 'updatedBy Invalid email' })
   updatedBy: string;
+
+  @IsString({ message: 'discussion must be a string' })
+  @IsOptional()
+  discussion?: string;
 }

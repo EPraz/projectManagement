@@ -14,6 +14,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   onClose,
   onConfirm,
   itemName,
+  disabled = false,
 }) => {
   const handleSubmit = () => {
     onConfirm();
@@ -31,7 +32,12 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary" variant="outlined">
+        <Button
+          onClick={onClose}
+          color="primary"
+          variant="outlined"
+          disabled={disabled}
+        >
           Cancel
         </Button>
         <Button
@@ -43,6 +49,7 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
             color: "white",
             ":hover": { backgroundColor: "white", color: "green" },
           }}
+          disabled={disabled}
         >
           Proceed
         </Button>

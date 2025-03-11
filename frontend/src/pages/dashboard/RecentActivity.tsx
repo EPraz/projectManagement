@@ -7,6 +7,7 @@ import {
   generateActivities,
   getAvatarText,
 } from "./RecentActivity.helpers";
+import { getRandomColor } from "../../helpers";
 
 interface RecentActivityProps {
   project: Project | null;
@@ -49,7 +50,7 @@ export const RecentActivityFeed: React.FC<RecentActivityProps> = ({
               sx={{
                 width: 40,
                 height: 40,
-                bgcolor: `primary.${index % 2 ? "light" : "main"}`,
+                bgcolor: getRandomColor(),
               }}
             >
               {getAvatarText(activity.user.name)}

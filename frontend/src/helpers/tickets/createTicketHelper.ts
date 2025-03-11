@@ -7,23 +7,24 @@ import { Sprint, Ticket } from "../../types";
 export const createTicketHandler =
   (
     createTicket: (data: Partial<Ticket>) => Promise<Ticket | null | undefined>,
-    setOpenTicketDialog: (open: boolean) => void,
-    setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    sprintId: string | undefined,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
+    originalTickets: Ticket[],
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
+    updateSprintInState: (updatedSprint: Sprint | null) => void,
+    sprint: Sprint | null
   ) =>
   async (data: Partial<Ticket>) => {
     const newTicket = await createTicket({
       ...data,
-      createdBy: "xana@xana.com",
-      sprintId,
     });
-    if (newTicket) {
-      setOpenTicketDialog(false);
-      setLocalTickets((prevTickets: Ticket[]) => [...prevTickets, newTicket]);
-      setSprint((prev) => {
-        if (!prev) return prev;
-        return { ...prev, tickets: [...prev.tickets, newTicket] };
-      });
+    if (newTicket && sprint) {
+      const newTicketsList = [...originalTickets, newTicket];
+      setTickets(newTicketsList);
+      const updateSprint: Sprint = {
+        ...sprint,
+        tickets: newTicketsList,
+      };
+      setSprint(updateSprint);
+      updateSprintInState(updateSprint);
     }
   };

@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { useProject, useSprint } from "../../context";
+import { useAuth, useProject, useSprint } from "../../context";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import {
@@ -62,9 +62,17 @@ import DialogsContainer from "../dialogsContainer/DialogsContainer";
 const Layout = () => {
   // Providers
   const { project, loading: loadingProject } = useProject();
+  const { user: currentUser } = useAuth();
 
-  const { tickets, sprint, listOfSprints, setSprint, updateSprintInState } =
-    useSprint();
+  const {
+    tickets,
+    setTickets,
+    sprint,
+    listOfSprints,
+    setSprint,
+    updateSprintInState,
+    removeSprintFromState,
+  } = useSprint();
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
@@ -232,55 +240,79 @@ const Layout = () => {
   const handleCreateTicket = useCallback(
     createTicketHandler(
       createTicket,
-      setOpenCreateTicketDialog,
-      setLocalTickets,
-      sprint?.id,
-      setSprint
-    ),
-    [
-      createTicket,
-      setOpenCreateTicketDialog,
-      setLocalTickets,
-      sprint?.id,
+      tickets,
+      setTickets,
       setSprint,
-    ]
+      updateSprintInState,
+      sprint
+    ),
+    [createTicket, tickets, setTickets, setSprint, updateSprintInState, sprint]
   );
 
   const handleEditTicket = useCallback(
     editTicketHandler(
       updateTicket,
-      setLocalTickets,
-      localTickets,
       tickets,
-      setSprint
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint
     ),
-    [updateTicket, setLocalTickets, localTickets, tickets, setSprint]
+    [updateTicket, tickets, setTickets, setSprint, updateSprintInState, sprint]
   );
 
   const handleDeleteTicket = useCallback(
-    deleteTicketHandler(deleteTicket, setLocalTickets, localTickets, setSprint),
-    [deleteTicket, setLocalTickets, localTickets, setSprint]
+    deleteTicketHandler(
+      deleteTicket,
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint
+    ),
+    [deleteTicket, tickets, setTickets, setSprint, updateSprintInState, sprint]
   );
 
   const handleUpdateTicketOrder = useCallback(
     updateTicketOrderHandler(
-      setLocalTickets,
-      localTickets,
       bulkUpdateTickets,
-      setSprint
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint,
+      currentUser?.email
     ),
-    [setLocalTickets, localTickets, updateTicket, setSprint]
+    [
+      bulkUpdateTickets,
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint,
+      currentUser?.email,
+    ]
   );
 
   const handleUpdateTicketStatus = useCallback(
     updateTicketStatusHandler(
       updateTicket,
-      setLocalTickets,
-      localTickets,
       tickets,
-      setSprint
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint,
+      currentUser?.email
     ),
-    [updateTicket, setLocalTickets, localTickets, tickets, setSprint]
+    [
+      updateTicket,
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint,
+      currentUser?.email,
+    ]
   );
 
   // Functions -> Tasks
@@ -288,42 +320,81 @@ const Layout = () => {
     createTaskHandler(
       createTask,
       setOpenTaskDialog,
-      setLocalTickets,
-      selectedTicketId
+      selectedTicketId,
+      sprint,
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState
     ),
-    [createTask, setOpenTaskDialog, setLocalTickets, selectedTicketId]
+    [
+      createTask,
+      setOpenTaskDialog,
+      selectedTicketId,
+      sprint,
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+    ]
   );
 
   const handleEditTask = useCallback(
-    editTaskHandler(updateTask, setLocalTickets, localTickets, tickets),
-    [updateTask, setLocalTickets, localTickets, tickets]
+    editTaskHandler(
+      updateTask,
+      tickets,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint
+    ),
+    [updateTask, tickets, setTickets, setSprint, updateSprintInState, sprint]
   );
 
   const handleDeleteTask = useCallback(
-    deleteTaskHandler(deleteTask, setLocalTickets, localTickets, setSprint),
-    [deleteTask, setLocalTickets, localTickets, setSprint]
+    deleteTaskHandler(
+      deleteTask,
+      localTickets,
+      setSprint,
+      setTickets,
+      updateSprintInState,
+      sprint
+    ),
+    [
+      deleteTask,
+      localTickets,
+      setSprint,
+      setTickets,
+      updateSprintInState,
+      sprint,
+    ]
   );
 
   const handleOnDragEndTask = useCallback(
     onDragEndTaskHandler(
       updateTask,
-      setLocalTickets,
-      localTickets,
       tickets,
-      project?.taskStatuses
+      project?.taskStatuses,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint
     ),
-    [updateTask, setLocalTickets, localTickets, tickets, project?.taskStatuses]
+    [
+      updateTask,
+      tickets,
+      project?.taskStatuses,
+      setTickets,
+      setSprint,
+      updateSprintInState,
+      sprint,
+    ]
   );
 
   // Functions -> Sprint
   const handleCreateSprint = useCallback(
-    createSprintHandler(
-      createSprint,
-      setSprint,
-      setOpenCreateSprintDialog,
-      sprint
-    ),
-    [createSprint, setSprint, setOpenCreateSprintDialog, sprint]
+    createSprintHandler(createSprint, updateSprintInState),
+    [createSprint, updateSprintInState]
   );
 
   const handleChangeSprint = useCallback(
@@ -332,8 +403,8 @@ const Layout = () => {
   );
 
   const handleDeleteSprint = useCallback(
-    deleteSprintHandler(deleteSprint, setSprint),
-    [deleteSprint, setSprint]
+    deleteSprintHandler(deleteSprint, removeSprintFromState),
+    [deleteSprint, removeSprintFromState]
   );
 
   // Functions -> Goal Board -> Sprint Goal

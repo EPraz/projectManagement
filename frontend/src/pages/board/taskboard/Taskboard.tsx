@@ -66,7 +66,8 @@ const TaskBoard = () => {
                               onClick={() =>
                                 handleUpdateTicketOrder(ticket.id, "up")
                               }
-                              disabled={isFirst || loadingBulkUpdateTickets}
+                              // disabled={isFirst || loadingBulkUpdateTickets}
+                              disabled={true}
                             >
                               <ArrowUpwardIcon fontSize="small" />
                             </IconButton>
@@ -75,7 +76,8 @@ const TaskBoard = () => {
                               onClick={() =>
                                 handleUpdateTicketOrder(ticket.id, "down")
                               }
-                              disabled={isLast || loadingBulkUpdateTickets}
+                              disabled={true}
+                              // disabled={isLast || loadingBulkUpdateTickets}
                             >
                               <ArrowDownwardIcon fontSize="small" />
                             </IconButton>
@@ -92,7 +94,7 @@ const TaskBoard = () => {
                           key={status.id}
                           id={status.name}
                           ticketId={ticket.id}
-                          tasks={ticket.tasks.filter(
+                          tasks={ticket?.tasks?.filter(
                             (task) => task.statusId === status.id
                           )}
                           addTask={

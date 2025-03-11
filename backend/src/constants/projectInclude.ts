@@ -19,6 +19,7 @@ export const PROJECT_INCLUDE = {
           tasks: {
             include: {
               status: true,
+              assignedUser: true,
             },
           },
           status: true,
@@ -51,8 +52,16 @@ export const PROJECT_INCLUDE = {
       tasks: {
         include: {
           status: true,
+          assignedUser: true,
         },
       },
+      assignedUser: true,
+      blockedTickets: true,
+      blockingTicket: true,
+      feature: true,
+      pairProgrammingUsers: true,
+      tags: true,
+      sprint: true,
     },
   },
   ticketStatuses: true,

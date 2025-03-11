@@ -4,24 +4,24 @@ import { removeTaskFromTickets } from "../utilityTicketsTasksHelpers";
 export const deleteTaskHandler =
   (
     deleteTask: (task: Partial<Task>) => Promise<boolean>,
-    setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
     localTickets: Ticket[],
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
+    updateSprintInState: (updatedSprint: Sprint | null) => void,
+    sprint: Sprint | null
   ) =>
   async (task: Partial<Task>) => {
     if (!task.id) return;
     const success = await deleteTask(task);
 
-    if (success) {
+    if (success && sprint) {
       const updatedTickets = removeTaskFromTickets(localTickets, task.id);
-      setLocalTickets(updatedTickets);
-      setSprint((prev) => {
-        if (!prev) return prev;
-
-        return {
-          ...prev,
-          tickets: updatedTickets,
-        };
-      });
+      setTickets(updatedTickets);
+      const updateSprint: Sprint = {
+        ...sprint,
+        tickets: updatedTickets,
+      };
+      setSprint(updateSprint);
+      updateSprintInState(updateSprint);
     }
   };

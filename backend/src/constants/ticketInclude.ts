@@ -4,6 +4,7 @@ export const TICKET_INCLUDE = {
   tasks: {
     include: {
       status: true,
+      assignedUser: true,
     },
   },
   sprint: true,
@@ -11,6 +12,7 @@ export const TICKET_INCLUDE = {
   blockedTickets: true,
   blockingTicket: true,
   feature: true,
+  pairProgrammingUsers: true,
   project: true,
   tags: true,
 };

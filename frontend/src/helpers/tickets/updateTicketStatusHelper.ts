@@ -8,49 +8,38 @@ import { pickProps } from "../selectPropsHelper";
 export const updateTicketStatusHandler =
   (
     updateTicket: (data: Partial<Ticket>) => Promise<Ticket | null | undefined>,
-    setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    localTickets: Ticket[],
     originalTickets: Ticket[],
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
+    updateSprintInState: (updatedSprint: Sprint | null) => void,
+    sprint: Sprint | null,
+    currentUserEmail: string | undefined
   ) =>
   async (ticketId: number, newStatusId: string) => {
-    // Actualización optimista
-    const updatedTickets = localTickets.map((t) =>
-      t.id === ticketId ? { ...t, statusId: newStatusId } : t
-    );
-    setLocalTickets(updatedTickets);
+    const ticketToUpdate = originalTickets
+      .map((t) => (t.id === ticketId ? { ...t, statusId: newStatusId } : t))
+      .find((x) => x.id === ticketId);
 
-    // Construir el payload usando pickProps
-    const ticketToUpdate = updatedTickets.find((x) => x.id === ticketId);
     if (!ticketToUpdate) return;
 
-    const updatedData: Partial<Ticket> = {
+    const dataToUpdate: Partial<Ticket> = {
       ...pickProps(ticketToUpdate, ["id", "statusId"]),
-      updatedBy: "xana@xana.com",
+      updatedBy: currentUserEmail,
     };
 
-    // Llamada al Backend
-    const updatedTicket = await updateTicket(updatedData);
+    const updatedTicket = await updateTicket(dataToUpdate);
 
-    // Actualización final basada en la respuesta del backend
-    if (updatedTicket) {
-      setLocalTickets((prevTickets) =>
-        prevTickets.map((t) => (t.id === updatedTicket.id ? updatedTicket : t))
+    if (updatedTicket && sprint) {
+      const newTicketsList = originalTickets.map((x) =>
+        x.id === updatedTicket.id ? { ...x, ...updatedTicket } : x
       );
-      setSprint((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          tickets: prev.tickets.map((t) =>
-            t.id === updatedTicket.id ? updatedTicket : t
-          ),
-        };
-      });
-    } else {
-      setLocalTickets(originalTickets); // Revertir en caso de error
-      setSprint((prev) => {
-        if (!prev) return prev;
-        return { ...prev, tickets: originalTickets };
-      });
+      setTickets(newTicketsList);
+
+      const updateSprint: Sprint = {
+        ...sprint,
+        tickets: newTicketsList,
+      };
+      setSprint(updateSprint);
+      updateSprintInState(updateSprint);
     }
   };

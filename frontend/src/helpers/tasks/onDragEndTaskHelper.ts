@@ -1,6 +1,6 @@
 import { DragEndEvent } from "@dnd-kit/core";
-import { Task, TaskStatus, Ticket } from "../../types";
-import { updateTaskInTickets } from "../utilityTicketsTasksHelpers";
+import { Sprint, Task, TaskStatus, Ticket } from "../../types";
+import { updateOrAddTaskInTickets } from "../utilityTicketsTasksHelpers";
 import { pickProps } from "../selectPropsHelper";
 
 /**
@@ -10,10 +10,12 @@ import { pickProps } from "../selectPropsHelper";
 export const onDragEndTaskHandler =
   (
     updateTask: (data: Partial<Task>) => Promise<Task | null | undefined>,
-    setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    localTickets: Ticket[],
     originalTickets: Ticket[],
-    projectTaskStatuses: TaskStatus[] | undefined
+    projectTaskStatuses: TaskStatus[] | undefined,
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
+    updateSprintInState: (updatedSprint: Sprint | null) => void,
+    sprint: Sprint | null
   ) =>
   async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -22,7 +24,7 @@ export const onDragEndTaskHandler =
     const taskId = active.id as number;
     const newStatusName = over.id as string;
 
-    const allTasks = localTickets.flatMap((ticket) => ticket.tasks);
+    const allTasks = originalTickets.flatMap((ticket) => ticket.tasks);
     const task = allTasks.find((task) => task.id === taskId);
     if (!task) return;
 
@@ -34,16 +36,20 @@ export const onDragEndTaskHandler =
     );
 
     // Actualización optimista: actualizamos localTickets
-    const updatedTickets = updateTaskInTickets(localTickets, taskId, (t) => ({
-      ...t,
-      statusId: newStatus?.id ?? t.statusId,
-    }));
-    setLocalTickets(updatedTickets);
+    const updatedTickets = updateOrAddTaskInTickets(
+      originalTickets,
+      task,
+      (t) => ({
+        ...t,
+        statusId: newStatus?.id ?? t.statusId,
+      })
+    );
 
     // Obtenemos la tarea actualizada
     const taskUpdate = updatedTickets
       .flatMap((ticket) => ticket.tasks)
       .find((t) => t.id === taskId);
+
     if (!taskUpdate) return;
 
     const updatedData: Partial<Task> = {
@@ -52,11 +58,19 @@ export const onDragEndTaskHandler =
     };
 
     const response = await updateTask(updatedData);
-    if (response) {
-      setLocalTickets((prevTickets) =>
-        updateTaskInTickets(prevTickets, response.id, () => response)
+
+    if (response && sprint) {
+      const newTicketsList = updateOrAddTaskInTickets(
+        originalTickets,
+        response,
+        () => response
       );
-    } else {
-      setLocalTickets(originalTickets);
+      setTickets(newTicketsList);
+      const updateSprint: Sprint = {
+        ...sprint,
+        tickets: newTicketsList,
+      };
+      setSprint(updateSprint);
+      updateSprintInState(updateSprint);
     }
   };

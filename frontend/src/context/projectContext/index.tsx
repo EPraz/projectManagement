@@ -8,7 +8,7 @@ import {
   useMemo,
 } from "react";
 import { useParams } from "react-router-dom";
-import { Project, Sprint } from "../../types";
+import { Project, Sprint, Ticket } from "../../types";
 import { useApi } from "../apiContext";
 import { Loading } from "../../components";
 
@@ -18,6 +18,8 @@ const ProjectContext = createContext<{
   listOfSprints: Sprint[];
   setListOfSprints: React.Dispatch<React.SetStateAction<Sprint[]>>;
   setProject: React.Dispatch<React.SetStateAction<Project | null>>;
+  setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>;
+  tickets: Ticket[];
 } | null>(null);
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
@@ -26,6 +28,7 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
   const [listOfSprints, setListOfSprints] = useState<Sprint[]>([]);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
 
   //  Verificar si estamos en una página de proyecto antes de cargar datos
   const isProjectPage = useMemo(
@@ -63,6 +66,13 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
     });
   }, [listOfSprints]);
 
+  useEffect(() => {
+    setProject((prev) => {
+      if (!prev) return prev;
+      return { ...prev, tickets: tickets };
+    });
+  }, [tickets]);
+
   const memoizedProject = useMemo(() => project, [project]);
 
   if (loading) return <Loading message="Cargando proyecto..." />;
@@ -75,6 +85,8 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
         listOfSprints,
         setListOfSprints,
         setProject,
+        tickets,
+        setTickets,
       }}
     >
       {children}

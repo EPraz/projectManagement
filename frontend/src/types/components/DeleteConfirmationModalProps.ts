@@ -3,4 +3,5 @@ export interface DeleteConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void;
   itemName: string;
+  disabled?: boolean;
 }

@@ -142,19 +142,21 @@ export const generateActivities = (
 
 // Helper function to get user name from ID
 export const getUserName = (
-  userId: string,
+  userEmail: string,
   project: Project | null
 ): string | null => {
   if (!project || !project.users) return null;
 
-  const projectUser = project.users.find((pu) => pu.userId === userId);
-  if (projectUser && projectUser.user) {
-    return projectUser.user.name;
+  const projectUser = project.users.find((pu) => pu.email === userEmail);
+  if (projectUser && projectUser.name) {
+    return projectUser.name;
   }
 
   // Check product managers
   if (project.productManagers) {
-    const manager = project.productManagers.find((pm) => pm.id === userId);
+    const manager = project.productManagers.find(
+      (pm) => pm.email === userEmail
+    );
     if (manager) return manager.name;
   }
 

@@ -1,31 +1,29 @@
-import { Task, Ticket } from "../../types";
-import { updateTaskInTickets } from "../utilityTicketsTasksHelpers";
+import { Sprint, Task, Ticket } from "../../types";
+import { updateOrAddTaskInTickets } from "../utilityTicketsTasksHelpers";
 
-//  Edit Task Handler
 export const editTaskHandler =
   (
     updateTask: (data: Partial<Task>) => Promise<Task | null | undefined>,
-    setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    localTickets: Ticket[],
-    originalTickets: Ticket[]
+    originalTickets: Ticket[],
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
+    updateSprintInState: (updatedSprint: Sprint | null) => void,
+    sprint: Sprint | null
   ) =>
   async (data: Partial<Task>) => {
-    const updatedTickets = updateTaskInTickets(localTickets, data.id!, (t) => ({
-      ...t,
-      ...data,
-    }));
-    setLocalTickets(updatedTickets);
-
-    const updatedTask = await updateTask({
-      ...data,
-      updatedBy: "xana@xana.com",
-    });
-
-    if (updatedTask) {
-      setLocalTickets((prevTickets) =>
-        updateTaskInTickets(prevTickets, updatedTask.id, () => updatedTask)
+    const updatedTask = await updateTask(data);
+    if (updatedTask && sprint) {
+      const newTicketsList = updateOrAddTaskInTickets(
+        originalTickets,
+        updatedTask,
+        () => updatedTask
       );
-    } else {
-      setLocalTickets(originalTickets);
+      setTickets(newTicketsList);
+      const updateSprint: Sprint = {
+        ...sprint,
+        tickets: newTicketsList,
+      };
+      setSprint(updateSprint);
+      updateSprintInState(updateSprint);
     }
   };

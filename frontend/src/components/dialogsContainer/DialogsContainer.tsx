@@ -1,14 +1,6 @@
-// DialogsContainer.jsx
 import React from "react";
+import { DeleteConfirmationModal, DialogForm, Portal } from "..";
 import {
-  DeleteConfirmationModal,
-  DialogForm,
-  EditDialogForm,
-  Portal,
-} from "..";
-import {
-  editTaskSchema,
-  editTicketSchema,
   createSprintSchema,
   createTaskSchema,
   createTicketSchema,
@@ -17,10 +9,13 @@ import {
   createGoalTaskSchema,
   editGoalTaskSchema,
 } from "../../validations";
-import { SprintGoalStatus, TicketPriority, TicketType } from "../../constants";
+import { SprintGoalStatus } from "../../constants";
 import { DialogsContainerProps } from "../../types";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { formatStatusName } from "../../helpers";
+import { useAuth, useProject } from "../../context";
+import TaskEditDialog from "../taskEditDialog/TaskEditDialog";
+import TicketEditDialog from "../ticketEditDialog/TicketEditDialog";
 
 const DialogsContainer: React.FC<DialogsContainerProps> = ({
   //Tasks
@@ -35,7 +30,6 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   loadingUpdateTask,
   loadingDeleteTask,
   selectedTask,
-  selectedTasksStatuses,
   openDeleteTaskDialog,
   setOpenDeleteTaskDialog,
 
@@ -51,7 +45,6 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   loadingUpdateTickets,
   loadingDeleteTicket,
   selectedTicket,
-  ticketStatuses,
   openDeleteTicketDialog,
   setOpenDeleteTicketDialog,
 
@@ -97,6 +90,8 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id: projectId } = useParams();
+  const { user: currentUser } = useAuth();
+  const { project } = useProject();
 
   const handleCloseCleanUrl = (param: "ticketId" | "taskId") => {
     const currentTab = searchParams.get("tab") || "board";
@@ -116,7 +111,14 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onSubmit={handleCreateTicket}
           schema={createTicketSchema}
           disabled={loadingPostTickets}
-          defaultValues={{ title: "", description: "" }}
+          defaultValues={{
+            title: "",
+            description: "",
+            createdBy: currentUser?.email,
+          }}
+          fieldConfig={{
+            createdBy: { disabled: true, hidden: true },
+          }}
         />
       )}
       {openTaskDialog && (
@@ -127,11 +129,18 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onSubmit={handleCreateTask}
           schema={createTaskSchema}
           disabled={loadingPostTasks}
-          defaultValues={{ title: "", description: "" }}
+          defaultValues={{
+            title: "",
+            description: "",
+            createdBy: currentUser?.email,
+          }}
+          fieldConfig={{
+            createdBy: { disabled: true, hidden: true },
+          }}
         />
       )}
       {openCreateSprintDialog && (
-        <DialogForm
+        <DialogForm<Partial<CreateSprintFormData>>
           open={openCreateSprintDialog}
           title="Create Sprint"
           onClose={() => setOpenCreateSprintDialog(false)}
@@ -140,7 +149,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           disabled={loadingCreateSprint || loadingDeleteSprint}
           defaultValues={{
             name: "",
-            startDate: null,
+            startDate: new Date().toDateString(),
             endDate: null,
             projectId: projectId,
           }}
@@ -186,123 +195,37 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
       {/* Edit Section */}
 
       {selectedTask && openEditTaskDialog && (
-        <EditDialogForm
+        <TaskEditDialog
+          onSave={handleEditTask}
           open={openEditTaskDialog}
           onClose={() => {
             setOpenEditTaskDialog(false);
             handleCloseCleanUrl("taskId");
           }}
-          onSubmit={handleEditTask}
+          task={selectedTask}
           onDelete={handleDeleteTask}
-          schema={editTaskSchema}
-          defaultValues={selectedTask}
-          disabled={loadingDeleteTask || loadingUpdateTask}
-          idNumber={selectedTask.id.toString()}
-          categoryType="Task Type"
-          user={{ name: "John Doe", initials: "JD" }}
-          sections={[
-            { title: "Description", fields: ["description"], expanded: true },
-            { title: "Notes", fields: ["notes"] },
-          ]}
-          selectFields={[
-            {
-              name: "status",
-              label: "Status",
-              options: (selectedTasksStatuses || []).map((ts) => ({
-                id: ts.id,
-                name: ts.name,
-                position: ts.position,
-              })),
-            },
-          ]}
-          topCenterFields={["status"]}
-          rightPanelFields={["createdBy", "createdAt"]}
+          users={project?.users}
+          disabled={loadingUpdateTask}
         />
       )}
 
       {selectedTicket && openEditTicketDialog && (
-        <EditDialogForm
-          open={openEditTicketDialog}
+        <TicketEditDialog
+          features={project?.epics.flatMap((x) => x.features)}
           onClose={() => {
             setOpenEditTicketDialog(false);
             handleCloseCleanUrl("ticketId");
           }}
-          onSubmit={handleEditTicket}
+          onSave={handleEditTicket}
           onDelete={handleDeleteTicket}
-          schema={editTicketSchema}
-          defaultValues={selectedTicket}
-          disabled={loadingUpdateTickets || loadingDeleteTicket}
-          idNumber={selectedTicket.id.toString()}
-          categoryType={"Product Backlog Item"}
-          user={{ name: "John Doe", initials: "JD" }}
-          sections={[
-            { title: "Description", fields: ["description"], expanded: true },
-            { title: "Aditional Details", fields: ["additionalDetails"] },
-            {
-              title: "Acceptance Criteria",
-              fields: ["acceptanceCriteria"],
-              expanded: true,
-            },
-            { title: "Design Information", fields: ["designInformation"] },
-            { title: "Notes", fields: ["notes"] },
-            { title: "Tags", fields: ["tags"] },
-          ]}
-          selectFields={[
-            {
-              name: "status",
-              label: "Status",
-              options: (ticketStatuses || []).map((ts) => ({
-                id: ts.id,
-                name: ts.name,
-                position: ts.position,
-              })),
-            },
-            {
-              name: "sprint",
-              label: "Sprint",
-              options: (listOfSprints || []).map((ts) => ({
-                id: ts.id,
-                name: ts.name,
-              })),
-            },
-            {
-              name: "priority",
-              label: "Priority",
-              options: Object.values(TicketPriority).map((priority) => ({
-                id: priority,
-                name: priority,
-              })),
-            },
-            {
-              name: "type",
-              label: "Type",
-              options: Object.values(TicketType).map((type) => ({
-                id: type,
-                name: type,
-              })),
-            },
-            {
-              name: "assignedTo",
-              label: "Assigned To",
-              options: [], //  Opciones a llenar con los usuarios cuando se implemente
-            },
-          ]}
-          topCenterFields={[
-            "status",
-            "sprint",
-            "priority",
-            "type",
-            "assignedTo",
-            "dueDate",
-          ]}
-          rightPanelFields={[
-            "createdBy",
-            "createdAt",
-            "estimatedHours",
-            "remainingHours",
-            "completedHours",
-            "storyPoints",
-          ]}
+          open={openEditTicketDialog}
+          projects={[]}
+          sprints={listOfSprints}
+          statuses={project?.ticketStatuses}
+          ticket={selectedTicket}
+          tickets={project?.tickets}
+          users={project?.users}
+          disabled={loadingUpdateTickets}
         />
       )}
 
@@ -370,6 +293,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onClose={() => setOpenDeleteTicketDialog(false)}
           onConfirm={() => handleDeleteTicket(selectedTicket)}
           itemName={selectedTicket.title}
+          disabled={loadingDeleteTicket}
         />
       )}
 
@@ -379,6 +303,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onClose={() => setOpenDeleteTaskDialog(false)}
           onConfirm={() => handleDeleteTask(selectedTask)}
           itemName={selectedTask.title}
+          disabled={loadingDeleteTask}
         />
       )}
 
@@ -388,6 +313,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onClose={() => setOpenDeleteSprintDialog(false)}
           onConfirm={() => handleDeleteSprint(selectedSprint)}
           itemName={selectedSprint.name}
+          disabled={loadingDeleteSprint}
         />
       )}
 

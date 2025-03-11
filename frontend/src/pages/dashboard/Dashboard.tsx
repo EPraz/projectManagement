@@ -103,7 +103,7 @@ const Dashboard = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <StatCard>
-                <StatIcon>
+                <StatIcon sx={{ color: "secondary.light" }}>
                   <AccessTimeIcon />
                 </StatIcon>
                 <Box>
@@ -119,7 +119,7 @@ const Dashboard = () => {
 
             <Grid size={{ xs: 12, md: 6 }}>
               <StatCard>
-                <StatIcon>
+                <StatIcon sx={{ color: "secondary.dark" }}>
                   <InsertDriveFileIcon />
                 </StatIcon>
                 <Box>
@@ -135,7 +135,7 @@ const Dashboard = () => {
 
             <Grid size={{ xs: 12, md: 6 }}>
               <StatCard>
-                <StatIcon>
+                <StatIcon sx={{ color: "secondary.main" }}>
                   <FiberManualRecordIcon />
                 </StatIcon>
                 <Box>
@@ -154,9 +154,7 @@ const Dashboard = () => {
 
             <Grid size={{ xs: 12, md: 6 }}>
               <StatCard>
-                <StatIcon
-                  sx={{ bgcolor: "warning.light", color: "warning.main" }}
-                >
+                <StatIcon sx={{ color: "error.main" }}>
                   <FiberManualRecordIcon />
                 </StatIcon>
                 <Box>

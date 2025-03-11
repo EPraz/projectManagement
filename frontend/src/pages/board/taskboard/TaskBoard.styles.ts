@@ -4,7 +4,7 @@ import { TicketPriority, TicketType } from "../../../constants";
 import { ticketColors } from "../../../helpers";
 
 export const BoardContainer = styled(Box)(({ theme }) => ({
-  height: "calc(100vh - 130px)", // Adjust based on your header/footer heights
+  height: "calc(95vh - 130px)", // Adjust based on your header/footer heights
   display: "flex",
   flexDirection: "column",
   backgroundColor: theme.palette.background.default,
@@ -179,8 +179,13 @@ export const StatusChip = styled(Chip, {
   },
 }));
 
-export const PriorityChip = styled(Chip)(() => ({
-  height: 24,
-  fontSize: "0.75rem",
+export const PriorityChip = styled(Chip, {
+  shouldForwardProp: (prop) => prop !== "priorityColor",
+})<{ priorityColor: string }>(({ theme, priorityColor }) => ({
+  backgroundColor: priorityColor,
+  color: "#fff",
   fontWeight: 500,
+  "& .MuiChip-icon": {
+    color: "inherit",
+  },
 }));

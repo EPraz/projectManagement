@@ -1,15 +1,16 @@
-import { Task, Ticket } from "../../types";
+import { Sprint, Task, Ticket } from "../../types";
+import { updateOrAddTaskInTickets } from "../utilityTicketsTasksHelpers";
 
-/**
- * Handler para crear una tarea.
- * Currifica las dependencias para que la función resultante sólo reciba la data a crear.
- */
 export const createTaskHandler =
   (
     createTask: (data: Partial<Task>) => Promise<Task | null | undefined>,
     setOpenTaskDialog: (open: boolean) => void,
-    setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    selectedTicketId: number
+    selectedTicketId: number,
+    sprint: Sprint | null,
+    tickets: Ticket[],
+    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
+    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
+    updateSprintInState: (updatedSprint: Sprint | null) => void
   ) =>
   async (data: Partial<Task>) => {
     const newTask = await createTask({
@@ -17,14 +18,19 @@ export const createTaskHandler =
       createdBy: "xana@xa.com",
       ticketId: selectedTicketId,
     });
-    if (newTask) {
-      setOpenTaskDialog(false);
-      setLocalTickets((prevTickets: Ticket[]) =>
-        prevTickets.map((ticket: Ticket) =>
-          ticket.id === newTask.ticketId
-            ? { ...ticket, tasks: [...ticket.tasks, newTask] }
-            : ticket
-        )
+    if (newTask && sprint) {
+      const newTicketsList = updateOrAddTaskInTickets(
+        tickets,
+        newTask,
+        () => newTask
       );
+      setTickets(newTicketsList);
+      const updateSprint: Sprint = {
+        ...sprint,
+        tickets: newTicketsList,
+      };
+      setSprint(updateSprint);
+      updateSprintInState(updateSprint);
+      setOpenTaskDialog(false);
     }
   };

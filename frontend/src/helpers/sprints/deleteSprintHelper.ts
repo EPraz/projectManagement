@@ -4,9 +4,11 @@ import { Sprint } from "../../types";
 export const deleteSprintHandler =
   (
     deleteSprint: (data: Partial<Sprint>) => Promise<boolean>,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>
+    removeSprintFromState: (sprintId: string) => void
   ) =>
   async (data: Partial<Sprint>) => {
+    if (!data.id) return;
     const success = await deleteSprint(data);
-    if (success) setSprint(null);
+
+    if (success) removeSprintFromState(data.id);
   };

@@ -96,7 +96,7 @@ const CapacityBoardTable = ({
                         sx={{
                           width: 36,
                           height: 36,
-                          bgcolor: "primary.main",
+                          bgcolor: "secondary.main",
                           color: "white",
                           fontWeight: "bold",
                         }}
@@ -118,8 +118,8 @@ const CapacityBoardTable = ({
                       label="Development"
                       size="small"
                       sx={{
-                        bgcolor: "secondary.light",
-                        color: "secondary.dark",
+                        bgcolor: "primary.light",
+                        color: "white",
                         fontWeight: 500,
                       }}
                     />

@@ -21,7 +21,7 @@ const TaskColumn: React.FC<TaskColumnProps> = ({ tasks, addTask, id }) => {
   return (
     <BodyCell ref={setNodeRef}>
       <TaskContainer>
-        {tasks.map((task) => (
+        {tasks?.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
