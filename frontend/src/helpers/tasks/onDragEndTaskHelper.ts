@@ -1,5 +1,5 @@
 import { DragEndEvent } from "@dnd-kit/core";
-import { Sprint, Task, TaskStatus, Ticket } from "../../types";
+import { Task, TaskStatus, Ticket } from "../../types";
 import { updateOrAddTaskInTickets } from "../utilityTicketsTasksHelpers";
 import { pickProps } from "../selectPropsHelper";
 
@@ -12,10 +12,7 @@ export const onDragEndTaskHandler =
     updateTask: (data: Partial<Task>) => Promise<Task | null | undefined>,
     originalTickets: Ticket[],
     projectTaskStatuses: TaskStatus[] | undefined,
-    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    updateSprintInState: (updatedSprint: Sprint | null) => void,
-    sprint: Sprint | null
+    updateListOfTickets: (listofTickets: Ticket[]) => void
   ) =>
   async (event: DragEndEvent) => {
     const { active, over } = event;
@@ -59,18 +56,12 @@ export const onDragEndTaskHandler =
 
     const response = await updateTask(updatedData);
 
-    if (response && sprint) {
+    if (response) {
       const newTicketsList = updateOrAddTaskInTickets(
         originalTickets,
         response,
         () => response
       );
-      setTickets(newTicketsList);
-      const updateSprint: Sprint = {
-        ...sprint,
-        tickets: newTicketsList,
-      };
-      setSprint(updateSprint);
-      updateSprintInState(updateSprint);
+      updateListOfTickets(newTicketsList);
     }
   };

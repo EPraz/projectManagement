@@ -56,6 +56,7 @@ const ProjectGridView = ({
             <CardContent sx={{ flex: 1 }}>
               <ProjectCardView
                 project={project}
+                allTickets={project.tickets}
                 handleMenuClick={handleMenuClick}
               />
             </CardContent>

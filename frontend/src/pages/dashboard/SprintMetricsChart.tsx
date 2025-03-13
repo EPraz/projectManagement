@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Paper, Tooltip } from "@mui/material";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-import { Sprint, Ticket, TicketStatus } from "../../types";
+import { Ticket, TicketStatus } from "../../types";
 import { formatStatusName } from "../../helpers";
 
 // Fallback colors in case status doesn't have a color
@@ -15,11 +15,11 @@ const FALLBACK_COLORS = [
 ];
 
 interface SprintMetricsChartProps {
-  sprint: Sprint | null;
+  tickets: Ticket[];
 }
 
-const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ sprint }) => {
-  if (!sprint?.tickets || sprint.tickets.length === 0) {
+const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ tickets }) => {
+  if (tickets.length === 0) {
     return (
       <Paper
         elevation={0}
@@ -58,7 +58,7 @@ const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ sprint }) => {
   const statusGroups: Record<
     string,
     { status: TicketStatus; tickets: Ticket[] }
-  > = sprint.tickets.reduce((acc, ticket) => {
+  > = tickets.reduce((acc, ticket) => {
     if (!ticket.status) return acc;
 
     const statusId = ticket.status.id;
@@ -83,12 +83,10 @@ const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ sprint }) => {
     }));
 
   // Calculate blocked tickets
-  const blockedCount = sprint.tickets.filter(
-    (ticket) => ticket.isBlocked
-  ).length;
+  const blockedCount = tickets.filter((ticket) => ticket.isBlocked).length;
 
   // Calculate completion metrics
-  const totalTickets = sprint.tickets.length;
+  const totalTickets = tickets.length;
 
   // Find the "Done" status (assuming it has a name like "Done", "Completed", etc.)
   const doneStatusIds = Object.values(statusGroups)
@@ -99,7 +97,7 @@ const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ sprint }) => {
     )
     .map((group) => group.status.id);
 
-  const completedTickets = sprint.tickets.filter(
+  const completedTickets = tickets.filter(
     (ticket) => ticket.status && doneStatusIds.includes(ticket.status.id)
   ).length;
 
@@ -107,23 +105,23 @@ const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ sprint }) => {
     totalTickets > 0 ? Math.round((completedTickets / totalTickets) * 100) : 0;
 
   // Calculate story points
-  const totalStoryPoints = sprint.tickets.reduce(
+  const totalStoryPoints = tickets.reduce(
     (sum, ticket) => sum + (ticket.storyPoints || 0),
     0
   );
 
-  const completedStoryPoints = sprint.tickets
+  const completedStoryPoints = tickets
     .filter(
       (ticket) => ticket.status && doneStatusIds.includes(ticket.status.id)
     )
     .reduce((sum, ticket) => sum + (ticket.storyPoints || 0), 0);
 
   // Calculate estimated vs remaining hours
-  const totalEstimatedHours = sprint.tickets.reduce(
+  const totalEstimatedHours = tickets.reduce(
     (sum, ticket) => sum + (ticket.estimatedHours || 0),
     0
   );
-  const totalRemainingHours = sprint.tickets.reduce(
+  const totalRemainingHours = tickets.reduce(
     (sum, ticket) => sum + (ticket.remainingHours || 0),
     0
   );
@@ -138,7 +136,7 @@ const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ sprint }) => {
           Sprint Progress
         </Typography>
 
-        <Box sx={{ height: 200 }}>
+        <Box sx={{ height: 200, mt: 5 }}>
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

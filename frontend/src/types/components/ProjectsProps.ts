@@ -1,5 +1,5 @@
 import { NavigateFunction } from "react-router-dom";
-import { Project } from "../models";
+import { Project, Ticket } from "../models";
 import { Theme } from "@mui/material";
 
 // Tipos reutilizables
@@ -16,6 +16,7 @@ type SetFavoriteId = React.Dispatch<React.SetStateAction<string | null>>;
 export interface ProjectCardViewProps {
   project: Project;
   handleMenuClick: MenuClickHandler;
+  allTickets: Ticket[];
 }
 
 export interface ProjectContainerViewProps {

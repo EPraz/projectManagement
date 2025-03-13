@@ -8,14 +8,18 @@ import {
   validateFeatureOrSprint,
 } from 'src/helper';
 import { TICKET_INCLUDE } from 'src/constants';
+import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
 export class TicketService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   public async create(request: CreateTicketDto): Promise<Ticket | null> {
     try {
-      return await this.prisma.$transaction(async (prisma) => {
+      const newTicket = await this.prisma.$transaction(async (prisma) => {
         const projectId = await validateFeatureOrSprint(
           this.prisma,
           request.featureId,
@@ -56,6 +60,10 @@ export class TicketService {
           include: TICKET_INCLUDE,
         });
       });
+
+      this.eventsGateway.emitTicketCreate(newTicket);
+
+      return newTicket;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -108,7 +116,7 @@ export class TicketService {
 
       const { id, ...updateData } = request;
 
-      return await this.prisma.ticket.update({
+      const response = await this.prisma.ticket.update({
         where: { id },
         data: {
           ...updateData,
@@ -123,6 +131,9 @@ export class TicketService {
         },
         include: TICKET_INCLUDE,
       });
+
+      this.eventsGateway.emitTicketUpdate(response);
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -166,7 +177,10 @@ export class TicketService {
 
       if (!ticket) throw new NotFoundException('Ticket not found');
 
+      this.eventsGateway.emitTicketDelete(ticket);
+
       await this.prisma.ticket.delete({ where: { id } });
+
       return true;
     } catch (error) {
       handlePrismaError(error);

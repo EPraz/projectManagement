@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   TextField,
   Button,
@@ -9,7 +10,6 @@ import {
 } from "@mui/material";
 import { useForm, Controller, type Path } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import type { DialogFormProps } from "../../types";
@@ -35,11 +35,10 @@ const DialogForm = <T extends Record<string, any>>({
   defaultValues,
   title,
   disabled,
-  fieldConfig = {}, // Default empty object to avoid undefined errors
+  fieldConfig = {},
 }: DialogFormProps<T>) => {
   const {
     control,
-    register,
     handleSubmit,
     reset,
     formState: { errors, isDirty },
@@ -49,8 +48,11 @@ const DialogForm = <T extends Record<string, any>>({
     disabled,
   });
 
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
   const handleClose = () => {
-    reset();
     onClose();
   };
 
@@ -59,7 +61,12 @@ const DialogForm = <T extends Record<string, any>>({
     onDelete && onDelete();
   };
 
-  //  Función para obtener el campo correcto basado en `fieldConfig`
+  const internalSubmit = (data: T) => {
+    onSubmit(data);
+    handleClose();
+  };
+
+  // Función para obtener el campo correcto basado en fieldConfig
   const getFieldComponent = (key: Path<T>) => {
     const fieldOptions = fieldConfig[key];
     const label = fieldOptions?.label || key.replace(/([A-Z])/g, " $1").trim();
@@ -68,8 +75,9 @@ const DialogForm = <T extends Record<string, any>>({
       fieldOptions?.label === "startDate" || fieldOptions?.label === "endDate";
     const fieldName = key;
     const isHidden = fieldOptions?.hidden;
+    if (isHidden) return null;
 
-    if (isDateField && !isHidden) {
+    if (isDateField) {
       return (
         <FormFieldContainer key={key}>
           <FieldLabel>{label}</FieldLabel>
@@ -102,7 +110,7 @@ const DialogForm = <T extends Record<string, any>>({
       );
     }
 
-    if (isSelectField && !isHidden) {
+    if (isSelectField) {
       return (
         <FormFieldContainer key={key}>
           <FieldLabel>{label}</FieldLabel>
@@ -128,7 +136,7 @@ const DialogForm = <T extends Record<string, any>>({
                     {fieldOptions.placeholder}
                   </MenuItem>
                 )}
-                {fieldOptions?.options?.map((option) => (
+                {fieldOptions?.options?.map((option: any) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
@@ -143,42 +151,40 @@ const DialogForm = <T extends Record<string, any>>({
       );
     }
 
-    if (!isHidden) {
-      return (
-        <FormFieldContainer key={key}>
-          <FieldLabel>{label}</FieldLabel>
-          <TextField
-            {...register(fieldName)}
-            fullWidth
-            error={!!errors[fieldName]}
-            disabled={disabled || fieldOptions?.disabled}
-            size="small"
-            placeholder={fieldOptions?.placeholder || ""}
-            multiline={fieldOptions?.multiline}
-            rows={fieldOptions?.rows || 1}
-            type={fieldOptions?.type || "text"}
-            InputLabelProps={{ shrink: false }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 1,
-              },
-              "& .MuiInputLabel-root": {
-                display: "none",
-              },
-            }}
-          />
-          {errors[fieldName] && (
-            <FieldError>{errors[fieldName]?.message as string}</FieldError>
-          )}
-        </FormFieldContainer>
-      );
-    }
+    return (
+      <FormFieldContainer key={key}>
+        <FieldLabel>{label}</FieldLabel>
+        <TextField
+          {...control.register(fieldName)}
+          fullWidth
+          error={!!errors[fieldName]}
+          disabled={disabled || fieldOptions?.disabled}
+          size="small"
+          placeholder={fieldOptions?.placeholder || ""}
+          multiline={fieldOptions?.multiline}
+          rows={fieldOptions?.rows || 1}
+          type={fieldOptions?.type || "text"}
+          InputLabelProps={{ shrink: false }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 1,
+            },
+            "& .MuiInputLabel-root": {
+              display: "none",
+            },
+          }}
+        />
+        {errors[fieldName] && (
+          <FieldError>{errors[fieldName]?.message as string}</FieldError>
+        )}
+      </FormFieldContainer>
+    );
   };
 
   return (
     <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
       <DialogHeader>
-        <Typography fontWeight={"600"} textTransform={"uppercase"}>
+        <Typography fontWeight="600" textTransform="uppercase">
           {title}
         </Typography>
         <Tooltip title="Close" arrow>
@@ -188,70 +194,66 @@ const DialogForm = <T extends Record<string, any>>({
         </Tooltip>
       </DialogHeader>
 
-      <StyledDialogContent>
-        <Box
-          component="form"
-          noValidate
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
-          {Object.keys(defaultValues).map((key) =>
-            getFieldComponent(key as Path<T>)
-          )}
-        </Box>
-      </StyledDialogContent>
-
-      <StyledDialogActions>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            width: "100%",
-            justifyContent: "space-between",
-          }}
-        >
-          {onDelete && (
-            <Tooltip
-              title={disabled ? "Cannot delete at this moment" : "Delete"}
-              arrow
-            >
-              <Box>
-                <DeleteButton
-                  variant="outlined"
-                  startIcon={<DeleteOutlineIcon />}
-                  onClick={handleDelete}
-                  disabled={disabled}
-                >
-                  Delete
-                </DeleteButton>
-              </Box>
-            </Tooltip>
-          )}
-          <Box sx={{ display: "flex", gap: 1 }}>
-            <Button
-              variant="outlined"
-              onClick={handleClose}
-              disabled={disabled}
-            >
-              Cancel
-            </Button>
-            <Tooltip title={!isDirty ? "No changes to save" : ""} arrow>
-              <span>
-                <Button
-                  variant="contained"
-                  onClick={() => {
-                    handleSubmit(onSubmit);
-                    handleClose();
-                  }}
-                  disabled={disabled || !isDirty}
-                  sx={{ minWidth: 100 }}
-                >
-                  Save
-                </Button>
-              </span>
-            </Tooltip>
+      {/* Envolvemos todo en un <form> para que el submit funcione correctamente */}
+      <form onSubmit={handleSubmit(internalSubmit)}>
+        <StyledDialogContent>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {Object.keys(defaultValues).map((key) =>
+              getFieldComponent(key as Path<T>)
+            )}
           </Box>
-        </Box>
-      </StyledDialogActions>
+        </StyledDialogContent>
+
+        <StyledDialogActions>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            {onDelete && (
+              <Tooltip
+                title={disabled ? "Cannot delete at this moment" : "Delete"}
+                arrow
+              >
+                <Box>
+                  <DeleteButton
+                    variant="outlined"
+                    startIcon={<DeleteOutlineIcon />}
+                    onClick={handleDelete}
+                    disabled={disabled}
+                  >
+                    Delete
+                  </DeleteButton>
+                </Box>
+              </Tooltip>
+            )}
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="outlined"
+                onClick={handleClose}
+                disabled={disabled}
+              >
+                Cancel
+              </Button>
+              <Tooltip title={!isDirty ? "No changes to save" : ""} arrow>
+                <span>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={disabled || !isDirty}
+                    sx={{ minWidth: 100 }}
+                  >
+                    Save
+                  </Button>
+                </span>
+              </Tooltip>
+            </Box>
+          </Box>
+        </StyledDialogActions>
+      </form>
     </StyledDialog>
   );
 };

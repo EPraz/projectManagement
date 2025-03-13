@@ -7,24 +7,13 @@ import { Sprint, Ticket } from "../../types";
 export const createTicketHandler =
   (
     createTicket: (data: Partial<Ticket>) => Promise<Ticket | null | undefined>,
-    originalTickets: Ticket[],
-    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    updateSprintInState: (updatedSprint: Sprint | null) => void,
-    sprint: Sprint | null
+    updateAllTickets: (updateTicket: Ticket) => void
   ) =>
   async (data: Partial<Ticket>) => {
     const newTicket = await createTicket({
       ...data,
     });
-    if (newTicket && sprint) {
-      const newTicketsList = [...originalTickets, newTicket];
-      setTickets(newTicketsList);
-      const updateSprint: Sprint = {
-        ...sprint,
-        tickets: newTicketsList,
-      };
-      setSprint(updateSprint);
-      updateSprintInState(updateSprint);
+    if (newTicket) {
+      updateAllTickets(newTicket);
     }
   };

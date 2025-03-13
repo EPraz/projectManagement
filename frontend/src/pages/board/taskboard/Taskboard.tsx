@@ -20,7 +20,7 @@ import TicketCard from "./TicketCard";
 const TaskBoard = () => {
   const {
     project,
-    loadingBulkUpdateTickets,
+    // loadingBulkUpdateTickets,
     localTickets,
     setSelectedTicketId,
     selectedTasksStatuses,
@@ -53,8 +53,8 @@ const TaskBoard = () => {
                 .slice()
                 .sort((a, b) => a.order - b.order)
                 .map((ticket, index) => {
-                  const isFirst = index === 0;
-                  const isLast = index === localTickets.length - 1;
+                  // const isFirst = index === 0;
+                  // const isLast = index === localTickets.length - 1;
 
                   return (
                     <TableRow key={ticket.id}>
@@ -89,24 +89,26 @@ const TaskBoard = () => {
                           />
                         </Box>
                       </BodyCell>
-                      {selectedTasksStatuses?.map((status) => (
-                        <TaskColumn
-                          key={status.id}
-                          id={status.name}
-                          ticketId={ticket.id}
-                          tasks={ticket?.tasks?.filter(
-                            (task) => task.statusId === status.id
-                          )}
-                          addTask={
-                            status.name === "TODO"
-                              ? () => {
-                                  setOpenTaskDialog(true);
-                                  setSelectedTicketId(ticket.id);
-                                }
-                              : undefined
-                          }
-                        />
-                      ))}
+                      {selectedTasksStatuses
+                        ?.sort((a, b) => a.position - b.position)
+                        ?.map((status) => (
+                          <TaskColumn
+                            key={status.id}
+                            id={status.name}
+                            ticketId={ticket.id}
+                            tasks={ticket?.tasks?.filter(
+                              (task) => task.statusId === status.id
+                            )}
+                            addTask={
+                              status.name === "TODO"
+                                ? () => {
+                                    setOpenTaskDialog(true);
+                                    setSelectedTicketId(ticket.id);
+                                  }
+                                : undefined
+                            }
+                          />
+                        ))}
                     </TableRow>
                   );
                 })}

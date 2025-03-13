@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { useAuth, useProject, useSprint } from "../../context";
+import { useAuth, useProject, useSprint, useTicket } from "../../context";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import {
@@ -65,14 +65,24 @@ const Layout = () => {
   const { user: currentUser } = useAuth();
 
   const {
-    tickets,
-    setTickets,
     sprint,
     listOfSprints,
     setSprint,
-    updateSprintInState,
+    addOnListOfSprints,
     removeSprintFromState,
+    updateListOfSprints,
+    // updateListOfSprints,
+    // removeSprintFromState,
   } = useSprint();
+  const {
+    tickets,
+    allTickets,
+    removeAllTickets,
+    addAllTickets,
+    updateAllTickets,
+    updateListOfTickets,
+  } = useTicket();
+
   const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
@@ -104,7 +114,12 @@ const Layout = () => {
     useDeleteGoalTask();
 
   // Local States -> Sidebar
-  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(() => {
+    const savedOptionSelected = localStorage.getItem("sidebarOpen");
+    return savedOptionSelected === "false" || savedOptionSelected === "true"
+      ? String(savedOptionSelected).toLowerCase() === "true"
+      : true;
+  });
 
   // Local States -> Tickets
   const [localTickets, setLocalTickets] = useState<Ticket[]>(tickets);
@@ -169,9 +184,7 @@ const Layout = () => {
     const taskId = searchParams.get("taskId");
 
     if (ticketId) {
-      const foundTicket = project?.tickets.find(
-        (t) => t.id.toString() === ticketId
-      );
+      const foundTicket = allTickets.find((t) => t.id.toString() === ticketId);
       if (foundTicket) {
         setSelectedTicket(foundTicket);
         setOpenEditTicketDialog(true);
@@ -181,7 +194,7 @@ const Layout = () => {
     }
 
     if (taskId) {
-      const foundTask = project?.tickets
+      const foundTask = allTickets
         .flatMap((t) => t.tasks)
         .find((task) => task.id.toString() === taskId);
       if (foundTask) {
@@ -191,13 +204,7 @@ const Layout = () => {
     } else {
       setSelectedTask(null);
     }
-  }, [
-    tabValue,
-    searchParams,
-    setSearchParams,
-    location.pathname,
-    project?.tickets,
-  ]);
+  }, [tabValue, searchParams, setSearchParams, location.pathname, allTickets]);
 
   // Local States -> Sprint
   const [openCreateSprintDialog, setOpenCreateSprintDialog] =
@@ -218,7 +225,7 @@ const Layout = () => {
 
   useEffect(() => {
     setLocalSprintGoals(sprint?.sprintGoal || []);
-    updateSprintInState(sprint);
+    if (sprint) updateListOfSprints(sprint);
   }, [sprint]);
 
   const [openCreateSprintGoalDialog, setOpenCreateSprintGoalDialog] =
@@ -238,136 +245,78 @@ const Layout = () => {
 
   // Functions -> Tickets
   const handleCreateTicket = useCallback(
-    createTicketHandler(
-      createTicket,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint
-    ),
-    [createTicket, tickets, setTickets, setSprint, updateSprintInState, sprint]
+    async (data: Partial<Ticket>) => {
+      const newTicket = await createTicket({
+        ...data,
+      });
+      if (newTicket) {
+        addAllTickets(newTicket);
+      }
+    },
+    [createTicket, addAllTickets]
   );
 
   const handleEditTicket = useCallback(
-    editTicketHandler(
-      updateTicket,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint
-    ),
-    [updateTicket, tickets, setTickets, setSprint, updateSprintInState, sprint]
+    async (data: Partial<Ticket>) => {
+      const updatedTicket = await updateTicket({
+        ...data,
+      });
+      if (updatedTicket) {
+        updateAllTickets(updatedTicket);
+      }
+    },
+    [updateTicket, updateAllTickets]
   );
 
   const handleDeleteTicket = useCallback(
-    deleteTicketHandler(
-      deleteTicket,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint
-    ),
-    [deleteTicket, tickets, setTickets, setSprint, updateSprintInState, sprint]
+    async (data: Partial<Ticket>) => {
+      const success = await deleteTicket(data);
+      if (success) {
+        removeAllTickets(data?.id || 0);
+      }
+    },
+    [deleteTicket, removeAllTickets]
   );
 
   const handleUpdateTicketOrder = useCallback(
     updateTicketOrderHandler(
       bulkUpdateTickets,
       tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint,
-      currentUser?.email
-    ),
-    [
-      bulkUpdateTickets,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint,
       currentUser?.email,
-    ]
+      updateListOfTickets
+    ),
+    [bulkUpdateTickets, tickets, currentUser?.email, updateListOfTickets]
   );
 
   const handleUpdateTicketStatus = useCallback(
     updateTicketStatusHandler(
       updateTicket,
       tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint,
-      currentUser?.email
-    ),
-    [
-      updateTicket,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint,
       currentUser?.email,
-    ]
+      updateAllTickets
+    ),
+    [updateTicket, tickets, currentUser?.email, updateAllTickets]
   );
 
   // Functions -> Tasks
   const handleCreateTask = useCallback(
     createTaskHandler(
       createTask,
-      setOpenTaskDialog,
       selectedTicketId,
-      sprint,
       tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState
+      updateListOfTickets
     ),
-    [
-      createTask,
-      setOpenTaskDialog,
-      selectedTicketId,
-      sprint,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-    ]
+    [createTask, selectedTicketId, tickets, updateListOfTickets]
   );
 
   const handleEditTask = useCallback(
-    editTaskHandler(
-      updateTask,
-      tickets,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint
-    ),
-    [updateTask, tickets, setTickets, setSprint, updateSprintInState, sprint]
+    editTaskHandler(updateTask, tickets, updateListOfTickets),
+    [updateTask, tickets, updateListOfTickets]
   );
 
   const handleDeleteTask = useCallback(
-    deleteTaskHandler(
-      deleteTask,
-      localTickets,
-      setSprint,
-      setTickets,
-      updateSprintInState,
-      sprint
-    ),
-    [
-      deleteTask,
-      localTickets,
-      setSprint,
-      setTickets,
-      updateSprintInState,
-      sprint,
-    ]
+    deleteTaskHandler(deleteTask, tickets, updateListOfTickets),
+    [deleteTask, tickets, updateListOfTickets]
   );
 
   const handleOnDragEndTask = useCallback(
@@ -375,26 +324,15 @@ const Layout = () => {
       updateTask,
       tickets,
       project?.taskStatuses,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint
+      updateListOfTickets
     ),
-    [
-      updateTask,
-      tickets,
-      project?.taskStatuses,
-      setTickets,
-      setSprint,
-      updateSprintInState,
-      sprint,
-    ]
+    [updateTask, tickets, project?.taskStatuses, updateListOfTickets]
   );
 
   // Functions -> Sprint
   const handleCreateSprint = useCallback(
-    createSprintHandler(createSprint, updateSprintInState),
-    [createSprint, updateSprintInState]
+    createSprintHandler(createSprint, addOnListOfSprints),
+    [createSprint, addOnListOfSprints]
   );
 
   const handleChangeSprint = useCallback(
@@ -533,6 +471,7 @@ const Layout = () => {
                 deleteTask,
                 loadingDeleteTask,
                 // Tickets
+                allTickets,
                 createTicket,
                 loadingPostTickets,
                 updateTicket,

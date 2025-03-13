@@ -87,11 +87,18 @@ const ProjectListView = ({
                   >
                     <LinearProgress
                       variant="determinate"
-                      value={getProjectProgress(project)}
+                      value={getProjectProgress(
+                        project.ticketStatuses,
+                        project.tickets
+                      )}
                       sx={{ flex: 1, height: 6, borderRadius: 3 }}
                     />
                     <Typography variant="caption" color="text.secondary">
-                      {getProjectProgress(project)}%
+                      {getProjectProgress(
+                        project.ticketStatuses,
+                        project.tickets
+                      )}
+                      %
                     </Typography>
                   </Box>
                 </Box>

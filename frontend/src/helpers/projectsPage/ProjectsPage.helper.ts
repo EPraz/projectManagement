@@ -1,13 +1,16 @@
-import { Project } from "../../types";
+import { Ticket, TicketStatus } from "../../types";
 
-export const getProjectProgress = (project: Project) => {
-  const totalTickets = project.tickets?.length || 0;
+export const getProjectProgress = (
+  ticketStatuses: TicketStatus[],
+  allTickets: Ticket[]
+) => {
+  const totalTickets = allTickets?.length || 0;
   if (totalTickets === 0) return 0;
   const completedTickets =
-    project.tickets?.filter(
+    allTickets?.filter(
       (ticket) =>
-        project.ticketStatuses.find((status) => status.id === ticket.statusId)
-          ?.name === "DONE"
+        ticketStatuses.find((status) => status.id === ticket.statusId)?.name ===
+        "DONE"
     )?.length || 0;
   return Math.round((completedTickets / totalTickets) * 100);
 };

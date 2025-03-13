@@ -4,10 +4,14 @@ import { SPRINT_INCLUDE } from 'src/constants';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
 import { handlePrismaError } from 'src/helper';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
 export class SprintService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   // Create Sprint
   public async create(request: CreateSprintDto): Promise<Sprint> {
@@ -18,10 +22,13 @@ export class SprintService {
 
       if (!project) throw new NotFoundException('Project not found');
 
-      return await this.prisma.sprint.create({
+      const response = await this.prisma.sprint.create({
         data: { ...request },
         include: SPRINT_INCLUDE,
       });
+
+      this.eventsGateway.emitSprintCreate(response);
+      return response;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -71,7 +78,7 @@ export class SprintService {
 
       const { tickets, ...updateData } = request;
 
-      return await this.prisma.sprint.update({
+      const response = await this.prisma.sprint.update({
         where: { id: request.id },
         data: {
           ...updateData,
@@ -88,6 +95,9 @@ export class SprintService {
         },
         include: SPRINT_INCLUDE,
       });
+
+      this.eventsGateway.emitSprintUpdate(response);
+      return response;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -101,9 +111,11 @@ export class SprintService {
 
       if (!sprint) throw new NotFoundException('Sprint not found');
 
-      await this.prisma.sprint.delete({
+      const response = await this.prisma.sprint.delete({
         where: { id },
       });
+
+      this.eventsGateway.emitSprintDelete(response);
 
       return true;
     } catch (error: unknown) {

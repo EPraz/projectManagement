@@ -1,4 +1,4 @@
-import { Project, Sprint } from "../../types";
+import { Project, Sprint, Ticket } from "../../types";
 
 // Activity type definition
 export interface Activity {
@@ -16,7 +16,9 @@ export interface Activity {
 // Generate activities from project and sprint data
 export const generateActivities = (
   project: Project | null,
-  sprint: Sprint | null,
+  allTickets: Ticket[],
+  tickets: Ticket[],
+  listOfSprints: Sprint[],
   limit: number
 ): Activity[] => {
   const activities: Activity[] = [];
@@ -34,8 +36,8 @@ export const generateActivities = (
     });
 
     // Add activities from tickets
-    if (project.tickets) {
-      project.tickets.forEach((ticket) => {
+    if (allTickets) {
+      allTickets.forEach((ticket) => {
         // Ticket creation
         activities.push({
           id: `ticket-created-${ticket.id}`,
@@ -80,25 +82,37 @@ export const generateActivities = (
     }
 
     // Add activities from sprints
-    if (project.sprints) {
-      project.sprints.forEach((sprint) => {
+    if (listOfSprints) {
+      listOfSprints.forEach((x) => {
         activities.push({
-          id: `sprint-created-${sprint.id}`,
+          id: `sprint-created-${x.id}`,
           user: {
             id: project.createdBy, // Assuming the project creator also created the sprint
             name: getUserName(project.createdBy, project) || "A user",
           },
-          action: `created sprint "${sprint.name}"`,
-          timestamp: sprint.createdAt,
+          action: `created sprint "${x.name}"`,
+          timestamp: x.createdAt,
         });
+
+        if (x.updatedAt !== x.createdAt) {
+          activities.push({
+            id: `ticket-updated-${x.id}-${x.updatedAt}`,
+            user: {
+              id: "",
+              name: getUserName("", project) || "A user",
+            },
+            action: `updated sprint "${x.name}"`,
+            timestamp: x.updatedAt,
+          });
+        }
       });
     }
   }
 
   // If we have a specific sprint, add its ticket activities
-  if (sprint) {
-    if (sprint.tickets) {
-      sprint.tickets.forEach((ticket) => {
+  if (tickets) {
+    if (tickets.length > 0) {
+      tickets.forEach((ticket) => {
         // Only add if not already added from project
         const ticketCreationId = `ticket-created-${ticket.id}`;
         if (!activities.some((a) => a.id === ticketCreationId)) {
@@ -108,7 +122,7 @@ export const generateActivities = (
               id: ticket.createdBy,
               name: getUserName(ticket.createdBy, project) || "A user",
             },
-            action: `added ticket "${ticket.title}" to sprint "${sprint.name}"`,
+            action: `added ticket "${ticket.title}" to sprint "${ticket.sprint?.name}"`,
             timestamp: ticket.createdAt,
           });
         }

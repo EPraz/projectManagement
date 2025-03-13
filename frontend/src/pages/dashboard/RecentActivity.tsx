@@ -1,6 +1,6 @@
 import { Box, Typography, Avatar } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-import { Project, Sprint } from "../../types"; // Adjust import path as needed
+import { Project, Sprint, Ticket } from "../../types"; // Adjust import path as needed
 import { ActivityCard, ActivityItem, SectionTitle } from "./DashBoard.styles";
 import {
   Activity,
@@ -11,16 +11,26 @@ import { getRandomColor } from "../../helpers";
 
 interface RecentActivityProps {
   project: Project | null;
-  sprint: Sprint | null;
+  allTickets: Ticket[];
+  tickets: Ticket[];
+  listOfSprints: Sprint[];
   limit?: number;
 }
 
 export const RecentActivityFeed: React.FC<RecentActivityProps> = ({
   project,
-  sprint,
+  allTickets,
+  tickets,
+  listOfSprints,
   limit = 7,
 }) => {
-  const activities: Activity[] = generateActivities(project, sprint, limit);
+  const activities: Activity[] = generateActivities(
+    project,
+    allTickets,
+    tickets,
+    listOfSprints,
+    limit
+  );
 
   // If no activities found
   if (activities.length === 0) {
@@ -44,7 +54,7 @@ export const RecentActivityFeed: React.FC<RecentActivityProps> = ({
       <SectionTitle variant="h6">Recent Activity</SectionTitle>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {activities.map((activity, index) => (
+        {activities.map((activity) => (
           <ActivityItem key={activity.id}>
             <Avatar
               sx={{

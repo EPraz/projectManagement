@@ -5,10 +5,12 @@ import {
   ReactNode,
   useEffect,
   useMemo,
+  useCallback,
 } from "react";
 import { Sprint, SprintContextProps } from "../../types";
 import { useProject } from "../projectContext";
 import { Loading } from "../../components";
+import { useSocketSprints } from "../../hooks";
 
 const SprintContext = createContext<SprintContextProps | undefined>(undefined);
 
@@ -18,9 +20,12 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     loading: projectLoading,
     listOfSprints,
     setListOfSprints,
-    tickets,
-    setTickets,
   } = useProject();
+  const {
+    useSocketSprintCreate,
+    useSocketSprintDelete,
+    useSocketSprintUpdate,
+  } = useSocketSprints();
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [loadingSprint, setLoadingSprint] = useState(true);
 
@@ -65,33 +70,43 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (sprint) {
       localStorage.setItem("selectedSprintId", sprint.id);
-      setTickets(sprint.tickets);
     }
   }, [sprint]);
 
-  //  Función para actualizar localmente `listOfSprints`
-  const updateSprintInState = (updatedSprint: Sprint | null) => {
-    if (!updatedSprint) return;
-    setListOfSprints((prevSprints) =>
-      prevSprints.map((s) => (s.id === updatedSprint.id ? updatedSprint : s))
-    );
+  const updateListOfSprints = useCallback(
+    (updatedSprint: Sprint) => {
+      setListOfSprints((prev) =>
+        prev.map((t) => (t.id === updatedSprint.id ? updatedSprint : t))
+      );
+    },
+    [setListOfSprints]
+  );
 
-    if (sprint?.id === updatedSprint.id) {
-      setSprint(updatedSprint);
-    }
-  };
+  const addOnListOfSprints = useCallback(
+    (newSprint: Sprint) => {
+      setListOfSprints((prev) => {
+        if (prev.find((t) => t.id === newSprint.id)) {
+          return prev;
+        }
+        return [...prev, newSprint];
+      });
+    },
+    [setListOfSprints]
+  );
 
-  //  Función para eliminar un sprint de `listOfSprints`
-  const removeSprintFromState = (sprintId: string) => {
-    setListOfSprints((prevSprints) =>
-      prevSprints.filter((s) => s.id !== sprintId)
-    );
+  const removeSprintFromState = useCallback(
+    (sprintId: Sprint["id"]) => {
+      setListOfSprints((prev) => prev.filter((t) => t.id !== sprintId));
+      if (sprint?.id === sprintId) {
+        settingSprint();
+      }
+    },
+    [setListOfSprints, sprint, settingSprint]
+  );
 
-    if (sprint?.id === sprintId) {
-      // Si no hay uno guardado, usamos el activo
-      settingSprint();
-    }
-  };
+  useSocketSprintUpdate((data) => updateListOfSprints(data));
+  useSocketSprintCreate((data) => addOnListOfSprints(data));
+  useSocketSprintDelete((data) => removeSprintFromState(data.id));
 
   //  Cargando el proyecto
   if (loadingSprint || projectLoading) return <Loading message="Cargando..." />;
@@ -102,9 +117,9 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
         listOfSprints,
         sprint,
         setSprint,
-        tickets,
-        setTickets,
-        updateSprintInState,
+        loadingSprint,
+        updateListOfSprints,
+        addOnListOfSprints,
         removeSprintFromState,
       }}
     >

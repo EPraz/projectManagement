@@ -13,7 +13,7 @@ import { SprintGoalStatus } from "../../constants";
 import { DialogsContainerProps } from "../../types";
 import { useParams, useSearchParams } from "react-router-dom";
 import { formatStatusName } from "../../helpers";
-import { useAuth, useProject } from "../../context";
+import { useAuth, useProject, useSprint, useTicket } from "../../context";
 import TaskEditDialog from "../taskEditDialog/TaskEditDialog";
 import TicketEditDialog from "../ticketEditDialog/TicketEditDialog";
 
@@ -92,6 +92,8 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   const { id: projectId } = useParams();
   const { user: currentUser } = useAuth();
   const { project } = useProject();
+  const { sprint } = useSprint();
+  const { allTickets } = useTicket();
 
   const handleCloseCleanUrl = (param: "ticketId" | "taskId") => {
     const currentTab = searchParams.get("tab") || "board";
@@ -115,17 +117,21 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             title: "",
             description: "",
             createdBy: currentUser?.email,
+            sprintId: sprint?.id,
           }}
           fieldConfig={{
             createdBy: { disabled: true, hidden: true },
+            sprintId: { disabled: true, hidden: true },
           }}
         />
       )}
+
       {openTaskDialog && (
         <DialogForm
           open={openTaskDialog}
           title="Create Task"
           onClose={() => setOpenTaskDialog(false)}
+          // onClose={() => console.log("hell")}
           onSubmit={handleCreateTask}
           schema={createTaskSchema}
           disabled={loadingPostTasks}
@@ -139,8 +145,9 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           }}
         />
       )}
+
       {openCreateSprintDialog && (
-        <DialogForm<Partial<CreateSprintFormData>>
+        <DialogForm
           open={openCreateSprintDialog}
           title="Create Sprint"
           onClose={() => setOpenCreateSprintDialog(false)}
@@ -223,7 +230,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           sprints={listOfSprints}
           statuses={project?.ticketStatuses}
           ticket={selectedTicket}
-          tickets={project?.tickets}
+          tickets={allTickets}
           users={project?.users}
           disabled={loadingUpdateTickets}
         />

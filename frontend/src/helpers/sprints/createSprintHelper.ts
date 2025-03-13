@@ -4,11 +4,11 @@ import { Sprint } from "../../types";
 export const createSprintHandler =
   (
     createSprint: (data: Partial<Sprint>) => Promise<Sprint | null>,
-    updateSprintInState: (updatedSprint: Sprint | null) => void
+    addOnListOfSprints: (newSprint: Sprint) => void
   ) =>
   async (data: Partial<Sprint>) => {
     const newSprint = await createSprint(data);
     if (newSprint) {
-      updateSprintInState(newSprint);
+      addOnListOfSprints(newSprint);
     }
   };

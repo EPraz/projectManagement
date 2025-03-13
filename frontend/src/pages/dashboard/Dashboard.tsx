@@ -29,7 +29,8 @@ import BlockersAndImpediments from "./BlockersAndImpediments";
 import SprintGoalsAndMilestones from "./SprintGoalsAndMilestones";
 
 const Dashboard = () => {
-  const { project, sprint } = useOutletContext<LayoutContextProps>();
+  const { project, sprint, allTickets, tickets, listOfSprints } =
+    useOutletContext<LayoutContextProps>();
 
   return (
     <DashboardContainer>
@@ -84,7 +85,7 @@ const Dashboard = () => {
               <Divider sx={{ my: 3 }} />
 
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <SprintMetricsChart sprint={sprint} />
+                <SprintMetricsChart tickets={tickets} />
               </Box>
             </Box>
           </StyledCard>
@@ -171,7 +172,13 @@ const Dashboard = () => {
             </Grid>
 
             <Grid size={{ xs: 12 }}>
-              <RecentActivityFeed project={project} sprint={sprint} limit={7} />
+              <RecentActivityFeed
+                project={project}
+                allTickets={allTickets}
+                tickets={tickets}
+                listOfSprints={listOfSprints}
+                limit={7}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -193,7 +200,7 @@ const Dashboard = () => {
               <StyledCard>
                 <Box sx={{ p: 3 }}>
                   <SectionTitle>Team Workload</SectionTitle>
-                  <TeamWorkload sprint={sprint} />
+                  <TeamWorkload tickets={tickets} />
                 </Box>
               </StyledCard>
             </Grid>

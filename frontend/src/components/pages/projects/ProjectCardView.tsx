@@ -13,6 +13,7 @@ import AvatarGroupsComponent from "./AvatarGroups";
 const ProjectCardView = ({
   project,
   handleMenuClick,
+  allTickets,
 }: ProjectCardViewProps) => {
   return (
     <>
@@ -31,11 +32,11 @@ const ProjectCardView = ({
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <LinearProgress
               variant="determinate"
-              value={getProjectProgress(project)}
+              value={getProjectProgress(project.ticketStatuses, allTickets)}
               sx={{ flex: 1, height: 6, borderRadius: 3 }}
             />
             <Typography variant="caption" color="text.secondary">
-              {getProjectProgress(project)}%
+              {getProjectProgress(project.ticketStatuses, allTickets)}%
             </Typography>
           </Box>
         </Box>
@@ -49,7 +50,7 @@ const ProjectCardView = ({
               Tickets
             </Typography>
             <Typography variant="subtitle2">
-              {project.tickets?.length || 0}
+              {allTickets?.length || 0}
             </Typography>
           </Box>
         </MetricBox>

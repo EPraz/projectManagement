@@ -4,7 +4,7 @@ import { Sprint } from "../../types";
 export const deleteSprintHandler =
   (
     deleteSprint: (data: Partial<Sprint>) => Promise<boolean>,
-    removeSprintFromState: (sprintId: string) => void
+    removeSprintFromState: (sprintId: Sprint["id"]) => void
   ) =>
   async (data: Partial<Sprint>) => {
     if (!data.id) return;

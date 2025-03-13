@@ -20,9 +20,18 @@ export class AuthController {
 
   @Post('register')
   async register(
+    @Res({ passthrough: true }) res: Response,
     @Body() request: RegisterDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const { accessToken, refreshToken } = await this.authService.login(request);
+
+    res.cookie('jwt', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+    });
+
     return { accessToken, refreshToken };
   }
 
@@ -81,10 +90,24 @@ export class AuthController {
   }
 
   @Post('instant-login')
-  async instantLogin(@Body('email') email: string) {
+  async instantLogin(
+    @Res({ passthrough: true }) res: Response,
+    @Body('email') email: string,
+  ) {
     if (!email || !email.includes('@')) {
       throw new BadRequestException('Invalid email format');
     }
-    return this.authService.instantLogin(email);
+
+    const { accessToken, refreshToken } =
+      await this.authService.instantLogin(email);
+
+    res.cookie('jwt', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+    });
+
+    return { accessToken, refreshToken };
   }
 }

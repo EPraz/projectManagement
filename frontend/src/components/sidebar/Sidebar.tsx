@@ -28,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setSidebarOpen,
 }) => {
   const [themeModalOpen, setThemeModalOpen] = useState(false);
+
   const navigate = useNavigate();
 
   const menuItems = useMemo(
@@ -42,7 +43,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   );
 
   const toggleCollapse = () => {
-    setSidebarOpen(!sidebarOpen);
+    const x = !sidebarOpen;
+    setSidebarOpen(x);
+    localStorage.setItem("sidebarOpen", x.toString());
   };
 
   return (

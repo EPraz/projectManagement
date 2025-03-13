@@ -8,7 +8,7 @@ import {
   Ticket,
   User,
 } from "../models";
-import { useProject, useSprint } from "../../context";
+import { useProject, useSprint, useTicket } from "../../context";
 import {
   useBulkUpdateTickets,
   useCreateTask,
@@ -26,7 +26,6 @@ export interface LayoutContextProps {
   loadingProject: ReturnType<typeof useCreateTask>["loading"];
 
   // Sprint
-  tickets: ReturnType<typeof useSprint>["tickets"];
   sprint: ReturnType<typeof useSprint>["sprint"];
   listOfSprints: ReturnType<typeof useSprint>["listOfSprints"];
 
@@ -41,6 +40,8 @@ export interface LayoutContextProps {
   loadingDeleteTask: ReturnType<typeof useDeleteTask>["loading"];
 
   // Tickets
+  tickets: ReturnType<typeof useTicket>["tickets"];
+  allTickets: ReturnType<typeof useTicket>["allTickets"];
   createTicket: ReturnType<typeof useCreateTicket>["createTicket"];
   loadingPostTickets: ReturnType<typeof useCreateTicket>["loading"];
 
@@ -57,7 +58,7 @@ export interface LayoutContextProps {
 
   // Local State Variables
   // Local States -> Tickets
-  localTickets: ReturnType<typeof useSprint>["tickets"];
+  localTickets: ReturnType<typeof useTicket>["tickets"];
   setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>;
   openCreateTicketDialog: boolean;
   setOpenCreateTicketDialog: React.Dispatch<React.SetStateAction<boolean>>;

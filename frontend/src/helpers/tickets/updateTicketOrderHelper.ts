@@ -1,4 +1,4 @@
-import { Sprint, Ticket } from "../../types";
+import { Ticket } from "../../types";
 
 /*
   NOT WORKING PROPERLY
@@ -9,11 +9,8 @@ export const updateTicketOrderHandler =
       data: Partial<Ticket>[]
     ) => Promise<Ticket[] | null | undefined>,
     originalTickets: Ticket[],
-    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    updateSprintInState: (updatedSprint: Sprint | null) => void,
-    sprint: Sprint | null,
-    currentUserEmail: string | undefined
+    currentUserEmail: string | undefined,
+    updateListOfTickets: (listofTickets: Ticket[]) => void
   ) =>
   async (ticketId: number, direction: "up" | "down") => {
     const index = originalTickets.findIndex((t) => t.id === ticketId);
@@ -49,20 +46,7 @@ export const updateTicketOrderHandler =
 
     const newTicketsList = await bulkUpdateTickets(dataToUpdate);
 
-    if (newTicketsList && sprint) {
-      // Actualizamos solo los tickets que aparecen en newTicketsList, dejando intactos los demás.
-      const updatedTickets: Ticket[] = originalTickets.map((ticket) => {
-        const found = newTicketsList.find(
-          (newTicket) => newTicket.id === ticket.id
-        );
-        return found ? { ...ticket, ...found } : ticket;
-      });
-      setTickets(updatedTickets);
-      const updatedSprint: Sprint = {
-        ...sprint,
-        tickets: updatedTickets,
-      };
-      setSprint(updatedSprint);
-      updateSprintInState(updatedSprint);
+    if (newTicketsList) {
+      updateListOfTickets(newTicketsList);
     }
   };

@@ -64,13 +64,16 @@ export class AuthService {
   async instantLogin(
     email: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    let user = await this.prisma.user.findUnique({ where: { email } });
+    const normalizedEmail = email.toLowerCase();
+    let user = await this.prisma.user.findUnique({
+      where: { email: normalizedEmail },
+    });
 
     if (!user) {
       user = await this.prisma.user.create({
         data: {
           name: email.split('@')[0], // Nombre basado en email
-          email,
+          email: normalizedEmail,
           password: await bcrypt.hash(email, 10), // Password generado pero nunca usado
           role: 'DEVELOPER',
         },

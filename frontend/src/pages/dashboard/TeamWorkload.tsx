@@ -1,19 +1,19 @@
 import React from "react";
-import { Sprint } from "../../types";
+import { Ticket } from "../../types";
 import { Avatar, Box, Grid2 as Grid, Typography } from "@mui/material";
 import { StyledLinearProgress, TaskCard } from "./DashBoard.styles";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 
-const TeamWorkload = ({ sprint }: { sprint?: Sprint | null }) => {
+const TeamWorkload = ({ tickets }: { tickets?: Ticket[] }) => {
   // Group tickets by assignee and calculate workload
 
   //actualizar despues con ticket in progress / r4qa / r4ba/ done en base al total de tickets
   const teamWorkload = React.useMemo(() => {
-    if (!sprint?.tickets) return [];
+    if (!tickets) return [];
 
     const assigneeMap = new Map();
 
-    sprint.tickets.forEach((ticket) => {
+    tickets.forEach((ticket) => {
       const assigneeId = ticket.assignedTo || "unassigned";
       const assigneeName = ticket.assignedUser?.name || "Unassigned";
 
@@ -45,7 +45,7 @@ const TeamWorkload = ({ sprint }: { sprint?: Sprint | null }) => {
       .filter((user) => user.totalTickets > 0)
       .sort((a, b) => b.totalTickets - a.totalTickets)
       .slice(0, 4);
-  }, [sprint]);
+  }, [tickets]);
 
   if (teamWorkload.length === 0) {
     return (

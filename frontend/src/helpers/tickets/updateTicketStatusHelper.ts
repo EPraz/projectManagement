@@ -1,4 +1,4 @@
-import { Sprint, Ticket } from "../../types";
+import { Ticket } from "../../types";
 import { pickProps } from "../selectPropsHelper";
 
 /**
@@ -9,11 +9,8 @@ export const updateTicketStatusHandler =
   (
     updateTicket: (data: Partial<Ticket>) => Promise<Ticket | null | undefined>,
     originalTickets: Ticket[],
-    setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
-    setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    updateSprintInState: (updatedSprint: Sprint | null) => void,
-    sprint: Sprint | null,
-    currentUserEmail: string | undefined
+    currentUserEmail: string | undefined,
+    updateAllTickets: (updateTicket: Ticket) => void
   ) =>
   async (ticketId: number, newStatusId: string) => {
     const ticketToUpdate = originalTickets
@@ -29,17 +26,7 @@ export const updateTicketStatusHandler =
 
     const updatedTicket = await updateTicket(dataToUpdate);
 
-    if (updatedTicket && sprint) {
-      const newTicketsList = originalTickets.map((x) =>
-        x.id === updatedTicket.id ? { ...x, ...updatedTicket } : x
-      );
-      setTickets(newTicketsList);
-
-      const updateSprint: Sprint = {
-        ...sprint,
-        tickets: newTicketsList,
-      };
-      setSprint(updateSprint);
-      updateSprintInState(updateSprint);
+    if (updatedTicket) {
+      updateAllTickets(updatedTicket);
     }
   };

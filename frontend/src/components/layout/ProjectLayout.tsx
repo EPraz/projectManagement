@@ -1,5 +1,5 @@
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { ProjectProvider, SprintProvider } from "../../context";
+import { ProjectProvider, SprintProvider, TicketProvider } from "../../context";
 import Layout from "./Layout";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 
@@ -8,7 +8,9 @@ const ProjectLayout = () => {
     <ProjectProvider>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <SprintProvider>
-          <Layout />
+          <TicketProvider>
+            <Layout />
+          </TicketProvider>
         </SprintProvider>
       </LocalizationProvider>
     </ProjectProvider>
