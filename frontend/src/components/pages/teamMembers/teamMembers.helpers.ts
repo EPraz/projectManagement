@@ -19,10 +19,10 @@ export const addMembersHandler = async (
 
   const newUsersList = await createProjectUser(user.id, project?.id);
   if (newUsersList) {
-    setProject((prev) => {
-      if (!prev) return prev;
-      return { ...prev, users: newUsersList };
-    });
+    // setProject((prev) => {
+    //   if (!prev) return prev;
+    //   return { ...prev, users: newUsersList };
+    // });
     setMembers(newUsersList);
     setOpenDialog(false);
     setSelectedUser(null);

@@ -42,7 +42,7 @@ export const likeTogglehandler = async (
   ) => Promise<RetroCard | null>,
   sprint: Sprint | null,
   setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
-  updateSprintInState: (updatedSprint: Sprint | null) => void
+  updateListOfSprints: (updatedSprint: Sprint) => void
 ) => {
   if (!currentUser) return;
   const hasLiked = card.likedBy?.includes(currentUser.id);
@@ -55,16 +55,16 @@ export const likeTogglehandler = async (
     likes: updatedLikes,
   });
   if (updated && sprint) {
-    setRetroCards((prev) =>
-      prev.map((c) => (c.id === updated.id ? updated : c))
-    );
-    const updatedSprint: Sprint = {
-      ...sprint,
-      retroCard: sprint.retroCard?.map((m) =>
-        m.id === updated.id ? updated : m
-      ),
-    };
-    updateSprintInState(updatedSprint);
+    // setRetroCards((prev) =>
+    //   prev.map((c) => (c.id === updated.id ? updated : c))
+    // );
+    // const updatedSprint: Sprint = {
+    //   ...sprint,
+    //   retroCard: sprint.retroCard?.map((m) =>
+    //     m.id === updated.id ? updated : m
+    //   ),
+    // };
+    // updateListOfSprints(updatedSprint);
   }
 };
 
@@ -78,25 +78,25 @@ export const editDialogSubmit = async (
   currentUser: User | null,
   setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
   sprint: Sprint | null,
-  updateSprintInState: (updatedSprint: Sprint | null) => void,
+  updateListOfSprints: (updatedSprint: Sprint) => void,
   handleCloseDialog: () => void
 ) => {
   if (editingCard) {
     const updated = await updateRetroCard(editingCard.id, {
       ...data,
-      authorId: currentUser?.id,
+      authorId: editingCard.authorId || currentUser?.id,
     });
     if (updated && sprint) {
-      setRetroCards((prev) =>
-        prev.map((card) => (card.id === updated.id ? updated : card))
-      );
+      // setRetroCards((prev) =>
+      //   prev.map((card) => (card.id === updated.id ? updated : card))
+      // );
       const updatedSprint: Sprint = {
         ...sprint,
         retroCard: sprint.retroCard?.map((m) =>
           m.id === updated.id ? updated : m
         ),
       };
-      updateSprintInState(updatedSprint);
+      updateListOfSprints(updatedSprint);
       handleCloseDialog();
     }
   }
@@ -108,7 +108,7 @@ export const createDialogSubmit = async (
   data: Partial<RetroCard>,
   currentUser: User | null,
   setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
-  updateSprintInState: (updatedSprint: Sprint | null) => void,
+  updateListOfSprints: (updatedSprint: Sprint) => void,
   handleCloseDialog: () => void
 ) => {
   if (!sprint?.id) return;
@@ -118,12 +118,12 @@ export const createDialogSubmit = async (
     sprintId: sprint.id,
   });
   if (created) {
-    setRetroCards((prev) => [...prev, created]);
-    const updatedSprint: Sprint = {
-      ...sprint,
-      retroCard: [...(sprint.retroCard || []), created],
-    };
-    updateSprintInState(updatedSprint);
+    // setRetroCards((prev) => [...prev, created]);
+    // const updatedSprint: Sprint = {
+    //   ...sprint,
+    //   retroCard: [...(sprint.retroCard || []), created],
+    // };
+    // updateListOfSprints(updatedSprint);
     handleCloseDialog();
   }
 };
@@ -133,21 +133,21 @@ export const deleteDialogSubmit = async (
   sprint: Sprint | null,
   deleteRetroCard: (id: string) => Promise<boolean>,
   setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
-  updateSprintInState: (updatedSprint: Sprint | null) => void,
+  updateListOfSprints: (updatedSprint: Sprint) => void,
   setOpenDeleteModal: (value: React.SetStateAction<boolean>) => void,
   setCardToDelete: (value: React.SetStateAction<RetroCard | null>) => void
 ) => {
-  if (cardToDelete && sprint) {
+  if (cardToDelete) {
     const success = await deleteRetroCard(cardToDelete.id);
-    if (success) {
-      setRetroCards((prev) =>
-        prev.filter((card) => card.id !== cardToDelete.id)
-      );
+    if (success && sprint) {
+      // setRetroCards((prev) =>
+      //   prev.filter((card) => card.id !== cardToDelete.id)
+      // );
       const updatedSprint: Sprint = {
         ...sprint,
         retroCard: sprint.retroCard?.filter((m) => m.id !== cardToDelete.id),
       };
-      updateSprintInState(updatedSprint);
+      updateListOfSprints(updatedSprint);
     }
   }
   setOpenDeleteModal(false);

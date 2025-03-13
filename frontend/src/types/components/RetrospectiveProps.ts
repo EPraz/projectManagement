@@ -22,7 +22,7 @@ export type RetrospectiveColumnsContainerProps = {
     e: React.MouseEvent<HTMLButtonElement>,
     cardId: string
   ) => void;
-  handleLikeToggle: (card: RetroCard) => Promise<() => void>;
+  handleLikeToggle: (card: RetroCard) => Promise<void>;
 };
 
 export type RetrospectiveColumnProps = {
@@ -40,7 +40,7 @@ export type RetrospectiveColumnProps = {
     e: React.MouseEvent<HTMLButtonElement>,
     cardId: string
   ) => void;
-  handleLikeToggle: (card: RetroCard) => Promise<() => void>;
+  handleLikeToggle: (card: RetroCard) => Promise<void>;
 };
 
 export type RetrospectiveCardProps = {
@@ -53,5 +53,5 @@ export type RetrospectiveCardProps = {
     e: React.MouseEvent<HTMLButtonElement>,
     cardId: string
   ) => void;
-  handleLikeToggle: (card: RetroCard) => Promise<() => void>;
+  handleLikeToggle: (card: RetroCard) => Promise<void>;
 };

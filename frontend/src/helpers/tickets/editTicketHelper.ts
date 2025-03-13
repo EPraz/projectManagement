@@ -7,7 +7,7 @@ export const editTicketHandler =
     originalTickets: Ticket[],
     setTickets: React.Dispatch<React.SetStateAction<Ticket[]>>,
     setSprint: React.Dispatch<React.SetStateAction<Sprint | null>>,
-    updateSprintInState: (updatedSprint: Sprint | null) => void,
+    updateListOfSprints: (updatedSprint: Sprint) => void,
     sprint: Sprint | null
   ) =>
   async (data: Partial<Ticket>) => {
@@ -26,6 +26,6 @@ export const editTicketHandler =
         tickets: newTicketsList,
       };
       setSprint(updateSprint);
-      updateSprintInState(updateSprint);
+      updateListOfSprints(updateSprint);
     }
   };

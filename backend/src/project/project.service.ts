@@ -14,10 +14,14 @@ import {
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
 import { checkDuplicateTitle, handlePrismaError } from 'src/helper';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
 export class ProjectService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   // Create project
   async create(request: CreateProjectDto): Promise<Project | null> {
@@ -109,11 +113,14 @@ export class ProjectService {
       if (request.title)
         await checkDuplicateTitle(this.prisma, 'project', request.title);
 
-      return await this.prisma.project.update({
+      const response = await this.prisma.project.update({
         where: { id: request.id },
         data: { ...request },
         include: PROJECT_INCLUDE,
       });
+
+      this.eventsGateway.emitProjectUpdate(response);
+      return response;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -164,8 +171,10 @@ export class ProjectService {
           connect: { id: userId },
         },
       },
-      include: { users: true },
+      include: PROJECT_INCLUDE,
     });
+
+    this.eventsGateway.emitProjectUpdate(updatedProject);
 
     return updatedProject.users;
   }
@@ -173,7 +182,7 @@ export class ProjectService {
   async removeUserFromProject(
     projectId: string,
     userId: string,
-  ): Promise<Project> {
+  ): Promise<User[]> {
     const project = await this.prisma.project.findUnique({
       where: { id: projectId },
       include: { users: true },
@@ -182,14 +191,17 @@ export class ProjectService {
       throw new NotFoundException('Project not found');
     }
 
-    return await this.prisma.project.update({
+    const response = await this.prisma.project.update({
       where: { id: projectId },
       data: {
         users: {
           disconnect: { id: userId },
         },
       },
-      include: { users: true },
+      include: PROJECT_INCLUDE,
     });
+
+    this.eventsGateway.emitProjectUpdate(response);
+    return response.users;
   }
 }

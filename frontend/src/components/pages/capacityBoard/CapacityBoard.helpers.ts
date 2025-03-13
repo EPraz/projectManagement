@@ -15,7 +15,7 @@ export const editFormSubmitHandler = async (
     data: Partial<TeamMemberCapacity>
   ) => Promise<TeamMemberCapacity | null>,
   setTeamMembers: (value: React.SetStateAction<TeamMemberCapacity[]>) => void,
-  updateSprintInState: (updatedSprint: Sprint | null) => void,
+  updateListOfSprints: (updatedSprint: Sprint) => void,
   handleCloseDialog: () => void,
   teamMembers: TeamMemberCapacity[],
   sprint: Sprint | null
@@ -38,7 +38,7 @@ export const editFormSubmitHandler = async (
           m.id === updated.id ? updated : m
         ),
       };
-      updateSprintInState(updateSprint);
+      updateListOfSprints(updateSprint);
     }
     handleCloseDialog();
   }
@@ -50,7 +50,7 @@ export const createFormSubmitHandler = async (
     data: Partial<TeamMemberCapacity>
   ) => Promise<TeamMemberCapacity | null>,
   setTeamMembers: (value: React.SetStateAction<TeamMemberCapacity[]>) => void,
-  updateSprintInState: (updatedSprint: Sprint | null) => void,
+  updateListOfSprints: (updatedSprint: Sprint) => void,
   handleCloseDialog: () => void,
   sprint: Sprint | null
 ) => {
@@ -70,7 +70,7 @@ export const createFormSubmitHandler = async (
         ...sprint,
         teamMemberCapacities: [...(sprint.teamMemberCapacities || []), created],
       };
-      updateSprintInState(updateSprint);
+      updateListOfSprints(updateSprint);
     }
 
     handleCloseDialog();
@@ -82,7 +82,7 @@ export const deleteFormSubmitHandler = async (
   recordToDelete: TeamMemberCapacity | null,
   setTeamMembers: (value: React.SetStateAction<TeamMemberCapacity[]>) => void,
   sprint: Sprint | null,
-  updateSprintInState: (updatedSprint: Sprint | null) => void,
+  updateListOfSprints: (updatedSprint: Sprint) => void,
   setOpenDeleteModal: (value: React.SetStateAction<boolean>) => void,
   setRecordToDelete: (
     value: React.SetStateAction<TeamMemberCapacity | null>
@@ -100,7 +100,7 @@ export const deleteFormSubmitHandler = async (
             (m) => m.id !== recordToDelete.id
           ),
         };
-        updateSprintInState(updateSprint);
+        updateListOfSprints(updateSprint);
       }
     }
     setOpenDeleteModal(false);

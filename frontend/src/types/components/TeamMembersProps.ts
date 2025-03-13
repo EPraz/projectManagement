@@ -34,6 +34,7 @@ export type TeamMembersMenuProps = {
   anchorEl: HTMLElement | null;
   handleMenuClose: () => void;
   selectedMember: string | null;
+  handleRemoveFromProject: () => Promise<void>;
 };
 export type TeamMembersHeaderProps = {
   setOpenDialog: setOpenDialogType;

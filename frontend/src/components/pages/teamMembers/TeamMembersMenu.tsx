@@ -4,6 +4,7 @@ import {
   PersonAdd as PersonAddIcon,
   Work as WorkIcon,
   PowerSettingsNew as PowerIcon,
+  Delete as DeleteIcon,
 } from "@mui/icons-material";
 import { TeamMembersMenuProps } from "../../../types";
 
@@ -11,6 +12,7 @@ const TeamMembersMenu = ({
   anchorEl,
   handleMenuClose,
   selectedMember,
+  handleRemoveFromProject,
 }: TeamMembersMenuProps) => {
   return (
     <Menu
@@ -48,6 +50,10 @@ const TeamMembersMenu = ({
       >
         <PowerIcon fontSize="small" sx={{ mr: 1 }} />
         <Typography>{selectedMember && "Activate"}</Typography>
+      </MenuItem>
+      <MenuItem onClick={handleRemoveFromProject}>
+        <DeleteIcon fontSize="small" sx={{ mr: 1 }} color={"error"} />
+        <Typography color="error">Remove From Project</Typography>
       </MenuItem>
     </Menu>
   );

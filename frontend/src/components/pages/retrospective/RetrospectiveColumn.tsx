@@ -60,18 +60,24 @@ const RetrospectiveColumn = ({
       </ColumnHeader>
       <ColumnContent>
         {columnCards.length > 0 ? (
-          columnCards.map((card, index) => (
-            <RetrospectiveCard
-              key={index}
-              card={card}
-              currentTab={currentTab}
-              getUserNamesByIds={getUserNamesByIds}
-              handleLikeToggle={handleLikeToggle}
-              handleMenuClick={handleMenuClick}
-              isAnonymous={isAnonymous}
-              theme={theme}
-            />
-          ))
+          columnCards
+            .sort(
+              (a, b) =>
+                new Date(b.timestamp).getTime() -
+                new Date(a.timestamp).getTime()
+            )
+            .map((card, index) => (
+              <RetrospectiveCard
+                key={index}
+                card={card}
+                currentTab={currentTab}
+                getUserNamesByIds={getUserNamesByIds}
+                handleLikeToggle={handleLikeToggle}
+                handleMenuClick={handleMenuClick}
+                isAnonymous={isAnonymous}
+                theme={theme}
+              />
+            ))
         ) : (
           <EmptyColumnMessage>
             <Typography variant="body2" gutterBottom>

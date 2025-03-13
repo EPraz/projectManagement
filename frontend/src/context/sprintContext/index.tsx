@@ -26,66 +26,74 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
     useSocketSprintDelete,
     useSocketSprintUpdate,
   } = useSocketSprints();
+
   const [sprint, setSprint] = useState<Sprint | null>(null);
   const [loadingSprint, setLoadingSprint] = useState(true);
 
-  //  Memoriza `project` para evitar renders innecesarios
+  // Memoriza project para evitar renders innecesarios
   const projectData = useMemo(() => project, [project]);
 
-  const settingSprint = () => {
+  // Función para establecer el sprint actual, envuelta en useCallback
+  const settingSprint = useCallback(() => {
     const storedSprintId = localStorage.getItem("selectedSprintId");
-    const lastSelectedSprint = projectData?.sprints.find(
+    const lastSelectedSprint = listOfSprints.find(
       (s) => s.id === storedSprintId
     );
     const today = new Date();
-    const activeSprint = projectData?.sprints.find(
+    const activeSprint = listOfSprints.find(
       (s) =>
         s.startDate &&
         s.endDate &&
         new Date(s.startDate) <= today &&
         new Date(s.endDate) >= today
     );
-    setSprint(
-      lastSelectedSprint || activeSprint || projectData?.sprints[0] || null
-    );
-  };
-  //  Manejo del Sprint Seleccionado
+    setSprint(lastSelectedSprint || activeSprint || listOfSprints[0] || null);
+  }, [listOfSprints]);
+
+  // Efecto para establecer el sprint una vez que se carga el proyecto
   useEffect(() => {
     if (projectLoading || !projectData) return;
-    setLoadingSprint(true);
-
-    // Si el proyecto no tiene sprints, limpiamos el estado
-    if (!projectData || projectData.sprints.length === 0) {
+    if (!projectData.sprints || projectData.sprints.length === 0) {
       setSprint(null);
       setLoadingSprint(false);
       return;
     }
-
-    // Intentamos recuperar el último Sprint seleccionado
+    setLoadingSprint(true);
     settingSprint();
     setLoadingSprint(false);
-  }, [projectData, projectLoading]);
+  }, [projectData, projectLoading, settingSprint]);
 
-  //  Guardar el Sprint seleccionado en `localStorage`
+  // Guardar el sprint seleccionado en localStorage
   useEffect(() => {
     if (sprint) {
       localStorage.setItem("selectedSprintId", sprint.id);
     }
   }, [sprint]);
 
+  // Ejecutar settingSprint cada vez que listOfSprints cambia
+  useEffect(() => {
+    settingSprint();
+  }, [listOfSprints, settingSprint]);
+
+  // Actualiza la lista de sprints y, si el sprint actual es el que se actualizó, actualízalo también.
   const updateListOfSprints = useCallback(
     (updatedSprint: Sprint) => {
       setListOfSprints((prev) =>
-        prev.map((t) => (t.id === updatedSprint.id ? updatedSprint : t))
+        prev.map((s) => (s.id === updatedSprint.id ? updatedSprint : s))
+      );
+      setSprint((prevSprint) =>
+        prevSprint && prevSprint.id === updatedSprint.id
+          ? updatedSprint
+          : prevSprint
       );
     },
-    [setListOfSprints]
+    [setListOfSprints, setSprint, sprint]
   );
 
   const addOnListOfSprints = useCallback(
     (newSprint: Sprint) => {
       setListOfSprints((prev) => {
-        if (prev.find((t) => t.id === newSprint.id)) {
+        if (prev.find((s) => s.id === newSprint.id)) {
           return prev;
         }
         return [...prev, newSprint];
@@ -96,7 +104,7 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
 
   const removeSprintFromState = useCallback(
     (sprintId: Sprint["id"]) => {
-      setListOfSprints((prev) => prev.filter((t) => t.id !== sprintId));
+      setListOfSprints((prev) => prev.filter((s) => s.id !== sprintId));
       if (sprint?.id === sprintId) {
         settingSprint();
       }
@@ -108,7 +116,6 @@ export const SprintProvider = ({ children }: { children: ReactNode }) => {
   useSocketSprintCreate((data) => addOnListOfSprints(data));
   useSocketSprintDelete((data) => removeSprintFromState(data.id));
 
-  //  Cargando el proyecto
   if (loadingSprint || projectLoading) return <Loading message="Cargando..." />;
 
   return (

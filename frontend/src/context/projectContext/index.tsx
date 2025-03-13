@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 import { Project, Sprint, Ticket } from "../../types";
 import { useApi } from "../apiContext";
 import { Loading } from "../../components";
+import { useSocketProjects } from "../../hooks";
 
 const ProjectContext = createContext<{
   project: Project | null;
@@ -23,6 +24,7 @@ const ProjectContext = createContext<{
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const { id } = useParams();
   const { apiUrl } = useApi();
+  const { useSocketProjectUpdate } = useSocketProjects();
 
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(false);
@@ -63,6 +65,15 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
       return { ...prev, sprints: listOfSprints };
     });
   }, [listOfSprints]);
+
+  const updateProject = useCallback(
+    (updatedProject: Project) => {
+      setProject(updatedProject);
+    },
+    [setProject]
+  );
+
+  useSocketProjectUpdate((data) => updateProject(data));
 
   const memoizedProject = useMemo(() => project, [project]);
 

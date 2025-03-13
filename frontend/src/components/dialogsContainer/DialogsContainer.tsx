@@ -131,7 +131,6 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           open={openTaskDialog}
           title="Create Task"
           onClose={() => setOpenTaskDialog(false)}
-          // onClose={() => console.log("hell")}
           onSubmit={handleCreateTask}
           schema={createTaskSchema}
           disabled={loadingPostTasks}

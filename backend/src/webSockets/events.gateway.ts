@@ -6,7 +6,7 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Sprint, Ticket } from '@prisma/client';
+import { Project, Sprint, Ticket } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({ cors: { origin: '*' } }) // Ajusta el origen según tus necesidades
@@ -29,6 +29,7 @@ export class EventsGateway
   }
 
   // Método para emitir actualizaciones de tickets a todos los clientes conectados
+  // Events for Tickets
   emitTicketUpdate(data: Ticket) {
     this.server.emit('ticketUpdated', data);
   }
@@ -39,8 +40,9 @@ export class EventsGateway
     this.server.emit('ticketDeleted', data);
   }
 
+  // Events for Sprints
   emitSprintUpdate(data: Sprint) {
-    this.server.emit('sprintUpdate', data);
+    this.server.emit('sprintUpdated', data);
   }
 
   emitSprintCreate(data: Sprint) {
@@ -49,5 +51,10 @@ export class EventsGateway
 
   emitSprintDelete(data: Sprint) {
     this.server.emit('sprintDeleted', data);
+  }
+
+  // Events for Projects
+  emitProjectUpdate(data: Project) {
+    this.server.emit('projectUpdated', data);
   }
 }

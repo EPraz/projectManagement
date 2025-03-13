@@ -6,6 +6,7 @@ import { Role } from "../../../constants";
 import {
   useCreateProjectUser,
   useDebounce,
+  useDeleteProjectUser,
   useLoadUsers,
 } from "../../../hooks";
 import TeamMembersHeader from "./TeamMembersHeader";
@@ -23,6 +24,8 @@ const TeamMembersContainer = () => {
   const { loadUsers, loading: loadingUsers } = useLoadUsers();
   const { createProjectUser, loading: loadingCreateProjectUser } =
     useCreateProjectUser();
+  const { deleteProjectUser, loading: loadingDeleteProjectUser } =
+    useDeleteProjectUser();
 
   const [members, setMembers] = useState<User[]>(project?.users || []);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -57,6 +60,15 @@ const TeamMembersContainer = () => {
 
   // Load all available users
   useEffect(() => {
+    // const fetchUsers = async () => {
+    //   const data = await loadUsers();
+    //   setAllUsers(data);
+    // };
+    // fetchUsers();
+    setMembers(project?.users || []);
+  }, [project]);
+
+  useEffect(() => {
     const fetchUsers = async () => {
       const data = await loadUsers();
       setAllUsers(data);
@@ -77,6 +89,13 @@ const TeamMembersContainer = () => {
       setOpenDialog
     );
   }, [selectedUser, allUsers, createProjectUser, project?.id, setProject]);
+
+  const handleRemoveFromProject = async () => {
+    if (!selectedMember) return;
+    const user = allUsers.find((u) => u.id === selectedMember);
+    if (!user || !project?.id) return;
+    await deleteProjectUser(user.id, project?.id);
+  };
 
   // Get available users (not already in the project)
   const availableUsers = useMemo(() => {
@@ -235,6 +254,7 @@ const TeamMembersContainer = () => {
             anchorEl={anchorEl}
             handleMenuClose={handleMenuClose}
             selectedMember={selectedMember}
+            handleRemoveFromProject={handleRemoveFromProject}
           />
         </Portal>
       )}

@@ -10,10 +10,15 @@ import {
   UpdateTeamMemberCapacityDto,
 } from 'src/dto';
 import { handlePrismaError } from 'src/helper';
+import { SPRINT_INCLUDE } from 'src/constants';
+import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
 export class TeamMemberCapacityService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   async create(
     createDto: CreateTeamMemberCapacityDto,
@@ -31,7 +36,7 @@ export class TeamMemberCapacityService {
           'Capacity record already exists for this user and sprint',
         );
       }
-      return await this.prisma.teamMemberCapacity.create({
+      const response = await this.prisma.teamMemberCapacity.create({
         data: {
           userId: createDto.userId,
           sprintId: createDto.sprintId,
@@ -41,6 +46,14 @@ export class TeamMemberCapacityService {
         },
         include: { user: true },
       });
+
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: response.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -83,7 +96,7 @@ export class TeamMemberCapacityService {
       if (!record) {
         throw new NotFoundException(`Record #${id} not found`);
       }
-      return await this.prisma.teamMemberCapacity.update({
+      const response = await this.prisma.teamMemberCapacity.update({
         where: { id },
         data: {
           capacity: updateDto.capacity,
@@ -94,6 +107,14 @@ export class TeamMemberCapacityService {
           user: true,
         },
       });
+
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: response.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -108,6 +129,13 @@ export class TeamMemberCapacityService {
         throw new NotFoundException(`Record #${id} not found`);
       }
       await this.prisma.teamMemberCapacity.delete({ where: { id } });
+
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: record.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
       return true;
     } catch (error) {
       handlePrismaError(error);

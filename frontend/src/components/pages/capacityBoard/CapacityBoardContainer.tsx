@@ -33,7 +33,7 @@ export type FormDataProps = {
 
 const CapacityBoardContainer = () => {
   const { project } = useProject();
-  const { sprint, updateSprintInState } = useSprint();
+  const { sprint, updateListOfSprints } = useSprint();
 
   const [teamMembers, setTeamMembers] = useState<TeamMemberCapacity[]>(
     sprint?.teamMemberCapacities || []
@@ -114,7 +114,7 @@ const CapacityBoardContainer = () => {
         data,
         updateTeamMemberCapacity,
         setTeamMembers,
-        updateSprintInState,
+        updateListOfSprints,
         handleCloseDialog,
         teamMembers,
         sprint
@@ -124,7 +124,7 @@ const CapacityBoardContainer = () => {
         data,
         createTeamMemberCapacity,
         setTeamMembers,
-        updateSprintInState,
+        updateListOfSprints,
         handleCloseDialog,
         sprint
       );
@@ -143,7 +143,7 @@ const CapacityBoardContainer = () => {
       recordToDelete,
       setTeamMembers,
       sprint,
-      updateSprintInState,
+      updateListOfSprints,
       setOpenDeleteModal,
       setRecordToDelete
     );

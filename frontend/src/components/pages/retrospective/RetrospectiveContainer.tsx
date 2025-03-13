@@ -4,7 +4,7 @@ import { Box, useTheme } from "@mui/material";
 import { ColumnContent, Container } from "./RetrospectivePage.styles";
 import type { RetroCard as RetroCardModel } from "../../../types";
 import {
-  useGetRetroCards,
+  // useGetRetroCards,
   useCreateRetroCard,
   useUpdateRetroCard,
   useDeleteRetroCard,
@@ -30,7 +30,7 @@ import {
 
 const RetrospectiveContainer = () => {
   const theme = useTheme();
-  const { sprint, updateSprintInState } = useSprint();
+  const { sprint, updateListOfSprints } = useSprint();
   const { project } = useProject();
   const { user: currentUser } = useAuth();
 
@@ -58,20 +58,21 @@ const RetrospectiveContainer = () => {
   const [cardToDelete, setCardToDelete] = useState<RetroCardModel | null>(null);
 
   // API hooks for retrospectives
-  const { getRetroCards } = useGetRetroCards();
+  // const { getRetroCards } = useGetRetroCards();
   const { createRetroCard, loading: loadingCreate } = useCreateRetroCard();
   const { updateRetroCard, loading: loadingUpdate } = useUpdateRetroCard();
   const { deleteRetroCard } = useDeleteRetroCard();
 
   // Load retrospectives for the current sprint
-  const fetchRetroCards = useCallback(async () => {
-    if (!sprint?.id) return;
-    const data = await getRetroCards(sprint.id);
-    if (data) setRetroCards(data);
-  }, [sprint?.id, getRetroCards]);
+  // const fetchRetroCards = useCallback(async () => {
+  //   if (!sprint?.id) return;
+  //   const data = await getRetroCards(sprint.id);
+  //   if (data) setRetroCards(data);
+  // }, [sprint?.id, getRetroCards]);
 
   useEffect(() => {
-    fetchRetroCards();
+    // fetchRetroCards();
+    setRetroCards(sprint?.retroCard || []);
   }, [sprint]);
 
   // Get user names by IDs for tooltip (likes)
@@ -95,13 +96,13 @@ const RetrospectiveContainer = () => {
       setAnchorEl(e.currentTarget);
       setSelectedCardId(cardId);
     },
-    []
+    [setAnchorEl, setSelectedCardId]
   );
 
   const handleMenuClose = useCallback(() => {
     setAnchorEl(null);
     setSelectedCardId(null);
-  }, []);
+  }, [setAnchorEl, setSelectedCardId]);
 
   const handleOpenAddDialog = useCallback(
     (typeColumn: RetroTypes) => {
@@ -130,7 +131,7 @@ const RetrospectiveContainer = () => {
   const handleCloseDialog = useCallback(() => {
     setOpenDialog(false);
     setEditingCard(null);
-  }, []);
+  }, [setOpenDialog, setEditingCard]);
 
   // Submit handler for the DialogForm (create/edit)
   const handleDialogSubmit = async (data: typeof formData) => {
@@ -142,7 +143,7 @@ const RetrospectiveContainer = () => {
         currentUser,
         setRetroCards,
         sprint,
-        updateSprintInState,
+        updateListOfSprints,
         handleCloseDialog
       );
     } else {
@@ -152,7 +153,7 @@ const RetrospectiveContainer = () => {
         data,
         currentUser,
         setRetroCards,
-        updateSprintInState,
+        updateListOfSprints,
         handleCloseDialog
       );
     }
@@ -170,7 +171,7 @@ const RetrospectiveContainer = () => {
       sprint,
       deleteRetroCard,
       setRetroCards,
-      updateSprintInState,
+      updateListOfSprints,
       setOpenDeleteModal,
       setCardToDelete
     );
@@ -179,30 +180,25 @@ const RetrospectiveContainer = () => {
     sprint,
     deleteRetroCard,
     setRetroCards,
-    updateSprintInState,
+    updateListOfSprints,
     setOpenDeleteModal,
     setCardToDelete,
   ]);
 
   // Handler for toggling like on a card
-  const handleLikeToggle = async (card: RetroCardModel) =>
-    useCallback(() => {
-      likeTogglehandler(
+  const handleLikeToggle = useCallback(
+    async (card: RetroCardModel) => {
+      await likeTogglehandler(
         currentUser,
         card,
         updateRetroCard,
         sprint,
         setRetroCards,
-        updateSprintInState
+        updateListOfSprints
       );
-    }, [
-      currentUser,
-      card,
-      updateRetroCard,
-      sprint,
-      setRetroCards,
-      updateSprintInState,
-    ]);
+    },
+    [currentUser, updateRetroCard, sprint, setRetroCards, updateListOfSprints]
+  );
 
   return (
     <Container>

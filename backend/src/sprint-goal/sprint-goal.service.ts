@@ -8,19 +8,31 @@ import {
   UpdateSprintGoalDto,
 } from 'src/dto';
 import { SprintGoal, GoalTask } from '@prisma/client';
-import { SPRINT_GOAL_INCLUDE } from 'src/constants';
+import { SPRINT_GOAL_INCLUDE, SPRINT_INCLUDE } from 'src/constants';
+import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
 export class SprintGoalService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventsGateway: EventsGateway,
+  ) {}
 
   //  Crear un Sprint Goal
   public async createGoal(data: CreateSprintGoalDto): Promise<SprintGoal> {
     try {
-      return await this.prisma.sprintGoal.create({
+      const response = await this.prisma.sprintGoal.create({
         data,
         include: SPRINT_GOAL_INCLUDE,
       });
+
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: response.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -48,11 +60,19 @@ export class SprintGoalService {
 
       if (!goal) throw new NotFoundException('Sprint Goal not found');
 
-      return await this.prisma.sprintGoal.update({
+      const response = await this.prisma.sprintGoal.update({
         where: { id },
         data,
         include: SPRINT_GOAL_INCLUDE,
       });
+
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: response.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -67,9 +87,16 @@ export class SprintGoalService {
 
       if (!goal) throw new NotFoundException('Sprint Goal not found');
 
-      await this.prisma.sprintGoal.delete({
+      const response = await this.prisma.sprintGoal.delete({
         where: { id: goalId },
       });
+
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: response.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
 
       return true;
     } catch (error) {
@@ -80,7 +107,19 @@ export class SprintGoalService {
   //  Crear una nueva Goal Task
   public async createGoalTask(data: CreateGoalTaskDto): Promise<GoalTask> {
     try {
-      return await this.prisma.goalTask.create({ data });
+      const response = await this.prisma.goalTask.create({ data });
+
+      const goal = await this.prisma.sprintGoal.findUnique({
+        where: { id: data.goalId },
+      });
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: goal?.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
@@ -96,10 +135,22 @@ export class SprintGoalService {
 
       if (!task) throw new NotFoundException('Goal Task not found');
 
-      return await this.prisma.goalTask.update({
+      const response = await this.prisma.goalTask.update({
         where: { id },
         data,
       });
+
+      const goal = await this.prisma.sprintGoal.findUnique({
+        where: { id: task.goalId },
+      });
+      const sprint = await this.prisma.sprint.findUnique({
+        where: { id: goal?.sprintId },
+        include: SPRINT_INCLUDE,
+      });
+
+      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+
+      return response;
     } catch (error) {
       handlePrismaError(error);
     }
