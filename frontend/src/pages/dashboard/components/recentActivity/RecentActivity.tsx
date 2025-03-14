@@ -58,13 +58,13 @@ export const RecentActivityFeed: React.FC<RecentActivityProps> = ({
       <SectionTitle variant="h6">Recent Activity</SectionTitle>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {activities.map((activity) => (
+        {activities.map((activity, index) => (
           <ActivityItem key={activity.id}>
             <Avatar
               sx={{
                 width: 40,
                 height: 40,
-                bgcolor: getRandomColor(),
+                bgcolor: getRandomColor(index),
               }}
             >
               {getAvatarText(activity.user.name)}

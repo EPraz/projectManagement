@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { RetroCard } from "../../types";
 
 export const useGetRetroCards = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +18,10 @@ export const useGetRetroCards = () => {
         : `${apiUrl}/retrospectives`;
       const response = await fetch(url, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       if (!response.ok) throw new Error("Failed to fetch retro cards");
       const cards: RetroCard[] = await response.json();

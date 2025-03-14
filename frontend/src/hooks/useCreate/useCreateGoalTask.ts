@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { GoalTask } from "../../types";
 
 export const useCreateGoalTask = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -14,7 +15,10 @@ export const useCreateGoalTask = () => {
     try {
       const response = await fetch(`${apiUrl}/sprint-goals/goalTask`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(data),
       });
 

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { TeamMemberCapacity } from "../../types";
 
 export const useUpdateTeamMemberCapacity = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +16,10 @@ export const useUpdateTeamMemberCapacity = () => {
     try {
       const response = await fetch(`${apiUrl}/team-member-capacities/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(data),
       });
 

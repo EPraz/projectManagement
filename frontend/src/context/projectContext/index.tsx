@@ -12,6 +12,7 @@ import { Project, Sprint, Ticket } from "../../types";
 import { useApi } from "../apiContext";
 import { Loading } from "../../components";
 import { useSocketProjects } from "../../hooks";
+import { useAuth } from "../authContext";
 
 const ProjectContext = createContext<{
   project: Project | null;
@@ -24,6 +25,7 @@ const ProjectContext = createContext<{
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const { id } = useParams();
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { useSocketProjectUpdate } = useSocketProjects();
 
   const [project, setProject] = useState<Project | null>(null);
@@ -42,7 +44,10 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await fetch(`${apiUrl}/projects/${id}`, {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       if (!response.ok) throw new Error("Failed to fetch project");
       const data: Project = await response.json();

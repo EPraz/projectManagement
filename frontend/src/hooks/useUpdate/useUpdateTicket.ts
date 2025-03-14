@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi } from "../../context";
+import { useApi, useAuth } from "../../context";
 import { Ticket } from "../../types";
 
 export const useUpdateTicket = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +17,10 @@ export const useUpdateTicket = () => {
     try {
       const response = await fetch(`${apiUrl}/tickets/${data.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(data),
       });
 

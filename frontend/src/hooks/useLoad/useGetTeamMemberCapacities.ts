@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { TeamMemberCapacity } from "../../types";
 
 export const useGetTeamMemberCapacities = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +17,10 @@ export const useGetTeamMemberCapacities = () => {
         `${apiUrl}/team-member-capacities?sprintId=${sprintId}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       );
       if (!response.ok)

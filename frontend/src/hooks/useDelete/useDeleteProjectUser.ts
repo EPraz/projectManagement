@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { User } from "../../types";
 
 export const useDeleteProjectUser = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +18,10 @@ export const useDeleteProjectUser = () => {
         `${apiUrl}/projects/${projectId}/users/${userId}`,
         {
           method: "DELETE",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
       );
       if (!response.ok) throw new Error("Failed to remove member");

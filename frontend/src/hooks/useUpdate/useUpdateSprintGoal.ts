@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { SprintGoal } from "../../types";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi } from "../../context";
+import { useApi, useAuth } from "../../context";
 
 export const useUpdateSprintGoal = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +16,10 @@ export const useUpdateSprintGoal = () => {
     try {
       const response = await fetch(`${apiUrl}/sprint-goals/${data.id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(data),
       });
 

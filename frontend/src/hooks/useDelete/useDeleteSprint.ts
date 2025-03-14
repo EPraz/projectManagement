@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi } from "../../context";
+import { useApi, useAuth } from "../../context";
 import { Sprint } from "../../types";
 
 export const useDeleteSprint = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -14,7 +15,10 @@ export const useDeleteSprint = () => {
     try {
       const response = await fetch(`${apiUrl}/sprints/${data.id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) throw new Error("Failed to delete sprint");

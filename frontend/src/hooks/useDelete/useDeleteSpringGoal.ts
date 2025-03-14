@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi } from "../../context";
+import { useApi, useAuth } from "../../context";
 import { SprintGoal } from "../../types";
 
 export const useDeleteSprintGoal = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -16,7 +17,10 @@ export const useDeleteSprintGoal = () => {
     try {
       const response = await fetch(`${apiUrl}/sprint-goals/${data.id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) throw new Error("Failed to delete sprint goal");

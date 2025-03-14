@@ -1,11 +1,12 @@
 // useBulkUpdateTickets.ts
 import { useState } from "react";
-import { useApi } from "../../context";
+import { useApi, useAuth } from "../../context";
 import { Ticket } from "../../types";
 import { useSnackbar } from "../../context/snackbarContext";
 
 export const useBulkUpdateTickets = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +18,10 @@ export const useBulkUpdateTickets = () => {
     try {
       const response = await fetch(`${apiUrl}/tickets/bulk-update`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(tickets),
       });
 

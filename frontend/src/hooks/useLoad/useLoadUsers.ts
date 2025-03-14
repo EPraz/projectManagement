@@ -1,16 +1,23 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { User } from "../../types";
 
 export const useLoadUsers = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
   const loadUsers = async (): Promise<User[] | []> => {
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/users/`);
+      const response = await fetch(`${apiUrl}/users/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       if (!response.ok) throw new Error("Failed to fetch users");
       const data: User[] = await response.json();
       //   showSnackbarMessage("Projects loaded successfully", "success");

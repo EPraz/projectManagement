@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi } from "../../context";
+import { useApi, useAuth } from "../../context";
 import { Ticket } from "../../types";
 
 export const useDeleteTicket = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -14,7 +15,10 @@ export const useDeleteTicket = () => {
     try {
       const response = await fetch(`${apiUrl}/tickets/${data.id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) throw new Error("Failed to delete ticket");

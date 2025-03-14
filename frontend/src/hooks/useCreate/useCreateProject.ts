@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useApi } from "../../context/apiContext";
-import { useSnackbar } from "../../context";
+import { useAuth, useSnackbar } from "../../context";
 import { Project } from "../../types";
 
 export const useCreateProject = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -15,7 +16,10 @@ export const useCreateProject = () => {
       setLoading(true);
       const response = await fetch(`${apiUrl}/projects`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({
           ...data,
           createdBy: "test-user@example.com",

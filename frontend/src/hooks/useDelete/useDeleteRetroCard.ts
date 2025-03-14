@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 
 export const useDeleteRetroCard = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
@@ -11,7 +12,10 @@ export const useDeleteRetroCard = () => {
     try {
       const response = await fetch(`${apiUrl}/retrospectives/${id}`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
       if (!response.ok) throw new Error("Failed to delete retro card");
       showSnackbarMessage("Retro card deleted successfully", "success");

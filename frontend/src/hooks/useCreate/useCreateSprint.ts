@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useApi, useSnackbar } from "../../context";
+import { useApi, useAuth, useSnackbar } from "../../context";
 import { Sprint } from "../../types";
 
 //verify if still working after refactor
 
 export const useCreateSprint = () => {
   const { apiUrl } = useApi();
+  const { accessToken } = useAuth();
   const [loading, setLoading] = useState(false);
   const { showSnackbarMessage } = useSnackbar();
 
@@ -16,7 +17,10 @@ export const useCreateSprint = () => {
     try {
       const response = await fetch(`${apiUrl}/sprints`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({
           ...data,
           startDate: data.startDate

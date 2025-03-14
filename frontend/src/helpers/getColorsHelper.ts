@@ -33,15 +33,24 @@ export const getPriorityColor = (priority: TicketPriority): string => {
   }
 };
 
-export const getRandomColor = () => {
-  const colors = [
-    "primary.light",
-    "primary.main",
-    "secondary.light",
-    "secondary.main",
-    "error.light",
-    "error.main",
-  ];
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  return colors[randomIndex];
+// export const getRandomColor = () => {
+//   const colors = [
+//     "primary.light",
+//     "primary.main",
+//     "secondary.light",
+//     "secondary.main",
+//     "error.light",
+//     "error.main",
+//   ];
+//   const randomIndex = Math.floor(Math.random() * colors.length);
+//   return colors[randomIndex];
+// };
+export const getRandomColor = (index: number): string => {
+  // Definimos dos colores específicos
+  const colors = ["#4CAF50", "#FF9800"];
+  // Generamos un número aleatorio entre 0 y 99
+  // const rand = Math.floor(Math.random() * 100);
+  // Si el número es par, retornamos uno de los dos colores
+  // return rand % 2 === 0 ? colors[0] : colors[1];
+  return index % 2 === 0 ? colors[0] : colors[1];
 };
