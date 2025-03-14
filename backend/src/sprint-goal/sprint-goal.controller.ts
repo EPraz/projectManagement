@@ -7,6 +7,7 @@ import {
   Delete,
   Get,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreateGoalTaskDto,
@@ -16,7 +17,9 @@ import {
 } from 'src/dto';
 import { SprintGoalService } from './sprint-goal.service';
 import { GoalTask, SprintGoal } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('sprint-goals')
 export class SprintGoalController {
   constructor(private readonly sprintGoalService: SprintGoalService) {}

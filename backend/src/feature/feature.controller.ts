@@ -6,11 +6,14 @@ import {
   Body,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { FeatureService } from './feature.service';
 import { CreateFeatureDto, GetAllFeaturesDto, UpdateFeatureDto } from 'src/dto';
 import { Feature } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('features')
 export class FeatureController {
   constructor(private readonly featureService: FeatureService) {}

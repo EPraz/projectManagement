@@ -10,11 +10,14 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
 import { CreateTicketDto, UpdateTicketDto } from 'src/dto';
 import { TicketService } from './ticket.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('tickets')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}

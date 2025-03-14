@@ -17,6 +17,7 @@ import {
 } from 'src/dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('team-member-capacities')
 // @UseGuards(JwtAuthGuard)
 export class TeamMemberCapacityController {

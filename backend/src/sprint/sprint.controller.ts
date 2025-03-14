@@ -8,11 +8,14 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SprintService } from './sprint.service';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
 import { Sprint } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('sprints')
 export class SprintController {
   constructor(private readonly sprintService: SprintService) {}

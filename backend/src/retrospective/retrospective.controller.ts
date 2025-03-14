@@ -7,13 +7,16 @@ import {
   Body,
   Param,
   Query,
+  UseGuards,
   //   UseGuards,
 } from '@nestjs/common';
 import { RetrospectiveService } from './retrospective.service';
 import { RetroCard } from '@prisma/client';
 import { CreateRetroCardDto, UpdateRetroCardDto } from 'src/dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 // import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(JwtAuthGuard)
 @Controller('retrospectives')
 // @UseGuards(AuthGuard('jwt'))
 export class RetrospectiveController {

@@ -14,14 +14,15 @@ import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('projects')
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   // Crear un nuevo proyecto
-  // @UseGuards(AuthGuard('jwt'), RolesGuard)
-  // @Roles('ADMIN') // Solo los ADMIN pueden acceder
+  @Roles('ADMIN') // Solo los ADMIN pueden acceder
   @Post()
   async create(
     @Body() createProjectDto: CreateProjectDto,

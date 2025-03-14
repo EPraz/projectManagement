@@ -6,11 +6,14 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { EpicService } from './epic.service';
 import { CreateEpicDto, GetAllEpicsDto, UpdateEpicDto } from 'src/dto';
 import { Epic } from '@prisma/client';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('epics')
 export class EpicController {
   constructor(private readonly epicService: EpicService) {}
