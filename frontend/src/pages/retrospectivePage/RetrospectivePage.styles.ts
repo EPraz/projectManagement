@@ -76,7 +76,7 @@ export const ColumnContent = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   gap: theme.spacing(2),
   overflowY: "auto",
-  maxHeight: "calc(100vh - 300px)",
+  // maxHeight: "calc(100vh - 300px)",
   "&::-webkit-scrollbar": {
     width: 6,
   },

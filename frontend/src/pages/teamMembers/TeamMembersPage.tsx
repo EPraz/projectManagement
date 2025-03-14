@@ -1,4 +1,4 @@
-import { TeamMembersContainer } from "../../components";
+import TeamMembersContainer from "./components/teamMembersContainer/TeamMembersContainer";
 
 const TeamMembersPage = () => {
   return <TeamMembersContainer />;

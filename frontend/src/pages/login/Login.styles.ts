@@ -126,7 +126,7 @@ export const WelcomeText = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const DiagonalShapes = styled(Box)(({ theme }) => ({
+export const DiagonalShapes = styled(Box)(() => ({
   position: "absolute",
   bottom: 0,
   left: 0,

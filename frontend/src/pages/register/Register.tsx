@@ -21,18 +21,7 @@ import {
   Business as BusinessIcon,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import {
-  AuthCard,
-  AuthWrapper,
-  Form,
-  Logo,
-  LogoBox,
-  LeftSection,
-  RightSection,
-  WelcomeText,
-  DiagonalShapes,
-  StepperContainer,
-} from "./Register.styles";
+import { LeftSection, RightSection, StepperContainer } from "./Register.styles";
 import {
   FieldLabel,
   FormFieldContainer,
@@ -40,6 +29,15 @@ import {
 import ReactIcon from "../../assets/react.svg";
 import { useAuth } from "../../context";
 import { handleRegisterSubmit } from "./Register.helper";
+import {
+  AuthCard,
+  AuthWrapper,
+  DiagonalShapes,
+  Form,
+  Logo,
+  LogoBox,
+  WelcomeText,
+} from "../login/Login.styles";
 
 // const steps = ["Account", "Personal", "Workspace"];
 const steps = ["Account", "Personal"];

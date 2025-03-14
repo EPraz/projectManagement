@@ -1,4 +1,4 @@
-import { ProjectsPageContainer } from "../../components";
+import ProjectsPageContainer from "./components/projectPageContainer/ProjectsPageContainer";
 
 const Projects = () => {
   return <ProjectsPageContainer />;

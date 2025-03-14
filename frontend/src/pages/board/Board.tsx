@@ -7,17 +7,17 @@ import { useOutletContext } from "react-router-dom";
 import StatusConfig from "../../components/statusConfig/StatusConfig";
 import { SprintSelector } from "../../components";
 import type { LayoutContextProps } from "../../types";
-import BoardHeaderComponent from "./backlogBoard/BoardHeader";
 import {
   ActionContainer,
   AddButton,
   AddButtonWrapper,
   BoardContainer,
-  BoardHeader,
+  BoardHeader as BoardHeaderStyled,
   TabButton,
   TabsWrapper,
 } from "./Board.styles";
 import { backlogColumns, TabPanels } from "../../constants";
+import BoardHeader from "./components/backlogBoard/boardHeader/BoardHeader";
 
 const Board = () => {
   const {
@@ -40,7 +40,7 @@ const Board = () => {
 
   return (
     <BoardContainer>
-      <BoardHeader>
+      <BoardHeaderStyled>
         <TabsWrapper>
           {TabPanels.map((tab, index) => (
             <TabButton
@@ -142,7 +142,7 @@ const Board = () => {
             )}
 
             {tabValue === 1 && (
-              <BoardHeaderComponent
+              <BoardHeader
                 columns={backlogColumns}
                 visibleColumns={visibleColumns}
                 setVisibleColumns={setVisibleColumns}
@@ -154,7 +154,7 @@ const Board = () => {
             )}
           </Box>
         </TabsWrapper>
-      </BoardHeader>
+      </BoardHeaderStyled>
 
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
         {TabPanels[tabValue].component()}

@@ -4,7 +4,7 @@ export { default as Login } from "./login/Login";
 export { default as Projects } from "./projects/ProjectsPage";
 export { default as Retrospective } from "./retrospectivePage/RetrospectivePage";
 export { default as Dashboard } from "./dashBoard/Dashboard";
-export { default as Taskboard } from "./board/taskBoard/TaskBoard";
+export { default as Taskboard } from "./board/components/taskBoard/TaskBoard";
 export { default as SettingsPage } from "./settingsPage/SettingsPage";
 export { default as RetrospectivePage } from "./retrospectivePage/RetrospectivePage";
 export { default as TeamMembersPage } from "./teamMembers/TeamMembersPage";

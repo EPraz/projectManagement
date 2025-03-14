@@ -20,8 +20,8 @@ export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
   // Crear un nuevo proyecto
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('ADMIN') // Solo los ADMIN pueden acceder
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles('ADMIN') // Solo los ADMIN pueden acceder
   @Post()
   async create(
     @Body() createProjectDto: CreateProjectDto,

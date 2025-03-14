@@ -4,9 +4,9 @@ import GroupIcon from "@mui/icons-material/Group";
 import FlagIcon from "@mui/icons-material/Flag";
 
 import { Taskboard } from "../pages";
-import BacklogBoard from "../pages/board/backlogBoard/BacklogBoard";
-import CapacityBoard from "../pages/board/capacityBoard/CapacityBoard";
-import GoalBoard from "../pages/board/goalBoard/GoalBoard";
+import CapacityBoard from "../pages/board/components/capacityBoard/CapacityBoard";
+import GoalBoard from "../pages/board/components/goalBoard/GoalBoard";
+import BacklogBoard from "../pages/board/components/backlogBoard/BacklogBoard";
 
 interface TabPanel {
   label: string;

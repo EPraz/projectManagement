@@ -1,4 +1,4 @@
-import { RetrospectiveContainer } from "../../components";
+import RetrospectiveContainer from "./components/retrospectiveContainer/RetrospectiveContainer";
 
 const RetrospectivePage = () => {
   return <RetrospectiveContainer />;

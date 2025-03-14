@@ -21,12 +21,12 @@ import { LayoutContextProps } from "../../types";
 import { format } from "date-fns";
 import { SprintSelector } from "../../components";
 import { getDaysRemaining } from "./DashBoard.helpers";
-import SprintMetricsChart from "./SprintMetricsChart";
-import RecentActivityFeed from "./RecentActivity";
-import UpcomingDeadlines from "./UpcomingDeadlines";
-import TeamWorkload from "./TeamWorkload";
-import BlockersAndImpediments from "./BlockersAndImpediments";
-import SprintGoalsAndMilestones from "./SprintGoalsAndMilestones";
+import RecentActivityFeed from "./components/recentActivity/RecentActivity";
+import SprintMetricsChart from "./components/sprintMetricsChart/SprintMetricsChart";
+import UpcomingDeadlines from "./components/upcomingDeadlines/UpcomingDeadlines";
+import TeamWorkload from "./components/teamWorkload/TeamWorkload";
+import BlockersAndImpediments from "./components/blockersAndImpediments/BlockersAndImpediments";
+import SprintGoalsAndMilestones from "./components/sprintGoalsAndMilestones/SprintGoalsAndMilestones";
 
 const Dashboard = () => {
   const { project, sprint, allTickets, tickets, listOfSprints } =
