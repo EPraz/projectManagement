@@ -23,7 +23,8 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
     @Body() request: RegisterDto,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const { accessToken, refreshToken } = await this.authService.login(request);
+    const { accessToken, refreshToken } =
+      await this.authService.register(request);
 
     res.cookie('jwt', refreshToken, {
       httpOnly: true,
