@@ -28,7 +28,7 @@ import TeamWorkload from "./components/teamWorkload/TeamWorkload";
 import BlockersAndImpediments from "./components/blockersAndImpediments/BlockersAndImpediments";
 import SprintGoalsAndMilestones from "./components/sprintGoalsAndMilestones/SprintGoalsAndMilestones";
 
-const Dashboard = () => {
+const DashBoard = () => {
   const { project, sprint, allTickets, tickets, listOfSprints } =
     useOutletContext<LayoutContextProps>();
 
@@ -231,4 +231,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashBoard;
