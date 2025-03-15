@@ -6,7 +6,7 @@ const PrivateRoute = () => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <Loading />; // O un spinner
+    return <Loading />;
   }
 
   return user ? <Outlet /> : <Navigate to="/auth/login" replace />;

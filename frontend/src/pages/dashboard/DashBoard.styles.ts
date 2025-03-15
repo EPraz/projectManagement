@@ -1,5 +1,4 @@
-import { Box, Card, LinearProgress, Typography } from "@mui/material";
-import styled from "styled-components";
+import { Box, Card, LinearProgress, styled, Typography } from "@mui/material";
 
 export const DashboardContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),

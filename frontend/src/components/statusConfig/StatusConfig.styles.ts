@@ -1,5 +1,4 @@
-import { Box, Menu, MenuItem } from "@mui/material";
-import styled from "styled-components";
+import { Box, Menu, MenuItem, styled } from "@mui/material";
 
 export const StyledMenu = styled(Menu)(({ theme }) => ({
   "& .MuiPaper-root": {

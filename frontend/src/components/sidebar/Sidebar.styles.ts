@@ -1,4 +1,3 @@
-import { styled } from "@mui/material/styles";
 import {
   Box,
   Drawer,
@@ -6,6 +5,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  styled,
   Typography,
 } from "@mui/material";
 import type { StyledDrawerProps } from "../../types";

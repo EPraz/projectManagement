@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Card,
@@ -186,7 +186,7 @@ export default function EpicsAndFeaturesPage() {
     new Set([mockData[0].id])
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedItem, setSelectedItem] = useState<{
+  const [_, setSelectedItem] = useState<{
     type: "epic" | "feature";
     id: string;
   } | null>(null);
@@ -205,6 +205,10 @@ export default function EpicsAndFeaturesPage() {
         )
     );
   }, [epics, searchQuery]);
+
+  useEffect(() => {
+    setEpics(mockData);
+  }, [mockData]);
 
   const handleExpandEpic = (epicId: string) => {
     setExpandedEpics((prev) => {

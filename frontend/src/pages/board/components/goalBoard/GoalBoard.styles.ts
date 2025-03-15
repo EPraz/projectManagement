@@ -1,6 +1,11 @@
-import { IconButton, LinearProgress, List, ListItemText } from "@mui/material";
+import {
+  IconButton,
+  LinearProgress,
+  List,
+  ListItemText,
+  styled,
+} from "@mui/material";
 import { Box } from "@mui/system";
-import styled from "styled-components";
 
 export const BoardContainer = styled(Box)(({ theme }) => ({
   display: "flex",

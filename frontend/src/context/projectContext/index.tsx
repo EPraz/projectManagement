@@ -8,7 +8,7 @@ import {
   useMemo,
 } from "react";
 import { useParams } from "react-router-dom";
-import { Project, Sprint, Ticket } from "../../types";
+import { Project, Sprint } from "../../types";
 import { useApi } from "../apiContext";
 import { Loading } from "../../components";
 import { useSocketProjects } from "../../hooks";

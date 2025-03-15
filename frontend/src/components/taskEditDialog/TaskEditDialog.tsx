@@ -11,6 +11,7 @@ import {
   Select,
   MenuItem,
   Avatar,
+  SelectChangeEvent,
 } from "@mui/material";
 import {
   Close as CloseIcon,
@@ -54,7 +55,9 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
   }, [task, open]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
   ) => {
     const { name, value } = e.target;
     if (!editedTask) return;

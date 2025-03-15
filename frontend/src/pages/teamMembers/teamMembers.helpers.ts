@@ -1,10 +1,10 @@
-import { Project, User } from "../../../types";
+import { Project, User } from "../../types";
 
 export const addMembersHandler = async (
   selectedUser: string | null,
   allUsers: User[],
   project: Project | null,
-  setProject: (value: React.SetStateAction<Project | null>) => void,
+  // setProject: (value: React.SetStateAction<Project | null>) => void,
   createProjectUser: (
     userId: string,
     projectId: string

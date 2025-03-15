@@ -73,13 +73,13 @@ const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
         disableElevation: true,
       },
       styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
+        root: () => ({
           textTransform: "none",
           borderRadius: "8px",
           fontWeight: 500,
           padding: "8px 16px",
         }),
-        contained: ({ theme }: { theme: Theme }) => ({
+        contained: () => ({
           backgroundColor: primaryColor,
           color: "#FFFFFF",
           "&:hover": {

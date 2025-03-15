@@ -112,7 +112,7 @@ export const NoResultsContainer = styled(Box)(({ theme }) => ({
 
 export const FilterButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "hasActiveFilters",
-})<{ hasActiveFilters?: boolean }>(({ theme, hasActiveFilters }) => ({
+})<{ hasActiveFilters?: boolean }>(({ hasActiveFilters }) => ({
   height: 40,
   position: "relative",
   borderColor: "secondary.main",

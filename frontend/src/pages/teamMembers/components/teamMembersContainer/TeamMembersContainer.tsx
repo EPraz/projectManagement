@@ -82,7 +82,7 @@ const TeamMembersContainer = () => {
       selectedUser,
       allUsers,
       project,
-      setProject,
+      // setProject,
       createProjectUser,
       setMembers,
       setSelectedUser,

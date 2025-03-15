@@ -10,7 +10,7 @@ import {
   editGoalTaskSchema,
 } from "../../validations";
 import { SprintGoalStatus } from "../../constants";
-import { DialogsContainerProps } from "../../types";
+import { CreateSprintFormData, DialogsContainerProps } from "../../types";
 import { useParams, useSearchParams } from "react-router-dom";
 import { formatStatusName } from "../../helpers";
 import { useAuth, useProject, useSprint, useTicket } from "../../context";
@@ -146,7 +146,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
       )}
 
       {openCreateSprintDialog && (
-        <DialogForm
+        <DialogForm<Partial<CreateSprintFormData>>
           open={openCreateSprintDialog}
           title="Create Sprint"
           onClose={() => setOpenCreateSprintDialog(false)}

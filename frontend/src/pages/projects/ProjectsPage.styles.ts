@@ -1,10 +1,9 @@
-"use client";
-
 import { Box, Card, IconButton, styled } from "@mui/material";
 import { motion } from "framer-motion";
 
 // Create a motion Card component
-const MotionCard = motion(Card);
+// const MotionCard = motion(Card);
+const MotionCard = motion.create(Card);
 
 // Container for the entire projects page
 export const ProjectsContainer = styled(Box)(({ theme }) => ({

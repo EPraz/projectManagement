@@ -9,6 +9,7 @@ import React, {
 import { useLocation, useNavigate } from "react-router-dom";
 import { useApi } from "../apiContext";
 import { User } from "../../types";
+import { isTokenExpired } from "../../helpers";
 
 interface AuthContextType {
   user: User | null;
@@ -20,7 +21,9 @@ interface AuthContextType {
   accessToken: string | null;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -41,15 +44,28 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const refreshTokenIfNeeded = async () => {
       try {
-        const refreshResponse = await fetch(`${apiUrl}/auth/refresh`, {
-          method: "POST",
-          credentials: "include", // Envia la cookie con el refresh token
-          headers: { "Content-Type": "application/json" },
-        });
-        if (refreshResponse.ok) {
-          const data: { accessToken: string; refreshToken: string } =
-            await refreshResponse.json();
-          setAccessToken(data.accessToken);
+        // Si estamos en test, omitir el refresh
+        if (process.env.NODE_ENV === "test") {
+          setInitialized(true);
+          return;
+        }
+        // Solo refresca si no hay token o si el token está expirado
+        if (!accessToken || isTokenExpired(accessToken)) {
+          const refreshResponse = await fetch(`${apiUrl}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+          });
+          if (refreshResponse.ok) {
+            const text = await refreshResponse.text();
+            if (text) {
+              const data = JSON.parse(text);
+              setAccessToken(data.accessToken);
+            } else {
+              // Opcional: manejar caso sin cuerpo (por ejemplo, 204 No Content)
+              console.warn("Refresh response is empty");
+            }
+          }
         }
       } catch (error) {
         console.error("Error en refresh:", error);
@@ -62,7 +78,33 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     } else {
       setInitialized(true);
     }
-  }, [apiUrl]);
+  }, [apiUrl, accessToken, isLoginPage]);
+
+  // useEffect(() => {
+  //   const refreshTokenIfNeeded = async () => {
+  //     try {
+  //       const refreshResponse = await fetch(`${apiUrl}/auth/refresh`, {
+  //         method: "POST",
+  //         credentials: "include", // Envia la cookie con el refresh token
+  //         headers: { "Content-Type": "application/json" },
+  //       });
+  //       if (refreshResponse.ok) {
+  //         const data: { accessToken: string; refreshToken: string } =
+  //           await refreshResponse.json();
+  //         setAccessToken(data.accessToken);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error en refresh:", error);
+  //     } finally {
+  //       setInitialized(true);
+  //     }
+  //   };
+  //   if (!isLoginPage) {
+  //     refreshTokenIfNeeded();
+  //   } else {
+  //     setInitialized(true);
+  //   }
+  // }, [apiUrl]);
 
   useEffect(() => {
     const checkAuth = async () => {

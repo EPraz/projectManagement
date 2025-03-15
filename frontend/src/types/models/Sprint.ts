@@ -23,6 +23,7 @@ export type CreateSprintFormData = {
   name: string;
   startDate?: Date | string | null;
   endDate?: Date | string | null;
+  projectId?: string;
 };
 
 export interface GoalTask {

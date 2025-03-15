@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatusIndicator match snapshot 1`] = `
+<DocumentFragment>
+  <span
+    class="css-1m1p7l8"
+    color="red"
+  />
+</DocumentFragment>
+`;

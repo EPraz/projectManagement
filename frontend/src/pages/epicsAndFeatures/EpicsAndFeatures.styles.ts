@@ -1,6 +1,5 @@
 import { DragIndicator } from "@mui/icons-material";
-import { Box, Card } from "@mui/material";
-import styled from "styled-components";
+import { Box, Card, styled } from "@mui/material";
 
 export const Container = styled(Box)(({ theme }) => ({
   height: "100%",

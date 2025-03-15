@@ -40,9 +40,9 @@ export const likeTogglehandler = async (
     id: string,
     data: Partial<RetroCard>
   ) => Promise<RetroCard | null>,
-  sprint: Sprint | null,
-  setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
-  updateListOfSprints: (updatedSprint: Sprint) => void
+  sprint: Sprint | null
+  // setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
+  // updateListOfSprints: (updatedSprint: Sprint) => void
 ) => {
   if (!currentUser) return;
   const hasLiked = card.likedBy?.includes(currentUser.id);
@@ -76,7 +76,7 @@ export const editDialogSubmit = async (
   ) => Promise<RetroCard | null>,
   data: Partial<RetroCard>,
   currentUser: User | null,
-  setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
+  // setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
   sprint: Sprint | null,
   updateListOfSprints: (updatedSprint: Sprint) => void,
   handleCloseDialog: () => void
@@ -107,8 +107,8 @@ export const createDialogSubmit = async (
   createRetroCard: (data: Partial<RetroCard>) => Promise<RetroCard | null>,
   data: Partial<RetroCard>,
   currentUser: User | null,
-  setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
-  updateListOfSprints: (updatedSprint: Sprint) => void,
+  // setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
+  // updateListOfSprints: (updatedSprint: Sprint) => void,
   handleCloseDialog: () => void
 ) => {
   if (!sprint?.id) return;
@@ -132,7 +132,7 @@ export const deleteDialogSubmit = async (
   cardToDelete: RetroCard | null,
   sprint: Sprint | null,
   deleteRetroCard: (id: string) => Promise<boolean>,
-  setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
+  // setRetroCards: (value: React.SetStateAction<RetroCard[]>) => void,
   updateListOfSprints: (updatedSprint: Sprint) => void,
   setOpenDeleteModal: (value: React.SetStateAction<boolean>) => void,
   setCardToDelete: (value: React.SetStateAction<RetroCard | null>) => void

@@ -1,4 +1,4 @@
-import { Sprint, Ticket } from "../../types";
+import { Ticket } from "../../types";
 
 /**
  * Handler para crear un ticket.

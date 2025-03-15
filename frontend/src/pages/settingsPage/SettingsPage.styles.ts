@@ -1,5 +1,4 @@
-import { Box, Card, ListItem } from "@mui/material";
-import styled from "styled-components";
+import { Box, Card, ListItem, styled } from "@mui/material";
 
 export const Container = styled(Box)(({ theme }) => ({
   height: "100%",

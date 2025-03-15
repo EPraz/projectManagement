@@ -1,5 +1,5 @@
-import { Sprint, TeamMemberCapacity } from "../../../types";
-import { FormDataProps } from "../capacityBoardContainer/CapacityBoardContainer";
+import { Sprint, TeamMemberCapacity } from "../../../../types";
+import { FormDataProps } from "./capacityBoardContainer/CapacityBoardContainer";
 
 export const computeProgress = (member: TeamMemberCapacity) =>
   (member.remainingWork / member.capacity) * 100;

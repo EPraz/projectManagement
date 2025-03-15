@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Dialog,
   DialogActions,
@@ -9,13 +8,13 @@ import {
 } from "@mui/material";
 import { DeleteConfirmationModalProps } from "../../types";
 
-const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
+const DeleteConfirmationModal = ({
   open,
   onClose,
   onConfirm,
   itemName,
   disabled = false,
-}) => {
+}: DeleteConfirmationModalProps) => {
   const handleSubmit = () => {
     onConfirm();
     onClose();

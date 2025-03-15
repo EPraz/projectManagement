@@ -11,6 +11,8 @@ import {
 } from "./Header.styles";
 import { HeaderProps } from "../../types";
 import UserMenu from "./userMenu/UserMenu";
+import { Breadcrumbs, Link } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
 
 const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
   const navigate = useNavigate();
@@ -44,10 +46,25 @@ const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
     []
   );
 
+  const handleBreadcrumbClick = () => {
+    // Navegar a la URL base del proyecto
+    navigate(`/projects`, { replace: true });
+  };
+
   return (
     <HeaderContainer>
       <TopBar>
-        <ProjectTitle>{projectName}</ProjectTitle>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            color="inherit"
+            onClick={handleBreadcrumbClick}
+            underline="hover"
+            sx={{ cursor: "pointer" }}
+          >
+            <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+          </Link>
+          <ProjectTitle>{projectName}</ProjectTitle>
+        </Breadcrumbs>
       </TopBar>
       <StyledTabs
         value={currentTab}

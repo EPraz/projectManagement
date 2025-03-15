@@ -1,5 +1,4 @@
-import { Box, Tab, Tabs, Typography } from "@mui/material";
-import styled from "styled-components";
+import { Box, styled, Tab, Tabs, Typography } from "@mui/material";
 
 export const HeaderContainer = styled(Box)(() => ({
   display: "flex",

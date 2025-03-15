@@ -141,7 +141,7 @@ const RetrospectiveContainer = () => {
         updateRetroCard,
         data,
         currentUser,
-        setRetroCards,
+        // setRetroCards,
         sprint,
         updateListOfSprints,
         handleCloseDialog
@@ -152,8 +152,8 @@ const RetrospectiveContainer = () => {
         createRetroCard,
         data,
         currentUser,
-        setRetroCards,
-        updateListOfSprints,
+        // setRetroCards,
+        // updateListOfSprints,
         handleCloseDialog
       );
     }
@@ -170,7 +170,7 @@ const RetrospectiveContainer = () => {
       cardToDelete,
       sprint,
       deleteRetroCard,
-      setRetroCards,
+      // setRetroCards,
       updateListOfSprints,
       setOpenDeleteModal,
       setCardToDelete
@@ -192,9 +192,9 @@ const RetrospectiveContainer = () => {
         currentUser,
         card,
         updateRetroCard,
-        sprint,
-        setRetroCards,
-        updateListOfSprints
+        sprint
+        // setRetroCards,
+        // updateListOfSprints
       );
     },
     [currentUser, updateRetroCard, sprint, setRetroCards, updateListOfSprints]

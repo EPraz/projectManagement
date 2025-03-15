@@ -48,7 +48,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
   users,
   sprints,
   features,
-  projects,
+  // projects,
   tickets,
   disabled = false,
 }) => {
@@ -149,17 +149,17 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
     });
   };
 
-  const handleTagsChange = (
-    event: React.SyntheticEvent,
-    newValue: string[]
-  ) => {
-    if (!editedTicket) return;
+  // const handleTagsChange = (
+  //   event: React.SyntheticEvent,
+  //   newValue: string[]
+  // ) => {
+  //   if (!editedTicket) return;
 
-    setEditedTicket({
-      ...editedTicket,
-      tags: newValue,
-    });
-  };
+  //   setEditedTicket({
+  //     ...editedTicket,
+  //     tags: newValue,
+  //   });
+  // };
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -285,6 +285,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     >
                       <InputLabel>Status</InputLabel>
                       <Select
+                        data-testid="status-select"
                         name="statusId"
                         value={editedTicket.statusId || ""}
                         onChange={handleStatusChange}

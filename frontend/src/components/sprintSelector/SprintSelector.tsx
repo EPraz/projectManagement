@@ -75,6 +75,7 @@ const SprintSelector = () => {
               {"projectId" in option && (
                 <DeleteButton
                   size="small"
+                  data-testid={"delete-button"}
                   onClick={(e) => {
                     e.stopPropagation(); // Evita cerrar el Autocomplete al eliminar un sprint
                     setSelectedSprint(option);

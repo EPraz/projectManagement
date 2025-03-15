@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { List, Avatar, Box } from "@mui/material";
 import { MENU_ITEMS } from "../../constants";
-import { ThemeToggleModal } from "../themeToggleModal/ThemeToggleModal";
 import type { SidebarProps } from "../../types";
 import KeyboardDoubleArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowLeftOutlined";
 import KeyboardDoubleArrowRightOutlinedIcon from "@mui/icons-material/KeyboardDoubleArrowRightOutlined";
@@ -27,8 +26,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   sidebarOpen,
   setSidebarOpen,
 }) => {
-  const [themeModalOpen, setThemeModalOpen] = useState(false);
-
   const navigate = useNavigate();
 
   const menuItems = useMemo(
@@ -122,14 +119,14 @@ const Sidebar: React.FC<SidebarProps> = ({
             </UserInfo>
           </UserBox>
           {sidebarOpen ? (
-            <CollapseButton onClick={toggleCollapse}>
+            <CollapseButton
+              onClick={toggleCollapse}
+              data-testid={"collapse-button"}
+            >
               <KeyboardDoubleArrowRightOutlinedIcon />
             </CollapseButton>
           ) : (
             <>
-              {/* <ThemeToggle onClick={() => setThemeModalOpen(true)}>
-                <DarkModeIcon />
-                </ThemeToggle> */}
               <CollapseButton onClick={toggleCollapse}>
                 <KeyboardDoubleArrowLeftOutlinedIcon />
               </CollapseButton>
@@ -137,11 +134,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           )}
         </UserSection>
       </StyledDrawer>
-
-      <ThemeToggleModal
-        open={themeModalOpen}
-        onClose={() => setThemeModalOpen(false)}
-      />
     </>
   );
 };

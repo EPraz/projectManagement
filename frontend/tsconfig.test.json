@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "module": "ESNext",
+    "types": ["jest", "node"]
+  },
+  "include": ["src", "jest.setup.ts", "**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"]
+}
