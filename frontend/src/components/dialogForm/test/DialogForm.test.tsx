@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import * as yup from "yup";
 import DialogForm from "../DialogForm";
 
-// Define una interfaz para el formulario de ejemplo
 interface FormData {
   name: string;
   email: string;
