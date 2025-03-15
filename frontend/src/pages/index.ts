@@ -9,4 +9,4 @@ export { default as RetrospectivePage } from "./retrospectivePage/RetrospectiveP
 export { default as TeamMembersPage } from "./teamMembers/TeamMembersPage";
 export { default as Register } from "./register/Register";
 export { default as InstantLogin } from "./instantLogin/InstantLogin";
-export { default as Dashboard } from "./dashBoard/DashBoard";
+export { default as DashBoard } from "./dashBoard/DashBoard";
