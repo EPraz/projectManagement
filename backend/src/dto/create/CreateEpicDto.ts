@@ -3,7 +3,7 @@ import { IsString, IsOptional, IsNotEmpty, IsEmail } from 'class-validator';
 export class CreateEpicDto {
   @IsString({ message: 'projectId must be a string' })
   @IsNotEmpty({ message: 'projectId is required' })
-  projectId: string; // Se asignará en el controlador
+  projectId: string;
 
   @IsString({ message: 'title must be a string' })
   @IsNotEmpty({ message: 'title is required' })
