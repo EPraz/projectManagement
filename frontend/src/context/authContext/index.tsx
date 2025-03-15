@@ -145,21 +145,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }, [apiUrl, accessToken, initialized]);
 
   const login = async (email: string, password: string) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const response = await fetch(`${apiUrl}/auth/login`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+      const response = await fetch(`${apiUrl}/auth/login`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    setLoading(false);
-    if (!response.ok) throw new Error("Invalid credentials");
+      setLoading(false);
+      if (!response.ok) throw new Error("Invalid credentials");
 
-    const { accessToken: token } = await response.json();
-    setAccessToken(token);
-    navigate("/dashboard");
+      const { accessToken: token } = await response.json();
+      setAccessToken(token);
+      navigate("/dashboard");
+    } catch {
+      setLoading(false);
+    }
   };
 
   const register = async (email: string, password: string, name: string) => {
