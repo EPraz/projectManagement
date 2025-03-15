@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import {
   Board,
-  Dashboard,
   Epics,
   InstantLogin,
   Login,
@@ -15,6 +14,7 @@ import {
   SettingsPage,
   TeamMembersPage,
   Projects,
+  DashBoard,
 } from "./pages";
 import { PrivateRoute, ProjectLayout } from "./components";
 import { AuthProvider } from "./context";
@@ -30,7 +30,7 @@ const AppRoutes = () => {
             <Route path="/projects/:id" element={<ProjectLayout />}>
               <Route index element={<Navigate to="overview" replace />} />{" "}
               {/* FIX */}
-              <Route path="overview" element={<Dashboard />} />
+              <Route path="overview" element={<DashBoard />} />
               <Route path="board" element={<Board />} />
               <Route path="retrospective" element={<Retrospective />} />
               <Route path="epics" element={<Epics />} />
