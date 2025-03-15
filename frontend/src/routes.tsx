@@ -25,11 +25,9 @@ const AppRoutes = () => {
       <AuthProvider>
         <Routes>
           <Route element={<PrivateRoute />}>
-            {/* <Route path="/login" element={<Login />} /> */}
             <Route path="/projects" element={<Projects />} />
             <Route path="/projects/:id" element={<ProjectLayout />}>
               <Route index element={<Navigate to="overview" replace />} />{" "}
-              {/* FIX */}
               <Route path="overview" element={<DashBoard />} />
               <Route path="board" element={<Board />} />
               <Route path="retrospective" element={<Retrospective />} />
@@ -37,7 +35,6 @@ const AppRoutes = () => {
               <Route path="teammembers" element={<TeamMembersPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
-            {/* <Route path="profile" element={<SettingsPage />} /> */}
 
             <Route path="*" element={<Navigate to="/projects" />} />
           </Route>
