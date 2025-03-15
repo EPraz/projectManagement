@@ -6,6 +6,8 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Agrega el prefijo global "api"
+  app.setGlobalPrefix('api');
   // Habilitar validaciones globalmente
   app.useGlobalPipes(
     new ValidationPipe({
