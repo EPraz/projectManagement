@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Agrega el prefijo global "api"
-  app.setGlobalPrefix('api');
+  // app.setGlobalPrefix('api');
   // Habilitar validaciones globalmente
   app.useGlobalPipes(
     new ValidationPipe({
