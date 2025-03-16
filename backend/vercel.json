@@ -3,14 +3,14 @@
   "rootDirectory": "backend",
   "builds": [
     {
-      "src": "src/main.ts",
+      "src": "dist/main.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/src/main.ts",
+      "dest": "dist/main.js",
       "methods": [
             "GET",
             "POST",
