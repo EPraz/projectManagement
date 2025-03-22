@@ -25,12 +25,8 @@ async function bootstrap() {
 
   // Habilitar CORS para permitir requests desde el frontend
   app.enableCors({
-    origin: [
-      process.env.CLIENT_URL,
-      'https://project-management-inky-sigma.vercel.app/',
-      'https://project-management-inky-sigma.vercel.app',
-    ],
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
 
