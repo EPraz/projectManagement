@@ -1,4 +1,4 @@
-// ticket.gateway.ts
+import { ConfigService } from '@nestjs/config';
 import {
   WebSocketGateway,
   WebSocketServer,
@@ -9,15 +9,35 @@ import {
 import { Project, Sprint, Ticket } from '@prisma/client';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ cors: { origin: '*' } }) // Ajusta el origen según tus necesidades
+@WebSocketGateway({
+  cors: {
+    origin: true, // 🔁 Refleja dinámicamente el Origin en el header
+    credentials: true,
+  },
+})
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  constructor(private readonly configService: ConfigService) {}
+
   @WebSocketServer()
   server: Server;
 
   afterInit(server: Server) {
-    // console.log('EventsGateway initialized');
+    const allowedOrigin = this.configService.get<string>('CLIENT_URL');
+    (server.engine as any).allowRequest = (
+      req: import('http').IncomingMessage,
+      callback: (err: string | null, success: boolean) => void,
+    ) => {
+      const requestOrigin = req.headers.origin;
+      const isAllowed = requestOrigin === allowedOrigin;
+
+      if (!isAllowed) {
+        console.warn(`Blocked socket connection from origin: ${requestOrigin}`);
+      }
+
+      callback(null, isAllowed);
+    };
   }
 
   handleConnection(client: Socket) {

@@ -13,6 +13,7 @@ import { SprintGoalModule } from './sprint-goal/sprint-goal.module';
 import { UserModule } from './user/user.module';
 import { TeamMemberCapacityModule } from './team-member-capacity/team-member-capacity.module';
 import { RetrospectiveModule } from './retrospective/retrospective.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { RetrospectiveModule } from './retrospective/retrospective.module';
     UserModule,
     TeamMemberCapacityModule,
     RetrospectiveModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [AppService],
