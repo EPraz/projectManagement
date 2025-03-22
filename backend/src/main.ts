@@ -28,7 +28,7 @@ async function bootstrap() {
     origin: process.env.CLIENT_URL, // dominio del frontend permitido
     credentials: true,
     // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: 'Content-Type, Authorization',
     //  (opcional, si necesitas headers específicos)
   });
