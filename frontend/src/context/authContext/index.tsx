@@ -150,7 +150,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       const response = await fetch(`${apiUrl}/auth/login`, {
         method: "POST",
-        credentials: "include",
+        // credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
@@ -171,7 +171,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     const response = await fetch(`${apiUrl}/auth/register`, {
       method: "POST",
-      credentials: "include",
+      // credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, name }),
     });
@@ -189,7 +189,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
     const response = await fetch(`${apiUrl}/auth/instant-login`, {
       method: "POST",
-      credentials: "include",
+      // credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
