@@ -22,6 +22,7 @@ const SprintSelector = () => {
     setOpenCreateSprintDialog,
     setOpenDeleteSprintDialog,
     sprint,
+    loadingCreateSprint,
   } = useOutletContext<LayoutContextProps>();
 
   return (
@@ -39,12 +40,18 @@ const SprintSelector = () => {
         getOptionLabel={(option) => option?.name}
         isOptionEqualToValue={(option, value) => option.id === value.id}
         disableClearable
-        disabled={!listOfSprints?.length}
+        // disabled={!listOfSprints?.length}
         renderInput={(params) => (
           <StyledTextField
             {...params}
             placeholder={
-              listOfSprints?.length ? "Select Sprint" : "No Sprints Available"
+              loadingCreateSprint
+                ? "Creating sprint"
+                : loadingDeleteSprint
+                ? "Deleting sprint"
+                : listOfSprints?.length
+                ? "Select Sprint"
+                : "No Sprints Available"
             }
             size="small"
           />

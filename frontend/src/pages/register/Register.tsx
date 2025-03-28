@@ -93,9 +93,21 @@ const Register = () => {
             variant="body2"
             color="text.secondary"
             align="center"
-            sx={{ mb: 4 }}
+            // sx={{ mb: 4 }}
           >
             Join our platform and start managing your projects
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            align="center"
+            sx={{
+              mb: 4,
+              fontStyle: "italic",
+              fontSize: "12px",
+            }}
+          >
+            Please do not enter your personal information
           </Typography>
 
           <StepperContainer>

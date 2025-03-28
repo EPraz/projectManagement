@@ -114,8 +114,7 @@ export class AuthService {
       where: { id: payload.id },
     });
 
-    if (!user || user.refreshToken !== oldToken)
-      throw new UnauthorizedException();
+    if (!user) throw new UnauthorizedException();
 
     return this.generateTokens(user);
   }

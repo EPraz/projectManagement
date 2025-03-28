@@ -158,6 +158,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             startDate: new Date().toDateString(),
             endDate: null,
             projectId: projectId,
+            createdBy: currentUser?.email,
           }}
           fieldConfig={{
             startDate: {
@@ -165,6 +166,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             },
             endDate: { label: "endDate" },
             projectId: { disabled: true, hidden: true },
+            createdBy: { disabled: true, hidden: true },
           }}
         />
       )}

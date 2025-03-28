@@ -12,8 +12,18 @@ const useSocketProjects = () => {
     }, [onUpdate]);
   };
 
+  const useSocketProjectRemove = (onRemove: (data: Project) => void) => {
+    useEffect(() => {
+      socket.on("projectDeleted", onRemove);
+      return () => {
+        socket.off("projectDeleted", onRemove);
+      };
+    }, [onRemove]);
+  };
+
   return {
     useSocketProjectUpdate,
+    useSocketProjectRemove,
   };
 };
 

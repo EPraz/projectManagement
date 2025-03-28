@@ -60,6 +60,7 @@ const sampleSprints: Sprint[] = [
     name: "Sprint 1",
     projectId: "123",
     createdAt: "asdf",
+    createdBy: "",
     updatedAt: "",
     sprintGoal: [],
     tickets: [],

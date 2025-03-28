@@ -87,8 +87,8 @@ export const generateActivities = (
         activities.push({
           id: `sprint-created-${x.id}`,
           user: {
-            id: project.createdBy, // Assuming the project creator also created the sprint
-            name: getUserName(project.createdBy, project) || "A user",
+            id: x.createdBy,
+            name: getUserName(x.createdBy, project) || "A user",
           },
           action: `created sprint "${x.name}"`,
           timestamp: x.createdAt,
@@ -160,7 +160,7 @@ export const getUserName = (
   project: Project | null
 ): string | null => {
   if (!project || !project.users) return null;
-
+  console.log(project.users, userEmail);
   const projectUser = project.users.find((pu) => pu.email === userEmail);
   if (projectUser && projectUser.name) {
     return projectUser.name;

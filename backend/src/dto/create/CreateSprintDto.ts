@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsString, IsDate, IsNotEmpty } from 'class-validator';
+import { IsString, IsDate, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class CreateSprintDto {
   @IsString()
@@ -17,4 +17,9 @@ export class CreateSprintDto {
   @Type(() => Date) //  Convierte el string a Date automáticamente
   @IsDate({ message: 'endDate must be a valid Date' })
   endDate: Date;
+
+  @IsString({ message: 'createdBy must be a string' })
+  @IsEmail({}, { message: 'createdBy Invalid email' })
+  @IsNotEmpty({ message: 'createdBy is required' })
+  createdBy: string;
 }

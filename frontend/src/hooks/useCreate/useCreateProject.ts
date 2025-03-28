@@ -22,7 +22,6 @@ export const useCreateProject = () => {
         },
         body: JSON.stringify({
           ...data,
-          createdBy: "test-user@example.com",
         }),
       });
 

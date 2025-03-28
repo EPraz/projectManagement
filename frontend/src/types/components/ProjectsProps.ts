@@ -69,4 +69,8 @@ export interface ProjectListViewProps {
 export interface ProjectMenuProps {
   anchorEl: HTMLElement;
   handleMenuClose: () => void;
+  asPermission: boolean;
+  loading: boolean;
+  handleDeleteProject: (data: { id: string }) => void;
+  selectedProjectId: string | null;
 }

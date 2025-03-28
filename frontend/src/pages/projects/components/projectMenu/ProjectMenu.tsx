@@ -1,7 +1,14 @@
 import { Menu, MenuItem } from "@mui/material";
 import { ProjectMenuProps } from "../../../../types";
 
-const ProjectMenu = ({ anchorEl, handleMenuClose }: ProjectMenuProps) => {
+const ProjectMenu = ({
+  anchorEl,
+  handleMenuClose,
+  asPermission,
+  loading,
+  handleDeleteProject,
+  selectedProjectId,
+}: ProjectMenuProps) => {
   return (
     <Menu
       anchorEl={anchorEl}
@@ -27,8 +34,12 @@ const ProjectMenu = ({ anchorEl, handleMenuClose }: ProjectMenuProps) => {
         Project Settings
       </MenuItem>
       <MenuItem
-        onClick={handleMenuClose}
-        disabled={true}
+        onClick={() => {
+          if (selectedProjectId) {
+            handleDeleteProject({ id: selectedProjectId });
+          }
+        }}
+        disabled={!asPermission || loading}
         sx={{ color: "error.main" }}
       >
         Delete Project

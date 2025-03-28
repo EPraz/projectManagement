@@ -77,4 +77,8 @@ export class EventsGateway
   emitProjectUpdate(data: Project) {
     this.server.emit('projectUpdated', data);
   }
+
+  emitProjectDelete(data: Project) {
+    this.server.emit('projectDeleted', data);
+  }
 }

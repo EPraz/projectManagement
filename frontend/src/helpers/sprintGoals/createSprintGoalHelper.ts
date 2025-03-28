@@ -13,7 +13,6 @@ export const createSprintGoalHandler =
   async (data: Partial<SprintGoal>) => {
     const newSprintGoal = await createSprintGoal({
       ...data,
-      //   createdBy: "xana@xana.com",
       sprintId: sprintid,
     });
 

@@ -13,6 +13,7 @@ export type Sprint = {
   project: Project;
   tickets: Ticket[];
   createdAt: string;
+  createdBy: string;
   updatedAt: string;
   sprintGoal: SprintGoal[];
   teamMemberCapacities?: TeamMemberCapacity[];
@@ -24,6 +25,7 @@ export type CreateSprintFormData = {
   startDate?: Date | string | null;
   endDate?: Date | string | null;
   projectId?: string;
+  createdBy: string;
 };
 
 export interface GoalTask {

@@ -73,9 +73,21 @@ export default function LoginPage() {
               variant="body2"
               color="text.secondary"
               align="center"
-              sx={{ mb: 4 }}
+              // sx={{ mb: 4 }}
             >
               Welcome back! Please enter your details
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              align="center"
+              sx={{
+                mb: 4,
+                fontStyle: "italic",
+                fontSize: "12px",
+              }}
+            >
+              Please do not enter your personal information
             </Typography>
 
             {error && (

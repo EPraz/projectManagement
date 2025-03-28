@@ -44,26 +44,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     const refreshTokenIfNeeded = async () => {
       try {
-        // Si estamos en test, omitir el refresh
-        if (process.env.NODE_ENV === "test") {
-          setInitialized(true);
-          return;
-        }
-        // Solo refresca si no hay token o si el token está expirado
         if (!accessToken || isTokenExpired(accessToken)) {
           const refreshResponse = await fetch(`${apiUrl}/auth/refresh`, {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
           });
+
           if (refreshResponse.ok) {
-            const text = await refreshResponse.text();
-            if (text) {
-              const data = JSON.parse(text);
-              setAccessToken(data.accessToken);
+            const contentType = refreshResponse.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+              const data = await refreshResponse.json();
+              if (data.accessToken) {
+                setAccessToken(data.accessToken);
+              }
             } else {
-              // Opcional: manejar caso sin cuerpo (por ejemplo, 204 No Content)
-              console.warn("Refresh response is empty");
+              console.warn("No accessToken found in refresh response.");
             }
           }
         }

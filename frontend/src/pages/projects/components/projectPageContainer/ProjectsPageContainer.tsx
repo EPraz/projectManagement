@@ -3,6 +3,7 @@ import { Project } from "../../../../types";
 import {
   useCreateProject,
   useDebounce,
+  useDeleteProject,
   useLoadProject,
 } from "../../../../hooks";
 import { useAuth } from "../../../../context";
@@ -19,6 +20,7 @@ const ProjectsPageContainer = () => {
   const { user } = useAuth();
   const { loadProjects, loading } = useLoadProject();
   const { createProject, loading: postProjectLoading } = useCreateProject();
+  const { deleteProject, loading: deleteProjectLoading } = useDeleteProject();
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -28,7 +30,7 @@ const ProjectsPageContainer = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [_, setSelectedProject] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   const [favoriteId, setFavoriteId] = useState<string | null>(null);
 
@@ -60,16 +62,28 @@ const ProjectsPageContainer = () => {
   }, []);
 
   // Check if user has permission to create projects
-  const canCreateProject = useMemo(() => {
+  const asPermission = useMemo(() => {
     if (!user || !user.role) return false;
     return [Role.ADMIN, Role.PROJECT_MANAGER].includes(user.role);
   }, [user]);
 
   const handleCreateProject = async (data: Partial<Project>) => {
-    const newProject = await createProject(data);
+    const newProject = await createProject({ ...data, createdBy: user?.email });
     if (newProject) {
       setOpenDialog(false);
       setProjects([...projects, newProject]);
+    }
+  };
+
+  const handleDeleteProject = async (data: Partial<Project>) => {
+    const success = await deleteProject(data);
+    if (success) {
+      handleMenuClick;
+      const fetchProjects = async () => {
+        const data = await loadProjects();
+        setProjects(data);
+      };
+      fetchProjects();
     }
   };
 
@@ -125,7 +139,7 @@ const ProjectsPageContainer = () => {
         handleSearchChange={handleSearchChange}
         handleViewChange={handleViewChange}
         view={view}
-        canCreateProject={canCreateProject}
+        canCreateProject={asPermission}
         setOpenDialog={setOpenDialog}
         favoriteId={favoriteId}
         filteredProjects={filteredProjects}
@@ -136,7 +150,14 @@ const ProjectsPageContainer = () => {
       />
       {anchorEl && (
         <Portal>
-          <ProjectMenu anchorEl={anchorEl} handleMenuClose={handleMenuClose} />
+          <ProjectMenu
+            anchorEl={anchorEl}
+            handleMenuClose={handleMenuClose}
+            handleDeleteProject={handleDeleteProject}
+            asPermission={asPermission}
+            selectedProjectId={selectedProject}
+            loading={deleteProjectLoading}
+          />
         </Portal>
       )}
 

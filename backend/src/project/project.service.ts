@@ -28,7 +28,13 @@ export class ProjectService {
     try {
       await checkDuplicateTitle(this.prisma, 'project', request.title);
 
-      return await this.prisma.$transaction(async (prisma) => {
+      const user = await this.prisma.user.findUnique({
+        where: { email: request.createdBy },
+      });
+
+      let createdProject!: Project;
+
+      await this.prisma.$transaction(async (prisma) => {
         const newProject = await prisma.project.create({
           data: {
             ...request,
@@ -63,10 +69,17 @@ export class ProjectService {
           })),
         });
 
-        return prisma.project.findUnique({
-          where: { id: newProject.id },
-          include: PROJECT_INCLUDE,
-        });
+        createdProject = newProject;
+      });
+
+      return await this.prisma.project.update({
+        where: { id: createdProject.id },
+        data: {
+          users: {
+            connect: { id: user?.id },
+          },
+        },
+        include: PROJECT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -135,8 +148,8 @@ export class ProjectService {
 
       if (!project) throw new NotFoundException(`Project #${id} not found!`);
 
-      await this.prisma.project.delete({ where: { id } });
-
+      const response = await this.prisma.project.delete({ where: { id } });
+      this.eventsGateway.emitProjectDelete(response);
       return true;
     } catch (error: unknown) {
       handlePrismaError(error);

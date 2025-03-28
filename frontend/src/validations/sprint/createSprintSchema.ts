@@ -24,4 +24,5 @@ export const createSprintSchema = yup.object({
       return originalValue ? new Date(originalValue) : null;
     }),
   projectId: yup.string(),
+  createdBy: yup.string(),
 }) as yup.ObjectSchema<Partial<CreateSprintFormData>>;

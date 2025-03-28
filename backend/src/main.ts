@@ -6,16 +6,12 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Agrega el prefijo global "api"
-  // app.setGlobalPrefix('api');
-
   // Habilitar validaciones globalmente
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-      // Agrega esta opción para aceptar arrays:
       disableErrorMessages: false,
       transformOptions: {
         enableImplicitConversion: true,
@@ -25,16 +21,15 @@ async function bootstrap() {
 
   // Habilitar CORS para permitir requests desde el frontend
   app.enableCors({
-    origin: process.env.CLIENT_URL, // dominio del frontend permitido
+    origin: process.env.CLIENT_URL || '*', // Fly.io no necesita esto si sirves el frontend
     credentials: true,
-    // methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     methods: ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: 'Content-Type, Authorization',
-    //  (opcional, si necesitas headers específicos)
   });
 
   app.use(cookieParser());
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Escuchar en 0.0.0.0 para Fly.io
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();
