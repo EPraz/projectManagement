@@ -104,6 +104,7 @@ const Register = () => {
             sx={{
               mb: 4,
               fontStyle: "italic",
+              fontWeight: "bold",
               fontSize: "12px",
             }}
           >
@@ -195,6 +196,19 @@ const Register = () => {
                     }}
                   />
                 </FormFieldContainer>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  align="center"
+                  sx={{
+                    fontStyle: "italic",
+                    fontSize: "12px",
+                  }}
+                >
+                  Just add the correct format and you will have access,
+                  <br />
+                  <strong>NO</strong> need to insert a real email
+                </Typography>
               </>
             )}
 
