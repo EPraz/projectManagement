@@ -20,7 +20,15 @@ const DeleteConfirmationModal = ({
     onClose();
   };
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+    <Dialog
+      open={open}
+      onClose={(_, reason) => {
+        if (reason === "backdropClick") return;
+        onClose();
+      }}
+      maxWidth="xs"
+      fullWidth
+    >
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
         <Typography>

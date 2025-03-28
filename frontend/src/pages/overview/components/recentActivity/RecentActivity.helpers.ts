@@ -160,7 +160,6 @@ export const getUserName = (
   project: Project | null
 ): string | null => {
   if (!project || !project.users) return null;
-  console.log(project.users, userEmail);
   const projectUser = project.users.find((pu) => pu.email === userEmail);
   if (projectUser && projectUser.name) {
     return projectUser.name;

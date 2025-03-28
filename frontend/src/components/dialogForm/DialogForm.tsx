@@ -182,7 +182,15 @@ const DialogForm = <T extends Record<string, any>>({
   };
 
   return (
-    <StyledDialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <StyledDialog
+      open={open}
+      onClose={(_, reason) => {
+        if (reason === "backdropClick") return;
+        onClose();
+      }}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogHeader>
         <Typography fontWeight="600" textTransform="uppercase">
           {title}

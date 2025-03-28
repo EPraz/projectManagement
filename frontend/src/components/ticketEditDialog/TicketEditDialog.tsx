@@ -223,7 +223,15 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
   if (!editedTicket) return null;
 
   return (
-    <StyledDialog open={open} onClose={onClose} fullWidth maxWidth="lg">
+    <StyledDialog
+      open={open}
+      onClose={(_, reason) => {
+        if (reason === "backdropClick") return;
+        onClose();
+      }}
+      fullWidth
+      maxWidth="lg"
+    >
       <Header>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" alignItems="center" gap={1}>
