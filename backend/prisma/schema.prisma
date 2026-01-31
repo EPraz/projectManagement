@@ -273,6 +273,7 @@ model GoalTask {
 
 model DbHeartbeat {
   id        Int      @id @default(1)
+  ticks     Int      @default(0)
   updatedAt DateTime @updatedAt
 }
 

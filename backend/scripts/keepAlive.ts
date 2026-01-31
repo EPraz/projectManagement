@@ -7,8 +7,8 @@ async function main() {
   // Upsert: si no existe, crea; si existe, solo actualiza updatedAt automáticamente
   await prisma.dbHeartbeat.upsert({
     where: { id: 1 },
-    create: { id: 1 },
-    update: {},
+    create: { id: 1, ticks: 1 },
+    update: { ticks: { increment: 1 } },
   });
 
   console.log(`[keepAlive] heartbeat updated at ${new Date().toISOString()}`);
