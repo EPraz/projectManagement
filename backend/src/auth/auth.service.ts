@@ -75,7 +75,7 @@ export class AuthService {
           name: email.split('@')[0], // Nombre basado en email
           email: normalizedEmail,
           password: await bcrypt.hash(email, 10), // Password generado pero nunca usado
-          role: 'DEVELOPER',
+          role: 'ADMIN',
         },
       });
     }

@@ -271,6 +271,11 @@ model GoalTask {
   completed Boolean    @default(false)
 }
 
+model DbHeartbeat {
+  id        Int      @id @default(1)
+  updatedAt DateTime @updatedAt
+}
+
 ///////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////
 
