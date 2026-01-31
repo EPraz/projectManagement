@@ -140,6 +140,7 @@ export default function LoginPage() {
                 sx={{
                   fontStyle: "italic",
                   fontSize: "12px",
+                  color: "red",
                 }}
               >
                 Just add the correct format and you will have access, <br />
@@ -168,7 +169,7 @@ export default function LoginPage() {
               </Button>
             </Form>
 
-            <Box sx={{ mt: 3, textAlign: "center" }}>
+            {/* <Box sx={{ mt: 3, textAlign: "center" }}>
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 Already have an account?{" "}
                 <Link
@@ -195,7 +196,7 @@ export default function LoginPage() {
                   Sign up
                 </Link>
               </Typography>
-            </Box>
+            </Box> */}
           </CardContent>
         </RightSection>
       </AuthCard>
