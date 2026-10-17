@@ -1,6 +1,6 @@
 # Portfolio deployment preparation
 
-Status: ready-for-agent
+Status: implemented
 
 ## Confirmed scope
 
@@ -36,3 +36,5 @@ Status: ready-for-agent
 ## Comments
 
 2026-10-17: User confirmed architecture, free plans, provider URLs, manual provider setup, rich seed, shared editable demo with manual restoration, demo-only access and API/seed verification. Review base proposed: 9f386bf853b11ebfe73485f338028c363a1f3c32.
+
+2026-10-17: User confirmed that review base. Preparation implemented and locally verified; see [verification.md](verification.md). Provider deployment remains the owner's manual step. Recruiter README and walkthrough remain later work.

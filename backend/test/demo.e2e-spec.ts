@@ -58,7 +58,7 @@ describe('Acceso demo HTTP API', () => {
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-    app = module.createNestApplication<App>();
+    app = module.createNestApplication<INestApplication<App>>();
     app.use(cookieParser());
     app.useGlobalPipes(
       new ValidationPipe({
