@@ -29,6 +29,8 @@ export const useDemoSession = (shouldRestore: boolean) => {
     generation.current += 1;
     restoration.current?.abort();
     commit(null);
+    setAttemptedRestore(true);
+    setRestoring(false);
     setSessionError(null);
     setSessionNotice("Your demo session has ended. Explore the demo to continue.");
   }, [commit]);

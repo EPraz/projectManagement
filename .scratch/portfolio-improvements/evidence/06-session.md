@@ -16,7 +16,7 @@ Consumer inspection found only the unused personal screens calling login/registe
 
 Playwright 1.64.1 is a development dependency (registry metadata confirms Node >=20 support). This saves the already approved browser seam in the repo for later sessions rather than depending on ignored ad hoc scripts. The local-only configuration uses one worker, bounded execution, no retries that hide failures, no focused-test allowance, and explicitly disables video/trace recording. Browser test types join the existing type gate. [Local reproduction](../../../docs/development.md) documents the pre-populated isolated application, Chrome/Chromium choice and current CI boundary; configuration follows [Playwright's documented runner options](https://playwright.dev/docs/test-configuration).
 
-All nine real Chrome journeys pass against the isolated local application:
+All ten real Chrome journeys pass against the isolated local application:
 
 1. Legacy registration redirect, one entry/identity request pair, and deep-link reload with one refresh/identity pair.
 2. Controlled restoration outage retains the requested project URL, explains the error and recovers with Retry session.
@@ -27,6 +27,7 @@ All nine real Chrome journeys pass against the isolated local application:
 7. Back navigation to entry cancels a delayed deep-link restoration; Forward then restores the protected project without an erroneous entry redirect.
 8. After an initial failure, a delayed manual restoration retry is also cancelled when navigating Back to entry. Releasing its response makes no late identity request.
 9. While logout is pending, session retry is disabled and another simulated renewal interval issues no refresh request. Confirmed logout still returns to entry.
+10. A real authenticated project-list request receiving 401 immediately after fresh entry returns to entry with the expiry notice; retry succeeds when the controlled failure is removed.
 
 The protocol/API is real except explicitly intercepted failure/race responses. Browser time simulation exercises the refresh interval; it does not claim an actual idle Render cold start or elapsed JWT lifetime. No walkthrough was recorded.
 
@@ -41,3 +42,5 @@ Initial bundle is 1,618.07 kB raw / 478.65 kB gzip. This ticket makes no loading
 The initial Spec review found one P2: a manual retry's controller was not owned by the original route effect, so it could load identity after the visitor returned to entry. It also identified renewal during pending logout as a related coordination risk. The Standards review noted a pre-existing Forward-after-cancellation ordering problem within the same navigation journey. Three browser regressions reproduced these variants before correction: Forward lost the protected route, the cancelled retry issued one late identity request, and retry remained enabled during logout.
 
 Leaving protected routes now invalidates and aborts the current restoration regardless of how it started. Restoration is guarded while closing, interval renewal pauses during logout/entry, and confirmed logout invalidates any obsolete result again. A derived initial-restoration gate prevents PrivateRoute from redirecting before the restoration effect starts after Forward navigation. All nine retained browser journeys now pass; types and non-mutating lint pass without additional warnings. The full component suite and build are rerun after this correction before ticket closure.
+
+A subsequent Standards review identified a P2 interaction with that new loading gate: an authenticated request could expire a fresh session before any restoration had been attempted, leaving the gate pending. The project-list read is now the minimum real authenticated request consumer for this interface, while its existing error/empty ownership remains for ticket 07. The actual browser regression failed before correction. Expiry now explicitly settles restoration before clearing identity; the ten-journey run passes, including immediate authenticated-request expiry and re-entry. This replaces one request call site, not a broad hook migration.
