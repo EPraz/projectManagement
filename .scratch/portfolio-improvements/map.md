@@ -19,6 +19,8 @@ Status: ready-for-agent
 
 - 2026-10-17: [Ticket 02](issues/02-dependency-remediation.md) resolved: compatible dependency remedies and Jest 30 pass the clean application baseline; remaining moderate tooling exposure is explicitly recorded. [Assessment](evidence/02-dependencies.md), [review](evidence/02-review.md). Implementation commit 8b4f8cd.
 
+- 2026-10-17: [Ticket 03](issues/03-quality-gates-ci.md) resolved: both hosted CI jobs passed on 7c8bc31 after a genuine snapshot-header failure was corrected without changing expectations. [Run and review evidence](evidence/03-ci.md).
+
 - Preserve React/Vite, modular NestJS, Prisma/PostgreSQL and Vercel/Render/Neon free deployment.
 - Preserve public/old data, demo-only access, the single DATABASE_URL convention and explicit manual restoration.
 - Correct confirmed progress and task-attribution defects, establish reliable tests/CI, then refactor observed boundaries and improve recovery, measured loading and developer setup.
@@ -50,8 +52,8 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | --- | --- | --- |
 | [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md) | resolved | None |
 | [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | resolved | 01 |
-| [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | claimed | 01 |
-| [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | ready-for-agent | 01 |
+| [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | resolved | 01 |
+| [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | claimed | 01 |
 | [05: Make task movement truthful and recoverable](issues/05-reliable-task-movement.md) | ready-for-agent | 01 |
 | [06: Simplify demo sessions and navigation with a compatible request boundary](issues/06-demo-session-and-navigation.md) | ready-for-agent | 01 |
 | [07: Make project loading, selection and recovery coherent](issues/07-project-loading-and-recovery.md) | ready-for-agent | 06 |
@@ -67,7 +69,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 ## Resume implementation
 
-- Tickets 01 and 02 are resolved; 03 is claimed for CI verification. Next unclaimed frontier by number: 04. Tickets 07–16 retain their approved blockers.
+- Tickets 01–03 are resolved; 04 is claimed for progress correction and review. Next unclaimed frontier by number: 05. Tickets 07–16 retain their approved blockers.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
