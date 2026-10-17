@@ -20,6 +20,7 @@ import { getInitials } from "../../../helpers";
 
 const UserMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [logoutError, setLogoutError] = useState("");
   const open = Boolean(anchorEl);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -32,10 +33,14 @@ const UserMenu = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    logout();
-    handleClose();
-    navigate("/auth/login");
+  const handleLogout = async () => {
+    try {
+      await logout();
+      handleClose();
+      navigate("/auth/instantLogin");
+    } catch {
+      setLogoutError("Could not sign out. Please try again.");
+    }
   };
 
   const handleProfile = () => {
@@ -128,6 +133,7 @@ const UserMenu = () => {
           Settings
         </MenuItem>
         <Divider />
+        {logoutError && <Typography role="alert" color="error" sx={{ px: 2 }}>{logoutError}</Typography>}
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" color="error" />

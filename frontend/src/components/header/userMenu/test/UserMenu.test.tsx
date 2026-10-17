@@ -1,5 +1,5 @@
 // UserMenu.test.tsx
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import UserMenu from "../UserMenu";
 import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../../../../context";
@@ -74,7 +74,7 @@ describe("UserMenu Component", () => {
     expect(screen.getByRole("menu")).toBeInTheDocument();
   });
 
-  it("calls logout and navigates on clicking Logout", () => {
+  it("calls logout and navigates on clicking Logout", async () => {
     renderWithAuth();
     // Abrir el menú
     const avatarButton = screen.getByRole("button");
@@ -83,7 +83,7 @@ describe("UserMenu Component", () => {
     const logoutMenuItem = screen.getByText("Logout");
     fireEvent.click(logoutMenuItem);
     expect(mockLogout).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith("/auth/login");
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/auth/instantLogin"));
   });
 
   it("renders disabled Profile and Settings menu items", () => {

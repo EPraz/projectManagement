@@ -87,7 +87,7 @@ describe("PrivateRoute Component", () => {
     expect(screen.getByText("Protected Content")).toBeInTheDocument();
   });
 
-  it("redirects to /auth/login when no user and not loading", () => {
+  it("redirects to demo access when no user and not loading", () => {
     useAuth.mockReturnValue({
       user: null,
       loading: false,
@@ -102,11 +102,11 @@ describe("PrivateRoute Component", () => {
       <MemoryRouter initialEntries={["/private"]}>
         <Routes>
           <Route path="/private" element={<PrivateRoute />} />
-          <Route path="/auth/login" element={<div>Login Page</div>} />
+          <Route path="/auth/instantLogin" element={<div>Demo Page</div>} />
         </Routes>
       </MemoryRouter>
     );
 
-    expect(screen.getByText("Login Page")).toBeInTheDocument();
+    expect(screen.getByText("Demo Page")).toBeInTheDocument();
   });
 });

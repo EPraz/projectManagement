@@ -1,122 +1,66 @@
 import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Get,
-  Res,
-  Req,
   BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
+import { CookieOptions, Request, Response } from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from 'src/dto';
-import { Request, Response } from 'express';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
-  async register(
-    @Res({ passthrough: true }) res: Response,
-    @Body() request: RegisterDto,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const { accessToken, refreshToken } =
-      await this.authService.register(request);
-
-    res.cookie('jwt', refreshToken, {
+  private cookieOptions(): CookieOptions {
+    return {
       httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'lax',
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-    });
-
-    return { accessToken, refreshToken };
-  }
-
-  @Post('login')
-  async login(
-    @Res({ passthrough: true }) res: Response,
-    @Body() request: LoginDto,
-  ) {
-    const { accessToken, refreshToken } = await this.authService.login(request);
-
-    res.cookie('jwt', refreshToken, {
-      httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'lax',
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-    });
-
-    return { accessToken };
-  }
-
-  @Post('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('jwt');
-    return { message: 'Logged out' };
-  }
-
-  @Post('refresh')
-  async refresh(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<{
-    accessToken: string;
-    refreshToken: string;
-  }> {
-    const refreshToken = req.cookies?.jwt;
-    if (!refreshToken)
-      throw new UnauthorizedException('No refresh token provided');
-
-    const tokens = await this.authService.refreshToken(refreshToken);
-
-    res.cookie('jwt', tokens.refreshToken, {
-      httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'lax',
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
-    });
-
-    return tokens;
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('checkAuth')
-  async checkAuth(@Req() req: Request) {
-    if (!req.user) throw new UnauthorizedException('Not authenticated');
-    return req.user;
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    };
   }
 
   @Post('instant-login')
   async instantLogin(
+    @Body() body: Record<string, unknown>,
     @Res({ passthrough: true }) res: Response,
-    @Body('email') email: string,
   ) {
-    if (!email || !email.includes('@')) {
-      throw new BadRequestException('Invalid email format');
+    if (Object.keys(body ?? {}).length) {
+      throw new BadRequestException(
+        'Demo access does not accept personal details',
+      );
     }
-
-    const { accessToken, refreshToken } =
-      await this.authService.instantLogin(email);
-
+    const { accessToken, refreshToken } = await this.authService.instantLogin();
     res.cookie('jwt', refreshToken, {
-      httpOnly: true,
-      // secure: process.env.NODE_ENV === 'production',
-      // sameSite: 'lax',
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      ...this.cookieOptions(),
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+    return { accessToken };
+  }
 
-    return { accessToken, refreshToken };
+  @Post('refresh')
+  async refresh(@Req() req: Request) {
+    const token: unknown = req.cookies?.jwt;
+    if (typeof token !== 'string' || !token)
+      throw new UnauthorizedException('No demo session');
+    return this.authService.refreshToken(token);
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('jwt', this.cookieOptions());
+    return { message: 'Logged out' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('checkAuth')
+  checkAuth(@Req() req: Request) {
+    return req.user;
   }
 }

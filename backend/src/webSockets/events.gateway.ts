@@ -1,84 +1,55 @@
-import { ConfigService } from '@nestjs/config';
-import {
-  WebSocketGateway,
-  WebSocketServer,
-  OnGatewayInit,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-} from '@nestjs/websockets';
+import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Project, Sprint, Ticket } from '@prisma/client';
-import { Server, Socket } from 'socket.io';
+import { Server } from 'socket.io';
+import { omitCredentials } from '../public-data.interceptor';
 
 @WebSocketGateway({
   cors: {
-    origin: true, // 🔁 Refleja dinámicamente el Origin en el header
-    credentials: true,
+    origin: (
+      origin: string | undefined,
+      callback: (error: Error | null, allowed: boolean) => void,
+    ) => callback(null, origin === process.env.CLIENT_URL),
   },
+  allowRequest: (
+    req: import('http').IncomingMessage,
+    callback: (error: string | null, allowed: boolean) => void,
+  ) => callback(null, req.headers.origin === process.env.CLIENT_URL),
 })
-export class EventsGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-  constructor(private readonly configService: ConfigService) {}
-
+export class EventsGateway {
   @WebSocketServer()
   server: Server;
-
-  afterInit(server: Server) {
-    const allowedOrigin = this.configService.get<string>('CLIENT_URL');
-    (server.engine as any).allowRequest = (
-      req: import('http').IncomingMessage,
-      callback: (err: string | null, success: boolean) => void,
-    ) => {
-      const requestOrigin = req.headers.origin;
-      const isAllowed = requestOrigin === allowedOrigin;
-
-      if (!isAllowed) {
-        console.warn(`Blocked socket connection from origin: ${requestOrigin}`);
-      }
-
-      callback(null, isAllowed);
-    };
-  }
-
-  handleConnection(client: Socket) {
-    // console.log('Client connected:', client.id);
-  }
-
-  handleDisconnect(client: Socket) {
-    // console.log('Client disconnected:', client.id);
-  }
 
   // Método para emitir actualizaciones de tickets a todos los clientes conectados
   // Events for Tickets
   emitTicketUpdate(data: Ticket) {
-    this.server.emit('ticketUpdated', data);
+    this.server.emit('ticketUpdated', omitCredentials(data));
   }
   emitTicketCreate(data: Ticket) {
-    this.server.emit('ticketCreated', data);
+    this.server.emit('ticketCreated', omitCredentials(data));
   }
   emitTicketDelete(data: Ticket) {
-    this.server.emit('ticketDeleted', data);
+    this.server.emit('ticketDeleted', omitCredentials(data));
   }
 
   // Events for Sprints
   emitSprintUpdate(data: Sprint) {
-    this.server.emit('sprintUpdated', data);
+    this.server.emit('sprintUpdated', omitCredentials(data));
   }
 
   emitSprintCreate(data: Sprint) {
-    this.server.emit('sprintCreated', data);
+    this.server.emit('sprintCreated', omitCredentials(data));
   }
 
   emitSprintDelete(data: Sprint) {
-    this.server.emit('sprintDeleted', data);
+    this.server.emit('sprintDeleted', omitCredentials(data));
   }
 
   // Events for Projects
   emitProjectUpdate(data: Project) {
-    this.server.emit('projectUpdated', data);
+    this.server.emit('projectUpdated', omitCredentials(data));
   }
 
   emitProjectDelete(data: Project) {
-    this.server.emit('projectDeleted', data);
+    this.server.emit('projectDeleted', omitCredentials(data));
   }
 }

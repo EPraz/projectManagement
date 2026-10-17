@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-// import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { ProjectModule } from './project/project.module';
 import { EpicModule } from './epic/epic.module';
@@ -13,23 +13,19 @@ import { SprintGoalModule } from './sprint-goal/sprint-goal.module';
 import { UserModule } from './user/user.module';
 import { TeamMemberCapacityModule } from './team-member-capacity/team-member-capacity.module';
 import { RetrospectiveModule } from './retrospective/retrospective.module';
-import { ConfigModule } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
+import { PrismaModule } from './prisma/prisma.module';
+import { HealthController } from './health.controller';
+import { PublicDataInterceptor } from './public-data.interceptor';
+import { validateEnvironment } from './environment';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-
-    // Serve frontend estático
-    ServeStaticModule.forRoot({
-      // rootPath: join(__dirname, '..', '..', 'frontend', 'dist'),
-      rootPath: join(__dirname, '..', 'client'),
-      // Puedes excluir rutas si tus endpoints comienzan con /api
-      // exclude: ['/api*'],
+    ConfigModule.forRoot({
+      isGlobal: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
+      validate: validateEnvironment,
     }),
-
-    // Tu app Nest
+    PrismaModule,
     AuthModule,
     ProjectModule,
     EpicModule,
@@ -43,8 +39,7 @@ import { join } from 'path';
     TeamMemberCapacityModule,
     RetrospectiveModule,
   ],
-  // controllers: [AppController],
-  controllers: [],
-  providers: [AppService],
+  controllers: [HealthController],
+  providers: [{ provide: APP_INTERCEPTOR, useClass: PublicDataInterceptor }],
 })
 export class AppModule {}

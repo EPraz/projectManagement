@@ -1,53 +1,38 @@
 import {
   Controller,
-  Post,
-  Get,
-  Put,
   Delete,
-  Body,
+  ForbiddenException,
+  Get,
   Param,
   ParseUUIDPipe,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { RegisterDto, LoginDto } from 'src/dto';
-import { User } from '@prisma/client';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
-  constructor(private userService: UserService) {}
-
-  @Post()
-  public async create(@Body() request: RegisterDto): Promise<User | null> {
-    return await this.userService.create(request);
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Get()
-  public async findAll(): Promise<User[]> {
-    return await this.userService.findAll();
+  findAll() {
+    return this.userService.findAll();
   }
 
   @Get(':id')
-  public async findOne(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<User | null> {
-    return await this.userService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.userService.findOne(id);
   }
 
   @Put(':id')
-  public async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: LoginDto,
-  ): Promise<User | null> {
-    return await this.userService.update(id, updateUserDto);
+  update() {
+    throw new ForbiddenException('Demo team identities cannot be changed');
   }
 
   @Delete(':id')
-  public async delete(
-    @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<boolean> {
-    return await this.userService.delete(id);
+  delete() {
+    throw new ForbiddenException('Demo team identities cannot be deleted');
   }
 }
