@@ -17,6 +17,8 @@ Status: ready-for-agent
 
 - 2026-10-17: [Ticket 01](issues/01-trustworthy-checks-and-local-startup.md) resolved after passing clean local startup and canonical checks; [evidence](evidence/01-baseline.md) and [review](evidence/01-review.md) are recorded. Implementation commit 75165b8.
 
+- 2026-10-17: [Ticket 02](issues/02-dependency-remediation.md) resolved: compatible dependency remedies and Jest 30 pass the clean application baseline; remaining moderate tooling exposure is explicitly recorded. [Assessment](evidence/02-dependencies.md), [review](evidence/02-review.md). Implementation commit 8b4f8cd.
+
 - Preserve React/Vite, modular NestJS, Prisma/PostgreSQL and Vercel/Render/Neon free deployment.
 - Preserve public/old data, demo-only access, the single DATABASE_URL convention and explicit manual restoration.
 - Correct confirmed progress and task-attribution defects, establish reliable tests/CI, then refactor observed boundaries and improve recovery, measured loading and developer setup.
@@ -47,7 +49,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | Ticket | Status | Blocked by |
 | --- | --- | --- |
 | [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md) | resolved | None |
-| [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | claimed | 01 |
+| [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | resolved | 01 |
 | [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | claimed | 01 |
 | [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | ready-for-agent | 01 |
 | [05: Make task movement truthful and recoverable](issues/05-reliable-task-movement.md) | ready-for-agent | 01 |
@@ -65,7 +67,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 ## Resume implementation
 
-- Ticket 01 is resolved. Unblocked tickets: 02, 03, 04, 05 and 06. Next frontier by number: 02. Tickets 07–16 retain their approved blockers.
+- Tickets 01 and 02 are resolved; 03 is claimed for CI verification. Next unclaimed frontier by number: 04. Tickets 07–16 retain their approved blockers.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
