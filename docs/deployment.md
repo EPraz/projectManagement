@@ -2,6 +2,17 @@
 
 Frontend React/Vite en Vercel, API NestJS en Render y PostgreSQL en Neon. Esta guía permite configurar los proveedores manualmente; el propietario también autorizó la publicación asistida desde el repositorio. Usa una base nueva dedicada a esta demo; no se importa ni se modifica la base anterior.
 
+## Entorno del portfolio
+
+| Recurso | Dirección |
+| --- | --- |
+| Frontend | https://project-management-murex-pi.vercel.app |
+| API | https://project-management-api-5xe1.onrender.com |
+| Salud de la API | https://project-management-api-5xe1.onrender.com/health |
+| Salud a través de Vercel | https://project-management-murex-pi.vercel.app/api/health |
+
+Vercel usa el plan Hobby, Node 22 y Root Directory `frontend`. Render usa el plan Free, Node 22, la región Ohio (cerca de la base Neon en `us-east-2`) y Root Directory `backend`. Ambos están vinculados a `main` del repositorio GitHub. Los secretos existen únicamente en los entornos privados del proveedor y en archivos locales ignorados.
+
 ## Archivos preparados
 
 - `render.yaml`: referencia de configuración del servicio Node gratuito; también puedes crear el servicio manualmente con los mismos valores.
@@ -63,7 +74,7 @@ Repetir `demo:seed` devuelve `status: unchanged` y conserva las ediciones y los 
 
 Crea el proyecto con Root Directory **`frontend`**, framework **Vite**, Install Command **`npm ci`**, Build Command **`npm run build`**, Output Directory **`dist`** y Node **22.x**.
 
-Antes de desplegar, sustituye `https://project-management-api.onrender.com` en `frontend/vercel.json` por la URL HTTPS real que Render asignó a tu servicio. Es una plantilla: el nombre del servicio no garantiza ese subdominio exacto. Configura:
+`frontend/vercel.json` apunta actualmente a `https://project-management-api-5xe1.onrender.com`, la URL real del servicio del portfolio. Si creas otro servicio, actualiza ese destino con la URL HTTPS que Render le asigne: el nombre del servicio no garantiza un subdominio exacto. Configura:
 
 | Variable | Valor |
 | --- | --- |
