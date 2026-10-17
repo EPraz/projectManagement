@@ -2,6 +2,7 @@ import { DragEndEvent } from "@dnd-kit/core";
 import { TicketPriority, TicketType } from "../../../constants";
 import { Task, TaskStatus, Ticket } from "../../../types";
 import { onDragEndTaskHandler } from "../onDragEndTaskHelper";
+import { mergeConfirmedTaskUpdate } from "../mergeConfirmedTaskUpdate";
 
 const statuses: TaskStatus[] = [
   { id: "todo", name: "TODO", position: 0, color: "gray" },
@@ -39,6 +40,23 @@ const drop = (status: string | null = "DONE", taskId = task.id) => ({
 }) as DragEndEvent;
 
 describe("task movement", () => {
+  it("preserves newer confirmed changes to the same task when the move response arrives late", () => {
+    const newer = { ...task, title: "Newer team edit", updatedAt: "2026-10-17T00:00:01Z" };
+    const current = [{ ...tickets[0], tasks: [newer] }];
+    const late = { ...task, statusId: "done", status: statuses[1] };
+    expect(mergeConfirmedTaskUpdate(current, late)[0].tasks).toEqual([newer]);
+  });
+
+  it("does not re-add a task that another client deleted while its move response was pending", () => {
+    const current = [{ ...tickets[0], tasks: [] }];
+    expect(mergeConfirmedTaskUpdate(current, task)[0].tasks).toEqual([]);
+  });
+
+  it("applies a newer confirmed move to the existing task", () => {
+    const persisted = { ...task, statusId: "done", status: statuses[1], updatedAt: "2026-10-17T00:00:01Z" };
+    expect(mergeConfirmedTaskUpdate(tickets, persisted)[0].tasks).toEqual([persisted]);
+  });
+
   it("attributes a move to the demo actor while preserving the assignee", async () => {
     const persisted = { ...task, statusId: "done", status: statuses[1], updatedBy: "visitor@demo.example" };
     const update = jest.fn().mockResolvedValue(persisted);

@@ -13,13 +13,21 @@ Date: 2026-10-17. All fixtures and browser mutations used the isolated PostgreSQ
 
 ## Retained checks
 
-- Nine focused interaction cases pass: actor, invalid destination, one in-flight request, null/undefined save failures and retries, cancelled/unchanged drops, missing actor/task, and a pending guard shared across recreated handlers.
+- Twelve focused interaction/reconciliation cases pass: actor, invalid destination, one in-flight request, null/undefined save failures and retries, cancelled/unchanged drops, missing actor/task, a pending guard shared across recreated handlers, a newer confirmed move, retaining newer same-task data and retaining a confirmed deletion.
 - Three added API cases cover server-controlled actor/persistence, cross-project rejection, and real Socket.IO delivery with an independent client. Rejected unknown-status, unsupported ticket reassignment and unauthenticated mutations retain the original state. One subsequent confirmed mutation yields one event; the independent session reads the persisted result. HTTP and socket payload assertions reject credential fields.
 - Socket.IO client 4.8.4 is a backend development dependency solely for the actual protocol test; it matches the existing frontend client. The subsequent full lockfile audit still has zero high/critical findings and the same 20 moderate tooling entries documented in ticket 02.
-- Final backend suite: **28 tests, 2 suites**. Final frontend suite in CI mode: **74 tests, 15 suites, 12 preserved snapshots**. Types, lint and production builds pass in the clean Node 22 checkout. Backend lint has zero warnings; frontend retains the same 40 visible warnings owned by later workflow tickets.
+- Final backend suite: **28 tests, 2 suites**. Final frontend suite in CI mode after the review correction: **77 tests, 15 suites, 12 preserved snapshots**. Types, lint and production builds pass in the clean Node 22 checkout. Backend lint has zero warnings; frontend retains the same 40 visible warnings owned by later workflow tickets.
 
 ## Actual Chrome workflow
 
 Entered through Explore demo and used the task board with real pointer dragging. A task moved into Done, persisted after reload and retained its displayed assignee. A controlled local HTTP 503 kept the prior saved position and showed the existing error message. Removing the failure allowed retry. Finally, delaying one task's HTTP response while a separate authenticated request updated another task demonstrated that the late response preserves the second change received by socket. The temporary concurrent title was restored through the API; no automatic seed reset was used.
 
 The task's existing status-drag capabilities remain; ticket ordering controls stay disabled. Diagnostic browser script, screenshots and logs are ignored local QA artifacts under `backend/.tmp/quality/`. No walkthrough recording occurred.
+
+## Review-driven concurrency correction
+
+The first Spec review identified a remaining P2: replacing only one task still allowed an older HTTP response to overwrite a newer socket update to that same task, or re-add a task deleted by another client. A browser check with an explicit newer-title fence reproduced the same-task regression (old response moved it back into column 6 instead of the confirmed column 2). Focused same-task and deleted-task regressions both failed before correction.
+
+The movement merge now updates only tasks still present in current state, and only when the incoming `updatedAt` is newer than the existing confirmed timestamp. Equal versions retain current state. It never recreates missing work. The original add/update utility remains available unchanged for workflows that really create tasks.
+
+The same delayed-response browser scenario now passes. An additional browser scenario creates one disposable local task, delays its confirmed move response, deletes it from an independent authenticated client and waits for removal by socket before releasing the response. The card remains absent and a subsequent HTTP read returns 404; cleanup removes the temporary fixture. Full frontend checks above were rerun after this correction.

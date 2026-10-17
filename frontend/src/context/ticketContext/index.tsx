@@ -8,7 +8,7 @@ import {
   useCallback,
 } from "react";
 import { Task, Ticket } from "../../types";
-import { updateOrAddTaskInTickets } from "../../helpers/utilityTicketsTasksHelpers";
+import { mergeConfirmedTaskUpdate } from "../../helpers/tasks/mergeConfirmedTaskUpdate";
 import { useProject } from "../projectContext";
 import { useSprint } from "../sprintContext";
 import { Loading } from "../../components";
@@ -62,7 +62,7 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
   );
 
   const applyTaskUpdate = useCallback((task: Task) => {
-    setAllTickets((current) => updateOrAddTaskInTickets(current, task, () => task));
+    setAllTickets((current) => mergeConfirmedTaskUpdate(current, task));
   }, []);
 
   const updateListOfTickets = useCallback(
