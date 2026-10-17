@@ -1,9 +1,11 @@
 # Project Management App — Full-Stack Agile Platform
 
+[Live demo](https://project-management-murex-pi.vercel.app) · Choose **Explore demo** to enter without an account.
+
 Production-ready project management platform inspired by Azure DevOps.
 Designed to manage projects, teams, sprints, epics, features, tickets, and retrospectives with real-time collaboration and analytics.
 
-Built with a modular NestJS backend and a React frontend. Prepared for separate deployments on **Render** and **Vercel**, with **Neon PostgreSQL**. See the [deployment guide](docs/deployment.md).
+Built with a modular NestJS backend and a React frontend. Deployed separately on **Render** and **Vercel**, with **Neon PostgreSQL**. The free backend may take about a minute to wake after inactivity. See the [deployment guide](docs/deployment.md).
 
 ---
 

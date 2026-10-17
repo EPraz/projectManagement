@@ -14,7 +14,11 @@ First publish to Vercel, Render and Neon with the agent-assisted deployment auth
 - Verify cloud health directly and through the frontend proxy, demo entry, session refresh after reloading an internal route, and updates between two browser windows.
 - Verify the first visit after backend inactivity. Document any provider-specific issue discovered during those checks before expanding scope.
 
-The deployment guide is the operational reference. Cloud-provider behavior has not yet been tested; the preparation and populated workspace have been verified locally.
+The deployment guide is the operational reference. The authorized cloud deployment is now live and its HTTP/WebSocket checks pass; see `.scratch/deployment-preparation/verification.md`. Real-browser visual/responsive/cookie-policy checks and a separate recovery check after backend suspension remain pending.
+
+## Dependency follow-up observed during publication
+
+The frontend's production-dependency audit (`npm audit --omit=dev`, 2026-10-17) reports 13 advisories: 9 high, 4 moderate and 0 critical. Investigate reachability and compatible fixes early in the next maintenance phase, before adding features. The complete Vercel install log also includes development-tool advisories. No automatic `audit fix` or major-version upgrades were performed during deployment.
 
 ## Proposed priorities
 

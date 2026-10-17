@@ -3,6 +3,7 @@ services:
     name: project-management-api
     runtime: node
     plan: free
+    region: ohio
     rootDir: backend
     buildCommand: npm ci --include=dev && npm run prisma:generate && npm run build
     startCommand: npm run db:deploy && npm run start:prod
