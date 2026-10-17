@@ -1,10 +1,20 @@
 # Portfolio improvements after the first cloud deployment
 
-Status: draft
+Status: inventory — current quality/refactor scope published in spec.md
 
 ## Timing and workflow
 
-First publish to Vercel, Render and Neon with the agent-assisted deployment authorized by the owner, verify the cloud application, and add it to the portfolio. This document records later improvement candidates; it does not authorize implementation and is not an approved ticket graph. For subsequent work that can span sessions, use grill-with-docs where decisions are open, then to-spec and to-tickets before implementation.
+The first Vercel/Render/Neon deployment is complete. The owner subsequently prioritized code refactoring and product quality before finalizing the recruiter README, screenshots and walkthrough. This backlog is the starting inventory for that work; it is not yet a reviewed implementation ticket graph. Preserve the agreed presentation scope for the later phase. For work that can span sessions, use grill-with-docs where decisions are open, then to-spec and to-tickets before implementation.
+
+The current phase is defined by [the published spec](spec.md); this backlog retains the wider inventory and history.
+
+## Refactor-first direction confirmed by the owner
+
+- Stabilize the existing product and improve its code before recording and presenting the final result.
+- Establish trustworthy behavior checks around the affected workflows before structural changes; keep the live demo and existing data intact.
+- Separate confirmed defects (project-progress status mapping and hardcoded task-update attribution) from candidates requiring inspection (module/component boundaries, duplicated logic, API contracts, query shapes and dependency applicability).
+- Use the priorities below to define a bounded quality/refactor plan. The previously approved six presentation tickets do not cover this expanded scope and must not be treated as approval to implement every backlog item automatically.
+- After the agreed quality/refactor work and cloud verification, resume the English README and silent captioned walkthrough decisions already recorded under the presentation map.
 
 ## First cloud deployment
 
@@ -14,7 +24,7 @@ First publish to Vercel, Render and Neon with the agent-assisted deployment auth
 - Verify cloud health directly and through the frontend proxy, demo entry, session refresh after reloading an internal route, and updates between two browser windows.
 - Verify the first visit after backend inactivity. Document any provider-specific issue discovered during those checks before expanding scope.
 
-The deployment guide is the operational reference. The authorized cloud deployment is now live and its HTTP/WebSocket checks pass; see `.scratch/deployment-preparation/verification.md`. Real-browser visual/responsive/cookie-policy checks and a separate recovery check after backend suspension remain pending.
+The deployment guide is the operational reference. The authorized cloud deployment is live and its HTTP/WebSocket checks pass; see `.scratch/deployment-preparation/verification.md`. Later headless Chrome checks also verified the corrected project list, authenticated reload at four widths and populated overview. Full visual/accessibility QA and a separate recovery check after backend suspension remain pending.
 
 ## Dependency follow-up observed during publication
 
