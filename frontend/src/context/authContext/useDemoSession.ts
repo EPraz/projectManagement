@@ -9,6 +9,7 @@ export const useDemoSession = (shouldRestore: boolean) => {
   const current = useRef<DemoSession | null>(null);
   const generation = useRef(0);
   const [restoring, setRestoring] = useState(shouldRestore);
+  const [attemptedRestore, setAttemptedRestore] = useState(false);
   const [opening, setOpening] = useState(false);
   const [closing, setClosing] = useState(false);
   const [sessionError, setSessionError] = useState<string | null>(null);
@@ -33,6 +34,7 @@ export const useDemoSession = (shouldRestore: boolean) => {
   }, [commit]);
 
   const restoreSession = useCallback(async (signal?: AbortSignal) => {
+    if (!shouldRestore || exit.current) return;
     restoration.current?.abort();
     const controller = new AbortController();
     restoration.current = controller;
@@ -58,23 +60,32 @@ export const useDemoSession = (shouldRestore: boolean) => {
       if (restoration.current === controller) {
         restoration.current = null;
         setRestoring(false);
+        setAttemptedRestore(true);
       }
     }
-  }, [apiRequest, commit, expire]);
+  }, [apiRequest, commit, expire, shouldRestore]);
 
   useEffect(() => {
-    if (!shouldRestore || current.current) return;
+    if (!shouldRestore) {
+      generation.current += 1;
+      restoration.current?.abort();
+      restoration.current = null;
+      setRestoring(false);
+      setAttemptedRestore(false);
+      return;
+    }
+    if (current.current) return;
     const controller = new AbortController();
     void restoreSession(controller.signal);
     return () => controller.abort();
   }, [shouldRestore, restoreSession]);
 
   useEffect(() => {
-    if (!session?.accessToken) return;
+    if (!session?.accessToken || !shouldRestore || closing) return;
     const controller = new AbortController();
     const timer = window.setInterval(() => { void restoreSession(controller.signal); }, 12 * 60 * 1000);
     return () => { controller.abort(); window.clearInterval(timer); };
-  }, [session?.accessToken, restoreSession]);
+  }, [session?.accessToken, restoreSession, shouldRestore, closing]);
 
   useEffect(() => () => {
     generation.current += 1;
@@ -126,6 +137,8 @@ export const useDemoSession = (shouldRestore: boolean) => {
           errorMessage: "Could not sign out. Please try again.",
         });
         if (!controller.signal.aborted) {
+          generation.current += 1;
+          restoration.current?.abort();
           commit(null);
           setSessionError(null);
           setSessionNotice("");
@@ -155,7 +168,7 @@ export const useDemoSession = (shouldRestore: boolean) => {
   return {
     user: session?.user ?? null,
     accessToken: session?.accessToken ?? null,
-    loading: opening || (!session && restoring),
+    loading: opening || (!session && (restoring || (shouldRestore && !attemptedRestore))),
     restoring, closing, sessionError, sessionNotice,
     instantLogin, logout, retrySession: restoreSession, request,
   };
