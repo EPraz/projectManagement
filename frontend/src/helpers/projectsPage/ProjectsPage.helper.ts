@@ -10,7 +10,7 @@ export const getProjectProgress = (
     allTickets?.filter(
       (ticket) =>
         ticketStatuses.find((status) => status.id === ticket.statusId)?.name ===
-        "DONE"
+        "COMPLETED"
     )?.length || 0;
   return Math.round((completedTickets / totalTickets) * 100);
 };

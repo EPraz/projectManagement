@@ -27,10 +27,12 @@ import UpcomingDeadlines from "./components/upcomingDeadlines/UpcomingDeadlines"
 import TeamWorkload from "./components/teamWorkload/TeamWorkload";
 import BlockersAndImpediments from "./components/blockersAndImpediments/BlockersAndImpediments";
 import SprintGoalsAndMilestones from "./components/sprintGoalsAndMilestones/SprintGoalsAndMilestones";
+import { getProjectProgress } from "../../helpers/projectsPage/ProjectsPage.helper";
 
 const DashBoard = () => {
   const { project, sprint, allTickets, tickets, listOfSprints } =
     useOutletContext<LayoutContextProps>();
+  const projectProgress = getProjectProgress(project?.ticketStatuses ?? [], allTickets);
 
   return (
     <DashboardContainer>
@@ -76,10 +78,10 @@ const DashBoard = () => {
                 >
                   <Typography variant="subtitle2">Overall Progress</Typography>
                   <Typography variant="subtitle2" color="primary">
-                    10%
+                    {projectProgress}%
                   </Typography>
                 </Box>
-                <StyledLinearProgress variant="determinate" value={10} />
+                <StyledLinearProgress variant="determinate" value={projectProgress} />
               </ProgressContainer>
 
               <Divider sx={{ my: 3 }} />
