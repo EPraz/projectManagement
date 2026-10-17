@@ -23,6 +23,8 @@ Status: ready-for-agent
 
 - 2026-10-17: [Ticket 04](issues/04-accurate-project-progress.md) resolved: grid, list and overview report actual project progress, retaining sprint-specific metrics. [Evidence](evidence/04-progress.md), [review](evidence/04-review.md), implementation c4354d4.
 
+- 2026-10-17: [Ticket 05](issues/05-reliable-task-movement.md) resolved: authenticated actor, valid status relationships, recoverable moves and preserved concurrent updates/deletions. [Evidence](evidence/05-task-movement.md), [review](evidence/05-review.md); c420f07 and d3cae3a. The initial Spec P2 was fixed and rechecked.
+
 - Preserve React/Vite, modular NestJS, Prisma/PostgreSQL and Vercel/Render/Neon free deployment.
 - Preserve public/old data, demo-only access, the single DATABASE_URL convention and explicit manual restoration.
 - Correct confirmed progress and task-attribution defects, establish reliable tests/CI, then refactor observed boundaries and improve recovery, measured loading and developer setup.
@@ -56,8 +58,8 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | resolved | 01 |
 | [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | resolved | 01 |
 | [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | resolved | 01 |
-| [05: Make task movement truthful and recoverable](issues/05-reliable-task-movement.md) | claimed | 01 |
-| [06: Simplify demo sessions and navigation with a compatible request boundary](issues/06-demo-session-and-navigation.md) | ready-for-agent | 01 |
+| [05: Make task movement truthful and recoverable](issues/05-reliable-task-movement.md) | resolved | 01 |
+| [06: Simplify demo sessions and navigation with a compatible request boundary](issues/06-demo-session-and-navigation.md) | claimed | 01 |
 | [07: Make project loading, selection and recovery coherent](issues/07-project-loading-and-recovery.md) | ready-for-agent | 06 |
 | [08: Refactor ticket and task editing as a reliable workflow](issues/08-ticket-and-task-editing.md) | ready-for-agent | 07 |
 | [09: Refactor hierarchy and backlog without breaking linked work](issues/09-hierarchy-and-backlog.md) | ready-for-agent | 07 |
@@ -71,7 +73,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 ## Resume implementation
 
-- Tickets 01–04 are resolved; 05 is claimed for truthful task movement. Next unclaimed frontier by number: 06. Tickets 07–16 retain their approved blockers.
+- Tickets 01–05 are resolved; 06 is claimed for demo sessions/navigation and the compatible request boundary. Ticket 07 is the next numbered frontier after 06 resolves; later blockers remain unchanged.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
