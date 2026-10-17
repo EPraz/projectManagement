@@ -107,6 +107,10 @@ Sin `--confirm-demo-reset` el comando se rechaza. También se rechaza si no exis
 
 Para trabajar localmente, copia los ejemplos a `.env` de cada aplicación, usa una base local independiente, ejecuta los comandos de inicialización anteriores y luego `npm run start:dev` en `backend` y `npm run dev` en `frontend`. El proxy local `/api` usa `API_PROXY_TARGET`; el socket usa `VITE_SOCKET_URL`.
 
+El frontend también admite `npm start`. Si ya tenías archivos `.env` del despliegue anterior, conserva tus conexiones y completa las nuevas variables: para PostgreSQL local `DIRECT_URL` puede ser igual a `DATABASE_URL`; `JWT_SECRET` debe ser aleatorio y tener al menos 32 caracteres. La URL directa de Neon se copia del proveedor cuando prepares producción.
+
+En desarrollo, `DEV_PORT` fija el puerto del frontend (por defecto 5173). Si otro proyecto lo ocupa, elige uno libre y usa el mismo origen en `CLIENT_URL` del backend; por ejemplo, `DEV_PORT=5180` con `CLIENT_URL=http://localhost:5180`. Vite falla explícitamente si el puerto elegido está ocupado, en lugar de cambiar silenciosamente el origen. Mantén `VITE_API_URL=/api`, `VITE_SOCKET_URL=http://localhost:3000` y `API_PROXY_TARGET=http://localhost:3000` si la API local usa el puerto 3000.
+
 La prueba de integración necesita una base PostgreSQL **local vacía y exclusiva de pruebas**, con un nombre terminado en `_test`. Define `TEST_DATABASE_URL` con esa conexión. Aplica las migraciones a esa misma base usando `DATABASE_URL` y `DIRECT_URL` antes de ejecutar:
 
 ```sh
