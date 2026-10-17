@@ -1,20 +1,13 @@
 export function validateEnvironment(env: Record<string, unknown>) {
-  for (const name of [
-    'DATABASE_URL',
-    'DIRECT_URL',
-    'JWT_SECRET',
-    'CLIENT_URL',
-  ]) {
+  for (const name of ['DATABASE_URL', 'JWT_SECRET', 'CLIENT_URL']) {
     if (typeof env[name] !== 'string' || !env[name])
       throw new Error(`Missing environment variable: ${name}`);
   }
   if ((env.JWT_SECRET as string).length < 32)
     throw new Error('JWT_SECRET must contain at least 32 characters');
-  for (const name of ['DATABASE_URL', 'DIRECT_URL']) {
-    const url = new URL(env[name] as string);
-    if (!['postgres:', 'postgresql:'].includes(url.protocol))
-      throw new Error(`${name} must be a PostgreSQL URL`);
-  }
+  const databaseUrl = new URL(env.DATABASE_URL as string);
+  if (!['postgres:', 'postgresql:'].includes(databaseUrl.protocol))
+    throw new Error('DATABASE_URL must be a PostgreSQL URL');
   const origin = new URL(env.CLIENT_URL as string);
   if (
     !['http:', 'https:'].includes(origin.protocol) ||

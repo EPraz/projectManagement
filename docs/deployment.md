@@ -1,6 +1,6 @@
 # Despliegue del portfolio
 
-Frontend React/Vite en Vercel, API NestJS en Render y PostgreSQL en Neon. El propietario configura los proveedores manualmente. Usa una base nueva dedicada a esta demo; no se importa ni se modifica la base anterior.
+Frontend React/Vite en Vercel, API NestJS en Render y PostgreSQL en Neon. Esta guía permite configurar los proveedores manualmente; el propietario también autorizó la publicación asistida desde el repositorio. Usa una base nueva dedicada a esta demo; no se importa ni se modifica la base anterior.
 
 ## Archivos preparados
 
@@ -11,9 +11,9 @@ Frontend React/Vite en Vercel, API NestJS en Render y PostgreSQL en Neon. El pro
 
 ## 1. Neon
 
-Crea un proyecto/base nuevos y copia las cadenas de conexión desde Connect. Usa la conexión con pool para `DATABASE_URL` y la conexión directa, sin `-pooler`, para `DIRECT_URL`. Conserva `sslmode=require`; puedes añadir `connect_timeout=15` a ambas y `connection_limit=3` a la conexión de la aplicación.
+Crea un proyecto/base nuevos y copia la cadena de conexión **directa**, sin `-pooler`, desde Connect (desactiva Connection pooling). Guárdala únicamente en `DATABASE_URL`: la aplicación, las migraciones y el seed usan esa misma variable. Conserva `sslmode=require`; puedes añadir `connect_timeout=15` y `connection_limit=3` para limitar las conexiones de este backend Node persistente.
 
-Este proyecto conserva Prisma 6: `url` y `directUrl` se declaran en `backend/prisma/schema.prisma`. No requiere Neon Auth, Supabase ni actualizar Prisma a otra versión mayor. Referencias: [Neon y Prisma](https://neon.com/docs/guides/prisma), [documentación de Prisma 6](https://docs.prisma.io/docs/orm/v6/overview/databases/neon).
+Este proyecto conserva Prisma 6 y declara únicamente `url = env("DATABASE_URL")` en `backend/prisma/schema.prisma`. La conexión directa permite ejecutar las migraciones con la misma URL, sin una segunda variable. No requiere Neon Auth, Supabase ni actualizar Prisma a otra versión mayor. Referencias: [conexiones directas y con pool de Neon](https://neon.com/docs/connect/connection-pooling#when-to-use-pooled-vs-direct-connections), [documentación de Prisma 6](https://docs.prisma.io/docs/orm/v6/overview/databases/neon).
 
 ## 2. Render
 
@@ -33,8 +33,7 @@ Configura estas variables en Render:
 | --- | --- |
 | `NODE_ENV` | `production` |
 | `NODE_VERSION` | `22` |
-| `DATABASE_URL` | Conexión con pool de la nueva base Neon |
-| `DIRECT_URL` | Conexión directa a esa misma base |
+| `DATABASE_URL` | Conexión directa de la nueva base Neon, con TLS |
 | `JWT_SECRET` | Valor aleatorio de al menos 32 caracteres, exclusivo de esta demo |
 | `CLIENT_URL` | Origen exacto del frontend, por ejemplo `https://mi-portfolio.vercel.app`, sin `/` final |
 
@@ -58,7 +57,7 @@ npm run demo:seed
 
 El seed crea dos proyectos, seis identidades ficticias, cuatro épicas, ocho features, 36 tickets, 72 tareas y seis sprints, con estados, backlog, asignaciones, etiquetas, bloqueos, pair programming, objetivos, capacidades y retrospectivas. Los periodos y vencimientos se calculan respecto al momento de inicialización.
 
-Repetir `demo:seed` devuelve `status: unchanged` y conserva las ediciones y los proyectos creados por visitantes. Una transacción evita una inicialización parcial y un bloqueo de base serializa ejecuciones simultáneas. Si la base contiene usuarios/proyectos ajenos a esta demo, la inicialización se rechaza.
+Repetir `demo:seed` devuelve `status: unchanged` y conserva las ediciones y los proyectos creados por visitantes. Una transacción evita una inicialización parcial y un bloqueo de base serializa ejecuciones simultáneas. La transacción admite hasta dos minutos para soportar los viajes de red al cargar el escenario completo en Neon. Si la base contiene usuarios/proyectos ajenos a esta demo, la inicialización se rechaza.
 
 ## 4. Vercel
 
@@ -107,13 +106,13 @@ Sin `--confirm-demo-reset` el comando se rechaza. También se rechaza si no exis
 
 Para trabajar localmente, copia los ejemplos a `.env` de cada aplicación, usa una base local independiente, ejecuta los comandos de inicialización anteriores y luego `npm run start:dev` en `backend` y `npm run dev` en `frontend`. El proxy local `/api` usa `API_PROXY_TARGET`; el socket usa `VITE_SOCKET_URL`.
 
-El frontend también admite `npm start`. Si ya tenías archivos `.env` del despliegue anterior, conserva tus conexiones y completa las nuevas variables: para PostgreSQL local `DIRECT_URL` puede ser igual a `DATABASE_URL`; `JWT_SECRET` debe ser aleatorio y tener al menos 32 caracteres. La URL directa de Neon se copia del proveedor cuando prepares producción.
+El frontend también admite `npm start`. Si ya tenías archivos `.env` del despliegue anterior, configura la conexión elegida en `DATABASE_URL`; no se necesita una segunda variable de conexión. `JWT_SECRET` debe ser aleatorio y tener al menos 32 caracteres. La URL directa de Neon se copia del proveedor cuando prepares producción.
 
 En desarrollo, `DEV_PORT` fija el puerto del frontend (por defecto 5173). Si otro proyecto lo ocupa, elige uno libre y usa el mismo origen en `CLIENT_URL` del backend; por ejemplo, `DEV_PORT=5180` con `CLIENT_URL=http://localhost:5180`. Vite falla explícitamente si el puerto elegido está ocupado, en lugar de cambiar silenciosamente el origen. Mantén `VITE_API_URL=/api`, `VITE_SOCKET_URL=http://localhost:3000` y `API_PROXY_TARGET=http://localhost:3000` si la API local usa el puerto 3000.
 
-Si la base local ya contiene datos anteriores, puedes conservarlos y preparar la demo en otro esquema de **esa misma base**. En la preparación local actual se usa `schema=portfolio_demo` en ambas conexiones; los datos anteriores permanecen en `public`. Migra e inicializa siempre usando las dos URLs del esquema demo. Cambiar de esquema no copia ni borra los datos anteriores, y la restauración manual opera sobre el esquema señalado por las conexiones activas.
+Si la base local ya contiene datos anteriores, puedes conservarlos y preparar la demo en otro esquema de **esa misma base**. La preparación local anterior usó `schema=portfolio_demo` en `DATABASE_URL`; los datos anteriores permanecen en `public` de esa base local. Migra e inicializa siempre usando la URL del esquema demo elegido. Cambiar de esquema no copia ni borra los datos anteriores, y la restauración manual opera sobre el esquema señalado por `DATABASE_URL`.
 
-La prueba de integración necesita una base PostgreSQL **local vacía y exclusiva de pruebas**, con un nombre terminado en `_test`. Define `TEST_DATABASE_URL` con esa conexión. Aplica las migraciones a esa misma base usando `DATABASE_URL` y `DIRECT_URL` antes de ejecutar:
+La prueba de integración necesita una base PostgreSQL **local vacía y exclusiva de pruebas**, con un nombre terminado en `_test`. Define `TEST_DATABASE_URL` con esa conexión. Aplica las migraciones a esa misma base usando `DATABASE_URL` antes de ejecutar:
 
 ```sh
 node node_modules/jest/bin/jest.js --config test/jest-e2e.json --runInBand demo.e2e-spec.ts

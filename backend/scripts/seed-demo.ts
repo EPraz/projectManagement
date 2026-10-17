@@ -381,7 +381,7 @@ async function main() {
       await populate(tx);
       return reset ? 'restored' : 'created';
     },
-    { timeout: 30000 },
+    { timeout: 120000 },
   );
   console.log(
     JSON.stringify({

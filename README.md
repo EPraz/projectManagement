@@ -76,7 +76,7 @@ npm run dev
 # Servido en: http://localhost:5173/
 ```
 
-Requires Node 22 and a dedicated PostgreSQL database. Copy each application's .env.example to .env and configure DATABASE_URL, DIRECT_URL, JWT_SECRET and CLIENT_URL. This is a shared editable demo without personal account registration.
+Requires Node 22 and a dedicated PostgreSQL database. Copy each application's .env.example to .env and configure DATABASE_URL, JWT_SECRET and CLIENT_URL. This is a shared editable demo without personal account registration.
 
 ---
 

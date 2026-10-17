@@ -43,3 +43,11 @@ The independent Spec reviewer found **0 actionable findings** and no material sc
 Actual provider deployment is intentionally left to the owner, as agreed. The final test-only correction specifies the Nest application's generic type correctly; it does not change runtime behavior.
 
 Review totals: Standards — 0 hard violations, 1 optional contract-cleanup observation; Spec — 0 findings. Neither axis has a blocking finding.
+
+## Single database variable adjustment — 2026-10-17
+
+- User requested `DATABASE_URL` as the only connection variable. Removed the second URL from Prisma's datasource, runtime validation, Render configuration, examples, integration fixtures and current deployment instructions.
+- The ignored backend environment contained the supplied Neon pooled connection under the old variable and the local database under `DATABASE_URL`. Moved the supplied Neon connection to `DATABASE_URL`, selecting the direct endpoint of that same database for migration compatibility. Kept TLS and used `connect_timeout=15` and `connection_limit=3` unless already specified. No credentials were printed or added to tracked files.
+- Prisma schema validation, client generation, backend build and ESLint for changed TypeScript files pass. Environment validation accepts `DATABASE_URL` without a second URL and rejects missing or non-PostgreSQL URLs.
+- Windows initially blocked Prisma engine replacement because two backend watch processes held it open. Stopped only the verified backend watch trees, regenerated successfully and restarted a single backend watcher.
+- A read-only Prisma query connects successfully to Neon. Its selected schema has **0 tables**; migrations and the first demo seed remain pending. No Neon tables or data were created, changed or deleted in this adjustment. Earlier local integration results above remain historical; the destructive integration suite was not run against Neon.

@@ -29,7 +29,6 @@ if (
   );
 }
 process.env.DATABASE_URL = databaseUrl;
-process.env.DIRECT_URL = databaseUrl;
 process.env.JWT_SECRET = 'isolated-demo-tests-secret-at-least-32-characters';
 process.env.CLIENT_URL = 'http://localhost:5173';
 process.env.NODE_ENV = 'test';
@@ -195,7 +194,6 @@ describe('Acceso demo HTTP API', () => {
         env: {
           ...process.env,
           DATABASE_URL: databaseUrl,
-          DIRECT_URL: databaseUrl,
         },
         encoding: 'utf8',
       },
@@ -262,7 +260,6 @@ describe('Acceso demo HTTP API', () => {
       env: {
         ...process.env,
         DATABASE_URL: databaseUrl,
-        DIRECT_URL: databaseUrl,
       },
       encoding: 'utf8' as const,
     };
