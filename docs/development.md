@@ -39,6 +39,12 @@ Lint checks are non-mutating. Backend `npm run lint:fix` is an explicit opt-in r
 
 The retained test runner is Jest 30, with its matching browser environment and a supported ts-jest release. The frontend locks a compatible SWC 1.15 version because newer native carriers require cache permissions that standard Windows contributors may not have; no extra environment variable or machine permission change is required. Keep the lockfiles and dependency override when installing. Current advisory dispositions are recorded in the [quality dependency assessment](../.scratch/portfolio-improvements/evidence/02-dependencies.md).
 
+## Continuous integration
+
+The [Quality workflow](../.github/workflows/quality.yml) runs on pushes and pull requests to `main`, and can also be started manually. Separate frontend and backend jobs install the committed lockfiles under Node 22, run the checks above, and fail when any command fails. Frontend hook warnings remain visible. The backend job also validates the Prisma schema and runs the canonical guarded tests against a disposable PostgreSQL 17 service. Its example credentials exist only for that job; no repository secrets or production environment file are loaded.
+
+To reproduce locally, run `npm ci` in each application, then the commands in **Checks**. In `backend`, also run `npx --no-install prisma validate` with a local `DATABASE_URL`, then `npm test` with the separate disposable `TEST_DATABASE_URL` described below. Prisma generation must precede type checking after a fresh install. The test runner applies committed migrations itself. A successful local run does not substitute for checking the hosted workflow result.
+
 ## Isolated API and seed tests
 
 Create a **different**, disposable local PostgreSQL database with a name ending in `_test`, for example `project_management_test`. Set `TEST_DATABASE_URL` in the current terminal; do not change your normal `.env` to run fixtures.
