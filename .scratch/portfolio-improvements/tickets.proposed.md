@@ -1,6 +1,6 @@
 # Proposed tickets: product quality and refactor
 
-Status: proposed — awaiting owner approval before individual issue publication
+Status: approved — published as individual ready-for-agent issues
 
 These are quality-phase tickets, distinct from the deferred six-ticket README/video proposal. Each produces a verifiable workflow or delivery capability. Changes to schema/API/UI are included only where that workflow requires them; no artificial work is added to an untouched layer.
 
@@ -222,6 +222,6 @@ Every implementation ticket inherits the spec's data, hosting, demo-only access 
 - The compatible request boundary is established in a real session flow before workflow migrations; untouched consumers keep working. Final contraction happens only after consumer migration, not via a codebase-wide breaking edit.
 - No wide mechanical refactor is currently justified by evidence. If one becomes necessary, propose an expand–migrate–contract breakdown instead of fitting it into a misleading feature ticket.
 
-## Review requested
+## Approval and publication
 
-Confirm whether these 16 context-sized tickets have appropriate granularity, whether each blocker is a genuine prerequisite, and whether any tickets should be merged or split. Only after approval will each ticket be published as its own ready-for-agent issue; the source spec stays unchanged.
+2026-10-17: The owner approved the 16-ticket granularity and blocking edges ("acepto"). All tickets are published individually under issues/, with status ready-for-agent. See map.md for the execution index and initial frontier. The source spec is unchanged; implementation has not started.

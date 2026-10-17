@@ -25,13 +25,42 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 - Current advisory applicability and compatible remedies require implementation-time inspection.
 - Exact refactor boundaries and performance changes must follow consumer/dependency inspection and measurements, not file length alone.
-- The owner invoked to-tickets against the published spec. A 16-ticket proposal is prepared in tickets.proposed.md and awaits the required granularity/dependency review before individual issue publication. Do not reuse the deferred six-ticket presentation graph for this broader work.
+- Any material newly discovered scope or genuine additional dependency must be recorded explicitly before expanding an implementation ticket. The deferred six-ticket presentation graph remains separate.
 
-## Ticket proposal
+## Approved ticket sequence
 
 - 01 establishes meaningful checks and isolated local setup; it is the initial execution frontier.
 - 02–06 then cover dependencies, CI, project progress, task movement and session/navigation cleanup.
 - 07 establishes coherent project loading; 08–12 are independently verifiable ticket, hierarchy, planning, capacity/team and retrospective workflows.
 - 13–15 address measured code loading, project read efficiency and existing bulk-operation correctness/diagnostics.
 - 16 integrates checks, verifies product finish in the cloud and returns to the saved presentation phase.
-- No source spec, product code, database content, dependency or cloud resource is changed by preparing this proposal.
+- 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Individual issues are published with status ready-for-agent; implementation has not started. The source spec, product code, database content, dependencies and cloud resources are unchanged.
+
+## Execution index
+
+| Ticket | Status | Blocked by |
+| --- | --- | --- |
+| [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md) | ready-for-agent | None |
+| [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | ready-for-agent | 01 |
+| [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | ready-for-agent | 01 |
+| [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | ready-for-agent | 01 |
+| [05: Make task movement truthful and recoverable](issues/05-reliable-task-movement.md) | ready-for-agent | 01 |
+| [06: Simplify demo sessions and navigation with a compatible request boundary](issues/06-demo-session-and-navigation.md) | ready-for-agent | 01 |
+| [07: Make project loading, selection and recovery coherent](issues/07-project-loading-and-recovery.md) | ready-for-agent | 06 |
+| [08: Refactor ticket and task editing as a reliable workflow](issues/08-ticket-and-task-editing.md) | ready-for-agent | 07 |
+| [09: Refactor hierarchy and backlog without breaking linked work](issues/09-hierarchy-and-backlog.md) | ready-for-agent | 07 |
+| [10: Make sprint planning and goals consistent across views](issues/10-sprint-planning-and-goals.md) | ready-for-agent | 07 |
+| [11: Make team and capacity planning reliable](issues/11-team-and-capacity.md) | ready-for-agent | 07 |
+| [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | ready-for-agent | 07 |
+| [13: Reduce unnecessary initial and editor code loading](issues/13-initial-code-loading.md) | ready-for-agent | 08 |
+| [14: Reduce unnecessary project read payloads and query work](issues/14-project-read-efficiency.md) | ready-for-agent | 07 |
+| [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | ready-for-agent | 08 |
+| [16: Verify product finish in CI and the cloud, then hand off presentation](issues/16-cloud-quality-verification.md) | ready-for-agent | 02, 03, 04, 05, 09, 10, 11, 12, 13, 14, 15 |
+
+## Resume implementation
+
+- Initial frontier: [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md). All other tickets have unresolved blockers.
+- Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
+- Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
+- Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
+- Final presentation remains deferred until ticket 16 verifies the integrated application.
