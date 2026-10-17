@@ -25,4 +25,13 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 - Current advisory applicability and compatible remedies require implementation-time inspection.
 - Exact refactor boundaries and performance changes must follow consumer/dependency inspection and measurements, not file length alone.
-- No current tickets published; use to-tickets against the published spec. Do not reuse the deferred six-ticket presentation graph for this broader work.
+- The owner invoked to-tickets against the published spec. A 16-ticket proposal is prepared in tickets.proposed.md and awaits the required granularity/dependency review before individual issue publication. Do not reuse the deferred six-ticket presentation graph for this broader work.
+
+## Ticket proposal
+
+- 01 establishes meaningful checks and isolated local setup; it is the initial execution frontier.
+- 02–06 then cover dependencies, CI, project progress, task movement and session/navigation cleanup.
+- 07 establishes coherent project loading; 08–12 are independently verifiable ticket, hierarchy, planning, capacity/team and retrospective workflows.
+- 13–15 address measured code loading, project read efficiency and existing bulk-operation correctness/diagnostics.
+- 16 integrates checks, verifies product finish in the cloud and returns to the saved presentation phase.
+- No source spec, product code, database content, dependency or cloud resource is changed by preparing this proposal.
