@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Trustworthy checks and isolated startup.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after baseline 01 while 04 receives independent review. Regress the actual task-update interaction, then verify HTTP/WebSocket relationships and real board success/failure against isolated PostgreSQL fixtures.

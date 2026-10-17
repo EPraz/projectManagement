@@ -19,7 +19,7 @@ import {
   useUpdateGoalTask,
   useUpdateTicket,
 } from "../../hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FilterProps,
   GoalTask,
@@ -63,6 +63,7 @@ const Layout = () => {
   // Providers
   const { project, loading: loadingProject } = useProject();
   const { user: currentUser } = useAuth();
+  const pendingTaskMoves = useRef(new Set<Task["id"]>());
 
   const {
     sprint,
@@ -81,6 +82,7 @@ const Layout = () => {
     addAllTickets,
     updateAllTickets,
     updateListOfTickets,
+    applyTaskUpdate,
   } = useTicket();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -324,9 +326,11 @@ const Layout = () => {
       updateTask,
       tickets,
       project?.taskStatuses,
-      updateListOfTickets
+      applyTaskUpdate,
+      currentUser?.email,
+      pendingTaskMoves.current
     ),
-    [updateTask, tickets, project?.taskStatuses, updateListOfTickets]
+    [updateTask, tickets, project?.taskStatuses, applyTaskUpdate, currentUser?.email]
   );
 
   // Functions -> Sprint

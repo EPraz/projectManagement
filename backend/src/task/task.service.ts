@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Task } from '@prisma/client';
 import { handlePrismaError } from 'src/helper';
@@ -92,10 +96,25 @@ export class TaskService {
         where: { id: request.id },
         include: {
           status: true,
+          ticket: { select: { projectId: true } },
         },
       });
 
       if (!task) throw new NotFoundException('Task not found');
+
+      if (request.statusId !== undefined) {
+        if (!request.statusId)
+          throw new BadRequestException('Task status is required');
+        const status = await this.prisma.taskStatus.findUnique({
+          where: { id: request.statusId },
+        });
+        if (!status) throw new NotFoundException('Task status not found');
+        if (status.projectId !== task.ticket.projectId) {
+          throw new BadRequestException(
+            'Task status must belong to the ticket project',
+          );
+        }
+      }
 
       const { id, ...updateData } = request;
 
@@ -104,6 +123,7 @@ export class TaskService {
         data: { ...updateData },
         include: {
           status: true,
+          assignedUser: true,
         },
       });
 

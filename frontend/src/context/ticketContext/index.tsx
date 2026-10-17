@@ -7,7 +7,8 @@ import {
   useMemo,
   useCallback,
 } from "react";
-import { Ticket } from "../../types";
+import { Task, Ticket } from "../../types";
+import { updateOrAddTaskInTickets } from "../../helpers/utilityTicketsTasksHelpers";
 import { useProject } from "../projectContext";
 import { useSprint } from "../sprintContext";
 import { Loading } from "../../components";
@@ -21,6 +22,7 @@ type TicketContextProps = {
   addAllTickets: (newTicket: Ticket) => void;
   removeAllTickets: (ticketId: Ticket["id"]) => void;
   updateListOfTickets: (listofTickets: Ticket[]) => void;
+  applyTaskUpdate: (task: Task) => void;
 };
 
 const TicketContext = createContext<TicketContextProps | undefined>(undefined);
@@ -58,6 +60,10 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
     },
     [setAllTickets]
   );
+
+  const applyTaskUpdate = useCallback((task: Task) => {
+    setAllTickets((current) => updateOrAddTaskInTickets(current, task, () => task));
+  }, []);
 
   const updateListOfTickets = useCallback(
     (listofTickets: Ticket[]) => {
@@ -106,6 +112,7 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
         addAllTickets,
         removeAllTickets,
         updateListOfTickets,
+        applyTaskUpdate,
       }}
     >
       {children}

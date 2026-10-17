@@ -6,6 +6,7 @@ import * as cookieParser from 'cookie-parser';
 import { execFileSync, spawnSync } from 'child_process';
 import { join } from 'path';
 import { App } from 'supertest/types';
+import { io } from 'socket.io-client';
 
 const tokenOf = (response: { body: unknown }) =>
   (response.body as { accessToken: string }).accessToken;
@@ -15,6 +16,19 @@ type ProjectView = {
     sprintGoal: unknown[];
     retroCard: unknown[];
     teamMemberCapacities: unknown[];
+  }[];
+};
+type TaskProjectView = {
+  id: string;
+  taskStatuses: { id: string; name: string }[];
+  tickets: {
+    id: number;
+    tasks: {
+      id: number;
+      statusId: string;
+      assignedTo: string | null;
+      updatedBy: string | null;
+    }[];
   }[];
 };
 
@@ -69,7 +83,7 @@ describe('Acceso demo HTTP API', () => {
         forbidNonWhitelisted: true,
       }),
     );
-    await app.init();
+    await app.listen(0, '127.0.0.1');
   });
 
   afterAll(async () => {
@@ -249,6 +263,200 @@ describe('Acceso demo HTTP API', () => {
       /"password"|"refreshToken"/,
     );
   }, 30000);
+
+  it('attributes task changes to the authenticated demo session rather than the supplied actor', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const project = (projects.body as TaskProjectView[])[0];
+    const task = project.tickets[0].tasks[0];
+    const target = project.taskStatuses.find(
+      (status) => status.id !== task.statusId,
+    )!;
+    const updated = await request(app.getHttpServer())
+      .patch(`/tasks/${task.id}`)
+      .auth(token, { type: 'bearer' })
+      .send({ id: task.id, statusId: target.id, updatedBy: 'xana@xana.com' })
+      .expect(200);
+    expect(updated.body).toMatchObject({
+      id: task.id,
+      statusId: target.id,
+      updatedBy: 'visitor@demo.example',
+      assignedTo: task.assignedTo,
+      assignedUser: { id: task.assignedTo },
+    });
+    expect(JSON.stringify(updated.body)).not.toMatch(
+      /"password"|"refreshToken"/,
+    );
+    const persisted = await request(app.getHttpServer())
+      .get(`/tasks/${task.id}`)
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    expect(persisted.body).toMatchObject({
+      statusId: target.id,
+      updatedBy: 'visitor@demo.example',
+    });
+  });
+
+  it('rejects task states from another project without changing the task', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const [project, otherProject] = projects.body as TaskProjectView[];
+    const task = project.tickets[0].tasks[0];
+    await request(app.getHttpServer())
+      .patch(`/tasks/${task.id}`)
+      .auth(token, { type: 'bearer' })
+      .send({
+        id: task.id,
+        statusId: otherProject.taskStatuses[0].id,
+        updatedBy: 'visitor@demo.example',
+      })
+      .expect(400);
+    const persisted = await request(app.getHttpServer())
+      .get(`/tasks/${task.id}`)
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    expect(persisted.body).toMatchObject({ statusId: task.statusId });
+  });
+
+  it('publishes only a confirmed task update to an independent client and preserves rejected state', async () => {
+    const firstLogin = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const secondLogin = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(firstLogin);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const project = (projects.body as TaskProjectView[])[0];
+    const ticket = project.tickets[0];
+    const task = ticket.tasks[0];
+    const target = project.taskStatuses.find(
+      (status) => status.id !== task.statusId,
+    )!;
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      reconnection: false,
+      autoConnect: false,
+      timeout: 5000,
+    });
+    const events: TaskProjectView['tickets'][number][] = [];
+    let timer: NodeJS.Timeout | undefined;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      const confirmed = new Promise<TaskProjectView['tickets'][number]>(
+        (resolve, reject) => {
+          timer = setTimeout(
+            () => reject(new Error('Confirmed task event was not received')),
+            5000,
+          );
+          observer.on(
+            'ticketUpdated',
+            (event: TaskProjectView['tickets'][number]) => {
+              events.push(event);
+              if (
+                event.id === ticket.id &&
+                event.tasks.some(
+                  (changed) =>
+                    changed.id === task.id && changed.statusId === target.id,
+                )
+              )
+                resolve(event);
+            },
+          );
+        },
+      );
+      // Attach rejection immediately so failed HTTP assertions cannot leave an unhandled timer.
+      void confirmed.catch(() => undefined);
+      await request(app.getHttpServer())
+        .patch(`/tasks/${task.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          id: task.id,
+          statusId: 'missing-task-status',
+          updatedBy: 'visitor@demo.example',
+        })
+        .expect(404);
+      await request(app.getHttpServer())
+        .patch(`/tasks/${task.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          id: task.id,
+          ticketId: project.tickets[1].id,
+          updatedBy: 'visitor@demo.example',
+        })
+        .expect(400);
+      await request(app.getHttpServer())
+        .patch(`/tasks/${task.id}`)
+        .send({
+          id: task.id,
+          statusId: target.id,
+          updatedBy: 'visitor@demo.example',
+        })
+        .expect(401);
+      const unchanged = await request(app.getHttpServer())
+        .get(`/tasks/${task.id}`)
+        .auth(tokenOf(secondLogin), { type: 'bearer' })
+        .expect(200);
+      expect(unchanged.body).toMatchObject({ statusId: task.statusId });
+      await request(app.getHttpServer())
+        .patch(`/tasks/${task.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          id: task.id,
+          statusId: target.id,
+          updatedBy: 'spoofed@example.com',
+        })
+        .expect(200);
+      const event = await confirmed;
+      expect(events).toHaveLength(1);
+      expect(event.tasks).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: task.id,
+            statusId: target.id,
+            updatedBy: 'visitor@demo.example',
+          }),
+        ]),
+      );
+      expect(JSON.stringify(event)).not.toMatch(/"password"|"refreshToken"/);
+      const persisted = await request(app.getHttpServer())
+        .get(`/tasks/${task.id}`)
+        .auth(tokenOf(secondLogin), { type: 'bearer' })
+        .expect(200);
+      expect(persisted.body).toMatchObject({
+        statusId: target.id,
+        updatedBy: 'visitor@demo.example',
+        assignedTo: task.assignedTo,
+      });
+    } finally {
+      clearTimeout(timer);
+      observer.disconnect();
+    }
+  });
 
   it('preserves visitor edits on repeated initialization and restores only with explicit confirmation', async () => {
     const login = await request(app.getHttpServer())

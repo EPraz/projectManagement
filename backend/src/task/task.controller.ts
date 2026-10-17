@@ -6,12 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto, GetAllTasksDto, UpdateTaskDto } from 'src/dto';
 import { Task } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('tasks')
@@ -37,8 +39,13 @@ export class TaskController {
   async update(
     @Param('id') id: number,
     @Body() request: UpdateTaskDto,
+    @Req() authenticatedRequest: Request & { user: { email: string } },
   ): Promise<Task> {
-    return await this.taskService.update({ ...request, id });
+    return await this.taskService.update({
+      ...request,
+      id,
+      updatedBy: authenticatedRequest.user.email,
+    });
   }
 
   @Delete(':id')
