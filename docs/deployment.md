@@ -83,6 +83,8 @@ Crea el proyecto con Root Directory **`frontend`**, framework **Vite**, Install 
 
 Mantén `VITE_API_URL=/api`: el proxy permite que las cookies de sesión sean del mismo origen del frontend. El backend usa cookies HttpOnly, SameSite=Lax y Secure en producción. Los WebSockets conectan directamente a Render, con el origen autorizado por `CLIENT_URL`; no atraviesan el proxy HTTP.
 
+Conserva `trailingSlash: false` en `frontend/vercel.json`: normaliza las rutas antes del proxy y evita que peticiones existentes como `/api/projects/` o `/api/users/` terminen en el fallback HTML de la SPA. Después de cambiar el enrutamiento, ejecuta desde la raíz `node frontend/scripts/check-deployment.mjs` (admite otra URL de frontend como argumento). La comprobación valida JSON con y sin barra final, POST de acceso demo, cookies de sesión, proyectos/usuarios poblados, errores API y una ruta interna de la SPA.
+
 Las variables `VITE_*` son públicas y quedan incorporadas al build. Cambiarlas requiere otro despliegue. No pongas cadenas de conexión ni secretos allí. Mantén el proxy `/api` antes del fallback a `index.html`; así recargar `/projects/.../board` funciona. Referencias: [rewrites de Vercel](https://vercel.com/docs/routing/rewrites), [Vite SPA en Vercel](https://vercel.com/docs/frameworks/frontend/vite), [WebSockets en Render](https://render.com/docs/websocket).
 
 Configura `CLIENT_URL` con la URL estable de producción. Las URLs de preview de Vercel no se autorizan automáticamente: usa la URL de producción para las comprobaciones del socket.
