@@ -5,16 +5,6 @@ import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../../../../context";
 import { User } from "../../../../types";
 
-// Mockea useNavigate de react-router-dom
-const mockNavigate = jest.fn();
-jest.mock("react-router-dom", () => {
-  const actual = jest.requireActual("react-router-dom");
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
-});
-
 // Mockea getInitials para simplificar la prueba
 jest.mock("../../../../helpers", () => ({
   getInitials: (name: string | undefined) => (name ? name[0] : "U"),
@@ -38,11 +28,15 @@ describe("UserMenu Component", () => {
         value={{
           user,
           logout: mockLogout,
-          login: jest.fn(),
-          register: jest.fn(),
           instantLogin: jest.fn(),
           loading: false,
           accessToken: "fake-token",
+          restoring: false,
+          closing: false,
+          sessionError: null,
+          sessionNotice: "",
+          retrySession: jest.fn(),
+          request: jest.fn(),
         }}
       >
         <MemoryRouter>
@@ -74,7 +68,7 @@ describe("UserMenu Component", () => {
     expect(screen.getByRole("menu")).toBeInTheDocument();
   });
 
-  it("calls logout and navigates on clicking Logout", async () => {
+  it("calls the session logout action and closes the menu", async () => {
     renderWithAuth();
     // Abrir el menú
     const avatarButton = screen.getByRole("button");
@@ -83,7 +77,7 @@ describe("UserMenu Component", () => {
     const logoutMenuItem = screen.getByText("Logout");
     fireEvent.click(logoutMenuItem);
     expect(mockLogout).toHaveBeenCalled();
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/auth/instantLogin"));
+    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
   });
 
   it("renders disabled Profile and Settings menu items", () => {

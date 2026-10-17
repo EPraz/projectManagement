@@ -92,17 +92,6 @@ export const RightSection = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const LogoBox = styled(Box)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: theme.spacing(4),
-}));
-
-export const Logo = styled("img")({
-  height: 40,
-});
-
 export const Form = styled("form")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
@@ -126,28 +115,3 @@ export const WelcomeText = styled(Box)(({ theme }) => ({
   },
 }));
 
-export const DiagonalShapes = styled(Box)(() => ({
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  height: "60%",
-  overflow: "hidden",
-  zIndex: 0,
-  opacity: 0.4,
-
-  "&::before, &::after": {
-    content: '""',
-    position: "absolute",
-    width: "200%",
-    height: "100%",
-    background:
-      "linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)",
-    animation: `${diagonalAnimation} 20s linear infinite`,
-  },
-
-  "&::after": {
-    animationDelay: "-10s",
-    opacity: 0.5,
-  },
-}));

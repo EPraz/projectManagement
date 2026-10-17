@@ -14,7 +14,6 @@ import {
   Settings as SettingsIcon,
   Person as PersonIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context";
 import { getInitials } from "../../../helpers";
 
@@ -22,8 +21,7 @@ const UserMenu = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [logoutError, setLogoutError] = useState("");
   const open = Boolean(anchorEl);
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user, logout, closing } = useAuth();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -34,10 +32,10 @@ const UserMenu = () => {
   };
 
   const handleLogout = async () => {
+    setLogoutError("");
     try {
       await logout();
       handleClose();
-      navigate("/auth/instantLogin");
     } catch {
       setLogoutError("Could not sign out. Please try again.");
     }
@@ -57,6 +55,7 @@ const UserMenu = () => {
     <>
       <IconButton
         onClick={handleClick}
+        aria-label="Open user menu"
         size="small"
         aria-controls={open ? "user-menu" : undefined}
         aria-haspopup="true"
@@ -134,11 +133,11 @@ const UserMenu = () => {
         </MenuItem>
         <Divider />
         {logoutError && <Typography role="alert" color="error" sx={{ px: 2 }}>{logoutError}</Typography>}
-        <MenuItem onClick={handleLogout}>
+        <MenuItem onClick={handleLogout} disabled={closing}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" color="error" />
           </ListItemIcon>
-          <Typography color="error.main">Logout</Typography>
+          <Typography color="error.main">{closing ? "Signing out…" : "Logout"}</Typography>
         </MenuItem>
       </Menu>
     </>

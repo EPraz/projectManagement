@@ -19,8 +19,6 @@ describe("PrivateRoute Component", () => {
     useAuth.mockReturnValue({
       user: { id: "1", name: "Test User", email: "test@example.com" },
       loading: false,
-      login: jest.fn(),
-      register: jest.fn(),
       logout: jest.fn(),
       instantLogin: jest.fn(),
       accessToken: "fake-token",
@@ -44,8 +42,6 @@ describe("PrivateRoute Component", () => {
     useAuth.mockReturnValue({
       user: null,
       loading: true,
-      login: jest.fn(),
-      register: jest.fn(),
       logout: jest.fn(),
       instantLogin: jest.fn(),
       accessToken: null,
@@ -67,8 +63,6 @@ describe("PrivateRoute Component", () => {
     useAuth.mockReturnValue({
       user: { id: "1", name: "Test User", email: "test@example.com" },
       loading: false,
-      login: jest.fn(),
-      register: jest.fn(),
       logout: jest.fn(),
       instantLogin: jest.fn(),
       accessToken: "fake-token",
@@ -92,8 +86,6 @@ describe("PrivateRoute Component", () => {
     useAuth.mockReturnValue({
       user: null,
       loading: false,
-      login: jest.fn(),
-      register: jest.fn(),
       logout: jest.fn(),
       instantLogin: jest.fn(),
       accessToken: null,

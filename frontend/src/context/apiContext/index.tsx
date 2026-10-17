@@ -1,14 +1,16 @@
 import { createContext, useContext } from "react";
 import { API_URL } from "../../constants";
 import { ApiContextType } from "../../types";
+import { createApiRequest } from "../../services/apiRequest";
 
-const ApiContext = createContext<ApiContextType>({ apiUrl: API_URL });
+const api = { apiUrl: API_URL, request: createApiRequest(API_URL) };
+const ApiContext = createContext<ApiContextType>(api);
 
 export const useApi = () => useContext(ApiContext);
 
 export const ApiProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <ApiContext.Provider value={{ apiUrl: API_URL }}>
+    <ApiContext.Provider value={api}>
       {children}
     </ApiContext.Provider>
   );

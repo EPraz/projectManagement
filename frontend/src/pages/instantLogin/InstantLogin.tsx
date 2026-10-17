@@ -3,10 +3,10 @@ import { Alert, Button, CardContent, CircularProgress, Typography } from "@mui/m
 import { useAuth } from "../../context";
 import {
   AuthCard, AuthWrapper, Form, LeftSection, RightSection, WelcomeText,
-} from "../login/Login.styles";
+} from "./InstantLogin.styles";
 
 export default function InstantLogin() {
-  const { instantLogin, loading } = useAuth();
+  const { instantLogin, loading, sessionNotice } = useAuth();
   const [error, setError] = useState("");
 
   const explore = async (event: React.FormEvent) => {
@@ -42,6 +42,7 @@ export default function InstantLogin() {
               Please use fictional information.
             </Alert>
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+            {sessionNotice && <Alert severity="warning" sx={{ mb: 2 }}>{sessionNotice}</Alert>}
             <Form onSubmit={explore} aria-busy={loading}>
               <Button type="submit" variant="contained" fullWidth size="large" disabled={loading}>
                 {loading ? <><CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />Opening demo…</> : "Explore demo"}

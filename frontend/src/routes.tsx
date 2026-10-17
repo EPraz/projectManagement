@@ -8,8 +8,6 @@ import {
   Board,
   Epics,
   InstantLogin,
-  // Login,
-  // Register,
   Retrospective,
   SettingsPage,
   TeamMembersPage,

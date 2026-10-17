@@ -67,3 +67,17 @@ Run these commands inside `backend`. The runner rejects missing/malformed URLs, 
 For a focused run, use `npm test -- startup.e2e-spec.ts` or `npm test -- demo.e2e-spec.ts`. `npm run test:e2e` uses the same guarded runner. Run fixture suites serially against a dedicated database, and keep browser demo data in another local database when running tests concurrently.
 
 The baseline deliberately retires 24 generated `should be defined` tests that omitted required providers, plus one obsolete `Hello World` test for a removed endpoint. These had no CRUD assertions to preserve. Their construction coverage is replaced by booting the real application for HTTP checks. Auth, health, credential filtering and seed preservation/restoration retain behavioral assertions. Mutation and relationship coverage is extended at the HTTP/WebSocket and browser boundaries in the relevant quality tickets; this baseline does not claim complete CRUD coverage.
+
+## Repeatable browser journeys
+
+The frontend's `npm run test:browser` runs the retained Playwright journeys against an **already running, populated isolated local application**. It never starts the normal private environment, initializes a database or restores the seed. Use the local setup above with separate fixture data. The default browser target is `http://127.0.0.1:5182`; set `BROWSER_BASE_URL` to your isolated frontend origin if different. The configuration rejects remote/non-HTTP targets. The backend's `CLIENT_URL`, Vite proxy and direct socket URL must match this fixture setup.
+
+From `frontend`, after `npm ci`:
+
+```sh
+npm run test:browser -- session.browser.ts
+```
+
+Installed Chrome is used by default. If unavailable, run `npx playwright install chromium`, then set `BROWSER_CHANNEL=chromium` for the test command. Playwright's [browser configuration](https://playwright.dev/docs/test-configuration) controls the single local worker, bounded timeouts and failed screenshots. Video and trace recording are explicitly disabled. Ignored `test-results` contains local failure diagnostics; do not commit private credentials or authenticated browser state.
+
+Browser test types are included in `npm run typecheck`. Jest remains the canonical component/domain runner and does not collect the `*.browser.ts` journeys. The current hosted baseline runs Jest, types, lint and builds; integrated browser automation will be added with the complete fixture workflows. Session tests cover real entry/refresh/deep-link/logout, independent browser contexts and controlled unavailable/malformed/expired responses.

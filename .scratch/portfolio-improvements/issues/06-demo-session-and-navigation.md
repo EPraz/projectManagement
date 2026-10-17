@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Trustworthy checks and isolated startup.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after baseline 01 while the completed 05 correction receives final independent review. Characterize real browser session/navigation transitions before replacing the session boundary. Keep apiUrl compatibility for unmigrated hooks and the existing same-origin cookie/direct socket deployment.

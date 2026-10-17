@@ -1,111 +1,23 @@
-import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useApi } from "../apiContext";
-import { User } from "../../types";
+import { useDemoSession } from "./useDemoSession";
 
-interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  logout: () => Promise<void>;
-  instantLogin: () => Promise<void>;
-  loading: boolean;
-  accessToken: string | null;
-}
-
+type AuthContextType = ReturnType<typeof useDemoSession>;
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
-const personalAccountsDisabled = async () => {
-  throw new Error("Personal accounts are unavailable in this demo.");
-};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const { apiUrl } = useApi();
-  const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isEntryPage = pathname.startsWith("/auth/");
-  const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const loadIdentity = useCallback(async (token: string, signal?: AbortSignal) => {
-    const response = await fetch(`${apiUrl}/auth/checkAuth`, {
-      headers: { Authorization: `Bearer ${token}` },
-      credentials: "include",
-      signal,
-    });
-    if (!response.ok) throw new Error("Could not load the demo session. Please try again.");
-    const identity = await response.json();
-    setAccessToken(token);
-    setUser({ ...identity, projects: identity.projects ?? [] });
-  }, [apiUrl]);
-
-  const refresh = useCallback(async (signal?: AbortSignal) => {
-    const response = await fetch(`${apiUrl}/auth/refresh`, {
-      method: "POST", credentials: "include", signal,
-    });
-    if (!response.ok) throw new Error("The demo session has ended.");
-    const { accessToken: token } = await response.json();
-    await loadIdentity(token, signal);
-  }, [apiUrl, loadIdentity]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    if (isEntryPage) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    refresh(controller.signal).catch(() => {
-      if (!controller.signal.aborted) { setUser(null); setAccessToken(null); }
-    }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
-    return () => { controller.abort(); };
-  }, [isEntryPage, refresh]);
-
-  useEffect(() => {
-    if (!accessToken) return;
-    const controller = new AbortController();
-    const timer = window.setInterval(() => {
-      refresh(controller.signal).catch(() => {
-        if (!controller.signal.aborted) { setUser(null); setAccessToken(null); }
-      });
-    }, 12 * 60 * 1000);
-    return () => { controller.abort(); window.clearInterval(timer); };
-  }, [accessToken, refresh]);
-
+  const navigate = useNavigate();
+  const session = useDemoSession(!pathname.startsWith("/auth/"));
   const instantLogin = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`${apiUrl}/auth/instant-login`, {
-        method: "POST", credentials: "include",
-        headers: { "Content-Type": "application/json" }, body: "{}",
-      });
-      if (!response.ok) {
-        throw new Error(response.status === 503
-          ? "The demo is being prepared. Please try again shortly."
-          : "Could not open the demo. Please try again.");
-      }
-      const { accessToken: token } = await response.json();
-      await loadIdentity(token);
-      navigate("/projects");
-    } finally {
-      setLoading(false);
-    }
+    await session.instantLogin();
+    navigate("/projects");
   };
-
   const logout = async () => {
-    const response = await fetch(`${apiUrl}/auth/logout`, {
-      method: "POST", credentials: "include",
-    });
-    if (!response.ok) throw new Error("Could not end the demo session. Please try again.");
-    setUser(null);
-    setAccessToken(null);
+    await session.logout();
     navigate("/auth/instantLogin");
   };
-
-  return <AuthContext.Provider value={{
-    user, accessToken, loading, instantLogin, logout,
-    login: personalAccountsDisabled, register: personalAccountsDisabled,
-  }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ ...session, instantLogin, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
