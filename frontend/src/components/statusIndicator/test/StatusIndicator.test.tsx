@@ -19,6 +19,6 @@ describe("StatusIndicator", () => {
     const spanElement = container.firstChild;
     expect(spanElement).toBeInTheDocument();
     // Verifica que el estilo se haya aplicado correctamente.
-    expect(spanElement).toHaveStyle("background-color: red");
+    expect(spanElement).toHaveStyle("background-color: rgb(255, 0, 0)");
   });
 });

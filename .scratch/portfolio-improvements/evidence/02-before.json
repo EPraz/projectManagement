@@ -1,0 +1,171 @@
+{
+  "date": "2026-10-17",
+  "revision": "772453d",
+  "applications": {
+    "backend": {
+      "lockfileSha256": "95f195ac59079b67542aafd48f7a8973f4c9208de03653cfb914138deeb1f907",
+      "counts": {
+        "info": 0,
+        "low": 8,
+        "moderate": 26,
+        "high": 63,
+        "critical": 5,
+        "total": 102
+      },
+      "direct": [
+        {
+          "name": "@nestjs/cli",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "@nestjs/common",
+          "severity": "moderate",
+          "fix": true
+        },
+        {
+          "name": "@nestjs/config",
+          "severity": "moderate",
+          "fix": true
+        },
+        {
+          "name": "@nestjs/core",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "@nestjs/platform-express",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "@nestjs/schematics",
+          "severity": "moderate",
+          "fix": true
+        },
+        {
+          "name": "@swc/cli",
+          "severity": "high",
+          "fix": {
+            "name": "@swc/cli",
+            "version": "0.8.1",
+            "isSemVerMajor": true
+          }
+        },
+        {
+          "name": "@types/jest",
+          "severity": "high",
+          "fix": {
+            "name": "@types/jest",
+            "version": "30.0.0",
+            "isSemVerMajor": true
+          }
+        },
+        {
+          "name": "eslint",
+          "severity": "low",
+          "fix": true
+        },
+        {
+          "name": "jest",
+          "severity": "high",
+          "fix": {
+            "name": "jest",
+            "version": "30.5.2",
+            "isSemVerMajor": true
+          }
+        },
+        {
+          "name": "ts-jest",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "ts-loader",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "typeorm",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "typescript-eslint",
+          "severity": "high",
+          "fix": true
+        }
+      ]
+    },
+    "frontend": {
+      "lockfileSha256": "f4a609525368df630d997af034c74de6bd378433d5383190f3d3f08104803500",
+      "counts": {
+        "info": 0,
+        "low": 4,
+        "moderate": 9,
+        "high": 55,
+        "critical": 1,
+        "total": 69
+      },
+      "direct": [
+        {
+          "name": "@types/jest",
+          "severity": "high",
+          "fix": {
+            "name": "@types/jest",
+            "version": "30.0.0",
+            "isSemVerMajor": true
+          }
+        },
+        {
+          "name": "eslint",
+          "severity": "low",
+          "fix": true
+        },
+        {
+          "name": "jest",
+          "severity": "high",
+          "fix": {
+            "name": "jest",
+            "version": "30.5.2",
+            "isSemVerMajor": true
+          }
+        },
+        {
+          "name": "jest-environment-jsdom",
+          "severity": "high",
+          "fix": {
+            "name": "jest-environment-jsdom",
+            "version": "30.5.2",
+            "isSemVerMajor": true
+          }
+        },
+        {
+          "name": "react-router-dom",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "styled-components",
+          "severity": "moderate",
+          "fix": true
+        },
+        {
+          "name": "ts-jest",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "typescript-eslint",
+          "severity": "high",
+          "fix": true
+        },
+        {
+          "name": "vite",
+          "severity": "high",
+          "fix": true
+        }
+      ]
+    }
+  }
+}

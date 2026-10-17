@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Trustworthy checks and isolated startup.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -17,3 +17,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed the independent CI slice after ticket 01 passed. Preparing the workflow while ticket 02 clean dependency verification runs; no successful hosted run is claimed yet.

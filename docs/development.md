@@ -37,6 +37,8 @@ npm run build
 
 Lint checks are non-mutating. Backend `npm run lint:fix` is an explicit opt-in repair command. Type checking may update ignored compiler caches. Frontend hook warnings remain visible and must be addressed in the workflows that own them; they are not suppressed by this baseline.
 
+The retained test runner is Jest 30, with its matching browser environment and a supported ts-jest release. The frontend locks a compatible SWC 1.15 version because newer native carriers require cache permissions that standard Windows contributors may not have; no extra environment variable or machine permission change is required. Keep the lockfiles and dependency override when installing. Current advisory dispositions are recorded in the [quality dependency assessment](../.scratch/portfolio-improvements/evidence/02-dependencies.md).
+
 ## Isolated API and seed tests
 
 Create a **different**, disposable local PostgreSQL database with a name ending in `_test`, for example `project_management_test`. Set `TEST_DATABASE_URL` in the current terminal; do not change your normal `.env` to run fixtures.

@@ -1,0 +1,5961 @@
+{
+  "date": "2026-10-17",
+  "base": "772453d",
+  "applications": {
+    "backend": {
+      "lockfileSha256": "826fbc990d1d873535c3b828f655dc703bae199e729bc927859849743c88a411",
+      "auditCounts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 20,
+        "high": 0,
+        "critical": 0,
+        "total": 20
+      },
+      "remaining": [
+        {
+          "name": "@istanbuljs/load-nyc-config",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/core",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/expect",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/globals",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/reporters",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/transform",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "argparse",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "babel-jest",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "babel-plugin-istanbul",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-circus",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-cli",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-config",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-resolve-dependencies",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-runner",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-runtime",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-snapshot",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "js-yaml",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "sprintf-js",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "ts-jest",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        }
+      ],
+      "changes": [
+        {
+          "path": "node_modules/@ampproject/remapping",
+          "before": "2.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@angular-devkit/core",
+          "before": "19.1.3",
+          "after": "19.2.27"
+        },
+        {
+          "path": "node_modules/@angular-devkit/core/node_modules/ajv",
+          "before": "8.17.1",
+          "after": "8.18.0"
+        },
+        {
+          "path": "node_modules/@angular-devkit/schematics",
+          "before": "19.1.3",
+          "after": "19.2.27"
+        },
+        {
+          "path": "node_modules/@angular-devkit/schematics-cli",
+          "before": "19.1.3",
+          "after": "19.2.27"
+        },
+        {
+          "path": "node_modules/@angular-devkit/schematics-cli/node_modules/@inquirer/prompts",
+          "before": "7.2.1",
+          "after": "7.3.2"
+        },
+        {
+          "path": "node_modules/@babel/code-frame",
+          "before": "7.26.2",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/compat-data",
+          "before": "7.26.5",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/core",
+          "before": "7.26.7",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/generator",
+          "before": "7.26.5",
+          "after": "7.29.8"
+        },
+        {
+          "path": "node_modules/@babel/helper-compilation-targets",
+          "before": "7.26.5",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-module-imports",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-module-transforms",
+          "before": "7.26.0",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-plugin-utils",
+          "before": "7.26.5",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-string-parser",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-validator-identifier",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-validator-option",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helpers",
+          "before": "7.26.7",
+          "after": "7.29.10"
+        },
+        {
+          "path": "node_modules/@babel/parser",
+          "before": "7.26.7",
+          "after": "7.29.9"
+        },
+        {
+          "path": "node_modules/@babel/plugin-syntax-import-attributes",
+          "before": "7.26.0",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/plugin-syntax-jsx",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/plugin-syntax-typescript",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/template",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/traverse",
+          "before": "7.26.7",
+          "after": "7.29.10"
+        },
+        {
+          "path": "node_modules/@babel/traverse/node_modules/globals",
+          "before": "11.12.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@babel/types",
+          "before": "7.26.7",
+          "after": "7.29.8"
+        },
+        {
+          "path": "node_modules/@eslint-community/eslint-utils",
+          "before": "4.4.1",
+          "after": "4.10.1"
+        },
+        {
+          "path": "node_modules/@eslint-community/eslint-utils/node_modules/eslint-visitor-keys",
+          "before": "3.4.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/@eslint-community/regexpp",
+          "before": "4.12.1",
+          "after": "4.12.2"
+        },
+        {
+          "path": "node_modules/@eslint/config-array",
+          "before": "0.19.2",
+          "after": "0.21.2"
+        },
+        {
+          "path": "node_modules/@eslint/core",
+          "before": "0.10.0",
+          "after": "0.17.0"
+        },
+        {
+          "path": "node_modules/@eslint/eslintrc",
+          "before": "3.2.0",
+          "after": "3.3.7"
+        },
+        {
+          "path": "node_modules/@eslint/js",
+          "before": "9.19.0",
+          "after": "9.39.5"
+        },
+        {
+          "path": "node_modules/@eslint/object-schema",
+          "before": "2.1.6",
+          "after": "2.1.7"
+        },
+        {
+          "path": "node_modules/@eslint/plugin-kit",
+          "before": "0.2.5",
+          "after": "0.4.1"
+        },
+        {
+          "path": "node_modules/@humanfs/core",
+          "before": "0.19.1",
+          "after": "0.19.2"
+        },
+        {
+          "path": "node_modules/@humanfs/node",
+          "before": "0.16.6",
+          "after": "0.16.8"
+        },
+        {
+          "path": "node_modules/@humanfs/node/node_modules/@humanwhocodes/retry",
+          "before": "0.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@humanwhocodes/retry",
+          "before": "0.4.1",
+          "after": "0.4.3"
+        },
+        {
+          "path": "node_modules/@inquirer/checkbox",
+          "before": "4.0.7",
+          "after": "4.3.2"
+        },
+        {
+          "path": "node_modules/@inquirer/confirm",
+          "before": "5.1.4",
+          "after": "5.1.21"
+        },
+        {
+          "path": "node_modules/@inquirer/core",
+          "before": "10.1.5",
+          "after": "10.3.2"
+        },
+        {
+          "path": "node_modules/@inquirer/editor",
+          "before": "4.2.4",
+          "after": "4.2.23"
+        },
+        {
+          "path": "node_modules/@inquirer/expand",
+          "before": "4.0.7",
+          "after": "4.0.23"
+        },
+        {
+          "path": "node_modules/@inquirer/figures",
+          "before": "1.0.10",
+          "after": "1.0.15"
+        },
+        {
+          "path": "node_modules/@inquirer/input",
+          "before": "4.1.4",
+          "after": "4.3.1"
+        },
+        {
+          "path": "node_modules/@inquirer/number",
+          "before": "3.0.7",
+          "after": "3.0.23"
+        },
+        {
+          "path": "node_modules/@inquirer/password",
+          "before": "4.0.7",
+          "after": "4.0.23"
+        },
+        {
+          "path": "node_modules/@inquirer/prompts",
+          "before": "7.2.3",
+          "after": "7.10.1"
+        },
+        {
+          "path": "node_modules/@inquirer/rawlist",
+          "before": "4.0.7",
+          "after": "4.1.11"
+        },
+        {
+          "path": "node_modules/@inquirer/search",
+          "before": "3.0.7",
+          "after": "3.2.2"
+        },
+        {
+          "path": "node_modules/@inquirer/select",
+          "before": "4.0.7",
+          "after": "4.4.2"
+        },
+        {
+          "path": "node_modules/@inquirer/type",
+          "before": "3.0.3",
+          "after": "3.0.10"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/ansi-styles",
+          "before": "6.2.1",
+          "after": "6.2.3"
+        },
+        {
+          "path": "node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml",
+          "before": "3.14.1",
+          "after": "3.15.2"
+        },
+        {
+          "path": "node_modules/@jest/console",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/core",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/core/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jest/core/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jest/environment",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/expect",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/expect-utils",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/fake-timers",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/globals",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/reporters",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/reporters/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jest/reporters/node_modules/glob",
+          "before": "7.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jest/reporters/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jest/schemas",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/source-map",
+          "before": "29.6.3",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/test-result",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/test-sequencer",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/transform",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/types",
+          "before": "29.6.3",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/@jridgewell/gen-mapping",
+          "before": "0.3.8",
+          "after": "0.3.13"
+        },
+        {
+          "path": "node_modules/@jridgewell/set-array",
+          "before": "1.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jridgewell/source-map",
+          "before": "0.3.6",
+          "after": "0.3.11"
+        },
+        {
+          "path": "node_modules/@jridgewell/trace-mapping",
+          "before": "0.3.25",
+          "after": "0.3.31"
+        },
+        {
+          "path": "node_modules/@napi-rs/nice",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-android-arm-eabi",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-android-arm64",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-darwin-arm64",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-darwin-x64",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-freebsd-x64",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-arm-gnueabihf",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-arm64-gnu",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-arm64-musl",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-ppc64-gnu",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-riscv64-gnu",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-s390x-gnu",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-x64-gnu",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-linux-x64-musl",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-win32-arm64-msvc",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-win32-ia32-msvc",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@napi-rs/nice-win32-x64-msvc",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nestjs/cli",
+          "before": "11.0.2",
+          "after": "11.0.24"
+        },
+        {
+          "path": "node_modules/@nestjs/common",
+          "before": "11.0.7",
+          "after": "11.2.7"
+        },
+        {
+          "path": "node_modules/@nestjs/config",
+          "before": "4.0.1",
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/@nestjs/core",
+          "before": "11.0.7",
+          "after": "11.2.7"
+        },
+        {
+          "path": "node_modules/@nestjs/jwt",
+          "before": "11.0.0",
+          "after": "11.0.2"
+        },
+        {
+          "path": "node_modules/@nestjs/platform-express",
+          "before": "11.0.7",
+          "after": "11.2.7"
+        },
+        {
+          "path": "node_modules/@nestjs/platform-socket.io",
+          "before": "11.0.11",
+          "after": "11.2.7"
+        },
+        {
+          "path": "node_modules/@nestjs/schematics",
+          "before": "11.0.0",
+          "after": "11.1.0"
+        },
+        {
+          "path": "node_modules/@nestjs/schematics/node_modules/@angular-devkit/core",
+          "before": "19.0.1",
+          "after": "19.2.24"
+        },
+        {
+          "path": "node_modules/@nestjs/schematics/node_modules/@angular-devkit/schematics",
+          "before": "19.0.1",
+          "after": "19.2.24"
+        },
+        {
+          "path": "node_modules/@nestjs/schematics/node_modules/ajv",
+          "before": "8.17.1",
+          "after": "8.18.0"
+        },
+        {
+          "path": "node_modules/@nestjs/schematics/node_modules/magic-string",
+          "before": "0.30.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nestjs/testing",
+          "before": "11.0.7",
+          "after": "11.2.7"
+        },
+        {
+          "path": "node_modules/@nestjs/typeorm",
+          "before": "11.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nestjs/websockets",
+          "before": "11.0.11",
+          "after": "11.2.7"
+        },
+        {
+          "path": "node_modules/@nodelib/fs.scandir",
+          "before": "2.1.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nodelib/fs.stat",
+          "before": "2.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nodelib/fs.walk",
+          "before": "1.2.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nuxt/opencollective",
+          "before": "0.4.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@sec-ant/readable-stream",
+          "before": "0.4.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@sinclair/typebox",
+          "before": "0.27.8",
+          "after": "0.34.52"
+        },
+        {
+          "path": "node_modules/@sindresorhus/is",
+          "before": "5.6.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@sinonjs/fake-timers",
+          "before": "10.3.0",
+          "after": "15.4.0"
+        },
+        {
+          "path": "node_modules/@sqltools/formatter",
+          "before": "1.2.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/cli",
+          "before": "0.6.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/cli/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/cli/node_modules/commander",
+          "before": "8.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/cli/node_modules/minimatch",
+          "before": "9.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-darwin-arm64",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-darwin-x64",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-arm-gnueabihf",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-arm64-gnu",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-arm64-musl",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-x64-gnu",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-x64-musl",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-win32-arm64-msvc",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-win32-ia32-msvc",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-win32-x64-msvc",
+          "before": "1.10.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/counter",
+          "before": "0.1.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/types",
+          "before": "0.1.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@szmarczak/http-timer",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/babel__generator",
+          "before": "7.6.8",
+          "after": "7.27.0"
+        },
+        {
+          "path": "node_modules/@types/babel__traverse",
+          "before": "7.20.6",
+          "after": "7.28.0"
+        },
+        {
+          "path": "node_modules/@types/bcryptjs",
+          "before": "2.4.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/estree",
+          "before": "1.0.6",
+          "after": "1.0.9"
+        },
+        {
+          "path": "node_modules/@types/graceful-fs",
+          "before": "4.1.9",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/http-cache-semantics",
+          "before": "4.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/jest",
+          "before": "29.5.14",
+          "after": "30.0.0"
+        },
+        {
+          "path": "node_modules/@types/jsonwebtoken",
+          "before": "9.0.7",
+          "after": "9.0.10"
+        },
+        {
+          "path": "node_modules/@types/validator",
+          "before": "13.12.2",
+          "after": "13.15.10"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/eslint-plugin",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/parser",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/scope-manager",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/type-utils",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/types",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": "5.0.12"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "before": "9.0.5",
+          "after": "10.2.6"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/utils",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/visitor-keys",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@xhmikosr/archive-type",
+          "before": "7.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/bin-check",
+          "before": "7.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/bin-wrapper",
+          "before": "13.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/decompress",
+          "before": "10.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/decompress-tar",
+          "before": "8.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/decompress-tarbz2",
+          "before": "8.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/decompress-targz",
+          "before": "8.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/decompress-unzip",
+          "before": "7.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/downloader",
+          "before": "15.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@xhmikosr/os-filter-obj",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/acorn",
+          "before": "8.14.0",
+          "after": "8.19.0"
+        },
+        {
+          "path": "node_modules/ajv",
+          "before": "6.12.6",
+          "after": "6.15.0"
+        },
+        {
+          "path": "node_modules/ajv-formats/node_modules/ajv",
+          "before": "8.17.1",
+          "after": "8.20.0"
+        },
+        {
+          "path": "node_modules/ansi-regex",
+          "before": "6.1.0",
+          "after": "5.0.1"
+        },
+        {
+          "path": "node_modules/ansis",
+          "before": "3.9.0",
+          "after": "4.2.0"
+        },
+        {
+          "path": "node_modules/any-promise",
+          "before": "1.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/anymatch/node_modules/picomatch",
+          "before": "2.3.1",
+          "after": "2.3.2"
+        },
+        {
+          "path": "node_modules/app-root-path",
+          "before": "3.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/arch",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/array-flatten",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/async",
+          "before": "3.2.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/b4a",
+          "before": "1.6.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/babel-jest",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/babel-plugin-istanbul",
+          "before": "6.1.1",
+          "after": "8.0.0"
+        },
+        {
+          "path": "node_modules/babel-plugin-istanbul/node_modules/istanbul-lib-instrument",
+          "before": "5.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/babel-plugin-istanbul/node_modules/semver",
+          "before": "6.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/babel-plugin-jest-hoist",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/babel-preset-current-node-syntax",
+          "before": "1.1.0",
+          "after": "1.2.0"
+        },
+        {
+          "path": "node_modules/babel-preset-jest",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/bare-events",
+          "before": "2.5.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/bcryptjs",
+          "before": "2.4.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/bin-version",
+          "before": "6.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/bin-version-check",
+          "before": "5.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/binary-extensions",
+          "before": "2.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/body-parser",
+          "before": "2.0.2",
+          "after": "2.3.0"
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/debug",
+          "before": "3.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/media-typer",
+          "before": "0.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/mime-db",
+          "before": "1.52.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/mime-types",
+          "before": "2.1.35",
+          "after": null
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/ms",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/type-is",
+          "before": "1.6.18",
+          "after": null
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "before": "1.1.11",
+          "after": "1.1.21"
+        },
+        {
+          "path": "node_modules/braces",
+          "before": "3.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/browserslist",
+          "before": "4.24.4",
+          "after": "4.29.3"
+        },
+        {
+          "path": "node_modules/buffer-crc32",
+          "before": "0.2.13",
+          "after": null
+        },
+        {
+          "path": "node_modules/cacheable-lookup",
+          "before": "7.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/cacheable-request",
+          "before": "10.2.14",
+          "after": null
+        },
+        {
+          "path": "node_modules/call-bind-apply-helpers",
+          "before": "1.0.1",
+          "after": "1.0.2"
+        },
+        {
+          "path": "node_modules/call-bound",
+          "before": "1.0.3",
+          "after": "1.0.4"
+        },
+        {
+          "path": "node_modules/caniuse-lite",
+          "before": "1.0.30001696",
+          "after": "1.0.30001816"
+        },
+        {
+          "path": "node_modules/chardet",
+          "before": "0.7.0",
+          "after": "2.2.0"
+        },
+        {
+          "path": "node_modules/ci-info",
+          "before": "3.9.0",
+          "after": "4.4.0"
+        },
+        {
+          "path": "node_modules/cjs-module-lexer",
+          "before": "1.4.3",
+          "after": "2.3.0"
+        },
+        {
+          "path": "node_modules/class-validator",
+          "before": "0.14.1",
+          "after": "0.14.4"
+        },
+        {
+          "path": "node_modules/cli-highlight",
+          "before": "2.1.11",
+          "after": null
+        },
+        {
+          "path": "node_modules/cli-highlight/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/cli-highlight/node_modules/cliui",
+          "before": "7.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/cli-highlight/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/cli-highlight/node_modules/wrap-ansi",
+          "before": "7.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/cli-highlight/node_modules/yargs",
+          "before": "16.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/cli-highlight/node_modules/yargs-parser",
+          "before": "20.2.9",
+          "after": null
+        },
+        {
+          "path": "node_modules/cliui/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/cliui/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/collect-v8-coverage",
+          "before": "1.0.2",
+          "after": "1.0.3"
+        },
+        {
+          "path": "node_modules/comment-json",
+          "before": "4.2.5",
+          "after": "5.0.0"
+        },
+        {
+          "path": "node_modules/concat-stream",
+          "before": "1.6.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/consola",
+          "before": "3.4.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/content-disposition",
+          "before": "0.5.4",
+          "after": "1.1.0"
+        },
+        {
+          "path": "node_modules/cookie",
+          "before": "0.7.1",
+          "after": "0.7.2"
+        },
+        {
+          "path": "node_modules/cookie-parser/node_modules/cookie",
+          "before": "0.7.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/core-util-is",
+          "before": "1.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/cors",
+          "before": "2.8.5",
+          "after": "2.8.6"
+        },
+        {
+          "path": "node_modules/create-jest",
+          "before": "29.7.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/dayjs",
+          "before": "1.11.13",
+          "after": null
+        },
+        {
+          "path": "node_modules/debug",
+          "before": "4.4.0",
+          "after": "4.4.3"
+        },
+        {
+          "path": "node_modules/decompress-response",
+          "before": "6.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/decompress-response/node_modules/mimic-response",
+          "before": "3.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/dedent",
+          "before": "1.5.3",
+          "after": "1.7.2"
+        },
+        {
+          "path": "node_modules/defaults",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/defer-to-connect",
+          "before": "2.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/destroy",
+          "before": "1.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/diff",
+          "before": "4.0.2",
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/diff-sequences",
+          "before": "29.6.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/dotenv-expand",
+          "before": "12.0.1",
+          "after": "12.0.3"
+        },
+        {
+          "path": "node_modules/ejs",
+          "before": "3.1.10",
+          "after": null
+        },
+        {
+          "path": "node_modules/electron-to-chromium",
+          "before": "1.5.90",
+          "after": "1.5.459"
+        },
+        {
+          "path": "node_modules/engine.io",
+          "before": "6.6.4",
+          "after": "6.6.11"
+        },
+        {
+          "path": "node_modules/engine.io/node_modules/cookie",
+          "before": "0.7.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/engine.io/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/enhanced-resolve",
+          "before": "5.18.0",
+          "after": "5.26.0"
+        },
+        {
+          "path": "node_modules/es-module-lexer",
+          "before": "1.6.0",
+          "after": "2.3.2"
+        },
+        {
+          "path": "node_modules/es-object-atoms",
+          "before": "1.1.1",
+          "after": "1.1.2"
+        },
+        {
+          "path": "node_modules/eslint",
+          "before": "9.19.0",
+          "after": "9.39.5"
+        },
+        {
+          "path": "node_modules/eslint-scope",
+          "before": "8.2.0",
+          "after": "8.4.0"
+        },
+        {
+          "path": "node_modules/eslint-visitor-keys",
+          "before": "4.2.0",
+          "after": "3.4.3"
+        },
+        {
+          "path": "node_modules/espree",
+          "before": "10.3.0",
+          "after": "10.4.0"
+        },
+        {
+          "path": "node_modules/exit",
+          "before": "0.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/expect",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/express",
+          "before": "5.0.1",
+          "after": "5.2.1"
+        },
+        {
+          "path": "node_modules/express/node_modules/content-disposition",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/express/node_modules/debug",
+          "before": "4.3.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/express/node_modules/ms",
+          "before": "2.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/ext-list",
+          "before": "2.2.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/ext-name",
+          "before": "5.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/external-editor",
+          "before": "3.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/external-editor/node_modules/iconv-lite",
+          "before": "0.4.24",
+          "after": null
+        },
+        {
+          "path": "node_modules/fast-fifo",
+          "before": "1.3.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/fast-glob",
+          "before": "3.3.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/fast-glob/node_modules/glob-parent",
+          "before": "5.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/fast-uri",
+          "before": "3.0.6",
+          "after": "3.1.8"
+        },
+        {
+          "path": "node_modules/fastq",
+          "before": "1.19.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/file-type",
+          "before": "19.6.0",
+          "after": "21.3.4"
+        },
+        {
+          "path": "node_modules/file-type/node_modules/get-stream",
+          "before": "9.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/file-type/node_modules/is-stream",
+          "before": "4.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/filelist",
+          "before": "1.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/filelist/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/filelist/node_modules/minimatch",
+          "before": "5.1.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/filename-reserved-regex",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/filenamify",
+          "before": "6.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/fill-range",
+          "before": "7.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/finalhandler",
+          "before": "2.0.0",
+          "after": "2.1.1"
+        },
+        {
+          "path": "node_modules/finalhandler/node_modules/debug",
+          "before": "2.6.9",
+          "after": null
+        },
+        {
+          "path": "node_modules/finalhandler/node_modules/encodeurl",
+          "before": "1.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/finalhandler/node_modules/ms",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/find-versions",
+          "before": "5.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/flatted",
+          "before": "3.3.2",
+          "after": "3.4.4"
+        },
+        {
+          "path": "node_modules/foreground-child",
+          "before": "3.3.0",
+          "after": "3.3.1"
+        },
+        {
+          "path": "node_modules/fork-ts-checker-webpack-plugin",
+          "before": "9.0.2",
+          "after": "9.1.0"
+        },
+        {
+          "path": "node_modules/fork-ts-checker-webpack-plugin/node_modules/chokidar",
+          "before": "3.6.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/fork-ts-checker-webpack-plugin/node_modules/glob-parent",
+          "before": "5.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/fork-ts-checker-webpack-plugin/node_modules/picomatch",
+          "before": "2.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/fork-ts-checker-webpack-plugin/node_modules/readdirp",
+          "before": "3.6.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/form-data",
+          "before": "4.0.1",
+          "after": "4.0.6"
+        },
+        {
+          "path": "node_modules/form-data-encoder",
+          "before": "2.1.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/formidable",
+          "before": "3.5.2",
+          "after": "3.5.4"
+        },
+        {
+          "path": "node_modules/fs-monkey",
+          "before": "1.0.6",
+          "after": "1.1.0"
+        },
+        {
+          "path": "node_modules/fs.realpath",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/get-intrinsic",
+          "before": "1.2.7",
+          "after": "1.3.0"
+        },
+        {
+          "path": "node_modules/glob",
+          "before": "11.0.1",
+          "after": "13.0.6"
+        },
+        {
+          "path": "node_modules/glob/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": "5.0.12"
+        },
+        {
+          "path": "node_modules/glob/node_modules/minimatch",
+          "before": "10.0.1",
+          "after": "10.2.6"
+        },
+        {
+          "path": "node_modules/got",
+          "before": "13.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/graphemer",
+          "before": "1.4.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/has-own-prop",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/hasown",
+          "before": "2.0.2",
+          "after": "2.0.4"
+        },
+        {
+          "path": "node_modules/hexoid",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/highlight.js",
+          "before": "10.7.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/http-cache-semantics",
+          "before": "4.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/http-errors",
+          "before": "2.0.0",
+          "after": "2.0.1"
+        },
+        {
+          "path": "node_modules/http2-wrapper",
+          "before": "2.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/iconv-lite",
+          "before": "0.5.2",
+          "after": "0.7.3"
+        },
+        {
+          "path": "node_modules/inflight",
+          "before": "1.0.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/inspect-with-kind",
+          "before": "1.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/is-binary-path",
+          "before": "2.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/is-core-module",
+          "before": "2.16.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/is-number",
+          "before": "7.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/is-plain-obj",
+          "before": "1.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/isarray",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/istanbul-lib-source-maps",
+          "before": "4.0.1",
+          "after": "5.0.6"
+        },
+        {
+          "path": "node_modules/istanbul-lib-source-maps/node_modules/source-map",
+          "before": "0.6.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/istanbul-reports",
+          "before": "3.1.7",
+          "after": "3.2.0"
+        },
+        {
+          "path": "node_modules/jackspeak",
+          "before": "4.0.2",
+          "after": "3.4.3"
+        },
+        {
+          "path": "node_modules/jake",
+          "before": "10.9.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-changed-files",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-circus",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-cli",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-config",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-config/node_modules/glob",
+          "before": "7.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-diff",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-docblock",
+          "before": "29.7.0",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/jest-each",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-environment-node",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-get-type",
+          "before": "29.6.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-haste-map",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-leak-detector",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-matcher-utils",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-message-util",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-mock",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-pnp-resolver",
+          "before": "1.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-regex-util",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/jest-resolve",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-resolve-dependencies",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-runner",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-runner/node_modules/source-map",
+          "before": "0.6.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-runner/node_modules/source-map-support",
+          "before": "0.5.13",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-runtime",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-runtime/node_modules/glob",
+          "before": "7.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-snapshot",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-util",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-util/node_modules/picomatch",
+          "before": "2.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-validate",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-watcher",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-worker",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "before": "4.1.0",
+          "after": "4.3.2"
+        },
+        {
+          "path": "node_modules/jsonfile",
+          "before": "6.1.0",
+          "after": "6.2.1"
+        },
+        {
+          "path": "node_modules/jsonwebtoken",
+          "before": "9.0.2",
+          "after": "9.0.3"
+        },
+        {
+          "path": "node_modules/jwa",
+          "before": "1.4.1",
+          "after": "2.0.1"
+        },
+        {
+          "path": "node_modules/jws",
+          "before": "3.2.2",
+          "after": "4.0.1"
+        },
+        {
+          "path": "node_modules/kind-of",
+          "before": "6.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/kleur",
+          "before": "3.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/loader-runner",
+          "before": "4.3.0",
+          "after": "4.3.2"
+        },
+        {
+          "path": "node_modules/lodash",
+          "before": "4.17.21",
+          "after": "4.18.1"
+        },
+        {
+          "path": "node_modules/lowercase-keys",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/makeerror",
+          "before": "1.0.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/media-typer",
+          "before": "1.1.0",
+          "after": "1.1.1"
+        },
+        {
+          "path": "node_modules/merge2",
+          "before": "1.4.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/micromatch",
+          "before": "4.0.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/micromatch/node_modules/picomatch",
+          "before": "2.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/mime-db",
+          "before": "1.53.0",
+          "after": "1.54.0"
+        },
+        {
+          "path": "node_modules/mime-types",
+          "before": "3.0.0",
+          "after": "3.0.2"
+        },
+        {
+          "path": "node_modules/mimic-response",
+          "before": "4.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/minimatch",
+          "before": "3.1.2",
+          "after": "3.1.5"
+        },
+        {
+          "path": "node_modules/minipass",
+          "before": "7.1.2",
+          "after": "7.1.3"
+        },
+        {
+          "path": "node_modules/mkdirp",
+          "before": "0.5.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/multer",
+          "before": "1.4.5-lts.1",
+          "after": "2.4.0"
+        },
+        {
+          "path": "node_modules/mz",
+          "before": "2.7.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/negotiator",
+          "before": "1.0.0",
+          "after": "1.1.0"
+        },
+        {
+          "path": "node_modules/node-releases",
+          "before": "2.0.19",
+          "after": "2.0.59"
+        },
+        {
+          "path": "node_modules/normalize-url",
+          "before": "8.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/object-inspect",
+          "before": "1.13.3",
+          "after": "1.13.4"
+        },
+        {
+          "path": "node_modules/ora/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/ora/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/os-tmpdir",
+          "before": "1.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/p-cancelable",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/parse5",
+          "before": "5.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/parse5-htmlparser2-tree-adapter",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/parse5-htmlparser2-tree-adapter/node_modules/parse5",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/passport-local",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/path-is-absolute",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/path-parse",
+          "before": "1.0.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/path-scurry",
+          "before": "2.0.0",
+          "after": "2.0.2"
+        },
+        {
+          "path": "node_modules/path-scurry/node_modules/lru-cache",
+          "before": "11.0.2",
+          "after": "11.5.3"
+        },
+        {
+          "path": "node_modules/path-to-regexp",
+          "before": "8.2.0",
+          "after": "8.4.2"
+        },
+        {
+          "path": "node_modules/peek-readable",
+          "before": "5.4.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/pend",
+          "before": "1.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg",
+          "before": "8.13.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg-cloudflare",
+          "before": "1.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg-connection-string",
+          "before": "2.7.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg-int8",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg-pool",
+          "before": "3.7.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg-protocol",
+          "before": "1.7.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pg-types",
+          "before": "2.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pgpass",
+          "before": "1.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/picomatch",
+          "before": "4.0.2",
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/pirates",
+          "before": "4.0.6",
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/piscina",
+          "before": "4.8.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/postgres-array",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/postgres-bytea",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/postgres-date",
+          "before": "1.0.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/postgres-interval",
+          "before": "1.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/process-nextick-args",
+          "before": "2.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/prompts",
+          "before": "2.4.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/proxy-addr",
+          "before": "2.0.7",
+          "after": "2.0.8"
+        },
+        {
+          "path": "node_modules/pure-rand",
+          "before": "6.1.0",
+          "after": "7.0.1"
+        },
+        {
+          "path": "node_modules/qs",
+          "before": "6.13.0",
+          "after": "6.16.1"
+        },
+        {
+          "path": "node_modules/queue-microtask",
+          "before": "1.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/quick-lru",
+          "before": "5.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/randombytes",
+          "before": "2.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/range-parser",
+          "before": "1.2.1",
+          "after": "1.3.0"
+        },
+        {
+          "path": "node_modules/raw-body",
+          "before": "3.0.0",
+          "after": "3.0.2"
+        },
+        {
+          "path": "node_modules/raw-body/node_modules/iconv-lite",
+          "before": "0.6.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/readable-stream",
+          "before": "2.3.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/readable-stream/node_modules/safe-buffer",
+          "before": "5.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/repeat-string",
+          "before": "1.6.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/resolve",
+          "before": "1.22.10",
+          "after": null
+        },
+        {
+          "path": "node_modules/resolve-alpn",
+          "before": "1.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/resolve.exports",
+          "before": "2.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/responselike",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/reusify",
+          "before": "1.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/router",
+          "before": "2.0.0",
+          "after": "2.2.0"
+        },
+        {
+          "path": "node_modules/run-parallel",
+          "before": "1.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/seek-bzip",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/seek-bzip/node_modules/commander",
+          "before": "6.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/semver",
+          "before": "7.7.0",
+          "after": "7.8.5"
+        },
+        {
+          "path": "node_modules/semver-regex",
+          "before": "4.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/semver-truncate",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/send",
+          "before": "1.1.0",
+          "after": "1.2.1"
+        },
+        {
+          "path": "node_modules/send/node_modules/fresh",
+          "before": "0.5.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/send/node_modules/mime-db",
+          "before": "1.52.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/send/node_modules/mime-types",
+          "before": "2.1.35",
+          "after": null
+        },
+        {
+          "path": "node_modules/serialize-javascript",
+          "before": "6.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/serve-static",
+          "before": "2.1.0",
+          "after": "2.2.1"
+        },
+        {
+          "path": "node_modules/sha.js",
+          "before": "2.4.11",
+          "after": null
+        },
+        {
+          "path": "node_modules/side-channel",
+          "before": "1.1.0",
+          "after": "1.1.1"
+        },
+        {
+          "path": "node_modules/side-channel-list",
+          "before": "1.0.0",
+          "after": "1.0.1"
+        },
+        {
+          "path": "node_modules/sisteransi",
+          "before": "1.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/socket.io",
+          "before": "4.8.1",
+          "after": "4.8.3"
+        },
+        {
+          "path": "node_modules/socket.io-adapter",
+          "before": "2.5.5",
+          "after": "2.5.8"
+        },
+        {
+          "path": "node_modules/socket.io-adapter/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/socket.io-parser",
+          "before": "4.2.4",
+          "after": "4.2.7"
+        },
+        {
+          "path": "node_modules/socket.io-parser/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/socket.io/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/sort-keys",
+          "before": "1.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/sort-keys-length",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/split2",
+          "before": "4.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/statuses",
+          "before": "2.0.1",
+          "after": "2.0.2"
+        },
+        {
+          "path": "node_modules/streamx",
+          "before": "2.22.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/string-length/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/string-length/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/string-width-cjs/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/string-width-cjs/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/string-width/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/string-width/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/strip-ansi",
+          "before": "7.1.0",
+          "after": "6.0.1"
+        },
+        {
+          "path": "node_modules/strip-ansi-cjs/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/strip-dirs",
+          "before": "3.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/strtok3",
+          "before": "9.1.1",
+          "after": "10.6.1"
+        },
+        {
+          "path": "node_modules/supports-preserve-symlinks-flag",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/tapable",
+          "before": "2.2.1",
+          "after": "2.3.3"
+        },
+        {
+          "path": "node_modules/tar-stream",
+          "before": "3.1.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/terser",
+          "before": "5.37.0",
+          "after": "5.51.2"
+        },
+        {
+          "path": "node_modules/terser-webpack-plugin",
+          "before": "5.3.11",
+          "after": "5.6.1"
+        },
+        {
+          "path": "node_modules/terser-webpack-plugin/node_modules/ajv",
+          "before": "8.17.1",
+          "after": "8.20.0"
+        },
+        {
+          "path": "node_modules/terser-webpack-plugin/node_modules/ajv-formats",
+          "before": "2.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/terser-webpack-plugin/node_modules/schema-utils",
+          "before": "4.3.0",
+          "after": "4.6.0"
+        },
+        {
+          "path": "node_modules/test-exclude",
+          "before": "6.0.0",
+          "after": "7.0.2"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob",
+          "before": "7.2.3",
+          "after": "10.5.0"
+        },
+        {
+          "path": "node_modules/text-decoder",
+          "before": "1.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/thenify",
+          "before": "3.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/thenify-all",
+          "before": "1.6.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/through",
+          "before": "2.3.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/tmp",
+          "before": "0.0.33",
+          "after": null
+        },
+        {
+          "path": "node_modules/tmpl",
+          "before": "1.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/to-regex-range",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/token-types",
+          "before": "6.0.0",
+          "after": "6.1.2"
+        },
+        {
+          "path": "node_modules/tree-kill",
+          "before": "1.2.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/ts-api-utils",
+          "before": "2.0.1",
+          "after": "2.5.0"
+        },
+        {
+          "path": "node_modules/ts-jest",
+          "before": "29.2.5",
+          "after": "29.4.15"
+        },
+        {
+          "path": "node_modules/ts-loader",
+          "before": "9.5.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/type-is",
+          "before": "2.0.0",
+          "after": "2.1.0"
+        },
+        {
+          "path": "node_modules/typedarray",
+          "before": "0.0.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm",
+          "before": "0.3.20",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/buffer",
+          "before": "6.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/glob",
+          "before": "10.4.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/jackspeak",
+          "before": "3.4.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/lru-cache",
+          "before": "10.4.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/minimatch",
+          "before": "9.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/mkdirp",
+          "before": "2.1.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/typeorm/node_modules/path-scurry",
+          "before": "1.11.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/typescript",
+          "before": "5.7.3",
+          "after": "5.9.3"
+        },
+        {
+          "path": "node_modules/typescript-eslint",
+          "before": "8.22.0",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/uint8array-extras",
+          "before": "1.4.0",
+          "after": "1.6.0"
+        },
+        {
+          "path": "node_modules/unbzip2-stream",
+          "before": "1.4.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/update-browserslist-db",
+          "before": "1.1.2",
+          "after": "1.3.4"
+        },
+        {
+          "path": "node_modules/uuid",
+          "before": "9.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/validator",
+          "before": "13.12.0",
+          "after": "13.15.35"
+        },
+        {
+          "path": "node_modules/walker",
+          "before": "1.0.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/watchpack",
+          "before": "2.4.2",
+          "after": "2.6.2"
+        },
+        {
+          "path": "node_modules/webpack",
+          "before": "5.97.1",
+          "after": "5.106.2"
+        },
+        {
+          "path": "node_modules/webpack-sources",
+          "before": "3.2.3",
+          "after": "3.6.0"
+        },
+        {
+          "path": "node_modules/webpack/node_modules/mime-db",
+          "before": "1.52.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/webpack/node_modules/mime-types",
+          "before": "2.1.35",
+          "after": null
+        },
+        {
+          "path": "node_modules/wrap-ansi-cjs/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/wrap-ansi-cjs/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/wrap-ansi/node_modules/ansi-regex",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/wrap-ansi/node_modules/strip-ansi",
+          "before": "6.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/write-file-atomic",
+          "before": "4.0.2",
+          "after": "5.0.1"
+        },
+        {
+          "path": "node_modules/write-file-atomic/node_modules/signal-exit",
+          "before": "3.0.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/ws",
+          "before": "8.17.1",
+          "after": "8.21.3"
+        },
+        {
+          "path": "node_modules/xtend",
+          "before": "4.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/yargs",
+          "before": "17.7.2",
+          "after": "17.7.3"
+        },
+        {
+          "path": "node_modules/yauzl",
+          "before": "3.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/yoctocolors-cjs",
+          "before": "2.1.2",
+          "after": "2.1.3"
+        },
+        {
+          "path": "node_modules/@babel/helper-globals",
+          "before": null,
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@borewit/text-codec",
+          "before": null,
+          "after": "0.2.2"
+        },
+        {
+          "path": "node_modules/@emnapi/core",
+          "before": null,
+          "after": "1.10.0"
+        },
+        {
+          "path": "node_modules/@emnapi/runtime",
+          "before": null,
+          "after": "1.10.0"
+        },
+        {
+          "path": "node_modules/@emnapi/wasi-threads",
+          "before": null,
+          "after": "1.2.1"
+        },
+        {
+          "path": "node_modules/@eslint/config-helpers",
+          "before": null,
+          "after": "0.4.2"
+        },
+        {
+          "path": "node_modules/@humanfs/types",
+          "before": null,
+          "after": "0.15.0"
+        },
+        {
+          "path": "node_modules/@inquirer/ansi",
+          "before": null,
+          "after": "1.0.2"
+        },
+        {
+          "path": "node_modules/@inquirer/external-editor",
+          "before": null,
+          "after": "1.0.3"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/ansi-regex",
+          "before": null,
+          "after": "6.4.0"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/strip-ansi",
+          "before": null,
+          "after": "7.2.0"
+        },
+        {
+          "path": "node_modules/@jest/diff-sequences",
+          "before": null,
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/get-type",
+          "before": null,
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/pattern",
+          "before": null,
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/react-is-18",
+          "before": null,
+          "after": "18.3.1"
+        },
+        {
+          "path": "node_modules/@jest/react-is-19",
+          "before": null,
+          "after": "19.3.1"
+        },
+        {
+          "path": "node_modules/@jest/snapshot-utils",
+          "before": null,
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/@jridgewell/remapping",
+          "before": null,
+          "after": "2.3.5"
+        },
+        {
+          "path": "node_modules/@napi-rs/wasm-runtime",
+          "before": null,
+          "after": "1.2.5"
+        },
+        {
+          "path": "node_modules/@nestjs/config/node_modules/dotenv",
+          "before": null,
+          "after": "17.4.1"
+        },
+        {
+          "path": "node_modules/@noble/hashes",
+          "before": null,
+          "after": "1.8.0"
+        },
+        {
+          "path": "node_modules/@paralleldrive/cuid2",
+          "before": null,
+          "after": "2.3.1"
+        },
+        {
+          "path": "node_modules/@parcel/watcher",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-android-arm64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-darwin-arm64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-darwin-x64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-freebsd-x64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm-glibc",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm-musl",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm64-glibc",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm64-musl",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-x64-glibc",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-x64-musl",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-win32-arm64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-win32-x64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@tokenizer/inflate",
+          "before": null,
+          "after": "0.4.1"
+        },
+        {
+          "path": "node_modules/@tybys/wasm-util",
+          "before": null,
+          "after": "0.10.4"
+        },
+        {
+          "path": "node_modules/@types/ms",
+          "before": null,
+          "after": "2.1.0"
+        },
+        {
+          "path": "node_modules/@types/ws",
+          "before": null,
+          "after": "8.18.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/eslint-plugin/node_modules/ignore",
+          "before": null,
+          "after": "7.0.12"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/project-service",
+          "before": null,
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/tsconfig-utils",
+          "before": null,
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/balanced-match",
+          "before": null,
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys",
+          "before": null,
+          "after": "5.0.1"
+        },
+        {
+          "path": "node_modules/@ungap/structured-clone",
+          "before": null,
+          "after": "1.4.0"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-android-arm-eabi",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-android-arm64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-darwin-arm64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-darwin-x64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-freebsd-x64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm-gnueabihf",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm-musleabihf",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-loong64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-loong64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-ppc64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-riscv64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-riscv64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-s390x-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-x64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-x64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-openharmony-arm64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-wasm32-wasi",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-win32-arm64-msvc",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-win32-ia32-msvc",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-win32-x64-msvc",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/acorn-import-phases",
+          "before": null,
+          "after": "1.0.4"
+        },
+        {
+          "path": "node_modules/baseline-browser-mapping",
+          "before": null,
+          "after": "2.11.29"
+        },
+        {
+          "path": "node_modules/body-parser/node_modules/content-type",
+          "before": null,
+          "after": "2.1.0"
+        },
+        {
+          "path": "node_modules/detect-libc",
+          "before": null,
+          "after": "2.1.2"
+        },
+        {
+          "path": "node_modules/es-set-tostringtag",
+          "before": null,
+          "after": "2.1.0"
+        },
+        {
+          "path": "node_modules/eslint/node_modules/eslint-visitor-keys",
+          "before": null,
+          "after": "4.2.1"
+        },
+        {
+          "path": "node_modules/espree/node_modules/eslint-visitor-keys",
+          "before": null,
+          "after": "4.2.1"
+        },
+        {
+          "path": "node_modules/exit-x",
+          "before": null,
+          "after": "0.2.2"
+        },
+        {
+          "path": "node_modules/fdir",
+          "before": null,
+          "after": "6.5.0"
+        },
+        {
+          "path": "node_modules/glob/node_modules/balanced-match",
+          "before": null,
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/handlebars",
+          "before": null,
+          "after": "4.7.10"
+        },
+        {
+          "path": "node_modules/handlebars/node_modules/source-map",
+          "before": null,
+          "after": "0.6.1"
+        },
+        {
+          "path": "node_modules/has-tostringtag",
+          "before": null,
+          "after": "1.0.2"
+        },
+        {
+          "path": "node_modules/jest-snapshot/node_modules/@pkgr/core",
+          "before": null,
+          "after": "0.3.6"
+        },
+        {
+          "path": "node_modules/jest-snapshot/node_modules/synckit",
+          "before": null,
+          "after": "0.11.13"
+        },
+        {
+          "path": "node_modules/load-esm",
+          "before": null,
+          "after": "1.0.3"
+        },
+        {
+          "path": "node_modules/napi-postinstall",
+          "before": null,
+          "after": "0.3.4"
+        },
+        {
+          "path": "node_modules/negotiator/node_modules/content-type",
+          "before": null,
+          "after": "2.1.0"
+        },
+        {
+          "path": "node_modules/node-addon-api",
+          "before": null,
+          "after": "7.1.1"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/balanced-match",
+          "before": null,
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/brace-expansion",
+          "before": null,
+          "after": "5.0.12"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob/node_modules/balanced-match",
+          "before": null,
+          "after": "1.0.2"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob/node_modules/brace-expansion",
+          "before": null,
+          "after": "2.1.7"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob/node_modules/minimatch",
+          "before": null,
+          "after": "9.0.9"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/lru-cache",
+          "before": null,
+          "after": "10.4.3"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/minimatch",
+          "before": null,
+          "after": "10.2.6"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/path-scurry",
+          "before": null,
+          "after": "1.11.1"
+        },
+        {
+          "path": "node_modules/tinyglobby",
+          "before": null,
+          "after": "0.2.17"
+        },
+        {
+          "path": "node_modules/ts-jest/node_modules/type-fest",
+          "before": null,
+          "after": "4.41.0"
+        },
+        {
+          "path": "node_modules/type-is/node_modules/content-type",
+          "before": null,
+          "after": "2.1.0"
+        },
+        {
+          "path": "node_modules/uglify-js",
+          "before": null,
+          "after": "3.19.3"
+        },
+        {
+          "path": "node_modules/unrs-resolver",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/webpack/node_modules/ajv",
+          "before": null,
+          "after": "8.20.0"
+        },
+        {
+          "path": "node_modules/webpack/node_modules/ajv-keywords",
+          "before": null,
+          "after": "5.1.0"
+        },
+        {
+          "path": "node_modules/webpack/node_modules/json-schema-traverse",
+          "before": null,
+          "after": "1.0.0"
+        },
+        {
+          "path": "node_modules/webpack/node_modules/schema-utils",
+          "before": null,
+          "after": "4.6.0"
+        },
+        {
+          "path": "node_modules/wordwrap",
+          "before": null,
+          "after": "1.0.0"
+        }
+      ]
+    },
+    "frontend": {
+      "lockfileSha256": "6846f78769dc5d5dfa74df4fef8643c6bef80ac6164ce41c9bdb2eaecaf7e4ca",
+      "auditCounts": {
+        "info": 0,
+        "low": 0,
+        "moderate": 20,
+        "high": 0,
+        "critical": 0,
+        "total": 20
+      },
+      "remaining": [
+        {
+          "name": "@istanbuljs/load-nyc-config",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/core",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/expect",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/globals",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/reporters",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "@jest/transform",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "argparse",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "babel-jest",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "babel-plugin-istanbul",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-circus",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-cli",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-config",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-resolve-dependencies",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-runner",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-runtime",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "jest-snapshot",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "js-yaml",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "sprintf-js",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        },
+        {
+          "name": "ts-jest",
+          "severity": "moderate",
+          "roots": [
+            "sprintf-js"
+          ],
+          "disposition": "Development/build tool chain; assess published patched upstream support, preserve latest verified Jest; not a public request handler. No forced downgrade or suppression."
+        }
+      ],
+      "changes": [
+        {
+          "path": "node_modules/@ampproject/remapping",
+          "before": "2.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@babel/code-frame",
+          "before": "7.26.2",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/compat-data",
+          "before": "7.26.8",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/core",
+          "before": "7.26.10",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/generator",
+          "before": "7.26.10",
+          "after": "7.29.8"
+        },
+        {
+          "path": "node_modules/@babel/helper-compilation-targets",
+          "before": "7.26.5",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-module-imports",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-module-transforms",
+          "before": "7.26.0",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-plugin-utils",
+          "before": "7.26.5",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-string-parser",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-validator-identifier",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helper-validator-option",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/helpers",
+          "before": "7.26.10",
+          "after": "7.29.10"
+        },
+        {
+          "path": "node_modules/@babel/parser",
+          "before": "7.26.10",
+          "after": "7.29.9"
+        },
+        {
+          "path": "node_modules/@babel/plugin-syntax-import-attributes",
+          "before": "7.26.0",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/plugin-syntax-jsx",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/plugin-syntax-typescript",
+          "before": "7.25.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/runtime",
+          "before": "7.26.9",
+          "after": "7.29.10"
+        },
+        {
+          "path": "node_modules/@babel/template",
+          "before": "7.26.9",
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@babel/traverse",
+          "before": "7.26.10",
+          "after": "7.29.10"
+        },
+        {
+          "path": "node_modules/@babel/traverse/node_modules/globals",
+          "before": "11.12.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@babel/types",
+          "before": "7.26.10",
+          "after": "7.29.8"
+        },
+        {
+          "path": "node_modules/@emotion/is-prop-valid",
+          "before": "1.3.1",
+          "after": "1.4.0"
+        },
+        {
+          "path": "node_modules/@esbuild/aix-ppc64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/android-arm",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/android-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/android-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/darwin-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/darwin-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/freebsd-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/freebsd-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-arm",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-ia32",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-loong64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-mips64el",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-ppc64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-riscv64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-s390x",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/linux-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/netbsd-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/netbsd-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/openbsd-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/openbsd-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/sunos-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/win32-arm64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/win32-ia32",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@esbuild/win32-x64",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@eslint-community/eslint-utils",
+          "before": "4.4.1",
+          "after": "4.10.1"
+        },
+        {
+          "path": "node_modules/@eslint-community/regexpp",
+          "before": "4.12.1",
+          "after": "4.12.2"
+        },
+        {
+          "path": "node_modules/@eslint/config-array",
+          "before": "0.19.2",
+          "after": "0.21.2"
+        },
+        {
+          "path": "node_modules/@eslint/core",
+          "before": "0.11.0",
+          "after": "0.17.0"
+        },
+        {
+          "path": "node_modules/@eslint/eslintrc",
+          "before": "3.2.0",
+          "after": "3.3.7"
+        },
+        {
+          "path": "node_modules/@eslint/js",
+          "before": "9.20.0",
+          "after": "9.39.5"
+        },
+        {
+          "path": "node_modules/@eslint/object-schema",
+          "before": "2.1.6",
+          "after": "2.1.7"
+        },
+        {
+          "path": "node_modules/@eslint/plugin-kit",
+          "before": "0.2.5",
+          "after": "0.4.1"
+        },
+        {
+          "path": "node_modules/@eslint/plugin-kit/node_modules/@eslint/core",
+          "before": "0.10.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@humanfs/core",
+          "before": "0.19.1",
+          "after": "0.19.2"
+        },
+        {
+          "path": "node_modules/@humanfs/node",
+          "before": "0.16.6",
+          "after": "0.16.8"
+        },
+        {
+          "path": "node_modules/@humanfs/node/node_modules/@humanwhocodes/retry",
+          "before": "0.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@humanwhocodes/retry",
+          "before": "0.4.1",
+          "after": "0.4.3"
+        },
+        {
+          "path": "node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml",
+          "before": "3.14.1",
+          "after": "3.15.2"
+        },
+        {
+          "path": "node_modules/@jest/console",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/core",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/core/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/@jest/core/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jest/environment",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/expect",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/expect-utils",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/fake-timers",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/globals",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/reporters",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/schemas",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/source-map",
+          "before": "29.6.3",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/test-result",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/test-sequencer",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/transform",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/types",
+          "before": "29.6.3",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/@jridgewell/gen-mapping",
+          "before": "0.3.8",
+          "after": "0.3.13"
+        },
+        {
+          "path": "node_modules/@jridgewell/set-array",
+          "before": "1.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@jridgewell/trace-mapping",
+          "before": "0.3.25",
+          "after": "0.3.31"
+        },
+        {
+          "path": "node_modules/@nodelib/fs.scandir",
+          "before": "2.1.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nodelib/fs.stat",
+          "before": "2.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/@nodelib/fs.walk",
+          "before": "1.2.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/@rollup/rollup-android-arm-eabi",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-android-arm64",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-darwin-arm64",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-darwin-x64",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-freebsd-arm64",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-freebsd-x64",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-arm-gnueabihf",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-arm-musleabihf",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-arm64-gnu",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-arm64-musl",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-loongarch64-gnu",
+          "before": "4.34.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-powerpc64le-gnu",
+          "before": "4.34.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-riscv64-gnu",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-s390x-gnu",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-x64-gnu",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-x64-musl",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-win32-arm64-msvc",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-win32-ia32-msvc",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-win32-x64-msvc",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@sinclair/typebox",
+          "before": "0.27.8",
+          "after": "0.34.52"
+        },
+        {
+          "path": "node_modules/@sinonjs/fake-timers",
+          "before": "10.3.0",
+          "after": "15.4.0"
+        },
+        {
+          "path": "node_modules/@swc/core",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-darwin-arm64",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-darwin-x64",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-arm-gnueabihf",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-arm64-gnu",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-arm64-musl",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-x64-gnu",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-linux-x64-musl",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-win32-arm64-msvc",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-win32-ia32-msvc",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/core-win32-x64-msvc",
+          "before": "1.10.17",
+          "after": null
+        },
+        {
+          "path": "node_modules/@swc/types",
+          "before": "0.1.17",
+          "after": "0.1.28"
+        },
+        {
+          "path": "node_modules/@tootallnate/once",
+          "before": "2.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/babel__generator",
+          "before": "7.6.8",
+          "after": "7.27.0"
+        },
+        {
+          "path": "node_modules/@types/babel__traverse",
+          "before": "7.20.6",
+          "after": "7.28.0"
+        },
+        {
+          "path": "node_modules/@types/cookie",
+          "before": "0.6.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/estree",
+          "before": "1.0.6",
+          "after": "1.0.9"
+        },
+        {
+          "path": "node_modules/@types/graceful-fs",
+          "before": "4.1.9",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/jest",
+          "before": "29.5.14",
+          "after": "30.0.0"
+        },
+        {
+          "path": "node_modules/@types/jest/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/@types/jest/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/@types/jsdom",
+          "before": "20.0.1",
+          "after": "21.1.7"
+        },
+        {
+          "path": "node_modules/@types/stylis",
+          "before": "4.2.5",
+          "after": "4.2.7"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/eslint-plugin",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/parser",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/scope-manager",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/type-utils",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/types",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": "5.0.12"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "before": "9.0.5",
+          "after": "10.2.6"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/utils",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/visitor-keys",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc",
+          "before": "3.8.0",
+          "after": "4.3.3"
+        },
+        {
+          "path": "node_modules/abab",
+          "before": "2.0.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/acorn",
+          "before": "8.14.0",
+          "after": "8.19.0"
+        },
+        {
+          "path": "node_modules/acorn-globals",
+          "before": "7.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/acorn-walk",
+          "before": "8.3.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/agent-base",
+          "before": "6.0.2",
+          "after": "7.1.4"
+        },
+        {
+          "path": "node_modules/ajv",
+          "before": "6.12.6",
+          "after": "6.15.0"
+        },
+        {
+          "path": "node_modules/async",
+          "before": "3.2.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/asynckit",
+          "before": "0.4.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/babel-jest",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/babel-plugin-istanbul",
+          "before": "6.1.1",
+          "after": "8.0.0"
+        },
+        {
+          "path": "node_modules/babel-plugin-istanbul/node_modules/istanbul-lib-instrument",
+          "before": "5.2.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/babel-plugin-istanbul/node_modules/semver",
+          "before": "6.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/babel-plugin-jest-hoist",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/babel-preset-current-node-syntax",
+          "before": "1.1.0",
+          "after": "1.2.0"
+        },
+        {
+          "path": "node_modules/babel-preset-jest",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/brace-expansion",
+          "before": "1.1.11",
+          "after": "1.1.21"
+        },
+        {
+          "path": "node_modules/braces",
+          "before": "3.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/browserslist",
+          "before": "4.24.4",
+          "after": "4.29.3"
+        },
+        {
+          "path": "node_modules/buffer-from",
+          "before": "1.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/call-bind-apply-helpers",
+          "before": "1.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/caniuse-lite",
+          "before": "1.0.30001700",
+          "after": "1.0.30001816"
+        },
+        {
+          "path": "node_modules/ci-info",
+          "before": "3.9.0",
+          "after": "4.4.0"
+        },
+        {
+          "path": "node_modules/cjs-module-lexer",
+          "before": "1.4.3",
+          "after": "2.3.0"
+        },
+        {
+          "path": "node_modules/collect-v8-coverage",
+          "before": "1.0.2",
+          "after": "1.0.3"
+        },
+        {
+          "path": "node_modules/combined-stream",
+          "before": "1.0.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/cookie",
+          "before": "1.0.2",
+          "after": "1.1.1"
+        },
+        {
+          "path": "node_modules/cosmiconfig/node_modules/yaml",
+          "before": "1.10.2",
+          "after": "1.10.3"
+        },
+        {
+          "path": "node_modules/create-jest",
+          "before": "29.7.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/cssom",
+          "before": "0.5.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/cssstyle",
+          "before": "2.3.0",
+          "after": "4.6.0"
+        },
+        {
+          "path": "node_modules/cssstyle/node_modules/cssom",
+          "before": "0.3.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/csstype",
+          "before": "3.1.3",
+          "after": "3.2.3"
+        },
+        {
+          "path": "node_modules/data-urls",
+          "before": "3.0.2",
+          "after": "5.0.0"
+        },
+        {
+          "path": "node_modules/debug",
+          "before": "4.4.0",
+          "after": "4.4.3"
+        },
+        {
+          "path": "node_modules/decimal.js",
+          "before": "10.5.0",
+          "after": "10.6.0"
+        },
+        {
+          "path": "node_modules/dedent",
+          "before": "1.5.3",
+          "after": "1.7.2"
+        },
+        {
+          "path": "node_modules/delayed-stream",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/diff-sequences",
+          "before": "29.6.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/domexception",
+          "before": "4.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/dunder-proto",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/ejs",
+          "before": "3.1.10",
+          "after": null
+        },
+        {
+          "path": "node_modules/electron-to-chromium",
+          "before": "1.5.119",
+          "after": "1.5.459"
+        },
+        {
+          "path": "node_modules/engine.io-client",
+          "before": "6.6.3",
+          "after": "6.6.7"
+        },
+        {
+          "path": "node_modules/engine.io-client/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/entities",
+          "before": "4.5.0",
+          "after": "6.0.1"
+        },
+        {
+          "path": "node_modules/es-define-property",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/es-errors",
+          "before": "1.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/es-object-atoms",
+          "before": "1.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/es-set-tostringtag",
+          "before": "2.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/esbuild",
+          "before": "0.24.2",
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/escodegen",
+          "before": "2.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/escodegen/node_modules/source-map",
+          "before": "0.6.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/eslint",
+          "before": "9.20.1",
+          "after": "9.39.5"
+        },
+        {
+          "path": "node_modules/eslint-scope",
+          "before": "8.2.0",
+          "after": "8.4.0"
+        },
+        {
+          "path": "node_modules/eslint-visitor-keys",
+          "before": "4.2.0",
+          "after": "4.2.1"
+        },
+        {
+          "path": "node_modules/espree",
+          "before": "10.3.0",
+          "after": "10.4.0"
+        },
+        {
+          "path": "node_modules/exit",
+          "before": "0.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/expect",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/fast-glob",
+          "before": "3.3.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/fast-glob/node_modules/glob-parent",
+          "before": "5.1.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/fastq",
+          "before": "1.19.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/filelist",
+          "before": "1.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/filelist/node_modules/brace-expansion",
+          "before": "2.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/filelist/node_modules/minimatch",
+          "before": "5.1.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/fill-range",
+          "before": "7.1.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/flatted",
+          "before": "3.3.2",
+          "after": "3.4.4"
+        },
+        {
+          "path": "node_modules/form-data",
+          "before": "4.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/fs.realpath",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/get-intrinsic",
+          "before": "1.3.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/get-proto",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/glob",
+          "before": "7.2.3",
+          "after": "13.0.6"
+        },
+        {
+          "path": "node_modules/gopd",
+          "before": "1.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/graphemer",
+          "before": "1.4.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/has-symbols",
+          "before": "1.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/has-tostringtag",
+          "before": "1.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/hasown",
+          "before": "2.0.2",
+          "after": "2.0.4"
+        },
+        {
+          "path": "node_modules/html-encoding-sniffer",
+          "before": "3.0.0",
+          "after": "4.0.0"
+        },
+        {
+          "path": "node_modules/http-proxy-agent",
+          "before": "5.0.0",
+          "after": "7.0.2"
+        },
+        {
+          "path": "node_modules/https-proxy-agent",
+          "before": "5.0.1",
+          "after": "7.0.6"
+        },
+        {
+          "path": "node_modules/inflight",
+          "before": "1.0.6",
+          "after": null
+        },
+        {
+          "path": "node_modules/inherits",
+          "before": "2.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/is-number",
+          "before": "7.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/istanbul-lib-source-maps",
+          "before": "4.0.1",
+          "after": "5.0.6"
+        },
+        {
+          "path": "node_modules/istanbul-lib-source-maps/node_modules/source-map",
+          "before": "0.6.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/istanbul-reports",
+          "before": "3.1.7",
+          "after": "3.2.0"
+        },
+        {
+          "path": "node_modules/jake",
+          "before": "10.9.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-changed-files",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-circus",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-circus/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-circus/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-cli",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-config",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-config/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-config/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-diff",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-diff/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-diff/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-docblock",
+          "before": "29.7.0",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/jest-each",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-each/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-each/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-environment-jsdom",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-environment-node",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-get-type",
+          "before": "29.6.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-haste-map",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-leak-detector",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-leak-detector/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-leak-detector/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-matcher-utils",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-matcher-utils/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-matcher-utils/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-message-util",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-message-util/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-message-util/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-mock",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-pnp-resolver",
+          "before": "1.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-regex-util",
+          "before": "29.6.3",
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/jest-resolve",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-resolve-dependencies",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-runner",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-runtime",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-snapshot",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-snapshot/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-snapshot/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-util",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-validate",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-validate/node_modules/pretty-format",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/jest-validate/node_modules/react-is",
+          "before": "18.3.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/jest-watcher",
+          "before": "29.7.0",
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/jest-worker",
+          "before": "29.7.0",
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/js-yaml",
+          "before": "4.1.0",
+          "after": "4.3.2"
+        },
+        {
+          "path": "node_modules/jsdom",
+          "before": "20.0.3",
+          "after": "26.1.0"
+        },
+        {
+          "path": "node_modules/kleur",
+          "before": "3.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/lodash",
+          "before": "4.17.21",
+          "after": "4.18.1"
+        },
+        {
+          "path": "node_modules/makeerror",
+          "before": "1.0.12",
+          "after": null
+        },
+        {
+          "path": "node_modules/math-intrinsics",
+          "before": "1.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/merge2",
+          "before": "1.4.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/micromatch",
+          "before": "4.0.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/mime-db",
+          "before": "1.52.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/mime-types",
+          "before": "2.1.35",
+          "after": null
+        },
+        {
+          "path": "node_modules/minimatch",
+          "before": "3.1.2",
+          "after": "3.1.5"
+        },
+        {
+          "path": "node_modules/nanoid",
+          "before": "3.3.8",
+          "after": "3.3.20"
+        },
+        {
+          "path": "node_modules/node-releases",
+          "before": "2.0.19",
+          "after": "2.0.59"
+        },
+        {
+          "path": "node_modules/nwsapi",
+          "before": "2.2.18",
+          "after": "2.2.28"
+        },
+        {
+          "path": "node_modules/once",
+          "before": "1.4.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/parse5",
+          "before": "7.2.1",
+          "after": "7.3.0"
+        },
+        {
+          "path": "node_modules/path-is-absolute",
+          "before": "1.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/picomatch",
+          "before": "2.3.1",
+          "after": "2.3.2"
+        },
+        {
+          "path": "node_modules/pirates",
+          "before": "4.0.6",
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/postcss",
+          "before": "8.4.49",
+          "after": "8.5.30"
+        },
+        {
+          "path": "node_modules/prompts",
+          "before": "2.4.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/psl",
+          "before": "1.15.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/pure-rand",
+          "before": "6.1.0",
+          "after": "7.0.1"
+        },
+        {
+          "path": "node_modules/querystringify",
+          "before": "2.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/queue-microtask",
+          "before": "1.2.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/react-router",
+          "before": "7.1.5",
+          "after": "7.18.4"
+        },
+        {
+          "path": "node_modules/react-router-dom",
+          "before": "7.1.5",
+          "after": "7.18.4"
+        },
+        {
+          "path": "node_modules/regenerator-runtime",
+          "before": "0.14.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/requires-port",
+          "before": "1.0.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/resolve.exports",
+          "before": "2.0.3",
+          "after": null
+        },
+        {
+          "path": "node_modules/reusify",
+          "before": "1.0.4",
+          "after": null
+        },
+        {
+          "path": "node_modules/rollup",
+          "before": "4.34.8",
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/run-parallel",
+          "before": "1.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/semver",
+          "before": "7.7.1",
+          "after": "7.8.5"
+        },
+        {
+          "path": "node_modules/set-cookie-parser",
+          "before": "2.7.1",
+          "after": "2.7.2"
+        },
+        {
+          "path": "node_modules/shallowequal",
+          "before": "1.1.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/sisteransi",
+          "before": "1.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/socket.io-client",
+          "before": "4.8.1",
+          "after": "4.8.4"
+        },
+        {
+          "path": "node_modules/socket.io-client/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/socket.io-parser",
+          "before": "4.2.4",
+          "after": "4.2.7"
+        },
+        {
+          "path": "node_modules/socket.io-parser/node_modules/debug",
+          "before": "4.3.7",
+          "after": null
+        },
+        {
+          "path": "node_modules/source-map-js",
+          "before": "1.2.1",
+          "after": "1.2.2"
+        },
+        {
+          "path": "node_modules/source-map-support",
+          "before": "0.5.13",
+          "after": null
+        },
+        {
+          "path": "node_modules/source-map-support/node_modules/source-map",
+          "before": "0.6.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/styled-components",
+          "before": "6.1.15",
+          "after": "6.6.0"
+        },
+        {
+          "path": "node_modules/styled-components/node_modules/@emotion/is-prop-valid",
+          "before": "1.2.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/styled-components/node_modules/@emotion/memoize",
+          "before": "0.8.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/styled-components/node_modules/@emotion/unitless",
+          "before": "0.8.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/styled-components/node_modules/stylis",
+          "before": "4.3.2",
+          "after": "4.3.6"
+        },
+        {
+          "path": "node_modules/styled-components/node_modules/tslib",
+          "before": "2.6.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/test-exclude",
+          "before": "6.0.0",
+          "after": "7.0.2"
+        },
+        {
+          "path": "node_modules/tmpl",
+          "before": "1.0.5",
+          "after": null
+        },
+        {
+          "path": "node_modules/to-regex-range",
+          "before": "5.0.1",
+          "after": null
+        },
+        {
+          "path": "node_modules/tough-cookie",
+          "before": "4.1.4",
+          "after": "5.1.2"
+        },
+        {
+          "path": "node_modules/tr46",
+          "before": "3.0.0",
+          "after": "5.1.1"
+        },
+        {
+          "path": "node_modules/ts-api-utils",
+          "before": "2.0.1",
+          "after": "2.5.0"
+        },
+        {
+          "path": "node_modules/ts-jest",
+          "before": "29.2.6",
+          "after": "29.4.15"
+        },
+        {
+          "path": "node_modules/turbo-stream",
+          "before": "2.4.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/typescript-eslint",
+          "before": "8.24.1",
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/universalify",
+          "before": "0.2.0",
+          "after": null
+        },
+        {
+          "path": "node_modules/update-browserslist-db",
+          "before": "1.1.3",
+          "after": "1.3.4"
+        },
+        {
+          "path": "node_modules/url-parse",
+          "before": "1.5.10",
+          "after": null
+        },
+        {
+          "path": "node_modules/vite",
+          "before": "6.1.0",
+          "after": "6.4.4"
+        },
+        {
+          "path": "node_modules/vite/node_modules/postcss",
+          "before": "8.5.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/w3c-xmlserializer",
+          "before": "4.0.0",
+          "after": "5.0.0"
+        },
+        {
+          "path": "node_modules/walker",
+          "before": "1.0.8",
+          "after": null
+        },
+        {
+          "path": "node_modules/whatwg-encoding",
+          "before": "2.0.0",
+          "after": "3.1.1"
+        },
+        {
+          "path": "node_modules/whatwg-mimetype",
+          "before": "3.0.0",
+          "after": "4.0.0"
+        },
+        {
+          "path": "node_modules/whatwg-url",
+          "before": "11.0.0",
+          "after": "14.2.0"
+        },
+        {
+          "path": "node_modules/wrappy",
+          "before": "1.0.2",
+          "after": null
+        },
+        {
+          "path": "node_modules/write-file-atomic",
+          "before": "4.0.2",
+          "after": "5.0.1"
+        },
+        {
+          "path": "node_modules/ws",
+          "before": "8.17.1",
+          "after": "8.21.3"
+        },
+        {
+          "path": "node_modules/xml-name-validator",
+          "before": "4.0.0",
+          "after": "5.0.0"
+        },
+        {
+          "path": "node_modules/yargs",
+          "before": "17.7.2",
+          "after": "17.7.3"
+        },
+        {
+          "path": "node_modules/@asamuzakjp/css-color",
+          "before": null,
+          "after": "3.2.0"
+        },
+        {
+          "path": "node_modules/@asamuzakjp/css-color/node_modules/lru-cache",
+          "before": null,
+          "after": "10.4.3"
+        },
+        {
+          "path": "node_modules/@babel/helper-globals",
+          "before": null,
+          "after": "7.29.7"
+        },
+        {
+          "path": "node_modules/@csstools/color-helpers",
+          "before": null,
+          "after": "5.1.0"
+        },
+        {
+          "path": "node_modules/@csstools/css-calc",
+          "before": null,
+          "after": "2.1.4"
+        },
+        {
+          "path": "node_modules/@csstools/css-color-parser",
+          "before": null,
+          "after": "3.1.0"
+        },
+        {
+          "path": "node_modules/@csstools/css-parser-algorithms",
+          "before": null,
+          "after": "3.0.5"
+        },
+        {
+          "path": "node_modules/@csstools/css-tokenizer",
+          "before": null,
+          "after": "3.0.4"
+        },
+        {
+          "path": "node_modules/@emnapi/core",
+          "before": null,
+          "after": "1.10.0"
+        },
+        {
+          "path": "node_modules/@emnapi/runtime",
+          "before": null,
+          "after": "1.10.0"
+        },
+        {
+          "path": "node_modules/@emnapi/wasi-threads",
+          "before": null,
+          "after": "1.2.1"
+        },
+        {
+          "path": "node_modules/@esbuild/openharmony-arm64",
+          "before": null,
+          "after": "0.25.12"
+        },
+        {
+          "path": "node_modules/@eslint/config-helpers",
+          "before": null,
+          "after": "0.4.2"
+        },
+        {
+          "path": "node_modules/@humanfs/types",
+          "before": null,
+          "after": "0.15.0"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui",
+          "before": null,
+          "after": "8.0.2"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/ansi-regex",
+          "before": null,
+          "after": "6.4.0"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/ansi-styles",
+          "before": null,
+          "after": "6.2.3"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/emoji-regex",
+          "before": null,
+          "after": "9.2.2"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/string-width",
+          "before": null,
+          "after": "5.1.2"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/strip-ansi",
+          "before": null,
+          "after": "7.2.0"
+        },
+        {
+          "path": "node_modules/@isaacs/cliui/node_modules/wrap-ansi",
+          "before": null,
+          "after": "8.1.0"
+        },
+        {
+          "path": "node_modules/@jest/diff-sequences",
+          "before": null,
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/environment-jsdom-abstract",
+          "before": null,
+          "after": "30.5.2"
+        },
+        {
+          "path": "node_modules/@jest/get-type",
+          "before": null,
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/pattern",
+          "before": null,
+          "after": "30.5.0"
+        },
+        {
+          "path": "node_modules/@jest/react-is-18",
+          "before": null,
+          "after": "18.3.1"
+        },
+        {
+          "path": "node_modules/@jest/react-is-19",
+          "before": null,
+          "after": "19.3.1"
+        },
+        {
+          "path": "node_modules/@jest/snapshot-utils",
+          "before": null,
+          "after": "30.5.1"
+        },
+        {
+          "path": "node_modules/@jest/source-map/node_modules/convert-source-map",
+          "before": null,
+          "after": "2.0.0"
+        },
+        {
+          "path": "node_modules/@jridgewell/remapping",
+          "before": null,
+          "after": "2.3.5"
+        },
+        {
+          "path": "node_modules/@napi-rs/lzma-linux-x64-gnu",
+          "before": null,
+          "after": "1.5.1"
+        },
+        {
+          "path": "node_modules/@napi-rs/wasm-runtime",
+          "before": null,
+          "after": "1.2.5"
+        },
+        {
+          "path": "node_modules/@parcel/watcher",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-android-arm64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-darwin-arm64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-darwin-x64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-freebsd-x64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm-glibc",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm-musl",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm64-glibc",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-arm64-musl",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-x64-glibc",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-linux-x64-musl",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-win32-arm64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher-win32-x64",
+          "before": null,
+          "after": "2.6.0"
+        },
+        {
+          "path": "node_modules/@parcel/watcher/node_modules/picomatch",
+          "before": null,
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/@pkgjs/parseargs",
+          "before": null,
+          "after": "0.11.0"
+        },
+        {
+          "path": "node_modules/@pkgr/core",
+          "before": null,
+          "after": "0.3.6"
+        },
+        {
+          "path": "node_modules/@rolldown/pluginutils",
+          "before": null,
+          "after": "1.0.1"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-loong64-gnu",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-loong64-musl",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-ppc64-gnu",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-ppc64-musl",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-linux-riscv64-musl",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-openbsd-x64",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-openharmony-arm64",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@rollup/rollup-win32-x64-gnu",
+          "before": null,
+          "after": "4.64.9"
+        },
+        {
+          "path": "node_modules/@tybys/wasm-util",
+          "before": null,
+          "after": "0.10.4"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/eslint-plugin/node_modules/ignore",
+          "before": null,
+          "after": "7.0.12"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/project-service",
+          "before": null,
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/tsconfig-utils",
+          "before": null,
+          "after": "8.71.2"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/balanced-match",
+          "before": null,
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/@typescript-eslint/visitor-keys/node_modules/eslint-visitor-keys",
+          "before": null,
+          "after": "5.0.1"
+        },
+        {
+          "path": "node_modules/@ungap/structured-clone",
+          "before": null,
+          "after": "1.4.0"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-android-arm-eabi",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-android-arm64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-darwin-arm64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-darwin-x64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-freebsd-x64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm-gnueabihf",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm-musleabihf",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-arm64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-loong64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-loong64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-ppc64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-riscv64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-riscv64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-s390x-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-x64-gnu",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-linux-x64-musl",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-openharmony-arm64",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-wasm32-wasi",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-win32-arm64-msvc",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-win32-ia32-msvc",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@unrs/resolver-binding-win32-x64-msvc",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-darwin-arm64",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-darwin-x64",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-arm-gnueabihf",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-arm64-gnu",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-arm64-musl",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-ppc64-gnu",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-s390x-gnu",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-x64-gnu",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-linux-x64-musl",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-win32-arm64-msvc",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-win32-ia32-msvc",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/@vitejs/plugin-react-swc/node_modules/@swc/core-win32-x64-msvc",
+          "before": null,
+          "after": "1.15.47"
+        },
+        {
+          "path": "node_modules/baseline-browser-mapping",
+          "before": null,
+          "after": "2.11.29"
+        },
+        {
+          "path": "node_modules/detect-libc",
+          "before": null,
+          "after": "2.1.2"
+        },
+        {
+          "path": "node_modules/eastasianwidth",
+          "before": null,
+          "after": "0.2.0"
+        },
+        {
+          "path": "node_modules/es-module-lexer",
+          "before": null,
+          "after": "2.3.2"
+        },
+        {
+          "path": "node_modules/exit-x",
+          "before": null,
+          "after": "0.2.2"
+        },
+        {
+          "path": "node_modules/foreground-child",
+          "before": null,
+          "after": "3.3.1"
+        },
+        {
+          "path": "node_modules/foreground-child/node_modules/signal-exit",
+          "before": null,
+          "after": "4.1.0"
+        },
+        {
+          "path": "node_modules/glob/node_modules/balanced-match",
+          "before": null,
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/glob/node_modules/brace-expansion",
+          "before": null,
+          "after": "5.0.12"
+        },
+        {
+          "path": "node_modules/glob/node_modules/minimatch",
+          "before": null,
+          "after": "10.2.6"
+        },
+        {
+          "path": "node_modules/handlebars",
+          "before": null,
+          "after": "4.7.10"
+        },
+        {
+          "path": "node_modules/handlebars/node_modules/source-map",
+          "before": null,
+          "after": "0.6.1"
+        },
+        {
+          "path": "node_modules/jackspeak",
+          "before": null,
+          "after": "3.4.3"
+        },
+        {
+          "path": "node_modules/jest-haste-map/node_modules/fdir",
+          "before": null,
+          "after": "6.5.0"
+        },
+        {
+          "path": "node_modules/jest-haste-map/node_modules/picomatch",
+          "before": null,
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/jest-message-util/node_modules/picomatch",
+          "before": null,
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/jest-util/node_modules/picomatch",
+          "before": null,
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/minimist",
+          "before": null,
+          "after": "1.2.8"
+        },
+        {
+          "path": "node_modules/minipass",
+          "before": null,
+          "after": "7.1.3"
+        },
+        {
+          "path": "node_modules/napi-postinstall",
+          "before": null,
+          "after": "0.3.4"
+        },
+        {
+          "path": "node_modules/neo-async",
+          "before": null,
+          "after": "2.6.2"
+        },
+        {
+          "path": "node_modules/node-addon-api",
+          "before": null,
+          "after": "7.1.1"
+        },
+        {
+          "path": "node_modules/package-json-from-dist",
+          "before": null,
+          "after": "1.0.1"
+        },
+        {
+          "path": "node_modules/path-scurry",
+          "before": null,
+          "after": "2.0.2"
+        },
+        {
+          "path": "node_modules/path-scurry/node_modules/lru-cache",
+          "before": null,
+          "after": "11.5.3"
+        },
+        {
+          "path": "node_modules/rrweb-cssom",
+          "before": null,
+          "after": "0.8.0"
+        },
+        {
+          "path": "node_modules/string-width-cjs",
+          "before": null,
+          "after": "4.2.3"
+        },
+        {
+          "path": "node_modules/strip-ansi-cjs",
+          "before": null,
+          "after": "6.0.1"
+        },
+        {
+          "path": "node_modules/synckit",
+          "before": null,
+          "after": "0.11.13"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/balanced-match",
+          "before": null,
+          "after": "4.0.4"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/brace-expansion",
+          "before": null,
+          "after": "5.0.12"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob",
+          "before": null,
+          "after": "10.5.0"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob/node_modules/balanced-match",
+          "before": null,
+          "after": "1.0.2"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob/node_modules/brace-expansion",
+          "before": null,
+          "after": "2.1.7"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/glob/node_modules/minimatch",
+          "before": null,
+          "after": "9.0.9"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/lru-cache",
+          "before": null,
+          "after": "10.4.3"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/minimatch",
+          "before": null,
+          "after": "10.2.6"
+        },
+        {
+          "path": "node_modules/test-exclude/node_modules/path-scurry",
+          "before": null,
+          "after": "1.11.1"
+        },
+        {
+          "path": "node_modules/tinyglobby",
+          "before": null,
+          "after": "0.2.17"
+        },
+        {
+          "path": "node_modules/tinyglobby/node_modules/fdir",
+          "before": null,
+          "after": "6.5.0"
+        },
+        {
+          "path": "node_modules/tinyglobby/node_modules/picomatch",
+          "before": null,
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/tldts",
+          "before": null,
+          "after": "6.1.86"
+        },
+        {
+          "path": "node_modules/tldts-core",
+          "before": null,
+          "after": "6.1.86"
+        },
+        {
+          "path": "node_modules/ts-jest/node_modules/type-fest",
+          "before": null,
+          "after": "4.41.0"
+        },
+        {
+          "path": "node_modules/uglify-js",
+          "before": null,
+          "after": "3.19.3"
+        },
+        {
+          "path": "node_modules/unrs-resolver",
+          "before": null,
+          "after": "1.12.2"
+        },
+        {
+          "path": "node_modules/vite/node_modules/fdir",
+          "before": null,
+          "after": "6.5.0"
+        },
+        {
+          "path": "node_modules/vite/node_modules/picomatch",
+          "before": null,
+          "after": "4.0.7"
+        },
+        {
+          "path": "node_modules/wordwrap",
+          "before": null,
+          "after": "1.0.0"
+        },
+        {
+          "path": "node_modules/wrap-ansi-cjs",
+          "before": null,
+          "after": "7.0.0"
+        },
+        {
+          "path": "node_modules/write-file-atomic/node_modules/signal-exit",
+          "before": null,
+          "after": "4.1.0"
+        }
+      ]
+    }
+  }
+}

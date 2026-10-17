@@ -4,7 +4,7 @@
 
 **Blocked by:** 01: Trustworthy checks and isolated startup. Advisory inspection may start earlier, but dependency-changing completion requires the behavior baseline.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -17,3 +17,7 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after ticket 01 passed and was reviewed. Assessment uses current lockfiles/npm audit, distinguishes lockfile runtime classification from proven reachability, and preserves major framework/ORM versions.
+
+2026-10-17: Owner explicitly authorized the latest package versions when necessary, including necessary major version updates. This permits a tested Jest 30 migration to remove the remaining legacy test-tool advisory chains; it does not waive compatibility/data/hosting checks or the pre-recording owner checkpoint.

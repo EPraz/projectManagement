@@ -13,6 +13,8 @@ Status: ready-for-agent
 
 ## Decisions so far
 
+- 2026-10-17: Owner explicitly permits current package versions when necessary, including necessary major updates. Apply coupled package migrations with evidence and retained behavior checks; preserve data, hosting and pre-recording review boundaries.
+
 - 2026-10-17: [Ticket 01](issues/01-trustworthy-checks-and-local-startup.md) resolved after passing clean local startup and canonical checks; [evidence](evidence/01-baseline.md) and [review](evidence/01-review.md) are recorded. Implementation commit 75165b8.
 
 - Preserve React/Vite, modular NestJS, Prisma/PostgreSQL and Vercel/Render/Neon free deployment.
@@ -45,8 +47,8 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | Ticket | Status | Blocked by |
 | --- | --- | --- |
 | [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md) | resolved | None |
-| [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | ready-for-agent | 01 |
-| [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | ready-for-agent | 01 |
+| [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | claimed | 01 |
+| [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | claimed | 01 |
 | [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | ready-for-agent | 01 |
 | [05: Make task movement truthful and recoverable](issues/05-reliable-task-movement.md) | ready-for-agent | 01 |
 | [06: Simplify demo sessions and navigation with a compatible request boundary](issues/06-demo-session-and-navigation.md) | ready-for-agent | 01 |
