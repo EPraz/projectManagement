@@ -111,6 +111,8 @@ El frontend también admite `npm start`. Si ya tenías archivos `.env` del despl
 
 En desarrollo, `DEV_PORT` fija el puerto del frontend (por defecto 5173). Si otro proyecto lo ocupa, elige uno libre y usa el mismo origen en `CLIENT_URL` del backend; por ejemplo, `DEV_PORT=5180` con `CLIENT_URL=http://localhost:5180`. Vite falla explícitamente si el puerto elegido está ocupado, en lugar de cambiar silenciosamente el origen. Mantén `VITE_API_URL=/api`, `VITE_SOCKET_URL=http://localhost:3000` y `API_PROXY_TARGET=http://localhost:3000` si la API local usa el puerto 3000.
 
+Si la base local ya contiene datos anteriores, puedes conservarlos y preparar la demo en otro esquema de **esa misma base**. En la preparación local actual se usa `schema=portfolio_demo` en ambas conexiones; los datos anteriores permanecen en `public`. Migra e inicializa siempre usando las dos URLs del esquema demo. Cambiar de esquema no copia ni borra los datos anteriores, y la restauración manual opera sobre el esquema señalado por las conexiones activas.
+
 La prueba de integración necesita una base PostgreSQL **local vacía y exclusiva de pruebas**, con un nombre terminado en `_test`. Define `TEST_DATABASE_URL` con esa conexión. Aplica las migraciones a esa misma base usando `DATABASE_URL` y `DIRECT_URL` antes de ejecutar:
 
 ```sh

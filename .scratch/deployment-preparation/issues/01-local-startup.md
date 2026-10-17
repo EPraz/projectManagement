@@ -28,3 +28,5 @@ The frontend had no `start` script; an alias to Vite now makes the owner's comma
 Original commands now start successfully: `npm run start:dev` in backend and `npm start` in frontend. Local frontend, API /health and proxied /api/health all return HTTP 200. Typecheck/lint validate the configuration change. Both services are left running for the owner.
 
 The current local database does not contain the dedicated Usuario demo: access correctly returns HTTP 503 with `Demo data is not initialized`. No migration, seed, reset or data import was run against that database. The owner has been asked whether to initialize a separate new local demo database or wait for manual Neon setup; this is a separate data initialization decision, not a remaining startup failure.
+
+2026-10-17 follow-up: The owner requested the current database. [Ticket 02](02-initialize-current-local-demo.md) initialized a new demo schema within it while preserving the original data. Demo entry now returns HTTP 201 and the populated workspace is usable.
