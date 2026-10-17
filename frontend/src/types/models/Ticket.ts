@@ -43,6 +43,6 @@ export type Ticket = {
   blockingTicket?: Ticket;
   tags?: string[];
   blockedTickets?: Ticket[];
-  _count: any;
+  _count: Record<string, number> | null;
   pairProgrammingUsers: User[];
 };

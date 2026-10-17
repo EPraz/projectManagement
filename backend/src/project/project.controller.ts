@@ -13,8 +13,6 @@ import {
 import { ProjectService } from './project.service';
 import { Project, User } from '@prisma/client';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';

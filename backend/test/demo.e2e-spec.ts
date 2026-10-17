@@ -22,7 +22,10 @@ const databaseUrl = process.env.TEST_DATABASE_URL;
 if (
   !databaseUrl ||
   !['127.0.0.1', 'localhost'].includes(new URL(databaseUrl).hostname) ||
-  !new URL(databaseUrl).pathname.endsWith('_test')
+  !/^\/[a-zA-Z0-9_]+_test$/.test(new URL(databaseUrl).pathname) ||
+  [...new URL(databaseUrl).searchParams].some(
+    ([key, value]) => key !== 'schema' || value !== 'public',
+  )
 ) {
   throw new Error(
     'TEST_DATABASE_URL must identify an isolated local database ending in _test',
@@ -79,6 +82,21 @@ describe('Acceso demo HTTP API', () => {
       .post('/auth/instant-login')
       .send({ email: 'someone@example.com' })
       .expect(400);
+  });
+
+  it.each([
+    '/users',
+    '/projects',
+    '/epics',
+    '/features',
+    '/tickets',
+    '/tasks',
+    '/sprints',
+    '/sprint-goals/unknown',
+    '/team-member-capacities',
+    '/retrospectives',
+  ])('requires an authenticated demo session for %s', async (path) => {
+    await request(app.getHttpServer()).get(path).expect(401);
   });
 
   it('reports database readiness without serving the former bundled frontend', async () => {

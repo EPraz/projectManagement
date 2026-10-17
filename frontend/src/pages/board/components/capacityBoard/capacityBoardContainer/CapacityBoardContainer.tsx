@@ -201,7 +201,7 @@ const CapacityBoardContainer = () => {
               userId: {
                 label: "User",
                 type: "select",
-                placeholder: !!editingRecord
+                placeholder: editingRecord
                   ? editingRecord.user.name
                   : "Select a user",
                 disabled: !!editingRecord,

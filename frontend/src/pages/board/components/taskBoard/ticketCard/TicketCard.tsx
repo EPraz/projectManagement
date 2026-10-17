@@ -34,7 +34,7 @@ const TicketCard: React.FC<TicketCardProps> = ({
   ticketStatuses,
 }) => {
   const [statusOpen, setStatusOpen] = useState<boolean>(false);
-  const [_, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const currentStatus = ticketStatuses?.find(
     (status) => status.id === ticket.statusId

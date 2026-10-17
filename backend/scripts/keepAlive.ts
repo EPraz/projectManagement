@@ -12,13 +12,10 @@ async function main() {
   });
 
   console.log(`[keepAlive] heartbeat updated at ${new Date().toISOString()}`);
+  await prisma.$disconnect();
 }
 
-main()
-  .catch((e) => {
-    console.error('[keepAlive] error', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((e) => {
+  console.error('[keepAlive] error', e);
+  process.exit(1);
+});

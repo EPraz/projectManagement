@@ -40,7 +40,7 @@ const BacklogBoard = () => {
     filters,
   } = useMemo(() => outletContext, [outletContext]);
   const [expandedTicketId, setExpandedTicketId] = useState<number | null>(null);
-  const [_, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const toggleExpand = (ticketId: number) => {
     setExpandedTicketId((prev) => (prev === ticketId ? null : ticketId));

@@ -186,7 +186,7 @@ export default function EpicsAndFeaturesPage() {
     new Set([mockData[0].id])
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [_, setSelectedItem] = useState<{
+  const [, setSelectedItem] = useState<{
     type: "epic" | "feature";
     id: string;
   } | null>(null);
@@ -242,7 +242,7 @@ export default function EpicsAndFeaturesPage() {
     setOpenDialog(true);
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority: string): "error" | "warning" | "success" | "default" => {
     switch (priority) {
       case "High":
         return "error";
@@ -381,7 +381,7 @@ export default function EpicsAndFeaturesPage() {
                       <Chip
                         label={feature.priority}
                         size="small"
-                        color={getPriorityColor(feature.priority) as any}
+                        color={getPriorityColor(feature.priority)}
                         sx={{ fontWeight: 500 }}
                       />
                       <Tooltip title={feature.assignee.name}>

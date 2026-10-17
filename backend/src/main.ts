@@ -23,4 +23,16 @@ async function bootstrap() {
   app.enableShutdownHooks();
   await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
 }
-void bootstrap();
+void bootstrap().catch((error: unknown) => {
+  if ((error as NodeJS.ErrnoException).code === 'EADDRINUSE') {
+    console.error(
+      'Backend port is occupied. Stop the application using it or choose a free PORT and update the frontend API/socket origins.',
+    );
+  } else {
+    console.error(
+      'Backend startup failed. Check the environment requirements and database availability.',
+    );
+  }
+  // Startup is fatal: failed listeners can leave Prisma/socket handles open.
+  process.exit(1);
+});

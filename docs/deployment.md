@@ -117,6 +117,8 @@ Sin `--confirm-demo-reset` el comando se rechaza. También se rechaza si no exis
 
 ## Desarrollo y pruebas
 
+La guía reproducible de arranque local, comandos de calidad y pruebas PostgreSQL aisladas está en [development.md](development.md). Usa el runner protegido `npm test` del backend para las pruebas con fixtures.
+
 Para trabajar localmente, copia los ejemplos a `.env` de cada aplicación, usa una base local independiente, ejecuta los comandos de inicialización anteriores y luego `npm run start:dev` en `backend` y `npm run dev` en `frontend`. El proxy local `/api` usa `API_PROXY_TARGET`; el socket usa `VITE_SOCKET_URL`.
 
 El frontend también admite `npm start`. Si ya tenías archivos `.env` del despliegue anterior, configura la conexión elegida en `DATABASE_URL`; no se necesita una segunda variable de conexión. `JWT_SECRET` debe ser aleatorio y tener al menos 32 caracteres. La URL directa de Neon se copia del proveedor cuando prepares producción.
@@ -128,7 +130,7 @@ Si la base local ya contiene datos anteriores, puedes conservarlos y preparar la
 La prueba de integración necesita una base PostgreSQL **local vacía y exclusiva de pruebas**, con un nombre terminado en `_test`. Define `TEST_DATABASE_URL` con esa conexión. Aplica las migraciones a esa misma base usando `DATABASE_URL` antes de ejecutar:
 
 ```sh
-node node_modules/jest/bin/jest.js --config test/jest-e2e.json --runInBand demo.e2e-spec.ts
+npm test -- demo.e2e-spec.ts
 ```
 
 Ejecuta el comando dentro de `backend`. La prueba rechaza hosts remotos y nombres sin sufijo `_test`; limpia las tablas de esa base, ejecuta el seed/restauración y verifica el contenido mediante HTTP. No apuntes variables de pruebas a Neon ni a la base anterior. No hace falta configurar los proveedores para esta verificación local.

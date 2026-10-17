@@ -106,7 +106,7 @@ export interface LayoutContextProps {
   >;
   visibleColumns: string[];
   setVisibleColumns: React.Dispatch<React.SetStateAction<string[]>>;
-  handleApplyFilter: (newFilters: any) => void;
+  handleApplyFilter: (newFilters: import("../FilterProps").FilterProps) => void;
 
   //Local States -> Board
   tabValue: number;

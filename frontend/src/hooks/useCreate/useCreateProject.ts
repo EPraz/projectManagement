@@ -30,7 +30,7 @@ export const useCreateProject = () => {
       const newProject: Project = await response.json();
       showSnackbarMessage("Project created successfully!", "success");
       return newProject;
-    } catch (error) {
+    } catch {
       showSnackbarMessage("Error creating project", "error");
       return null;
     } finally {

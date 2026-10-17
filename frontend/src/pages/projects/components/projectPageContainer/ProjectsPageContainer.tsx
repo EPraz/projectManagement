@@ -78,7 +78,6 @@ const ProjectsPageContainer = () => {
   const handleDeleteProject = async (data: Partial<Project>) => {
     const success = await deleteProject(data);
     if (success) {
-      handleMenuClick;
       const fetchProjects = async () => {
         const data = await loadProjects();
         setProjects(data);

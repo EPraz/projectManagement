@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Implementation started under the owner's authorization to advance the approved sequence without intermediate owner reviews. Review base: a713e85. Approved browser, HTTP/WebSocket and focused regression seams remain in force.

@@ -14,6 +14,8 @@ Status: deferred-until-refactor-and-quality-work
 
 ## Decisions so far
 
+- 2026-10-17: Before recording the walkthrough, notify the owner and wait for their design feedback and explicit confirmation that the application is ready. Approval of the story, tickets or refactor does not satisfy this recording checkpoint. Continue quality work and verification in the meantime.
+
 - Preserve the existing cloud deployment and demo data while defining the presentation phase.
 - Follow the owner's multi-session workflow: complete the interview, confirm shared understanding, then to-spec and to-tickets before implementation.
 - Round 1 confirmed by the owner: fix the project-progress defect, verify the chosen recording journey and triage dependency advisories for immediate applicability before final captures/recording. General refactor, bundle work and full scaffold-test repair remain separate work.

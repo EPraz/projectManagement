@@ -136,7 +136,7 @@ const TeamMembersContainer = () => {
 
     // Apply role filters
     const activeRoles = Object.entries(filters.roles)
-      .filter(([_, isActive]) => isActive)
+      .filter(([, isActive]) => isActive)
       .map(([role]) => role);
 
     if (activeRoles.length > 0) {

@@ -37,7 +37,7 @@ export const handleRegisterSubmit = async (
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-    } catch (err) {
+    } catch {
       setError("Registration failed. Please try again.");
     }
   } else {

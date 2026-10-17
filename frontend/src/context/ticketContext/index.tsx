@@ -33,7 +33,7 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [allTickets, setAllTickets] = useState<Ticket[]>([]);
-  const [_, setLoadingTickets] = useState(false);
+  const [, setLoadingTickets] = useState(false);
 
   const projectData = useMemo(() => project, [project]);
   const sprintData = useMemo(() => sprint, [sprint]);

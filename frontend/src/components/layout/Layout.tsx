@@ -153,7 +153,7 @@ const Layout = () => {
     initialBacklogColumns
   );
 
-  const handleApplyFilter = (newFilters: any) => {
+  const handleApplyFilter = (newFilters: FilterProps) => {
     setFilters(newFilters);
   };
 
@@ -362,7 +362,6 @@ const Layout = () => {
       setSprint,
       setOpenCreateSprintGoalDialog,
       sprint?.id,
-      ,
       setLocalSprintGoals,
     ]
   );
@@ -452,7 +451,7 @@ const Layout = () => {
           setSidebarOpen={setSidebarOpen}
         />
         <MainContent sidebarOpen={sidebarOpen}>
-          <Header projectName={project?.title!} projectId={project?.id!} />
+          <Header projectName={project?.title ?? ""} projectId={project?.id ?? ""} />
           <PageContent>
             <Outlet
               context={{

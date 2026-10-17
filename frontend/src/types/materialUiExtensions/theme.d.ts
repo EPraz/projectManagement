@@ -28,5 +28,7 @@ declare module "@mui/material/styles" {
 
 // Para styled-components también necesitamos extender el tema
 declare module "styled-components" {
-  export interface DefaultTheme extends Theme {}
+  export interface DefaultTheme extends Theme {
+    palette: Theme["palette"];
+  }
 }

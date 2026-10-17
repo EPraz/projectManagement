@@ -7,11 +7,11 @@ import { jest } from "@jest/globals";
 fetchMock.enableMocks();
 
 if (typeof global.TextEncoder === "undefined") {
-  (global as any).TextEncoder = TextEncoder;
+  Object.defineProperty(global, "TextEncoder", { value: TextEncoder, configurable: true });
 }
 
 if (typeof global.TextDecoder === "undefined") {
-  (global as any).TextDecoder = TextDecoder;
+  Object.defineProperty(global, "TextDecoder", { value: TextDecoder, configurable: true });
 }
 
 jest.mock("../frontend/src/constants/apiConstant", () => ({

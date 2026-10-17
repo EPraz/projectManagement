@@ -4,6 +4,8 @@ Status: ready-for-agent
 
 ## Notes
 
+- Owner instruction (2026-10-17): continue implementation and automated verification, but notify the owner and wait for design feedback and explicit readiness confirmation before recording the walkthrough. This checkpoint applies when the deferred presentation phase resumes.
+
 - The public demo is deployed and its earlier project-list routing defect is fixed.
 - Owner changed priority to code refactoring/product quality before final README and walkthrough, then explicitly invoked to-spec.
 - Existing backlog is the source inventory. Presentation decisions remain saved separately and are deferred until this phase is verified.
@@ -40,7 +42,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 | Ticket | Status | Blocked by |
 | --- | --- | --- |
-| [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md) | ready-for-agent | None |
+| [01: Establish trustworthy checks and isolated local startup](issues/01-trustworthy-checks-and-local-startup.md) | claimed | None |
 | [02: Address applicable dependency findings without uncontrolled upgrades](issues/02-dependency-remediation.md) | ready-for-agent | 01 |
 | [03: Enforce the reliable baseline in CI](issues/03-quality-gates-ci.md) | ready-for-agent | 01 |
 | [04: Make project progress correct in both project views](issues/04-accurate-project-progress.md) | ready-for-agent | 01 |

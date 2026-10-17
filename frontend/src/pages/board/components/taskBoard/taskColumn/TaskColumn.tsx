@@ -13,7 +13,7 @@ import {
 
 const TaskColumn: React.FC<TaskColumnProps> = ({ tasks, addTask, id }) => {
   const { setNodeRef } = useDroppable({ id });
-  const [_, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const handleOpenEdit = (task: Task) => {
     setSearchParams(

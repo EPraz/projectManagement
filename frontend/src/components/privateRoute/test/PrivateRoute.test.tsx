@@ -7,7 +7,8 @@ jest.mock("../../../context", () => ({
   useAuth: jest.fn(),
 }));
 
-const { useAuth } = require("../../../context");
+import { useAuth as useAuthContext } from "../../../context";
+const useAuth = useAuthContext as jest.Mock;
 
 describe("PrivateRoute Component", () => {
   afterEach(() => {

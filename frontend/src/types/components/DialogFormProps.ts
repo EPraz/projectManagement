@@ -1,7 +1,7 @@
-import { DefaultValues } from "react-hook-form";
+import { DefaultValues, FieldValues } from "react-hook-form";
 import type * as yup from "yup";
 
-export interface DialogFormProps<T extends Record<string, any>> {
+export interface DialogFormProps<T extends FieldValues> {
   open: boolean;
   onClose: () => void;
   onDelete?: () => void;

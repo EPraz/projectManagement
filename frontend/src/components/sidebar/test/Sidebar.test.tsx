@@ -50,7 +50,7 @@ describe("Sidebar Component", () => {
           <StyledComponentsThemeProvider theme={theme}>
             <MemoryRouter>
               <Sidebar
-                project={{ id: "123", title: "Test Project" } as any}
+                project={{ id: "123", title: "Test Project" } as React.ComponentProps<typeof Sidebar>["project"]}
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpenMock}
               />

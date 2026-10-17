@@ -1,4 +1,4 @@
-import { DefaultValues, Path } from "react-hook-form";
+import { DefaultValues, FieldValues, Path } from "react-hook-form";
 import type * as yup from "yup";
 
 export interface Section {
@@ -19,7 +19,7 @@ export interface SelectField<T> {
   options: SelectFieldOption[];
 }
 
-export interface EditDialogFormProps<T extends Record<string, any>> {
+export interface EditDialogFormProps<T extends FieldValues> {
   open: boolean;
   onClose: () => void;
   onDelete?: (data: T) => void;

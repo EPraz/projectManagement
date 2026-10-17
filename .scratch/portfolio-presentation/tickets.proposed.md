@@ -60,6 +60,7 @@ Each ticket delivers a verifiable outcome. Schema/API changes are not invented f
 
 **What it delivers:** A viewer can watch the real application across its main areas in approximately 3:00–3:30 and follow its product value without audio.
 
+- [ ] Before recording, notify the owner, collect their design feedback and wait for explicit confirmation that the application is ready. Prior story/ticket approval does not waive this checkpoint (owner instruction, 2026-10-17).
 - [ ] Capture the agreed Orbit story and coverage using the verified local environment; recording edits may remain there.
 - [ ] Produce an MP4 with legible English captions in the picture and no narration, plus matching Markdown transcript/chapters.
 - [ ] The video includes an actual ticket state change and a real second-window update, with no fabricated UI/results or unsupported feature claims.

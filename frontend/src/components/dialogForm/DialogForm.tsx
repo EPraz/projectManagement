@@ -8,7 +8,7 @@ import {
   MenuItem,
   Select,
 } from "@mui/material";
-import { useForm, Controller, type Path } from "react-hook-form";
+import { useForm, Controller, type Path, type FieldValues, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -26,7 +26,7 @@ import {
   StyledDialogContent,
 } from "./DialogForm.styles";
 
-const DialogForm = <T extends Record<string, any>>({
+const DialogForm = <T extends FieldValues>({
   open,
   onClose,
   onSubmit,
@@ -43,7 +43,9 @@ const DialogForm = <T extends Record<string, any>>({
     reset,
     formState: { errors, isDirty },
   } = useForm<T>({
-    resolver: yupResolver(schema) as any,
+    // Yup makes generic keys optional in its inferred type; the schema prop
+    // already constrains the validated values to this form's T.
+    resolver: yupResolver(schema) as unknown as Resolver<T>,
     defaultValues,
     disabled,
   });
@@ -58,7 +60,7 @@ const DialogForm = <T extends Record<string, any>>({
 
   const handleDelete = () => {
     reset();
-    onDelete && onDelete();
+    onDelete?.();
   };
 
   const internalSubmit = (data: T) => {
@@ -136,7 +138,7 @@ const DialogForm = <T extends Record<string, any>>({
                     {fieldOptions.placeholder}
                   </MenuItem>
                 )}
-                {fieldOptions?.options?.map((option: any) => (
+                {fieldOptions?.options?.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.label}
                   </MenuItem>
