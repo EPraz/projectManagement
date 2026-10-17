@@ -22,6 +22,8 @@ The frontend's production-dependency audit (`npm audit --omit=dev`, 2026-10-17) 
 
 ## Proposed priorities
 
+Browser verification after fixing the cloud project list also exposed a separate summary inconsistency: project cards show 0% progress despite completed demo tickets, while the overview reports progress. Review the status-to-progress mapping as its own follow-up; it was not changed in the routing fix.
+
 1. **Keep the public demo useful.** Limit request rates, excessive record creation and bulk operations; review the experience after visitor edits. Preserve the agreed manual restoration model unless the owner chooses another policy. A dedicated shared demo identity is already implemented; this item does not introduce personal accounts.
 2. **Repair the existing backend test suite.** The 25 scaffold unit suites fail at the review base as well as the current version. Replace or repair misleading scaffolding with meaningful checks at public boundaries, and cover critical CRUD/parent-child interactions as the next changes touch them. The separate eight-test API/seed integration suite already passes.
 3. **Add CI gates.** Run builds, typechecking and reliable tests before deployment. Establish a trustworthy baseline rather than hiding existing failures behind broad skips.

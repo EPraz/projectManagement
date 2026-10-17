@@ -65,3 +65,12 @@ Review totals: Standards — 0 hard violations, 1 optional contract-cleanup obse
 - Updated GitHub's homepage to the stable frontend URL. Current URL/configuration and manual maintenance commands are in `docs/deployment.md`.
 - Vercel's build reported dependency advisories. A focused `npm audit --omit=dev` on the frontend reports 13 advisories: 9 high, 4 moderate, 0 critical. Exploitability/reachability was not assessed, and no automatic dependency upgrades were applied. Track this as early follow-up work.
 - Remaining limits: no real-browser visual/responsive/cookie-policy QA, no separate 15-minute idle recovery exercise, and the already documented 25 pre-existing scaffold unit-test failures. Cloud HTTP/WebSocket success does not imply these checks passed.
+
+## Browser-discovered empty list correction — 2026-10-17
+
+- The owner reported the main Projects screen was empty. The previous smoke checks used `/api/projects` while the real frontend requests `/api/projects/`. A fresh headless Chrome session reproduced "No projects yet" even though the canonical API returned two seeded projects.
+- Confirmed the routing boundary: `/api/projects/` returned SPA HTML with HTTP 200, and trailing-slash POST demo entry returned 405. The existing loader catches JSON parsing errors and returns an empty list. No data was missing from Neon.
+- Added the real-deployment regression check `frontend/scripts/check-deployment.mjs` and observed it fail before the fix. Configured only `trailingSlash: false` in Vercel so requests canonicalize before external API rewrites and the SPA fallback.
+- Deployment `dpl_5LhHeUfG3Aq1pgCpMQwSmrCTJgDc` at app/config commit `775b95ed9c28c99bd26677edc9e9e904370910ce` is Ready. The same regression probe passes against the stable production URL, including GET/POST, cookie refresh, users/projects, unauthorized/unknown API responses and SPA deep links.
+- Re-ran the original real-Chrome reproduction: both project titles render with 18 tickets, 3 sprints and 6 members each. Verified authenticated reload at viewport widths 1440, 1024, 768 and 320, then opened Launchpad's populated overview. This supersedes the earlier absence of browser-flow evidence for these particular checks; it is not a full design/accessibility audit.
+- No reset, reseed or unrelated refactor. Chrome tooling and diagnostic captures remain in explicitly ignored temporary/debug storage; no test credentials were logged. Details: issue 04.
