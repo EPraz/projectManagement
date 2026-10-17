@@ -1,6 +1,6 @@
 # Project Management App — Full-Stack Agile Platform
 
-Production-ready project management platform inspired by Azure DevOps.  
+Production-ready project management platform inspired by Azure DevOps.
 Designed to manage projects, teams, sprints, epics, features, tickets, and retrospectives with real-time collaboration and analytics.
 
 Built with a modular NestJS backend and a React frontend. Prepared for separate deployments on **Render** and **Vercel**, with **Neon PostgreSQL**. See the [deployment guide](docs/deployment.md).
@@ -114,6 +114,5 @@ This project was built to demonstrate:
    <img src="frontend/src/assets/ProjectManagementCaptureDesktop.png" alt="Login Preview" width="800" /> &nbsp;&nbsp;&nbsp;
 </p>
 <p align="center">
-   <img src="frontend/src/assets/projectManagementCapture2.png" alt="Project Dashboard Preview" width="800" /> &nbsp;&nbsp;&nbsp; 
+   <img src="frontend/src/assets/projectManagementCapture2.png" alt="Project Dashboard Preview" width="800" /> &nbsp;&nbsp;&nbsp;
 </p>
-
