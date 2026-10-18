@@ -1,0 +1,9 @@
+# Recruiter README and setup — 2026-10-18
+
+Replaced obsolete presentation with an English problem/contribution/workflow explanation, current React/NestJS/Prisma/PostgreSQL/Socket.IO architecture, original personal authorship and accurate shared-demo limitations. Removed unsupported RBAC/production-ready claims and corrected chart/mobile wording. Reused detailed development/deployment documentation; corrected its stale browser-CI paragraph. Licensing is unchanged.
+
+Three images come from the real production-build take: overview, ticket-row Taskboard and actual390px ticket editor. The poster is from the final export. A local Markdown renderer and browser loaded all four images, rendered the real Mermaid diagram and produced zero browser exceptions; inspected top/engineering/setup views. This is a local rendering, not a new public GitHub revision. Final media integration is local under06, awaiting owner publication approval.
+
+Clone-equivalent source archive `fa754a8` contains no ignored private environment/node_modules. Both committed lockfiles installed successfully with Node22. Example files were copied and adjusted only to new local ports/database and a locally generated secret. Against the new empty `project_setup_presentation` database, Prisma generation,19 migrations, explicit demo seed, backend build, API/Vite startup and real browser demo entry/overview passed. Both Orbit and Launchpad were populated. See [setup result](04-setup.json). Setup uses the built Nest application after its documented build (the same environment/startup boundary), with Vite dev; the README offers the equivalent `start:dev` watch mode. No public database/normal private environment was used or reset.
+
+Repository-relative links/images are checked before handoff. Intended new hosted video links must be verified after the owner's approval and deployment; no placeholder export is published.

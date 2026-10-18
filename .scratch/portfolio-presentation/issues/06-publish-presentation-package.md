@@ -1,7 +1,7 @@
 # 06: Deliver the public viewer and coherent publication
 
 Type: task
-Status: ready-for-agent
+Status: claimed
 Blocked by: 04, 05
 
 ## What to build
@@ -23,3 +23,6 @@ an Aster-style public viewing page and a published README/media package with act
 2026-10-18 owner addition: explicitly requests an Aster-style web page to view the video. This supersedes the former no-player-page boundary; native browser playback on the existing hosting is now included.
 
 2026-10-18: Owner explicitly accepts the reconciled to-tickets breakdown and dependencies. Acceptance criteria now match the confirmed spec, including the public viewer and complete external verification. The original preparation tickets remain resolved.
+
+
+2026-10-18:04/05 are resolved with evidence. Native public viewer and final media integration are implemented locally. Complete verification and code-review against2339dbc are underway. The latest owner instruction requires review/approval of the finished export before any push/deploy/upload; final public delivery remains pending that approval.

@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-18",
+  "source": "fa754a8",
+  "environment": "Node 22; new empty loopback PostgreSQL database; examples only",
+  "databaseName": "project_setup_presentation",
+  "lockedInstalls": "frontend and backend npm ci passed",
+  "prismaGeneration": "passed",
+  "committedMigrations": "passed",
+  "explicitSeed": "passed",
+  "backendBuild": "passed",
+  "startups": "API and Vite ready",
+  "browser": "demo login; both populated projects; real overview",
+  "credentials": "generated locally; not exported"
+}

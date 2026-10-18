@@ -133,3 +133,12 @@ Owner explicitly invokes implement for all remaining tickets and additionally re
 Owner confirms final review base2339dbc. All commits and media stay local until explicit approval of the finished video before publication.
 
 - Implementation03 resolved:17 real local rehearsal scenes pass with independent-context ticket/task WebSocket transitions, zero observer reloads and canonical API confirmation; read-only cloud eight-area navigation passes at390/1440. The recording uses the task-state editor for a readable reliable transition, while the retained actual drag regression passes separately. [Evidence](evidence/03-rehearsal.md).04/05 claimed;06 stays gated by both. All media/package commits remain local until owner publication approval.
+
+
+## Presentation artifacts prepared — 2026-10-18
+
+04 resolved: [README/setup evidence](evidence/04-readme.md), real screenshots, Mermaid rendering and successful clean example-only installation.05 resolved: [actual export](evidence/05-video.md),182.56s/1080p/no audio,17chapters/21English cues,24.04s actual mobile/dark, full decode and chronological/key-frame inspection. Two real independent-session events and persisted states remain verified. The final file is about6MB.
+
+06 claimed: public viewer outside AuthProvider, native playback/chapters/transcript/downloads, media-error recovery and preserved sessions. Local viewer tests pass at390/1440 in both appearances, including keyboard and fullscreen. Full production-browser suite and final two-axis review against2339dbc are in progress.80frontend tests/12snapshots and58backend tests pass; types/lint pass with only12existing frontend Fast Refresh warnings. No dependencies/schema/API changes.
+
+All source/media/docs commits remain local. Owner must review the finished MP4 and local viewer and explicitly approve publication before push/deploy/upload. Final hosted delivery checks/publication revision remain outstanding under06. No cloud visitor-data reset/staging is authorized or needed.

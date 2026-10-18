@@ -1,0 +1,169 @@
+{
+  "title": "From planning to delivery",
+  "duration": 182.56,
+  "width": 1920,
+  "height": 1080,
+  "fps": 25,
+  "video": "/walkthrough/project-management-walkthrough.mp4",
+  "poster": "/walkthrough/poster.jpg",
+  "captions": "/walkthrough/project-management-walkthrough.vtt",
+  "chapters": [
+    {
+      "id": "entry",
+      "title": "A workspace for delivery",
+      "start": 0,
+      "duration": 14.04,
+      "captions": [
+        "An original full-stack project for planning, tracking and reviewing team delivery.",
+        "Explore populated fictional projects without creating a personal account."
+      ]
+    },
+    {
+      "id": "overview",
+      "title": "Project context, sprint focus",
+      "start": 14.04,
+      "duration": 8.04,
+      "captions": [
+        "Project progress covers the whole project. Sprint metrics follow the selected sprint."
+      ]
+    },
+    {
+      "id": "hierarchy",
+      "title": "Connect the bigger picture",
+      "start": 22.08,
+      "duration": 10.04,
+      "captions": [
+        "Epics and features link project goals to concrete tickets across sprints."
+      ]
+    },
+    {
+      "id": "backlog",
+      "title": "Plan the selected sprint",
+      "start": 32.12,
+      "duration": 8.04,
+      "captions": [
+        "The Backlog keeps sprint work searchable, with ticket-level filters and configurable columns."
+      ]
+    },
+    {
+      "id": "details",
+      "title": "Requirements, estimates and child tasks",
+      "start": 40.16,
+      "duration": 20.04,
+      "captions": [
+        "Inspect the ticket requirements, ownership and planning details.",
+        "Story points, time estimates and child tasks stay connected to the same work item."
+      ]
+    },
+    {
+      "id": "taskboard",
+      "title": "Tickets in rows. Tasks by state.",
+      "start": 60.2,
+      "duration": 8.04,
+      "captions": [
+        "Each row is a ticket. Columns represent the independent states of its tasks."
+      ]
+    },
+    {
+      "id": "ticket-state",
+      "title": "Session A \u00b7 update the ticket",
+      "start": 68.24,
+      "duration": 8.0,
+      "captions": [
+        "Move the ticket from In Progress to Code Review through the actual API."
+      ]
+    },
+    {
+      "id": "live-ticket",
+      "title": "Session B \u00b7 no refresh",
+      "start": 76.24,
+      "duration": 8.0,
+      "captions": [
+        "The same change arrives in an independent browser session over WebSockets. No refresh."
+      ]
+    },
+    {
+      "id": "task-move",
+      "title": "Session A \u00b7 move a child task",
+      "start": 84.24,
+      "duration": 10.04,
+      "captions": [
+        "Task state is separate from ticket state. Move a child task into In Progress."
+      ]
+    },
+    {
+      "id": "live-task",
+      "title": "Session B \u00b7 work stays in sync",
+      "start": 94.28,
+      "duration": 10.04,
+      "captions": [
+        "The moved task appears in the second session, while its parent ticket remains in Code Review."
+      ]
+    },
+    {
+      "id": "team",
+      "title": "People behind the work",
+      "start": 104.32,
+      "duration": 8.04,
+      "captions": [
+        "The project-wide team connects people to assigned work and sprint planning."
+      ]
+    },
+    {
+      "id": "capacity",
+      "title": "Plan available capacity",
+      "start": 112.36,
+      "duration": 10.04,
+      "captions": [
+        "Sprint capacity shows the team\u2019s available hours and planned workload."
+      ]
+    },
+    {
+      "id": "goals",
+      "title": "Track the sprint outcome",
+      "start": 122.4,
+      "duration": 10.04,
+      "captions": [
+        "Sprint goals pair a clear outcome with an actionable checklist and progress."
+      ]
+    },
+    {
+      "id": "retrospective",
+      "title": "Make room for feedback",
+      "start": 132.44,
+      "duration": 14.04,
+      "captions": [
+        "Review what worked, what did not, and what the team can improve next.",
+        "Retrospective cards and reactions belong to the selected sprint."
+      ]
+    },
+    {
+      "id": "mobile",
+      "title": "Same workflow. Smaller screen.",
+      "start": 146.48,
+      "duration": 16.04,
+      "captions": [
+        "A real 390px viewport: responsive navigation, sprint work and contextual editing."
+      ]
+    },
+    {
+      "id": "appearance",
+      "title": "Two complete appearances",
+      "start": 162.52,
+      "duration": 8.0,
+      "captions": [
+        "Switch appearance explicitly. The choice is remembered across visits."
+      ]
+    },
+    {
+      "id": "close",
+      "title": "Built across the stack",
+      "start": 170.52,
+      "duration": 12.04,
+      "captions": [
+        "React + TypeScript \u2192 NestJS REST API \u2192 Prisma + PostgreSQL. Socket.IO keeps sessions synchronized.",
+        "Explore the live demo or inspect the implementation on GitHub."
+      ]
+    }
+  ]
+}

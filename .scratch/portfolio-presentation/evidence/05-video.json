@@ -1,0 +1,164 @@
+{
+  "applicationCommit": "fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d",
+  "origin": "http://127.0.0.1:56731",
+  "duration": 182.56,
+  "size": [
+    1920,
+    1080
+  ],
+  "fps": 25.0,
+  "bytes": 6092074,
+  "audio": "none; English captions are embedded",
+  "checks": {
+    "database": "project_management_presentation",
+    "loopback": true,
+    "work": {
+      "project": "Orbit \u2014 Product Delivery",
+      "sprint": "Sprint 2 \u2014 Delivery",
+      "ticket": "Build the sprint overview",
+      "task": "Implement the workflow",
+      "ticketId": 7,
+      "taskId": 13
+    },
+    "websocket": {
+      "independentContexts": true,
+      "event": "ticketUpdated",
+      "events": [
+        {
+          "event": "ticketUpdated",
+          "ticketId": 7,
+          "statusId": "5af4ba7d-3400-4e74-9c0d-8dda48ff60d9",
+          "taskStatusId": "87d1c0c2-9e7e-4b16-bf4d-a72847da0642",
+          "at": 73.94447829999999
+        },
+        {
+          "event": "ticketUpdated",
+          "ticketId": 7,
+          "statusId": "5af4ba7d-3400-4e74-9c0d-8dda48ff60d9",
+          "taskStatusId": "df67c0c5-b784-4637-9bd1-7a0bccf21bdf",
+          "at": 84.6078704
+        }
+      ],
+      "observerReloads": 0,
+      "canonicalTicketState": "CODE_REVIEW",
+      "canonicalTaskState": "IN_PROGRESS",
+      "persistence": true
+    },
+    "browserErrors": [],
+    "scenes": 17
+  },
+  "chapters": [
+    {
+      "id": "entry",
+      "title": "01 / A workspace for delivery",
+      "start": 0,
+      "duration": 14.04
+    },
+    {
+      "id": "overview",
+      "title": "02 / Project context, sprint focus",
+      "start": 14.04,
+      "duration": 8.04
+    },
+    {
+      "id": "hierarchy",
+      "title": "03 / Connect the bigger picture",
+      "start": 22.08,
+      "duration": 10.04
+    },
+    {
+      "id": "backlog",
+      "title": "04 / Plan the selected sprint",
+      "start": 32.12,
+      "duration": 8.04
+    },
+    {
+      "id": "details",
+      "title": "05 / Requirements, estimates and child tasks",
+      "start": 40.16,
+      "duration": 20.04
+    },
+    {
+      "id": "taskboard",
+      "title": "06 / Tickets in rows. Tasks by state.",
+      "start": 60.2,
+      "duration": 8.04
+    },
+    {
+      "id": "ticket-state",
+      "title": "07 / Session A \u00b7 update the ticket",
+      "start": 68.24,
+      "duration": 8.0
+    },
+    {
+      "id": "live-ticket",
+      "title": "08 / Session B \u00b7 no refresh",
+      "start": 76.24,
+      "duration": 8.0
+    },
+    {
+      "id": "task-move",
+      "title": "09 / Session A \u00b7 move a child task",
+      "start": 84.24,
+      "duration": 10.04
+    },
+    {
+      "id": "live-task",
+      "title": "10 / Session B \u00b7 work stays in sync",
+      "start": 94.28,
+      "duration": 10.04
+    },
+    {
+      "id": "team",
+      "title": "11 / People behind the work",
+      "start": 104.32,
+      "duration": 8.04
+    },
+    {
+      "id": "capacity",
+      "title": "12 / Plan available capacity",
+      "start": 112.36,
+      "duration": 10.04
+    },
+    {
+      "id": "goals",
+      "title": "13 / Track the sprint outcome",
+      "start": 122.4,
+      "duration": 10.04
+    },
+    {
+      "id": "retrospective",
+      "title": "14 / Make room for feedback",
+      "start": 132.44,
+      "duration": 14.04
+    },
+    {
+      "id": "mobile",
+      "title": "15 / Same workflow. Smaller screen.",
+      "start": 146.48,
+      "duration": 16.04
+    },
+    {
+      "id": "appearance",
+      "title": "16 / Two complete appearances",
+      "start": 162.52,
+      "duration": 8.0
+    },
+    {
+      "id": "close",
+      "title": "17 / Built across the stack",
+      "start": 170.52,
+      "duration": 12.04
+    }
+  ],
+  "fullDecode": "passed",
+  "files": [
+    "frontend/public/walkthrough/project-management-walkthrough.mp4",
+    "frontend/public/walkthrough/project-management-walkthrough.vtt",
+    "frontend/public/walkthrough/poster.jpg"
+  ],
+  "sha256": "6caced47616574e2fe86d8702f8aa209009e0eb5a0a57d9f5d5e142854d64097",
+  "fastStart": "moov precedes mdat",
+  "captionConsistency": "all 21 cues match metadata and transcript",
+  "publication": "Not published; owner approval required before push/deploy/upload."
+}

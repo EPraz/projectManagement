@@ -1,0 +1,64 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:07.020
+An original full-stack project for planning, tracking and reviewing team delivery.
+
+00:00:07.020 --> 00:00:14.040
+Explore populated fictional projects without creating a personal account.
+
+00:00:14.040 --> 00:00:22.080
+Project progress covers the whole project. Sprint metrics follow the selected sprint.
+
+00:00:22.080 --> 00:00:32.120
+Epics and features link project goals to concrete tickets across sprints.
+
+00:00:32.120 --> 00:00:40.160
+The Backlog keeps sprint work searchable, with ticket-level filters and configurable columns.
+
+00:00:40.160 --> 00:00:50.180
+Inspect the ticket requirements, ownership and planning details.
+
+00:00:50.180 --> 00:01:00.200
+Story points, time estimates and child tasks stay connected to the same work item.
+
+00:01:00.200 --> 00:01:08.240
+Each row is a ticket. Columns represent the independent states of its tasks.
+
+00:01:08.240 --> 00:01:16.240
+Move the ticket from In Progress to Code Review through the actual API.
+
+00:01:16.240 --> 00:01:24.240
+The same change arrives in an independent browser session over WebSockets. No refresh.
+
+00:01:24.240 --> 00:01:34.280
+Task state is separate from ticket state. Move a child task into In Progress.
+
+00:01:34.280 --> 00:01:44.320
+The moved task appears in the second session, while its parent ticket remains in Code Review.
+
+00:01:44.320 --> 00:01:52.360
+The project-wide team connects people to assigned work and sprint planning.
+
+00:01:52.360 --> 00:02:02.400
+Sprint capacity shows the team’s available hours and planned workload.
+
+00:02:02.400 --> 00:02:12.440
+Sprint goals pair a clear outcome with an actionable checklist and progress.
+
+00:02:12.440 --> 00:02:19.460
+Review what worked, what did not, and what the team can improve next.
+
+00:02:19.460 --> 00:02:26.480
+Retrospective cards and reactions belong to the selected sprint.
+
+00:02:26.480 --> 00:02:42.520
+A real 390px viewport: responsive navigation, sprint work and contextual editing.
+
+00:02:42.520 --> 00:02:50.520
+Switch appearance explicitly. The choice is remembered across visits.
+
+00:02:50.520 --> 00:02:56.540
+React + TypeScript → NestJS REST API → Prisma + PostgreSQL. Socket.IO keeps sessions synchronized.
+
+00:02:56.540 --> 00:03:02.560
+Explore the live demo or inspect the implementation on GitHub.
