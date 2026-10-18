@@ -8,7 +8,7 @@ test("compact project reads preserve progress in grid, list and the selected wor
   await enterDemo(page);
   const summaries: {
     id: string;
-    tickets: { statusId: string }[];
+    tickets: { statusId: string | null }[];
     ticketStatuses: { id: string; name: string }[];
   }[] = await (await list).json();
   for (const summary of summaries) {
@@ -94,4 +94,27 @@ test("malformed compact summary data stays distinct from an empty list and can r
   await expect(
     page.getByText("Orbit — Product Delivery", { exact: true })
   ).toBeVisible();
+});
+
+test("a valid null-status ticket remains incomplete in populated grid and list progress", async ({
+  page
+}) => {
+  await page.route("**/api/projects/?view=summary", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    const completed = data[0].ticketStatuses.find(
+      (status: { name: string }) => status.name === "COMPLETED"
+    );
+    data[0].tickets = [{ statusId: completed.id }, { statusId: null }];
+    await route.fulfill({ response, json: data });
+  });
+  await page.goto("/auth/instantLogin");
+  await page.getByRole("button", { name: /explore demo/i }).click();
+  await expect(page.getByText("50%", { exact: true })).toBeVisible();
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await page
+    .getByRole("button", { name: "Switch to list view", exact: true })
+    .click();
+  await expect(page.getByText("50%", { exact: true })).toBeVisible();
+  await expect(page.getByRole("alert")).toHaveCount(0);
 });

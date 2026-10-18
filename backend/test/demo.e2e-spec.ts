@@ -367,6 +367,44 @@ describe('Acceso demo HTTP API', () => {
         .expect(400);
   });
 
+  it('preserves valid stored statusless tickets in compact project reads', async () => {
+    const token = tokenOf(
+      await request(app.getHttpServer()).post('/auth/instant-login').send({}),
+    );
+    const project = await prisma.project.findFirstOrThrow({
+      include: { sprints: true },
+    });
+    const ticket = await prisma.ticket.create({
+      data: {
+        projectId: project.id,
+        sprintId: project.sprints[0].id,
+        title: 'Isolated statusless read fixture',
+        createdBy: 'visitor@demo.example',
+        statusId: null,
+      },
+    });
+    try {
+      const summary = await request(app.getHttpServer())
+        .get('/projects/?view=summary')
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      const result = (
+        summary.body as { id: string; tickets: { statusId: string | null }[] }[]
+      ).find((item) => item.id === project.id)!;
+      expect(result.tickets).toContainEqual({ statusId: null });
+      const workspace = await request(app.getHttpServer())
+        .get(`/projects/${project.id}?view=workspace`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      const saved = (
+        workspace.body as { tickets: { id: number; statusId: string | null }[] }
+      ).tickets.find((item) => item.id === ticket.id);
+      expect(saved).toMatchObject({ id: ticket.id, statusId: null });
+    } finally {
+      await prisma.ticket.delete({ where: { id: ticket.id } });
+    }
+  });
+
   it('attributes retrospective cards to the authenticated demo instead of a supplied author', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

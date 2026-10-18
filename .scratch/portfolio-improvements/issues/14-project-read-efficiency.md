@@ -19,3 +19,5 @@ Type: task
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
 
 2026-10-17: Claimed after13resolved atc21f8cf. Measure populated list/detail payload and Prisma query work against the isolated local PostgreSQL/application before selecting projections. Map project list/progress/avatar/team and canonical workspace/socket consumers; retain compatibility for default full reads and current stored data.
+
+2026-10-17 review correction: both axes found the summary guard rejected valid nullable Ticket.statusId. A real-browser mixed completed/null payload regression reproduced the list load error (missing50%progress). The summary type/guard and progress helper now preserve nullable/missing-status semantics and retain those tickets in the denominator. A local PostgreSQL HTTP fixture also verifies a stored null-status ticket survives summary/workspace reads. No stored status is renamed or invented. Final84-browser/45API checks required before closure.

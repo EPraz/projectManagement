@@ -56,7 +56,8 @@ export const readProjectSummaries = (value: unknown): ProjectSummary[] => {
       !Array.isArray(item.tickets) ||
       !item.tickets.every(
         (ticket: unknown) =>
-          record(ticket) && typeof ticket.statusId === "string"
+          record(ticket) &&
+          (ticket.statusId === null || typeof ticket.statusId === "string")
       ) ||
       !Array.isArray(item.sprints) ||
       !item.sprints.every(

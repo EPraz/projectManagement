@@ -10,7 +10,7 @@ export type ProjectSummary = Pick<
 > & {
   description?: string | null;
   updatedBy?: string | null;
-  tickets: Pick<Ticket, "statusId">[];
+  tickets: { statusId: Ticket["statusId"] | null }[];
   sprints: Pick<Sprint, "id">[];
   ticketStatuses: Pick<TicketStatus, "id" | "name">[];
   users: Pick<User, "id" | "name" | "email">[];

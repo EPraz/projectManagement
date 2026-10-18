@@ -2,7 +2,7 @@ import { Ticket, TicketStatus } from "../../types";
 
 export const getProjectProgress = (
   ticketStatuses: Pick<TicketStatus, "id" | "name">[],
-  allTickets: Pick<Ticket, "statusId">[]
+  allTickets: { statusId?: Ticket["statusId"] | null }[]
 ) => {
   const totalTickets = allTickets?.length || 0;
   if (totalTickets === 0) return 0;
