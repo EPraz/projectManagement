@@ -91,7 +91,7 @@ export class UpdateTicketDto {
 
   @IsDateString({}, { message: 'dueDate must be a valid ISO date string' })
   @IsOptional()
-  dueDate?: string;
+  dueDate?: string | null;
 
   @IsBoolean({ message: 'isBlocked must be a boolean' })
   @IsOptional()

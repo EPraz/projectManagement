@@ -4,7 +4,7 @@
 
 **Blocked by:** 04 — Create and edit tickets without losing context.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -25,3 +25,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after 04. Reuse the real C editor/exit surface, preserve task creation TODO/default fields, full status catalog and independent ticket state; verify canonical CRUD/status/parent return and pending/failure races.

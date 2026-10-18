@@ -1,6 +1,10 @@
 import { Box, Button, Typography } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
 import type { LayoutContextProps, Ticket } from "../../types";
 import ProjectProfile from "./components/ProjectProfile";
 import ProjectMetadata from "./components/ProjectMetadata";
@@ -12,20 +16,15 @@ import TeamWorkload from "./components/teamWorkload/TeamWorkload";
 import BlockersAndImpediments from "./components/blockersAndImpediments/BlockersAndImpediments";
 import SprintGoalsAndMilestones from "./components/sprintGoalsAndMilestones/SprintGoalsAndMilestones";
 export default function Dashboard() {
-  const {
-    project,
-    sprint,
-    allTickets,
-    tickets,
-    listOfSprints,
-    setSelectedTicket,
-    setOpenEditTicketDialog,
-  } = useOutletContext<LayoutContextProps>();
+  const { project, sprint, allTickets, tickets, listOfSprints } =
+    useOutletContext<LayoutContextProps>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   if (!project) return null;
   const openTicket = (ticket: Ticket) => {
-    setSelectedTicket(ticket);
-    setOpenEditTicketDialog(true);
+    const params = new URLSearchParams(searchParams);
+    params.set("ticketId", String(ticket.id));
+    setSearchParams(params);
   };
   return (
     <Box sx={{ minWidth: 0 }}>

@@ -1,6 +1,7 @@
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import type { TaskUpdate, TicketUpdate } from "../../services/workItemUpdates";
 import { useAuth, useProject, useSprint, useTicket } from "../../context";
+import { useWorkItemLinks } from "./useWorkItemLinks";
 import { useSprintPlanning } from "./useSprintPlanning";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
@@ -44,6 +45,7 @@ import DialogsContainer from "../dialogsContainer/DialogsContainer";
 import { Alert, Button } from "@mui/material";
 
 const Layout = () => {
+  const { clearDeletedTicket, clearDeletedTask } = useWorkItemLinks();
   // Providers
   const {
     project,
@@ -158,34 +160,27 @@ const Layout = () => {
         params.set("tab", newTab);
         setSearchParams(params, { replace: true });
       }
-    } else if (searchParams.toString()) {
-      setSearchParams({}, { replace: true });
+    } else if (currentTab) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("tab");
+      setSearchParams(params, { replace: true });
     }
 
     const ticketId = searchParams.get("ticketId");
     const taskId = searchParams.get("taskId");
 
-    if (ticketId) {
-      const foundTicket = allTickets.find((t) => t.id.toString() === ticketId);
-      if (foundTicket) {
-        setSelectedTicket(foundTicket);
-        setOpenEditTicketDialog(true);
-      }
-    } else {
-      setSelectedTicket(null);
-    }
-
-    if (taskId) {
-      const foundTask = allTickets
-        .flatMap((t) => t.tasks)
-        .find((task) => task.id.toString() === taskId);
-      if (foundTask) {
-        setSelectedTask(foundTask);
-        setOpenEditTaskDialog(true);
-      }
-    } else {
-      setSelectedTask(null);
-    }
+    const foundTicket = ticketId
+      ? allTickets.find((ticket) => String(ticket.id) === ticketId)
+      : null;
+    const foundTask = taskId
+      ? allTickets
+          .flatMap((ticket) => ticket.tasks)
+          .find((task) => String(task.id) === taskId)
+      : null;
+    setSelectedTicket(foundTicket ?? null);
+    setSelectedTask(foundTask ?? null);
+    setOpenEditTaskDialog(Boolean(foundTask));
+    setOpenEditTicketDialog(Boolean(foundTicket && !foundTask));
   }, [tabValue, searchParams, setSearchParams, location.pathname, allTickets]);
 
   // Local States -> Sprint
@@ -215,6 +210,11 @@ const Layout = () => {
     useState(false);
 
   useEffect(() => {
+    setOpenCreateTicketDialog(false);
+    setOpenTaskDialog(false);
+  }, [location.pathname, tabValue]);
+
+  useEffect(() => {
     setOpenCreateSprintDialog(false);
     setOpenDeleteSprintDialog(false);
     setOpenCreateSprintGoalDialog(false);
@@ -238,6 +238,7 @@ const Layout = () => {
       if (newTicket) {
         addAllTickets(newTicket);
       }
+      return Boolean(newTicket);
     },
     [createTicket, addAllTickets],
   );
@@ -259,11 +260,12 @@ const Layout = () => {
     async (data: Partial<Ticket>) => {
       const success = await deleteTicket(data);
       if (success) {
+        clearDeletedTicket(data?.id || 0);
         removeAllTickets(data?.id || 0);
       }
       return Boolean(success);
     },
-    [deleteTicket, removeAllTickets],
+    [deleteTicket, removeAllTickets, clearDeletedTicket],
   );
 
   const handleUpdateTicketStatus = useCallback(
@@ -300,11 +302,12 @@ const Layout = () => {
     async (data: Partial<Task>) => {
       const success = await deleteTask(data);
       if (success && data.id) {
+        clearDeletedTask(data.id);
         removeTask(data.id);
       }
       return Boolean(success);
     },
-    [deleteTask, removeTask],
+    [deleteTask, removeTask, clearDeletedTask],
   );
 
   const handleOnDragEndTask = useCallback(
@@ -517,6 +520,7 @@ const Layout = () => {
         {/* // All Dialog / Modals */}
         <DialogsContainer
           //Tasks
+          setSelectedTicketId={setSelectedTicketId}
           handleCreateTask={handleCreateTask}
           handleDeleteTask={handleDeleteTask}
           handleEditTask={handleEditTask}

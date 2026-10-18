@@ -3,13 +3,12 @@ import { DeleteConfirmationModal, DialogForm, Portal } from "..";
 import {
   createSprintSchema,
   createTaskSchema,
-  createTicketSchema,
   createSprintGoalSchema,
   editSprintGoalSchema,
   createGoalTaskSchema,
-  editGoalTaskSchema
+  editGoalTaskSchema,
 } from "../../validations";
-import { SprintGoalStatus } from "../../constants";
+import { SprintGoalStatus, TicketPriority, TicketType } from "../../constants";
 import { CreateSprintFormData, DialogsContainerProps } from "../../types";
 import { useParams, useSearchParams } from "react-router-dom";
 import { formatStatusName } from "../../helpers";
@@ -19,6 +18,7 @@ import TicketEditDialog from "../ticketEditDialog/TicketEditDialog";
 
 const DialogsContainer: React.FC<DialogsContainerProps> = ({
   //Tasks
+  setSelectedTicketId,
   openTaskDialog,
   setOpenTaskDialog,
   openEditTaskDialog,
@@ -88,7 +88,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   openDeleteGoalTaskDialog,
   setSelectedGoalTask,
   setOpenDeleteGoalTaskDialog,
-  handleDeleteGoalTask
+  handleDeleteGoalTask,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id: projectId } = useParams();
@@ -100,6 +100,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   const handleCloseCleanUrl = (param: "ticketId" | "taskId") => {
     const newParams = new URLSearchParams(searchParams);
     newParams.delete(param);
+    if (param === "ticketId") newParams.delete("ticketTab");
     setSearchParams(newParams, { replace: true });
   };
 
@@ -107,22 +108,30 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
     <Portal>
       {/* Create Section */}
       {openCreateTicketDialog && (
-        <DialogForm
-          open={openCreateTicketDialog}
-          title="Create Ticket"
+        <TicketEditDialog
+          projectName={project?.title}
+          open
+          ticket={null}
           onClose={() => setOpenCreateTicketDialog(false)}
-          onSubmit={handleCreateTicket}
-          schema={createTicketSchema}
+          onCreate={handleCreateTicket}
+          onSave={handleEditTicket}
+          statuses={project?.ticketStatuses}
+          users={project?.users}
+          sprints={listOfSprints}
+          features={project?.epics.flatMap((epic) => epic.features)}
+          tickets={allTickets}
+          projects={[]}
           disabled={loadingPostTickets}
-          defaultValues={{
+          initialValues={{
             title: "",
             description: "",
-            createdBy: currentUser?.email,
-            sprintId: sprint?.id
-          }}
-          fieldConfig={{
-            createdBy: { disabled: true, hidden: true },
-            sprintId: { disabled: true, hidden: true }
+            sprintId: sprint?.id,
+            statusId: project?.ticketStatuses.find(
+              (status) => status.name === "NEW",
+            )?.id,
+            type: TicketType.PRODUCT_BACKLOG_ITEM,
+            priority: TicketPriority.MEDIUM,
+            isBlocked: false,
           }}
         />
       )}
@@ -138,10 +147,10 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           defaultValues={{
             title: "",
             description: "",
-            createdBy: currentUser?.email
+            createdBy: currentUser?.email,
           }}
           fieldConfig={{
-            createdBy: { disabled: true, hidden: true }
+            createdBy: { disabled: true, hidden: true },
           }}
         />
       )}
@@ -160,15 +169,15 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             startDate: new Date().toDateString(),
             endDate: null,
             projectId: projectId,
-            createdBy: currentUser?.email
+            createdBy: currentUser?.email,
           }}
           fieldConfig={{
             startDate: {
-              label: "startDate"
+              label: "startDate",
             },
             endDate: { label: "endDate" },
             projectId: { disabled: true, hidden: true },
-            createdBy: { disabled: true, hidden: true }
+            createdBy: { disabled: true, hidden: true },
           }}
         />
       )}
@@ -184,7 +193,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           disabled={loadingCreateSprintGoal}
           defaultValues={{
             title: "",
-            description: ""
+            description: "",
           }}
         />
       )}
@@ -199,7 +208,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           schema={createGoalTaskSchema}
           disabled={loadingCreateGoalTask}
           defaultValues={{
-            title: ""
+            title: "",
           }}
         />
       )}
@@ -221,25 +230,44 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         />
       )}
 
-      {selectedTicket && openEditTicketDialog && (
-        <TicketEditDialog
-          features={project?.epics.flatMap((x) => x.features)}
-          onClose={() => {
-            setOpenEditTicketDialog(false);
-            handleCloseCleanUrl("ticketId");
-          }}
-          onSave={handleEditTicket}
-          onDelete={handleDeleteTicket}
-          open={openEditTicketDialog}
-          projects={[]}
-          sprints={listOfSprints}
-          statuses={project?.ticketStatuses}
-          ticket={selectedTicket}
-          tickets={allTickets}
-          users={project?.users}
-          disabled={loadingUpdateTickets || loadingDeleteTicket}
-        />
-      )}
+      {selectedTicket &&
+        openEditTicketDialog &&
+        !openEditTaskDialog &&
+        !openTaskDialog && (
+          <TicketEditDialog
+            key={selectedTicket.id}
+            initialTab={searchParams.get("ticketTab") === "tasks" ? 2 : 0}
+            onCreateTask={() => {
+              setSelectedTicketId(selectedTicket.id);
+              const params = new URLSearchParams(searchParams);
+              params.set("ticketTab", "tasks");
+              setSearchParams(params, { replace: true });
+              setOpenTaskDialog(true);
+            }}
+            onOpenTask={(task) => {
+              const params = new URLSearchParams(searchParams);
+              params.set("ticketId", String(selectedTicket.id));
+              params.set("taskId", String(task.id));
+              params.set("ticketTab", "tasks");
+              setSearchParams(params);
+            }}
+            features={project?.epics.flatMap((x) => x.features)}
+            onClose={() => {
+              setOpenEditTicketDialog(false);
+              handleCloseCleanUrl("ticketId");
+            }}
+            onSave={handleEditTicket}
+            onDelete={handleDeleteTicket}
+            open={openEditTicketDialog}
+            projects={[]}
+            sprints={listOfSprints}
+            statuses={project?.ticketStatuses}
+            ticket={selectedTicket}
+            tickets={allTickets}
+            users={project?.users}
+            disabled={loadingUpdateTickets || loadingDeleteTicket}
+          />
+        )}
 
       {selectedSprintGoal && openEditSprintGoalDialog && (
         <DialogForm
@@ -257,7 +285,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           defaultValues={{
             title: selectedSprintGoal.title,
             description: selectedSprintGoal.description || "",
-            goalsStatus: selectedSprintGoal.goalsStatus
+            goalsStatus: selectedSprintGoal.goalsStatus,
           }}
           fieldConfig={{
             goalsStatus: {
@@ -265,18 +293,18 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
               options: [
                 {
                   value: SprintGoalStatus.IN_PROGRESS,
-                  label: formatStatusName(SprintGoalStatus.IN_PROGRESS)
+                  label: formatStatusName(SprintGoalStatus.IN_PROGRESS),
                 },
                 {
                   value: SprintGoalStatus.COMPLETED,
-                  label: formatStatusName(SprintGoalStatus.COMPLETED)
+                  label: formatStatusName(SprintGoalStatus.COMPLETED),
                 },
                 {
                   value: SprintGoalStatus.AT_RISK,
-                  label: formatStatusName(SprintGoalStatus.AT_RISK)
-                }
-              ]
-            }
+                  label: formatStatusName(SprintGoalStatus.AT_RISK),
+                },
+              ],
+            },
           }}
         />
       )}
@@ -294,7 +322,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           schema={editGoalTaskSchema}
           disabled={loadingUpdateGoalTask}
           defaultValues={{
-            title: selectedGoalTask.title
+            title: selectedGoalTask.title,
           }}
         />
       )}

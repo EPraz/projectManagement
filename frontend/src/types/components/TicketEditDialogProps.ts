@@ -5,7 +5,7 @@ import {
   Sprint,
   Ticket,
   TicketStatus,
-  User
+  User,
 } from "../models";
 
 export interface TicketEditDialogProps {
@@ -21,4 +21,10 @@ export interface TicketEditDialogProps {
   projects: Project[] | undefined;
   tickets: Ticket[] | undefined; // For blocking ticket selection
   disabled?: boolean;
+  projectName?: string;
+  initialValues?: Partial<Ticket>;
+  onCreate?: (ticket: Partial<Ticket>) => Promise<boolean>;
+  initialTab?: number;
+  onCreateTask?: () => void;
+  onOpenTask?: (task: import("../models").Task) => void;
 }

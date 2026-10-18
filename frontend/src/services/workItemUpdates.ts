@@ -36,6 +36,7 @@ export type TicketUpdate = Partial<
   NullableEstimates & {
     sprintId?: string | null;
     featureId?: string | null;
+    dueDate?: string | null;
     storyPoints?: number | null;
   };
 
@@ -56,7 +57,7 @@ const assignee = (value: unknown) =>
   value === null ||
   (isRecord(value) &&
     [value.id, value.name, value.email].every(
-      (field) => typeof field === "string"
+      (field) => typeof field === "string",
     ));
 const baseResponse = (value: unknown): value is Record<string, unknown> =>
   isRecord(value) &&
@@ -74,7 +75,7 @@ const baseResponse = (value: unknown): value is Record<string, unknown> =>
   nullableString(value.statusId) &&
   status(value.status) &&
   [value.estimatedHours, value.remainingHours, value.completedHours].every(
-    nullableNumber
+    nullableNumber,
   );
 const taskResponse = (value: unknown): value is Task =>
   baseResponse(value) &&
@@ -83,7 +84,7 @@ const taskResponse = (value: unknown): value is Task =>
 const unconfirmed = (): never => {
   throw new ApiError(
     502,
-    "The server did not confirm the saved item. Please refresh and try again."
+    "The server did not confirm the saved item. Please refresh and try again.",
   );
 };
 
@@ -92,7 +93,7 @@ export const readTaskUpdate = (value: unknown, id: number | undefined): Task =>
 
 export const readTicketUpdate = (
   value: unknown,
-  id: number | undefined
+  id: number | undefined,
 ): Ticket => {
   if (
     !baseResponse(value) ||
@@ -112,7 +113,7 @@ export const readTicketUpdate = (
       value.designInformation,
       value.additionalDetails,
       value.notes,
-      value.dueDate
+      value.dueDate,
     ].every(nullableString) ||
     !Array.isArray(value.tags) ||
     !Array.isArray(value.blockedTickets) ||
@@ -126,7 +127,7 @@ const estimates = (item: Pick<Partial<Task>, keyof NullableEstimates>) => ({
   assignedTo: item.assignedTo || null,
   estimatedHours: item.estimatedHours ?? null,
   remainingHours: item.remainingHours ?? null,
-  completedHours: item.completedHours ?? null
+  completedHours: item.completedHours ?? null,
 });
 
 // Editors send writable fields explicitly, never nested response objects or metadata.
@@ -136,12 +137,12 @@ export const taskUpdateFromDraft = (task: Task, actor: string): TaskUpdate => ({
   description: task.description,
   discussion: task.discussion,
   updatedBy: actor,
-  ...estimates(task)
+  ...estimates(task),
 });
 
 export const ticketUpdateFromDraft = (
   ticket: Partial<Ticket>,
-  actor: string
+  actor: string,
 ): TicketUpdate => ({
   id: ticket.id,
   title: ticket.title?.trim(),
@@ -155,12 +156,13 @@ export const ticketUpdateFromDraft = (
   blockedBy: ticket.blockedBy ?? null,
   storyPoints: ticket.storyPoints ?? null,
   acceptanceCriteria: ticket.acceptanceCriteria,
+  dueDate: ticket.dueDate ?? null,
   designInformation: ticket.designInformation,
   additionalDetails: ticket.additionalDetails,
   notes: ticket.notes,
   discussion: ticket.discussion,
   updatedBy: actor,
-  ...estimates(ticket)
+  ...estimates(ticket),
 });
 
 export const validateWorkItem = (draft: Partial<Task> | Partial<Ticket>) => {
@@ -169,7 +171,7 @@ export const validateWorkItem = (draft: Partial<Task> | Partial<Ticket>) => {
   for (const field of [
     "estimatedHours",
     "remainingHours",
-    "completedHours"
+    "completedHours",
   ] as const) {
     const value = draft[field];
     if (value != null && (!Number.isFinite(value) || value < 0))
@@ -187,3 +189,33 @@ export const validateWorkItem = (draft: Partial<Task> | Partial<Ticket>) => {
   }
   return errors;
 };
+
+export const readCreatedTicket = (value: unknown): Ticket =>
+  isRecord(value) && typeof value.id === "number"
+    ? readTicketUpdate(value, value.id)
+    : unconfirmed();
+export const ticketCreateFromDraft = (
+  ticket: Partial<Ticket>,
+  actor: string,
+): Partial<Ticket> => ({
+  title: ticket.title?.trim(),
+  description: ticket.description,
+  createdBy: actor,
+  sprintId: ticket.sprintId || undefined,
+  featureId: ticket.featureId || undefined,
+  assignedTo: ticket.assignedTo || undefined,
+  type: ticket.type,
+  priority: ticket.priority,
+  isBlocked: ticket.isBlocked,
+  blockedBy: ticket.blockedBy ?? undefined,
+  estimatedHours: ticket.estimatedHours ?? undefined,
+  remainingHours: ticket.remainingHours ?? undefined,
+  completedHours: ticket.completedHours ?? undefined,
+  storyPoints: ticket.storyPoints ?? undefined,
+  dueDate: ticket.dueDate || undefined,
+  acceptanceCriteria: ticket.acceptanceCriteria,
+  designInformation: ticket.designInformation,
+  additionalDetails: ticket.additionalDetails,
+  notes: ticket.notes,
+  discussion: ticket.discussion,
+});

@@ -6,11 +6,12 @@ import {
   Task,
   TaskStatus,
   Ticket,
-  TicketStatus
+  TicketStatus,
 } from "../models";
 
 export interface DialogsContainerProps {
   //Tasks
+  setSelectedTicketId: React.Dispatch<React.SetStateAction<number>>;
   openTaskDialog: boolean;
   setOpenTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   openEditTaskDialog: boolean;
@@ -33,7 +34,7 @@ export interface DialogsContainerProps {
   setOpenEditTicketDialog: React.Dispatch<React.SetStateAction<boolean>>;
   openDeleteTicketDialog: boolean;
   setOpenDeleteTicketDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateTicket: (data: Partial<Ticket>) => void;
+  handleCreateTicket: (data: Partial<Ticket>) => Promise<boolean>;
   handleEditTicket: (data: TicketUpdate) => Promise<boolean>;
   handleDeleteTicket: (data: Partial<Ticket>) => Promise<boolean>;
   loadingPostTickets: boolean;

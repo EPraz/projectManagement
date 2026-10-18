@@ -6,13 +6,13 @@ import { TicketPriority, TicketType } from "../../../constants";
 
 // Mocks de contexto
 const mockAuth = {
-  user: { email: "testuser@example.com" }
+  user: { email: "testuser@example.com" },
 };
 jest.mock("../../../context", () => ({
   useAuth: () => mockAuth,
   useSprint: () => ({
-    sprint: { id: "sprint1" }
-  })
+    sprint: { id: "sprint1" },
+  }),
 }));
 
 // Datos de ejemplo
@@ -29,7 +29,7 @@ const sampleTicket: Ticket = {
   status: {
     id: "status1",
     name: "status1",
-    position: 1
+    position: 1,
   },
   order: 1,
   estimatedHours: 5,
@@ -40,18 +40,18 @@ const sampleTicket: Ticket = {
   tasks: [],
   assignedTo: "1",
   _count: null,
-  pairProgrammingUsers: []
+  pairProgrammingUsers: [],
 };
 
 const sampleStatuses = [
   { id: "status1", name: "OPEN", color: "#00ff00", position: 1 },
   { id: "status2", name: "BLOCKED", color: "#ff0000", position: 2 },
-  { id: "status3", name: "CLOSED", color: "#0000ff", position: 3 }
+  { id: "status3", name: "CLOSED", color: "#0000ff", position: 3 },
 ];
 
 const sampleUsers: User[] = [
   { id: "1", name: "Alice", email: "alice@example.com", projects: [] },
-  { id: "2", name: "Bob", email: "bob@example.com", projects: [] }
+  { id: "2", name: "Bob", email: "bob@example.com", projects: [] },
 ];
 
 const sampleSprints: Sprint[] = [
@@ -79,9 +79,9 @@ const sampleSprints: Sprint[] = [
       epicStatuses: [],
       featureStatuses: [],
       type: "hello",
-      productManagers: []
-    }
-  }
+      productManagers: [],
+    },
+  },
 ];
 
 const sampleTickets = [sampleTicket];
@@ -108,7 +108,7 @@ describe("TicketEditDialog Component", () => {
           disabled={false}
           projects={[]}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
   beforeEach(() => {
@@ -123,13 +123,13 @@ describe("TicketEditDialog Component", () => {
   it("renders dialog with initial ticket values", () => {
     renderComponent();
     const titleInput = screen.getByPlaceholderText(
-      /ticket title/i
+      /ticket title/i,
     ) as HTMLInputElement;
     expect(titleInput).toBeInTheDocument();
     expect(titleInput.value).toBe(sampleTicket.title);
 
     const descriptionInput = screen.getByPlaceholderText(
-      /add a more detailed description/i
+      /add a more detailed description/i,
     );
     expect(descriptionInput).toHaveValue(sampleTicket.description);
   });
@@ -137,10 +137,10 @@ describe("TicketEditDialog Component", () => {
   it("updates title and calls onSave with updated data", async () => {
     renderComponent();
     const titleInput = screen.getByPlaceholderText(
-      /ticket title/i
+      /ticket title/i,
     ) as HTMLInputElement;
     fireEvent.change(titleInput, {
-      target: { value: "Updated Ticket Title", name: "title" }
+      target: { value: "Updated Ticket Title", name: "title" },
     });
 
     // Clic en Save
@@ -152,8 +152,8 @@ describe("TicketEditDialog Component", () => {
         expect.objectContaining({
           title: "Updated Ticket Title",
           updatedBy: "testuser@example.com",
-          sprintId: null
-        })
+          sprintId: null,
+        }),
       );
     });
     expect(onClose).toHaveBeenCalled();
@@ -163,6 +163,7 @@ describe("TicketEditDialog Component", () => {
     renderComponent();
     const deleteButton = screen.getByRole("button", { name: /delete/i });
     fireEvent.click(deleteButton);
+    fireEvent.click(screen.getByRole("button", { name: "Proceed" }));
     await waitFor(() => {
       expect(onDelete).toHaveBeenCalledWith(sampleTicket);
     });
@@ -210,19 +211,20 @@ describe("TicketEditDialog Component", () => {
           isBlocked: true,
           statusId:
             sampleStatuses.find((s) => s.name === "BLOCKED")?.id ||
-            expect.any(String)
-        })
+            expect.any(String),
+        }),
       );
     });
   });
 
   it("updates number fields when changed", () => {
     renderComponent();
+    fireEvent.click(screen.getByRole("tab", { name: "Planning" }));
     const estimatedInput = screen.getByLabelText(
-      /estimated hours/i
+      /estimated hours/i,
     ) as HTMLInputElement;
     fireEvent.change(estimatedInput, {
-      target: { value: "8", name: "estimatedHours" }
+      target: { value: "8", name: "estimatedHours" },
     });
     expect(estimatedInput.value).toBe("8");
   });

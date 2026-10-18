@@ -1,42 +1,34 @@
 import { useState } from "react";
-import { useApi, useAuth, useSnackbar } from "../../context";
-import { Ticket } from "../../types";
-
+import { useAuth } from "../../context/authContext";
+import { useSnackbar } from "../../context/snackbarContext";
+import { readCreatedTicket } from "../../services/workItemUpdates";
+import type { Ticket } from "../../types";
 export const useCreateTicket = () => {
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
+  const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
-
   const createTicket = async (
-    data: Partial<Ticket>
+    data: Partial<Ticket>,
   ): Promise<Ticket | null> => {
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/tickets`, {
+      const response = await request<unknown>("/tickets", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          ...data,
-        }),
+        body: data,
+        errorMessage: "Failed to create ticket. Please try again.",
       });
-
-      if (!response.ok) throw new Error("Failed to create ticket");
-
-      const newTicket: Ticket = await response.json();
+      const ticket = readCreatedTicket(response);
       showSnackbarMessage("Ticket created successfully", "success");
-      return newTicket;
+      return ticket;
     } catch (error) {
-      console.error("Error creating ticket:", error);
-      showSnackbarMessage("Failed to create ticket", "error");
+      showSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to create ticket",
+        "error",
+      );
       return null;
     } finally {
       setLoading(false);
     }
   };
-
   return { createTicket, loading };
 };

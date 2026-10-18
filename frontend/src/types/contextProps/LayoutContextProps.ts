@@ -7,7 +7,7 @@ import {
   Task,
   TaskStatus,
   Ticket,
-  User
+  User,
 } from "../models";
 import { useProject, useSprint, useTicket } from "../../context";
 import {
@@ -16,7 +16,7 @@ import {
   useDeleteTask,
   useDeleteTicket,
   useUpdateTask,
-  useUpdateTicket
+  useUpdateTicket,
 } from "../../hooks";
 import { TicketPriority, TicketType } from "../../constants";
 
@@ -149,12 +149,12 @@ export interface LayoutContextProps {
 
   // Functions
   // Functions -> Tickets
-  handleCreateTicket: (data: Partial<Ticket>) => Promise<void>;
+  handleCreateTicket: (data: Partial<Ticket>) => Promise<boolean>;
   handleEditTicket: (data: TicketUpdate) => Promise<boolean>;
   handleDeleteTicket: (data: Partial<Ticket>) => Promise<boolean>;
   handleUpdateTicketStatus: (
     ticketId: number,
-    newStatusId: string
+    newStatusId: string,
   ) => Promise<void>;
 
   // Functions -> Tasks
@@ -168,6 +168,6 @@ export interface LayoutContextProps {
   handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
   handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
   handleToggleGoalTaskCompletion: (
-    goalTask: Partial<GoalTask>
+    goalTask: Partial<GoalTask>,
   ) => Promise<boolean>;
 }

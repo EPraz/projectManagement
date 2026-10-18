@@ -4,7 +4,7 @@ const fields = [
   ["storyPoints", "Story Points"],
   ["estimatedHours", "Estimated Hours"],
   ["remainingHours", "Remaining Hours"],
-  ["completedHours", "Completed Hours"]
+  ["completedHours", "Completed Hours"],
 ] as const;
 export type EstimateField = (typeof fields)[number][0];
 
@@ -13,7 +13,7 @@ export const EstimateFields = ({
   errors,
   disabled,
   includeStoryPoints = false,
-  onChange
+  onChange,
 }: {
   values: Partial<Record<EstimateField, number>>;
   errors: Record<string, string>;
@@ -34,7 +34,9 @@ export const EstimateFields = ({
           onChange={(event) =>
             onChange(
               field,
-              event.target.value === "" ? undefined : Number(event.target.value)
+              event.target.value === ""
+                ? undefined
+                : Number(event.target.value),
             )
           }
           fullWidth

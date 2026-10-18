@@ -9,7 +9,10 @@ export const getBlockedTickets = <T extends BlockableTicket>(
     (ticket) => ticket.isBlocked || ticket.status?.name === "BLOCKED",
   );
 
-type DatedTicket = { dueDate?: string; status?: { name: string } | null };
+type DatedTicket = {
+  dueDate?: string | null;
+  status?: { name: string } | null;
+};
 export const getTicketDeadlines = <T extends DatedTicket>(
   tickets: readonly T[],
   now = new Date(),

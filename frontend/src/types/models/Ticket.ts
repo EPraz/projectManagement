@@ -37,7 +37,7 @@ export type Ticket = {
   remainingHours?: number;
   completedHours?: number;
   storyPoints?: number;
-  dueDate?: string;
+  dueDate?: string | null;
   isBlocked?: boolean;
   blockedBy?: number | null;
   blockingTicket?: Ticket;
