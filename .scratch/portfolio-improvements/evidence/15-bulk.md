@@ -20,6 +20,6 @@ The only UI bulk callback was unreachable behind deliberately disabled board ord
 
 ## Verification
 
-51 API/startup tests pass (two suites); backend types, lint and build pass. The focused real Chrome production-browser journey passes. Full integrated browser/frontend results and independent review are recorded before closure.
+51 API/startup tests pass (two suites); backend types, lint and build pass. The focused real Chrome production-browser journey passes. Full integrated production Chrome: 85 passed in 2.5 minutes. Frontend Jest: 77 passed, 12 snapshots. Both applications pass types/build/lint: frontend 14 existing warnings, backend zero warnings/errors. Standards and Spec reviews: zero actionable findings. A withdrawn review hypothesis about nullable priority was verified against the schema and actual HTTP 200, with no behavior change.
 
 Ticket 14 hosted CI also passed: https://github.com/EPraz/projectManagement/actions/runs/39093187665.

@@ -80,12 +80,12 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | resolved | 07 |
 | [13: Reduce unnecessary initial and editor code loading](issues/13-initial-code-loading.md) | resolved | 08 |
 | [14: Reduce unnecessary project read payloads and query work](issues/14-project-read-efficiency.md) | resolved | 07 |
-| [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | claimed | 08 |
+| [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | resolved | 08 |
 | [16: Verify product finish in CI and the cloud, then hand off presentation](issues/16-cloud-quality-verification.md) | ready-for-agent | 02, 03, 04, 05, 09, 10, 11, 12, 13, 14, 15 |
 
 ## Resume implementation
 
-- Tickets 01–14 are resolved. Next numbered frontier: 15, bulk operations and safe diagnostics, now unblocked. Later blockers remain unchanged.
+- Tickets 01–15 are resolved. Next numbered frontier: 16, integrated CI/cloud verification, now unblocked.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
@@ -101,3 +101,5 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 - 2026-10-17: [Ticket13](issues/13-initial-code-loading.md) resolved: justified deferred routes/panels, recoverable module loading and preserved providers. [Evidence](evidence/13-loading.md), [measurements](evidence/13-loading-measurements.json), [review](evidence/13-review.md);1773bbb/31fd5c6. Matched initial JS body−73.7%, project-list cumulative body−33.9%, full-journey tradeoffexplicit.81production-browser/77Jest checks pass; both axes0remaining.
 
 - 2026-10-17: [Ticket14](issues/14-project-read-efficiency.md) resolved: compatible opt-in summary/workspace projections, actual consumer types and shared canonical work projection. [Evidence](evidence/14-project-reads.md), [measurements](evidence/14-read-measurements.json), [review](evidence/14-review.md);d8088b4/b944896/3723701. ListJSON−98.4%/43→6queries, detailJSON−33.8%/43→33; unchanged default/socket contracts. Shared nullable-statusP2 reproduced/fixed/re-reviewed;84browser/45API/77Jest pass, both axes0remaining.
+
+- 2026-10-17: [Ticket 15](issues/15-bulk-ticket-operations.md) resolved: atomic validated authenticated bulk changes and safe diagnostics; disabled ordering preserved. [Evidence](evidence/15-bulk.md), [review](evidence/15-review.md), cebb8d3. 85 browser/51 API/77 frontend tests pass; both review axes have zero remaining findings.
