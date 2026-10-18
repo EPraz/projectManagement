@@ -58,7 +58,7 @@ export default function EditorShell({
             lg: "calc(100dvh - 48px)",
           },
           maxHeight: "none",
-          borderRadius: { xs: 0, sm: 3 },
+          borderRadius: { xs: 0, sm: "12px" },
           display: "flex",
           flexDirection: "column",
           minWidth: 0,

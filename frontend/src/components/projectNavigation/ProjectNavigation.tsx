@@ -74,7 +74,7 @@ export default function ProjectNavigation({
                   justifyContent: compact ? "center" : "flex-start",
                   gap: 1.5,
                   color: compact ? "#b8cfff" : "text.primary",
-                  borderRadius: 2,
+                  borderRadius: "8px",
                   bgcolor:
                     active.path === section.path
                       ? compact

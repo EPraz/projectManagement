@@ -34,7 +34,7 @@ export default function SprintGoalsAndMilestones({
               p: 2,
               border: "1px solid",
               borderColor: "divider",
-              borderRadius: 2,
+              borderRadius: "8px",
               minWidth: 0,
             }}
           >

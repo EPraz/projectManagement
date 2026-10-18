@@ -27,7 +27,7 @@ export default function ProjectContextBar({
         gap: 2,
         mb: 3,
         p: 2,
-        borderRadius: 2,
+        borderRadius: "12px",
         border: "1px solid",
         borderColor: "divider",
         bgcolor: "background.paper",

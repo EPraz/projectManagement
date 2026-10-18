@@ -3,7 +3,7 @@
 exports[`StatusConfig Component match snapshot 1`] = `
 <DocumentFragment>
   <button
-    aria-label="Configure Columns"
+    aria-label="Task columns"
     class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeSmall css-1htve2-MuiButtonBase-root-MuiIconButton-root"
     data-mui-internal-clone-element="true"
     id=":r1:"

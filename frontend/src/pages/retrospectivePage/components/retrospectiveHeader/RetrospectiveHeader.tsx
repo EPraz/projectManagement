@@ -81,7 +81,7 @@ export default function RetrospectiveHeader({
             variant="fullWidth"
             sx={{
               maxWidth: 390,
-              width: { xs: "100%", sm: "auto" },
+              width: { xs: "100%", sm: 390 },
               "& .MuiTab-root": {
                 minWidth: 0,
                 px: 1.5,

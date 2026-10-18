@@ -65,7 +65,7 @@ export default function ProjectHeader({
             sx={{
               color: "inherit",
               bgcolor: "sidebar.active",
-              borderRadius: 2,
+              borderRadius: "8px",
             }}
           >
             <GridView />

@@ -23,7 +23,7 @@ export default function TicketSummary({
         bgcolor: "background.default",
         border: "1px solid",
         borderColor: "divider",
-        borderRadius: 2,
+        borderRadius: "8px",
         p: 2,
         alignSelf: "start",
       }}
@@ -43,7 +43,12 @@ export default function TicketSummary({
       <Typography variant="body2" color="text.secondary">
         Responsible member
       </Typography>
-      <Typography variant="body2">{member?.name || "Unassigned"}</Typography>
+      <Typography variant="body2">
+        {member?.name ||
+          (draft.assignedTo
+            ? `${draft.assignedUser?.name ?? "Assigned person"} · Outside project team`
+            : "Unassigned")}
+      </Typography>
       <Divider sx={{ my: 2 }} />
       <Typography variant="body2" color="text.secondary">
         Task completion

@@ -73,7 +73,11 @@ export default function TaskGroups({
                     aria-label={`Ticket #${ticket.id}`}
                     variant="outlined"
                     key={ticket.id}
-                    sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, minWidth: 0 }}
+                    sx={{
+                      p: { xs: 2, sm: 3 },
+                      borderRadius: "12px",
+                      minWidth: 0,
+                    }}
                   >
                     <TicketCard
                       ticket={ticket}

@@ -25,7 +25,7 @@ function TaskCard({
       variant="outlined"
       sx={{
         p: 1.5,
-        borderRadius: 2,
+        borderRadius: "8px",
         minWidth: 0,
         position: "relative",
         zIndex: isDragging ? 6 : "auto",

@@ -121,7 +121,10 @@ export default function BacklogBoard() {
             : "No tickets in this sprint yet. Add a ticket to start planning work."}
         </Alert>
       ) : wide ? (
-        <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
+        <Paper
+          variant="outlined"
+          sx={{ borderRadius: "12px", overflow: "hidden" }}
+        >
           <TableContainer
             role="region"
             aria-label="Backlog table"
@@ -200,7 +203,7 @@ export default function BacklogBoard() {
               aria-label={`Ticket #${ticket.id}`}
               variant="outlined"
               key={ticket.id}
-              sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, minWidth: 0 }}
+              sx={{ p: { xs: 2, sm: 3 }, borderRadius: "12px", minWidth: 0 }}
             >
               <Typography variant="overline" color="primary">
                 {visibleColumns.includes("id")

@@ -55,7 +55,7 @@ describe("StatusConfig Component", () => {
     const settingsButton = screen.getByRole("button");
     fireEvent.click(settingsButton);
     // Verificamos que se muestre el encabezado del menú
-    expect(screen.getByText(/column visibility/i)).toBeInTheDocument();
+    expect(screen.getByText("Task-state columns", { exact: true })).toBeInTheDocument();
   });
 
   it("renders menu items in sorted order", () => {
@@ -106,6 +106,7 @@ describe("StatusConfig Component", () => {
     // Suponemos que el primer switch corresponde a "In-progress" y el segundo a "Todo"
     const todoSwitch = switches[1];
     fireEvent.click(todoSwitch);
+    expect(setSelectedStatuses).toHaveBeenCalledTimes(1);
     expect(setSelectedStatuses).toHaveBeenCalledWith(
       expect.arrayContaining([
         expect.objectContaining({ id: "2" }),

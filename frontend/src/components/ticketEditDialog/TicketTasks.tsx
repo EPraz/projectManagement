@@ -63,7 +63,7 @@ export default function TicketTasks({
               textAlign: "left",
               border: "1px solid",
               borderColor: "divider",
-              borderRadius: 2,
+              borderRadius: "8px",
               p: 2,
               mb: 1.5,
             }}

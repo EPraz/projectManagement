@@ -114,6 +114,13 @@ export default function TicketDetailsFields({
           <MenuItem value="">
             <em>Unassigned</em>
           </MenuItem>
+          {draft.assignedTo &&
+            !users.some((user) => user.id === draft.assignedTo) && (
+              <MenuItem value={draft.assignedTo} disabled>
+                {draft.assignedUser?.name ?? "Assigned person"} · Outside
+                project team
+              </MenuItem>
+            )}
           {users.map((user) => (
             <MenuItem key={user.id} value={user.id}>
               {user.name}
@@ -144,7 +151,7 @@ export default function TicketDetailsFields({
           p: 2,
           border: "1px solid",
           borderColor: blocked ? "error.main" : "divider",
-          borderRadius: 2,
+          borderRadius: "8px",
         }}
       >
         <FormControlLabel

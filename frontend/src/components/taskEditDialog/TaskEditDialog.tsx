@@ -77,7 +77,7 @@ export default function TaskEditDialog(props: TaskEditDialogProps) {
               mb: 3,
               p: 2,
               bgcolor: "action.hover",
-              borderRadius: 2,
+              borderRadius: "8px",
               overflowWrap: "anywhere",
             }}
           >
@@ -159,7 +159,7 @@ export default function TaskEditDialog(props: TaskEditDialogProps) {
                 gap: 3,
                 p: 2,
                 bgcolor: "action.hover",
-                borderRadius: 2,
+                borderRadius: "8px",
                 minWidth: 0,
               }}
             >
@@ -191,6 +191,15 @@ export default function TaskEditDialog(props: TaskEditDialogProps) {
                 disabled={readOnly}
               >
                 <MenuItem value="">Unassigned</MenuItem>
+                {draft.assignedTo &&
+                  !(props.users ?? []).some(
+                    (user) => user.id === draft.assignedTo,
+                  ) && (
+                    <MenuItem value={draft.assignedTo} disabled>
+                      {draft.assignedUser?.name ?? "Assigned person"} · Outside
+                      project team
+                    </MenuItem>
+                  )}
                 {props.users?.map((user) => (
                   <MenuItem key={user.id} value={user.id}>
                     {user.name}
