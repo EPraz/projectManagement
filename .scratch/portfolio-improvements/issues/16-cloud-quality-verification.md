@@ -21,3 +21,5 @@ Type: task
 2026-10-17: Additional owner instruction: notify the owner and wait for their design feedback and explicit readiness confirmation before walkthrough recording. Handoff to presentation must preserve this checkpoint; the current authorization to implement quality tickets does not authorize recording past it.
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17 candidate from14consumer mapping: the project-create form still uses a legacy void callback and null-returning create hook. During final complete workflow QA, reproduce whether a failed create incorrectly closes its draft; if confirmed, apply a bounded acceptance correction under the existing truthful error/pending requirement. Not yet reproduced or claimed fixed.

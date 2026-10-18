@@ -1,0 +1,283 @@
+{
+  "beforeRevision": "c21f8cfc2997ebce0e93500cf5809a9bc70de3ec",
+  "afterRevision": "d8088b49d9a5ec63a82013d16d53245fc92cb7ee",
+  "environment": {
+    "node": "v22.20.0",
+    "prisma": "6.5.0",
+    "database": "owned local PostgreSQL17, port55433, populated2project demo",
+    "providerWakeup": "not measured: all reads local; timings descriptive only"
+  },
+  "before": {
+    "prismaList": {
+      "first": {
+        "sqlStatements": 43,
+        "selectStatements": 43,
+        "tables": {
+          "Project": 2,
+          "Epic": 1,
+          "Feature": 2,
+          "FeatureStatus": 2,
+          "EpicStatus": 2,
+          "_ProjectToUser": 2,
+          "User": 7,
+          "Sprint": 2,
+          "Ticket": 6,
+          "Task": 2,
+          "TaskStatus": 3,
+          "TicketStatus": 3,
+          "_TagToTicket": 2,
+          "Tag": 2,
+          "SprintGoal": 1,
+          "GoalTask": 1,
+          "TeamMemberCapacity": 1,
+          "RetroCard": 1,
+          "PairProgramming": 1
+        },
+        "publicJsonBytes": 334805,
+        "durationMs": 56.9
+      },
+      "durationMs": [
+        56.9,
+        37.57,
+        28.69,
+        44.71
+      ]
+    },
+    "prismaDetail": {
+      "first": {
+        "sqlStatements": 43,
+        "selectStatements": 43,
+        "tables": {
+          "Project": 2,
+          "Epic": 1,
+          "Feature": 2,
+          "FeatureStatus": 2,
+          "EpicStatus": 2,
+          "_ProjectToUser": 2,
+          "User": 7,
+          "Sprint": 2,
+          "Ticket": 6,
+          "Task": 2,
+          "TaskStatus": 3,
+          "TicketStatus": 3,
+          "_TagToTicket": 2,
+          "Tag": 2,
+          "SprintGoal": 1,
+          "GoalTask": 1,
+          "TeamMemberCapacity": 1,
+          "RetroCard": 1,
+          "PairProgramming": 1
+        },
+        "publicJsonBytes": 167669,
+        "durationMs": 34.42
+      },
+      "durationMs": [
+        34.42,
+        25.15,
+        30.02,
+        20.68
+      ]
+    },
+    "httpList": {
+      "first": {
+        "jsonBytes": 334805,
+        "durationMs": 64.89
+      },
+      "durationMs": [
+        64.89,
+        43.65,
+        43.5,
+        45.86
+      ]
+    },
+    "httpDetail": {
+      "first": {
+        "jsonBytes": 167669,
+        "durationMs": 36.57
+      },
+      "durationMs": [
+        36.57,
+        30.16,
+        24.24,
+        29.33
+      ]
+    }
+  },
+  "after": {
+    "prismaList": {
+      "first": {
+        "sqlStatements": 43,
+        "selectStatements": 43,
+        "tables": {
+          "Project": 2,
+          "Epic": 1,
+          "Feature": 2,
+          "FeatureStatus": 2,
+          "EpicStatus": 2,
+          "_ProjectToUser": 2,
+          "User": 7,
+          "Sprint": 2,
+          "Ticket": 6,
+          "Task": 2,
+          "TaskStatus": 3,
+          "TicketStatus": 3,
+          "_TagToTicket": 2,
+          "Tag": 2,
+          "SprintGoal": 1,
+          "GoalTask": 1,
+          "TeamMemberCapacity": 1,
+          "RetroCard": 1,
+          "PairProgramming": 1
+        },
+        "publicJsonBytes": 334805,
+        "durationMs": 53.06
+      },
+      "durationMs": [
+        53.06,
+        41.6,
+        38.25,
+        36.75
+      ]
+    },
+    "prismaDetail": {
+      "first": {
+        "sqlStatements": 43,
+        "selectStatements": 43,
+        "tables": {
+          "Project": 2,
+          "Epic": 1,
+          "Feature": 2,
+          "FeatureStatus": 2,
+          "EpicStatus": 2,
+          "_ProjectToUser": 2,
+          "User": 7,
+          "Sprint": 2,
+          "Ticket": 6,
+          "Task": 2,
+          "TaskStatus": 3,
+          "TicketStatus": 3,
+          "_TagToTicket": 2,
+          "Tag": 2,
+          "SprintGoal": 1,
+          "GoalTask": 1,
+          "TeamMemberCapacity": 1,
+          "RetroCard": 1,
+          "PairProgramming": 1
+        },
+        "publicJsonBytes": 167669,
+        "durationMs": 36.88
+      },
+      "durationMs": [
+        36.88,
+        28.71,
+        23.46,
+        25.4
+      ]
+    },
+    "prismaSummary": {
+      "first": {
+        "sqlStatements": 6,
+        "selectStatements": 6,
+        "tables": {
+          "Project": 1,
+          "Ticket": 1,
+          "Sprint": 1,
+          "_ProjectToUser": 1,
+          "User": 1,
+          "TicketStatus": 1
+        },
+        "publicJsonBytes": 5489,
+        "durationMs": 5.34
+      },
+      "durationMs": [
+        5.34,
+        2.87,
+        5.27,
+        4.1
+      ]
+    },
+    "prismaWorkspace": {
+      "first": {
+        "sqlStatements": 33,
+        "selectStatements": 33,
+        "tables": {
+          "Project": 2,
+          "Epic": 1,
+          "Feature": 2,
+          "FeatureStatus": 2,
+          "EpicStatus": 2,
+          "_ProjectToUser": 2,
+          "User": 5,
+          "Sprint": 2,
+          "SprintGoal": 1,
+          "GoalTask": 1,
+          "TeamMemberCapacity": 1,
+          "RetroCard": 1,
+          "Ticket": 3,
+          "TicketStatus": 2,
+          "Task": 1,
+          "TaskStatus": 2,
+          "PairProgramming": 1,
+          "_TagToTicket": 1,
+          "Tag": 1
+        },
+        "publicJsonBytes": 110965,
+        "durationMs": 18.67
+      },
+      "durationMs": [
+        18.67,
+        20.53,
+        20.69,
+        18.47
+      ]
+    },
+    "httpList": {
+      "first": {
+        "jsonBytes": 334805,
+        "durationMs": 101.12
+      },
+      "durationMs": [
+        101.12,
+        48.02,
+        54.99,
+        46.01
+      ]
+    },
+    "httpDetail": {
+      "first": {
+        "jsonBytes": 167669,
+        "durationMs": 74.37
+      },
+      "durationMs": [
+        74.37,
+        43.29,
+        38.68,
+        42.32
+      ]
+    },
+    "httpSummary": {
+      "first": {
+        "jsonBytes": 5489,
+        "durationMs": 10.86
+      },
+      "durationMs": [
+        10.86,
+        8.59,
+        6.78,
+        5.35
+      ]
+    },
+    "httpWorkspace": {
+      "first": {
+        "jsonBytes": 110965,
+        "durationMs": 24.64
+      },
+      "durationMs": [
+        24.64,
+        26.02,
+        25.14,
+        17.47
+      ]
+    }
+  }
+}
