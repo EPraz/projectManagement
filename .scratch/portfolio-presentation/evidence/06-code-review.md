@@ -19,10 +19,9 @@ No documented-standard violations or actionable baseline smells identified.
 
 The approved README/setup, screenshots, genuine independent-session WebSocket demonstration, silent1080p export, mobile/dark segment and public viewer with chapters/transcript/downloads/session independence are covered. The final delta improves caption clarity above paused controls, strengthens the expired-session fixture and reconciles completed280browser/9focused checks without changing product scope. Timing, transcript and chapter coverage remain consistent. No scope creep or incorrectly implemented requirement identified.
 
-Ticket06 deliberately awaits owner publication approval and subsequent hosted-delivery checks. These are planned approval/delivery gates, not missing local implementation.
+Ticket 06 deliberately awaits owner publication approval and subsequent hosted-delivery checks. These are planned approval/delivery gates, not missing local implementation.
 
 Totals: Standards0; Spec0. No material issue in either axis. Publication remains unapproved and unperformed.
-
 
 ## Owner Taskboard feedback follow-up — 1575837..5523e48
 
@@ -37,3 +36,19 @@ Two independent read-only agents reviewed the UI/partial-retake delta against th
 0material findings. Compact identity/state/metadata addresses the requested design polish without changing product scope. Five actual affected scenes replace only the Taskboard interval; other sources are retained. Holding Team's own ready frame is ordinary transition editing rather than extra recording/fabricated content. Source revisions and genuine WebSocket evidence are recorded. Publication still awaits explicit owner approval.
 
 Follow-up totals: Standards0; Spec0. No material issue in either axis. No reviewer mutations or duplicate test suites.
+
+## Publication follow-up — 018ac51..40d7def
+
+The owner explicitly approved the corrected video and authorized publication. Both independent read-only axes reviewed the publication delta; the overall confirmed base remains `2339dbc`.
+
+### Standards
+
+**0 material findings.** Actual public verification checks exact binary hashes, range responses, download contents and independent viewing/session behavior. Text comparison handles Git newline conversion without weakening binary checks. Capture/publication revisions and completed versus pending evidence remain distinct. No actionable baseline smells or reviewer mutations.
+
+### Spec
+
+**0 material findings.** The explicit owner instruction satisfies the approval gate. Actual public media, unavailable-API/expired-cookie viewing, preserved demo session, mobile/desktop layouts, downloads, GitHub images and application navigation meet the confirmed requirements. No scope creep or public-content mutation. Final closure records the completed CI and resolves 06.
+
+[Hosted Quality](https://github.com/EPraz/projectManagement/actions/runs/39151051953) passes all three jobs at `298580b`:280 browser journeys,80 frontend tests/12 snapshots and 58 backend tests. The documentation-only closure records these results with the application/media unchanged. All acceptance criteria and all six tickets are complete.
+
+Final totals: **Standards 0; Spec 0.** Earlier approval-pending statements in this chronological review are historical; publication is now approved, performed and verified.

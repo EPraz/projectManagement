@@ -2,10 +2,7 @@
   "applicationCommit": "2617324f1f2f3447148435bc5f436bb55611f270",
   "origin": "http://127.0.0.1:61758",
   "duration": 182.56,
-  "size": [
-    1920,
-    1080
-  ],
+  "size": [1920, 1080],
   "fps": 25.0,
   "bytes": 5175291,
   "audio": "none; English captions are embedded",
@@ -245,5 +242,13 @@
   "sha256": "3cf48b72c5dd56c251f7f7ea1c0764d6e764b76b27cf0c1ffdc1195b0fd31e57",
   "fastStart": "moov precedes mdat",
   "captionConsistency": "All21 cues and17 chapter timings are unchanged and match the transcript.",
-  "publication": "Not published; owner review/approval pending."
+  "publication": {
+    "status": "published and verified",
+    "date": "2026-10-18",
+    "ownerApproval": true,
+    "applicationPackageCommit": "298580bfb1d809f8c06340906c2005b1185ee594",
+    "viewer": "https://project-management-murex-pi.vercel.app/walkthrough",
+    "qualityRun": "https://github.com/EPraz/projectManagement/actions/runs/39151051953",
+    "hostedHashMatchesApprovedExport": true
+  }
 }

@@ -6,12 +6,11 @@ Status: implementing
 
 The owner reviewed the redesigned application and now explicitly says we may proceed with the walkthrough and README. This satisfies the previously requested owner design/readiness checkpoint; do not ask for the same recording permission again. The active grill reconciles the existing presentation decisions with the final product and the newly requested Aster reference, before agreeing the final production plan.
 
-The published application is65fa1ef, with [final refinement evidence](../product-redesign/evidence/owner-ui-refinement.md): all271 browser journeys,80 frontend tests/12 snapshots and58 backend tests pass in hosted Quality39139027327. Earlier defect/advisory/scaffold notes below are historical and must not become current README claims. The approved presentation drafts require reconciliation with the completed quality/refactor and redesign work; their preparation tickets must not be implemented again.
+The published application is65fa1ef, with [final refinement evidence](../product-redesign/evidence/owner-ui-refinement.md): all271 browser journeys,80 frontend tests/12 snapshots and 58 backend tests pass in hosted Quality39139027327. Earlier defect/advisory/scaffold notes below are historical and must not become current README claims. The approved presentation drafts require reconciliation with the completed quality/refactor and redesign work; their preparation tickets must not be implemented again.
 
 Retain already settled English recruiter/developer README, original authorship, silent English-captioned video,3:00–3:30 target, isolated populated local recording, real ticket change/independent-session synchronization, transcript/chapters and free hosting. README should stand alone without requiring the viewer to visit the demo. No media has been recorded during this renewed interview.
 
 The owner points to the sibling `dashboard` / Aster walkthrough as the new presentation-quality reference. Inspect its actual video/storyboard/tooling read-only before proposing changes to pacing or packaging. Reuse a method or visual grammar only where it fits this product, without importing Aster's product claims.
-
 
 Historical status: deferred-until-product-redesign
 
@@ -134,7 +133,6 @@ Owner confirms final review base2339dbc. All commits and media stay local until 
 
 - Implementation03 resolved:17 real local rehearsal scenes pass with independent-context ticket/task WebSocket transitions, zero observer reloads and canonical API confirmation; read-only cloud eight-area navigation passes at390/1440. The recording uses the task-state editor for a readable reliable transition, while the retained actual drag regression passes separately. [Evidence](evidence/03-rehearsal.md).04/05 claimed;06 stays gated by both. All media/package commits remain local until owner publication approval.
 
-
 ## Presentation artifacts prepared — 2026-10-18
 
 04 resolved: [README/setup evidence](evidence/04-readme.md), real screenshots, Mermaid rendering and successful clean example-only installation.05 resolved: [actual export](evidence/05-video.md),182.56s/1080p/no audio,17chapters/21English cues,24.04s actual mobile/dark, full decode and chronological/key-frame inspection. Two real independent-session events and persisted states remain verified. The final file is about6MB.
@@ -143,31 +141,30 @@ Owner confirms final review base2339dbc. All commits and media stay local until 
 
 All source/media/docs commits remain local. Owner must review the finished MP4 and local viewer and explicitly approve publication before push/deploy/upload. Final hosted delivery checks/publication revision remain outstanding under06. No cloud visitor-data reset/staging is authorized or needed.
 
-
 ## Owner-review handoff — local preparation complete
 
-Full isolated production-browser run:280passed (9.2m). Final viewer run:9passed (11.3s) after strengthening the real-cookie fixture and moving the video caption band clear of paused native controls. Video is now5,228,724bytes,182.56s/1080p/silent; raw source/timings unchanged. Re-decoded/reviewed all8 chronological sheets and actual paused/fullscreen key moments. Final production build matches reviewed media hash. Viewer additionally passes all8 layouts320/768/1024/1440 × light/dark without API calls or overflow. [Complete verification](../../docs/verification.md), [local checks](evidence/06-checks.json).
+Full isolated production-browser run: 280passed (9.2m). Final viewer run:9passed (11.3s) after strengthening the real-cookie fixture and moving the video caption band clear of paused native controls. Video is now5,228,724bytes,182.56s/1080p/silent; raw source/timings unchanged. Re-decoded/reviewed all8 chronological sheets and actual paused/fullscreen key moments. Final production build matches reviewed media hash. Viewer additionally passes all8 layouts320/768/1024/1440 × light/dark without API calls or overflow. [Complete verification](../../docs/verification.md), [local checks](evidence/06-checks.json).
 
 Standards and Spec reviews against2339dbc have no material findings; final small fixture/export adjustments also passed their follow-up review.01–05 resolved.06 needs-info solely for the owner's explicit finished-video publication approval and subsequent actual hosted-delivery checks; local implementation is complete. No push/deploy/upload occurred. Review locally at `http://127.0.0.1:64998/walkthrough` or open the repository MP4. Preserve the owner's unrelated untracked design/history files; suite-generated tracked historical screenshots were restored to their initial versions.
 
-
 Final Standards0/Spec0 review is recorded in [06-code-review.md](evidence/06-code-review.md). Final reviewed media is served by the owned production runtime with matching SHA-256 and real206byte ranges. No publication has occurred.
-
 
 ## Owner feedback — Taskboard ticket and partial retake
 
 Owner requests correcting the ticket-cell design visible around1:05 before approval, then re-recording only the affected part. Preserve the ticket-row/task-state matrix, real interactions and genuine independent-session updates. Compact identity/expansion, title, state/priority and metadata; remove unavailable order controls. The same component spans1:00.20–1:44.32, so replace only those five Taskboard/collaboration scenes with a real partial take; preserve all other footage/timing/captions. Publication remains unapproved. This is review feedback under06, not a new broad refactor or full recording request.
 
-
 Owner Taskboard feedback completed locally: compact ticket summary and five-scene partial retake at2617324; unchanged182.56s/chapters/captions;11unaffected encoded shots identical and original Team opening held on its ready frame.80frontend tests/12snapshots,16Taskboard/bulk and9viewer checks pass; full decode and visual joins/paused/fullscreen pass. README screenshot updated. [Evidence](evidence/06-taskboard-feedback.md). Active local review: `http://127.0.0.1:61758/walkthrough`. No publication; owner review/approval remains pending under06.
 
-
 Taskboard feedback follow-up Standards0/Spec0 against1575837..5523e48 is recorded in [the review](evidence/06-code-review.md). Served MP4 hash matches the current composite; caption, transcript and chapter files are byte-identical to1575837. Local review remains http://127.0.0.1:61758/walkthrough, publication unapproved.
-
 
 ## Publication authorization received — 2026-10-18
 
 The owner explicitly accepts the corrected layout/video and requests implementation of the final part and publication. The approval gate is satisfied;06 is claimed. Publish the exact approved composite/hash via existing GitHub/Vercel resources, verify real hosted playback/seeking/downloads, README/media links, preserved demo entry and hosted CI, then resolve06 with actual deployment/source revisions. No additional permission, recording or public data reset is needed.
 
-
 Publication source298580b is live through Vercel; [actual public delivery](evidence/06-public-delivery.json), [GitHub README](evidence/06-published-readme.json), eight-area navigation and API/proxy/session checks pass. The exact approved MP4 hash is verified remotely. No content mutation/reset. Frontend/backend CI jobs pass; awaiting the complete browser job in Quality39151051953 before resolving06. [Publication record](evidence/06-publication.md).
+
+## Publication complete — 2026-10-18
+
+The owner-approved package is live at [the public viewer](https://project-management-murex-pi.vercel.app/walkthrough), with the published README and actual media delivery verified. Application/package release `298580bfb1d809f8c06340906c2005b1185ee594` passes [all hosted Quality jobs](https://github.com/EPraz/projectManagement/actions/runs/39151051953):280 production-browser journeys,80 frontend tests/12 snapshots and 58 backend tests. Real public playback/seeking/fullscreen, exact approved hash,206 byte ranges, actual downloads, four layouts, existing-session preservation, GitHub images and eight-area/API navigation pass. No visitor-content mutation/reset or new resources/settings.
+
+Final review: Standards0/Spec0 against the owner-confirmed `2339dbc` base, including publication follow-up018ac51..40d7def. [06 resolved](issues/06-publish-presentation-package.md); **all six presentation tickets are resolved**. Approval is satisfied and there is no remaining presentation frontier. Capture sourcesfa754a8/2617324 stay distinct from publication298580b. Later QA/evidence/documentation-only commits preserve the tested application/media unchanged. [Final publication evidence](evidence/06-publication.md).

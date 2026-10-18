@@ -24,7 +24,27 @@
     "remoteDatabase": false
   },
   "viewerVisual": "eight static production layouts passed; see06-viewer-visual.json",
-  "publication": "owner approval pending; not pushed/deployed/uploaded",
+  "publication": {
+    "status": "published and verified",
+    "date": "2026-10-18",
+    "ownerApproval": true,
+    "applicationPackageCommit": "298580bfb1d809f8c06340906c2005b1185ee594",
+    "viewer": "https://project-management-murex-pi.vercel.app/walkthrough",
+    "quality": {
+      "url": "https://github.com/EPraz/projectManagement/actions/runs/39151051953",
+      "status": "completed",
+      "conclusion": "success",
+      "frontendTests": 80,
+      "frontendSnapshots": 12,
+      "backendTests": 58,
+      "browserJourneys": 280,
+      "browserMinutes": 7.9
+    },
+    "publicDelivery": "06-public-delivery.json",
+    "publishedReadme": "06-published-readme.json",
+    "publicNavigation": "06-public-navigation.json",
+    "visitorContentMutations": 0
+  },
   "finalViewer": {
     "passed": 9,
     "seconds": 12.1,

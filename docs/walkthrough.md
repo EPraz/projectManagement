@@ -8,25 +8,25 @@ The viewing page is public and uses native browser controls. It does not require
 
 ## Chapters
 
-| Start | Chapter |
-| --- | --- |
-| 0:00 | A workspace for delivery |
-| 0:14 | Project context, sprint focus |
-| 0:22 | Connect the bigger picture |
-| 0:32 | Plan the selected sprint |
-| 0:40 | Requirements, estimates and child tasks |
-| 1:00 | Tickets in rows. Tasks by state. |
-| 1:08 | Session A · update the ticket |
-| 1:16 | Session B · no refresh |
-| 1:24 | Session A · move a child task |
-| 1:34 | Session B · work stays in sync |
-| 1:44 | People behind the work |
-| 1:52 | Plan available capacity |
-| 2:02 | Track the sprint outcome |
-| 2:12 | Make room for feedback |
-| 2:26 | Same workflow. Smaller screen. |
-| 2:42 | Two complete appearances |
-| 2:50 | Built across the stack |
+| Start | Chapter                                 |
+| ----- | --------------------------------------- |
+| 0:00  | A workspace for delivery                |
+| 0:14  | Project context, sprint focus           |
+| 0:22  | Connect the bigger picture              |
+| 0:32  | Plan the selected sprint                |
+| 0:40  | Requirements, estimates and child tasks |
+| 1:00  | Tickets in rows. Tasks by state.        |
+| 1:08  | Session A · update the ticket           |
+| 1:16  | Session B · no refresh                  |
+| 1:24  | Session A · move a child task           |
+| 1:34  | Session B · work stays in sync          |
+| 1:44  | People behind the work                  |
+| 1:52  | Plan available capacity                 |
+| 2:02  | Track the sprint outcome                |
+| 2:12  | Make room for feedback                  |
+| 2:26  | Same workflow. Smaller screen.          |
+| 2:42  | Two complete appearances                |
+| 2:50  | Built across the stack                  |
 
 ## What the collaboration segment proves
 
@@ -81,4 +81,4 @@ The composer requires the five real scenes and verified synchronization, retains
 
 ## Publication status
 
-The owner approved the corrected video and authorized publication on 2026-10-18. The package is being published through the existing Vercel/GitHub setup. Hosted delivery, downloads, byte-range seeking and playback must pass before publication is recorded as complete. Capture-source revisions remain separate from the publication revision. See [verification](verification.md).
+Published on 2026-10-18 after the owner's approval, at application/package revision `298580bfb1d809f8c06340906c2005b1185ee594` through the existing Vercel/GitHub setup. [Watch online](https://project-management-murex-pi.vercel.app/walkthrough). Actual hosted playback, seeking, byte ranges, downloads, session independence and GitHub README rendering pass. [Hosted Quality](https://github.com/EPraz/projectManagement/actions/runs/39151051953) passes all three jobs, including 280 browser journeys. Capture-source revisions remain separate from publication; subsequent evidence-only commits do not change the application or media. See [verification](verification.md).
