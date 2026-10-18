@@ -1,8 +1,21 @@
 # Portfolio presentation: README and walkthrough
 
-Status: deferred-until-product-redesign
+Status: ready-for-implementation
 
-## Quality handoff
+## Current presentation handoff — 2026-10-18
+
+The owner reviewed the redesigned application and now explicitly says we may proceed with the walkthrough and README. This satisfies the previously requested owner design/readiness checkpoint; do not ask for the same recording permission again. The active grill reconciles the existing presentation decisions with the final product and the newly requested Aster reference, before agreeing the final production plan.
+
+The published application is65fa1ef, with [final refinement evidence](../product-redesign/evidence/owner-ui-refinement.md): all271 browser journeys,80 frontend tests/12 snapshots and58 backend tests pass in hosted Quality39139027327. Earlier defect/advisory/scaffold notes below are historical and must not become current README claims. The approved presentation drafts require reconciliation with the completed quality/refactor and redesign work; their preparation tickets must not be implemented again.
+
+Retain already settled English recruiter/developer README, original authorship, silent English-captioned video,3:00–3:30 target, isolated populated local recording, real ticket change/independent-session synchronization, transcript/chapters and free hosting. README should stand alone without requiring the viewer to visit the demo. No media has been recorded during this renewed interview.
+
+The owner points to the sibling `dashboard` / Aster walkthrough as the new presentation-quality reference. Inspect its actual video/storyboard/tooling read-only before proposing changes to pacing or packaging. Reuse a method or visual grammar only where it fits this product, without importing Aster's product claims.
+
+
+Historical status: deferred-until-product-redesign
+
+## Prior quality handoff (historical)
 
 The owner now requests a complete mobile-first visual redesign before final README/walkthrough. Continue [the redesign interview](../product-redesign/map.md); the previous quality phase remains resolved. Final presentation should use the resulting reviewed design. This does not waive explicit owner readiness confirmation before recording.
 
@@ -34,7 +47,7 @@ Earlier notes below describe the pre-quality baseline and must not be reused as 
 - Owner confirmed the recruiter README and video package. The README must explain the project without requiring a demo visit and provide a clear path for someone to clone and run it. Include problem, contribution, connected workflows, architecture, current screenshots, evidence/limits and links to reproducible setup.
 - Owner accepted isolated local recording and permits the recording's demo edits to remain. Reuse existing populated local Datos demo when suitable; initialization/reset is not needed solely for a take. This does not broaden the recording choice to modifying shared production visitor data.
 
-## Open decision frontier
+## Prior decision frontier (historical)
 
 The presentation grill is complete. The owner approved the proposed test boundaries and six-ticket breakdown, then explicitly changed the sequence to prioritize code refactoring and product quality before the README/video. The presentation decisions remain valid, but its former minimal-preparation scope does not define the expanded refactor effort.
 
@@ -68,3 +81,27 @@ The presentation grill is complete. The owner approved the proposed test boundar
 - Read-only fact finding complete for a proposed story and Keelwatch's capture/editing pattern. Keelwatch includes capture/recorder/player scripts, caption files and transcripts; reuse the approach with adaptation, not its application-specific script unchanged. No FFmpeg executable is currently on PATH; any recording-tool preparation belongs to later implementation. No video capture or dependency installation is being performed during planning.
 - Define final script, frame/caption pacing and detailed acceptance after the story and delivery format are settled.
 - Reconcile the approved presentation drafts with the completed refactor/quality work when presentation resumes, then publish the appropriate remaining implementation issues.
+
+## Aster reference and renewed decision frontier — 2026-10-18
+
+Read-only inspection located the sibling at `../dashboard`. Its reviewed walkthrough is186.56s,1920×1080,H.264,25fps and silent (6.85MB). Inspected `docs/walkthrough.md`, README, renderer, poster and chronological review sheets03/08. Useful presentation grammar: short connected chapters, deliberate pauses on actual changed values, smooth pointer/click emphasis, restrained zoom, two-line English captions clear of player controls, genuine mobile capture and a brief dark-theme segment. Use this project's Plex/carbon/azure identity. Existing FFmpeg/Pillow tooling is available in Aster's ignored recording tools, without adding application dependencies. No recording or installation was performed.
+
+The remaining proposed frontier (not yet accepted):
+
+- Q1: adapt Aster's1080p cinematic presentation, short chapters, pointer/click cues, restrained zooms and English captions to Project Management's identity.
+- Q2: reserve20–25s within the existing3:30 ceiling for genuine mobile workflow and a brief dark-theme view, retaining light as the main recording appearance and concise coverage of all agreed areas.
+- Q3: strengthen the central verified full-stack story with a real task move plus ticket-state change (distinct concepts), and show the genuine result in a second independent session without reload. Keep all staged recording mutations local.
+
+README scope remains confirmed: problem/contribution, demo/video/transcript, connected workflows, three complementary current images, concise architecture/engineering explanation, reproducible linked local setup and honest shared-demo/free-hosting limits. Reconcile historical claims with current code/verification; no new player page or license change is implied by the Aster reference. No new domain term or hard-to-reverse architectural trade-off requires a glossary entry/ADR for these presentation choices.
+
+## Confirmed presentation frontier — 2026-10-18
+
+Owner answers:Q1 yes (Aster-style1080p polish),Q2 yes (20–25s genuine mobile/dark within3:30),Q3 yes specifically to highlight WebSockets (actual ticket state/task move and independent-session updates). Shared understanding is reached; no unanswered presentation decision remains and the recording-readiness approval has already been satisfied.
+
+Published the reconciled [current spec](spec.md) and the original approved six tickets individually. [01](issues/01-accurate-project-progress.md) and [02](issues/02-dependency-disposition.md) are resolved by linked existing evidence. Remaining execution frontier is [03: verified rehearsal](issues/03-rehearse-verified-journey.md); after03, [04: README/setup](issues/04-recruiter-readme-setup.md) and [05: walkthrough](issues/05-silent-captioned-walkthrough.md); [06: publication](issues/06-publish-presentation-package.md) waits for04/05. Four presentation tickets remain. Prior draft files are explicitly historical; current spec removes obsolete baseline/scaffold/task-drag limitations.
+
+No final media has been recorded and no runtime/product behavior changed while reconciling this plan. Implementation can proceed from03 using the confirmed scope and existing test boundaries, without repeating interview, preparation tickets or owner readiness permission.
+
+### Public viewing page added by the owner
+
+After confirming Q1/Q2/Q3, the owner explicitly asks for an Aster-style website extension to watch the video. The current spec and tickets04/06 now include a public walkthrough route, native HTML video playback, poster, chapter access, readable English transcript, direct MP4/caption downloads and return to the live demo. It must work without joining/restoring a demo session. The README poster opens this page. Verify native playback/seeking, direct entry/reload, reflow and media byte ranges. Existing free Vercel hosting is sufficient; no custom playback engine or paid service is implied. This owner instruction supersedes the former no-player-page boundary. The six-ticket sequence remains coherent;04/05 still gate06's complete publication outcome.

@@ -1,3 +1,5 @@
+> Historical approved proposal. Reconciled after the completed quality/redesign and the owner’s2026-10-18 Aster/mobile/WebSocket confirmations. Use [issues/](issues/) for current work; completed preparation is not reopened.
+
 # Proposed tickets: portfolio presentation
 
 Status: approved proposal — deferred until the quality/refactor phase is verified
