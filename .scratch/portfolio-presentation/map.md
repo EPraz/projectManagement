@@ -1,6 +1,12 @@
 # Portfolio presentation: README and walkthrough
 
-Status: deferred-until-refactor-and-quality-work
+Status: ready-for-owner-design-feedback
+
+## Quality handoff
+
+All 16 quality/refactor tickets are resolved. Verified application b2a6191 is live on the existing Vercel/Render domains; hosted CI39095797406 passed all three jobs. See [final evidence](../portfolio-improvements/evidence/16-finish.md) and [reconciled presentation handoff](../portfolio-improvements/evidence/16-presentation-handoff.md).
+
+Earlier notes below describe the pre-quality baseline and must not be reused as current audit/test/bug claims. Presentation preparation slices 01/02 are covered by quality evidence. Remaining work starts with final story rehearsal/design feedback, then the approved English README and silent captioned local walkthrough/package. Before recording, wait for the owner's design feedback and explicit readiness confirmation. No final video or presentation captures have been produced.
 
 ## Notes
 

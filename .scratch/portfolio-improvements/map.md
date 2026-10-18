@@ -1,6 +1,6 @@
 # Product quality and refactor
 
-Status: ready-for-agent
+Status: complete
 
 ## Notes
 
@@ -81,15 +81,15 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [13: Reduce unnecessary initial and editor code loading](issues/13-initial-code-loading.md) | resolved | 08 |
 | [14: Reduce unnecessary project read payloads and query work](issues/14-project-read-efficiency.md) | resolved | 07 |
 | [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | resolved | 08 |
-| [16: Verify product finish in CI and the cloud, then hand off presentation](issues/16-cloud-quality-verification.md) | claimed | 02, 03, 04, 05, 09, 10, 11, 12, 13, 14, 15 |
+| [16: Verify product finish in CI and the cloud, then hand off presentation](issues/16-cloud-quality-verification.md) | resolved | 02, 03, 04, 05, 09, 10, 11, 12, 13, 14, 15 |
 
 ## Resume implementation
 
-- Tickets 01–15 are resolved. Next numbered frontier: 16, integrated CI/cloud verification, now unblocked.
+- Tickets 01–16 are resolved. No quality implementation frontier remains. Resume the separate presentation plan using evidence/16-presentation-handoff.md; collect owner design feedback and explicit readiness confirmation before recording.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
-- Final presentation remains deferred until ticket 16 verifies the integrated application.
+- Ticket 16 verified the integrated application in CI and the cloud. Final presentation follows the separate plan and owner recording checkpoint.
 
 
 
@@ -103,3 +103,5 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 - 2026-10-17: [Ticket14](issues/14-project-read-efficiency.md) resolved: compatible opt-in summary/workspace projections, actual consumer types and shared canonical work projection. [Evidence](evidence/14-project-reads.md), [measurements](evidence/14-read-measurements.json), [review](evidence/14-review.md);d8088b4/b944896/3723701. ListJSON−98.4%/43→6queries, detailJSON−33.8%/43→33; unchanged default/socket contracts. Shared nullable-statusP2 reproduced/fixed/re-reviewed;84browser/45API/77Jest pass, both axes0remaining.
 
 - 2026-10-17: [Ticket 15](issues/15-bulk-ticket-operations.md) resolved: atomic validated authenticated bulk changes and safe diagnostics; disabled ordering preserved. [Evidence](evidence/15-bulk.md), [review](evidence/15-review.md), cebb8d3. 85 browser/51 API/77 frontend tests pass; both review axes have zero remaining findings.
+
+- 2026-10-17: [Ticket 16](issues/16-cloud-quality-verification.md) resolved at b2a6191: reproducible owned browser/CI lifecycle, bounded finish corrections, clean startup, final audits, production publication and cloud HTTP/browser/WebSocket checks. [Evidence](evidence/16-finish.md), [review](evidence/16-review.md), [handoff](evidence/16-presentation-handoff.md). 91 browser/58 API/77 frontend plus env-build check pass; hosted CI39095797406 all three jobs green; both review axes zero remaining findings. All 16 quality tickets are resolved. No walkthrough recorded; owner design/readiness checkpoint is next.
