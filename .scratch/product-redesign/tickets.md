@@ -6,7 +6,7 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 
 ## Current frontier
 
-**12 — Run a responsive sprint retrospective** is the current frontier. Progress: 11/14 resolved; ticket 12 claimed.
+**13 — Verify coherent C journeys across the complete product** is the current frontier. Progress: 12/14 resolved; ticket 13 claimed.
 
 ## Tickets and immediate blockers
 
@@ -23,8 +23,8 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 | 09 | [Plan sprint goals and checklists](issues/09-sprint-goals-checklists.md) | 02 | resolved |
 | 10 | [Plan member capacity for the selected sprint](issues/10-member-capacity.md) | 02 | resolved |
 | 11 | [Manage the project's team membership](issues/11-project-team.md) | 02 | resolved |
-| 12 | [Run a responsive sprint retrospective](issues/12-sprint-retrospective.md) | 02 | claimed |
-| 13 | [Verify coherent C journeys across the complete product](issues/13-integrated-verification.md) | 03, 06, 07, 08, 09, 10, 11, 12 | ready-for-agent |
+| 12 | [Run a responsive sprint retrospective](issues/12-sprint-retrospective.md) | 02 | resolved |
+| 13 | [Verify coherent C journeys across the complete product](issues/13-integrated-verification.md) | 03, 06, 07, 08, 09, 10, 11, 12 | claimed |
 | 14 | [Publish and verify the complete C redesign](issues/14-publish-verify-cloud.md) | 13 | ready-for-agent |
 
 Edges omit transitive dependencies. Once 02 is complete, Overview, ticket editing, goals, capacity, team and retrospective are independently available. Capacity does not require the Team redesign: its existing membership contract remains valid. Ticket 13 requires every complete domain surface; ticket 14 requires verified integration. Use the numbered open/unblocked/unclaimed frontier when proceeding sequentially.

@@ -4,15 +4,15 @@
 
 **Blocked by:** 02 — Navigate a project with shared sprint context.
 
-**Status:** claimed
+**Status:** resolved
 
 Type: task
 
-- [ ] Wide screens show Positive/Negative/Improvements columns; mobile shows category selection with readable cards, preserving full operations and clear sprint context.
-- [ ] Preserve existing card create/edit/delete, reactions, retries and display controls. Explain name-hide/blur as presentation, without implying actual anonymity.
-- [ ] Keep empty/no-sprint, pending reaction/save/delete, failure recovery, retained input and correct canonical results through sprint/project changes.
-- [ ] Reach actions by touch/keyboard, manage editor focus and keep both themes readable without color-only category meaning.
-- [ ] Verify notes/reactions/editing, category changes, display semantics and cross-sprint isolation on narrow/wide layouts.
+- [x] Wide screens show Positive/Negative/Improvements columns; mobile shows category selection with readable cards, preserving full operations and clear sprint context.
+- [x] Preserve existing card create/edit/delete, reactions, retries and display controls. Explain name-hide/blur as presentation, without implying actual anonymity.
+- [x] Keep empty/no-sprint, pending reaction/save/delete, failure recovery, retained input and correct canonical results through sprint/project changes.
+- [x] Reach actions by touch/keyboard, manage editor focus and keep both themes readable without color-only category meaning.
+- [x] Verify notes/reactions/editing, category changes, display semantics and cross-sprint isolation on narrow/wide layouts.
 
 ## Shared completion requirements
 
@@ -26,3 +26,9 @@ Type: task
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
 
 - 2026-10-18: Claimed after 11. Preserve real sprint-scoped feedback, reactions and display controls while implementing C columns and narrow category selection.
+
+## Answer
+
+Implemented C feedback columns on wide screens and a category selector/card journey on narrow screens. Full create/edit/delete and reactions retain canonical confirmation, retry and pending protections. Editors carry the actual sprint context; category edits reveal their confirmed destination without changing another sprint's selection. Existing discussion/blur/name-display controls remain available with an explicit explanation that these are presentation preferences, not anonymity.
+
+Verification: the new compact-category regression failed before implementation, then passed. All nine retained retrospective journeys and the compact regression passed; 12 additional both-theme layout/editor and category-persistence journeys passed. Frontend typecheck/lint pass (12 existing warnings). Inspected light desktop and dark mobile captures. No backend contract/data change, publication or recording.

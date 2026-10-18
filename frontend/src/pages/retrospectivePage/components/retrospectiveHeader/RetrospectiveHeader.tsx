@@ -1,71 +1,112 @@
 import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
-import {
-  Add as AddIcon,
-  Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon
-} from "@mui/icons-material";
+import { Add, Visibility, VisibilityOff } from "@mui/icons-material";
 import { RetrospectiveContainerProps } from "../../../../types";
-import { RetroTypes } from "../../../../constants";
 import { Header } from "../../RetrospectivePage.styles";
 
-const RetrospectiveHeader = ({
+export default function RetrospectiveHeader({
   sprint,
   currentTab,
   setCurrentTab,
   hideNames,
   setHideNames,
-  handleOpenAddDialog
-}: RetrospectiveContainerProps) => {
+  handleOpenAddDialog,
+  selectedCategory,
+}: RetrospectiveContainerProps) {
   return (
-    <Header elevation={0}>
+    <Header>
       <Box
         sx={{
           display: "flex",
+          justifyContent: "space-between",
+          alignItems: "start",
           gap: 2,
-          alignItems: "center",
           flexWrap: "wrap",
-          minWidth: 0
         }}
       >
-        <Typography variant="h5" fontWeight="bold">
-          {sprint ? `${sprint.name} Retrospective` : "Retrospective"}
-        </Typography>
-        <Tabs
-          value={currentTab}
-          onChange={(_, value) => setCurrentTab(value)}
-          sx={{
-            ml: { xs: 0, md: 2 },
-            "& .MuiTab-root": {
-              minHeight: 48,
-              textTransform: "none",
-              fontSize: "0.875rem"
-            }
-          }}
-        >
-          <Tab label="Team Discussion" />
-          <Tab label="Blurred feedback" />
-        </Tabs>
-      </Box>
-      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-        <Button
-          variant="outlined"
-          aria-pressed={hideNames}
-          startIcon={hideNames ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          onClick={() => setHideNames(!hideNames)}
-        >
-          {hideNames ? "Show Names" : "Hide Names"}
-        </Button>
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="overline" color="text.secondary">
+            Learn & improve
+          </Typography>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: { xs: 34, md: 44 },
+              fontWeight: 600,
+              letterSpacing: "-.04em",
+              lineHeight: 1.15,
+            }}
+          >
+            Retrospective.
+          </Typography>
+          <Typography
+            color="text.secondary"
+            sx={{ mt: 1, overflowWrap: "anywhere" }}
+          >
+            {sprint
+              ? `${sprint.name} · Sprint feedback`
+              : "Feedback for the selected sprint"}
+          </Typography>
+        </Box>
         <Button
           variant="contained"
           disabled={!sprint}
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenAddDialog(RetroTypes.POSITIVE)}
+          startIcon={<Add />}
+          onClick={() => handleOpenAddDialog(selectedCategory)}
         >
           Add new card
         </Button>
       </Box>
+      <Box
+        sx={{
+          p: { xs: 1.5, sm: 2 },
+          border: 1,
+          borderColor: "divider",
+          bgcolor: "background.paper",
+          borderRadius: "12px",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 1.5,
+          }}
+        >
+          <Tabs
+            value={currentTab}
+            onChange={(_, value) => setCurrentTab(value)}
+            aria-label="Feedback display"
+            variant="fullWidth"
+            sx={{
+              maxWidth: 390,
+              width: { xs: "100%", sm: "auto" },
+              "& .MuiTab-root": {
+                minWidth: 0,
+                px: 1.5,
+                textTransform: "none",
+                fontSize: 14,
+              },
+            }}
+          >
+            <Tab label="Team Discussion" />
+            <Tab label="Blurred feedback" />
+          </Tabs>
+          <Button
+            variant="outlined"
+            aria-pressed={hideNames}
+            startIcon={hideNames ? <VisibilityOff /> : <Visibility />}
+            onClick={() => setHideNames(!hideNames)}
+          >
+            {hideNames ? "Show Names" : "Hide Names"}
+          </Button>
+        </Box>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1.5 }}>
+          Name hiding and blur change this display only. Feedback and reactions
+          remain linked to their authors.
+        </Typography>
+      </Box>
     </Header>
   );
-};
-
-export default RetrospectiveHeader;
+}

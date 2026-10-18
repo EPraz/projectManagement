@@ -3,6 +3,7 @@ import { RetroTypes } from "../../constants";
 import { RetroCard, Sprint } from "../models";
 
 export type RetrospectiveContainerProps = {
+  selectedCategory: RetroTypes;
   sprint: Sprint | null;
   currentTab: number;
   setCurrentTab: React.Dispatch<React.SetStateAction<number>>;
@@ -12,6 +13,8 @@ export type RetrospectiveContainerProps = {
 };
 
 export type RetrospectiveColumnsContainerProps = {
+  selectedCategory: RetroTypes;
+  setSelectedCategory: (value: RetroTypes) => void;
   retroCards: RetroCard[];
   handleOpenAddDialog: (typeColumn: RetroTypes) => void;
   getUserNamesByIds: (userIds: string[]) => string[];
@@ -20,7 +23,7 @@ export type RetrospectiveColumnsContainerProps = {
   theme: Theme;
   handleMenuClick: (
     e: React.MouseEvent<HTMLButtonElement>,
-    cardId: string
+    cardId: string,
   ) => void;
   handleLikeToggle: (card: RetroCard) => Promise<void>;
   isPending: (id: string) => boolean;
@@ -39,7 +42,7 @@ export type RetrospectiveColumnProps = {
   theme: Theme;
   handleMenuClick: (
     e: React.MouseEvent<HTMLButtonElement>,
-    cardId: string
+    cardId: string,
   ) => void;
   handleLikeToggle: (card: RetroCard) => Promise<void>;
   isPending: (id: string) => boolean;
@@ -53,7 +56,7 @@ export type RetrospectiveCardProps = {
   theme: Theme;
   handleMenuClick: (
     e: React.MouseEvent<HTMLButtonElement>,
-    cardId: string
+    cardId: string,
   ) => void;
   handleLikeToggle: (card: RetroCard) => Promise<void>;
   isPending: (id: string) => boolean;

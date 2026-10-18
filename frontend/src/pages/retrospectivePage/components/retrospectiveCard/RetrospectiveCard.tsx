@@ -7,7 +7,7 @@ import {
   CardHeader,
   LikeButton,
   LikedByTooltip,
-  RetroCard as RetroCardStyled
+  RetroCard as RetroCardStyled,
 } from "../../RetrospectivePage.styles";
 import { getCardColor, getCardIcon } from "../../RetrospectivePage.helpers";
 import { useAuth } from "../../../../context/authContext";
@@ -21,7 +21,7 @@ const RetrospectiveCard = ({
   theme,
   handleMenuClick,
   handleLikeToggle,
-  isPending
+  isPending,
 }: RetrospectiveCardProps) => {
   const { user } = useAuth();
   const cardColor = getCardColor(card.type);
@@ -38,21 +38,20 @@ const RetrospectiveCard = ({
       isBlurred={currentTab === 1}
     >
       {!hideNames && (
-        <CardHeader className="content">
+        <CardHeader>
           <Avatar
             sx={{
               width: 40,
               height: 40,
-              border: `2px solid ${theme.palette.background.paper}`,
-              boxShadow: theme.shadows[2],
-              bgcolor: theme.palette.secondary.main
+              bgcolor: theme.palette.action.selected,
+              color: theme.palette.text.primary,
             }}
             alt={card.author.name}
           >
             {getInitials(card.author.name)}
           </Avatar>
-          <Box>
-            <Typography variant="subtitle2" fontWeight="medium">
+          <Box sx={{ minWidth: 0, overflowWrap: "anywhere" }}>
+            <Typography className="content" variant="body2" fontWeight={600}>
               {card.author.name}
             </Typography>
             <Typography variant="caption" color="text.secondary">
@@ -67,7 +66,7 @@ const RetrospectiveCard = ({
               e.stopPropagation();
               handleMenuClick(e, card.id);
             }}
-            sx={{ ml: "auto" }}
+            sx={{ ml: "auto", minWidth: 44, minHeight: 44 }}
           >
             <MoreVertIcon />
           </IconButton>
@@ -90,7 +89,7 @@ const RetrospectiveCard = ({
                   ))}
                 </ul>
               </LikedByTooltip>
-            ) : hideNames ? (
+            ) : hideNames || card.likes > 0 ? (
               `${card.likes} reactions`
             ) : (
               "Be the first to like"
@@ -120,7 +119,7 @@ const RetrospectiveCard = ({
               e.stopPropagation();
               handleMenuClick(e, card.id);
             }}
-            sx={{ ml: "auto" }}
+            sx={{ ml: "auto", minWidth: 44, minHeight: 44 }}
           >
             <MoreVertIcon />
           </IconButton>

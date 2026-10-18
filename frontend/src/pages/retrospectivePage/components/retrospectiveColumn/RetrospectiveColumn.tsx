@@ -4,7 +4,7 @@ import {
   ColumnContent,
   ColumnHeader,
   ColumnTitle,
-  EmptyColumnMessage
+  EmptyColumnMessage,
 } from "../../RetrospectivePage.styles";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { RetrospectiveColumnProps } from "../../../../types";
@@ -23,15 +23,15 @@ const RetrospectiveColumn = ({
   theme,
   handleMenuClick,
   handleLikeToggle,
-  isPending
+  isPending,
 }: RetrospectiveColumnProps) => {
   const columnCards = retroCards.filter((card) => card.type === type);
   return (
-    <Column elevation={0}>
+    <Column elevation={0} role="region" aria-label={`${title} feedback`}>
       <ColumnHeader>
         <ColumnTitle>
           {icon}
-          <Typography variant="subtitle1" fontWeight="medium">
+          <Typography component="h2" fontSize={20} fontWeight={600}>
             {title}
           </Typography>
           <Typography
@@ -40,8 +40,8 @@ const RetrospectiveColumn = ({
               ml: 1,
               px: 1.5,
               py: 0.5,
-              borderRadius: 1,
-              bgcolor: `${color}.soft`
+              borderRadius: "8px",
+              bgcolor: "action.hover",
             }}
           >
             {columnCards.length}
@@ -65,7 +65,7 @@ const RetrospectiveColumn = ({
             .sort(
               (a, b) =>
                 new Date(b.timestamp).getTime() -
-                new Date(a.timestamp).getTime()
+                new Date(a.timestamp).getTime(),
             )
             .map((card) => (
               <RetrospectiveCard
@@ -85,7 +85,7 @@ const RetrospectiveColumn = ({
             <Typography variant="body2" gutterBottom>
               No cards yet
             </Typography>
-            <Typography variant="caption" color="text.secondary" gutterBottom>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
               Add your first card to this column
             </Typography>
             <Button

@@ -4,7 +4,7 @@
 
 **Blocked by:** 03 — See a truthful operational Overview; 06 — Execute a sprint through the responsive Taskboard; 07 — Work from a selected-sprint Backlog; 08 — Explore project hierarchy and open linked tickets; 09 — Plan sprint goals and checklists; 10 — Plan member capacity for the selected sprint; 11 — Manage the project's team membership; 12 — Run a responsive sprint retrospective.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -26,3 +26,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after all twelve domain deliveries. Verify complete production journeys, both themes/devices and required gates; final review baseline confirmed by owner: d355d98.

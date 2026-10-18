@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { Alert, Box, Button, useTheme } from "@mui/material";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Alert, Button, useTheme } from "@mui/material";
 
 import type { RetroCard as RetroCardModel } from "../../../../types";
 import { useRetrospective } from "../../useRetrospective";
@@ -12,7 +12,7 @@ import Portal from "../../../../components/portal/Portal";
 import DialogForm from "../../../../components/dialogForm/DialogForm";
 import DeleteConfirmationModal from "../../../../components/deleteConfirmationModal/DeleteConfirmationModal";
 import RetrospectiveHeader from "../retrospectiveHeader/RetrospectiveHeader";
-import { ColumnContent, Container } from "../../RetrospectivePage.styles";
+import { Container } from "../../RetrospectivePage.styles";
 import RetrospectiveColumnsContainer from "../retrospectiveColumnsContainer/RetrospectiveColumnsContainer";
 import RetrospectiveMenu from "../retrospectiveMenu/RetrospectiveMenu";
 
@@ -30,7 +30,10 @@ const RetrospectiveContainer = () => {
     retryReaction,
     toggleReaction,
   } = useRetrospective();
+  const currentSprint = useRef(sprint?.id);
+  currentSprint.current = sprint?.id;
   const [currentTab, setCurrentTab] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(RetroTypes.POSITIVE);
   const [hideNames, setHideNames] = useState(false);
 
   // State for card menu
@@ -116,7 +119,12 @@ const RetrospectiveContainer = () => {
     setEditingCard(null);
   }, [setOpenDialog, setEditingCard]);
 
-  const handleDialogSubmit = (data: typeof formData) => save(editingCard, data);
+  const handleDialogSubmit = async (data: typeof formData) => {
+    const confirmed = await save(editingCard, data);
+    if (confirmed && data.type && currentSprint.current === sprint?.id)
+      setSelectedCategory(data.type);
+    return confirmed;
+  };
   const handleOpenDeleteModal = (card: RetroCardModel) => {
     setCardToDelete(card);
     setOpenDeleteModal(true);
@@ -126,6 +134,7 @@ const RetrospectiveContainer = () => {
   return (
     <Container>
       <RetrospectiveHeader
+        selectedCategory={selectedCategory}
         currentTab={currentTab}
         handleOpenAddDialog={handleOpenAddDialog}
         hideNames={hideNames}
@@ -133,8 +142,6 @@ const RetrospectiveContainer = () => {
         setHideNames={setHideNames}
         sprint={sprint}
       />
-
-      <Box sx={{ display: "flex", justifyContent: "end", gap: 1 }}></Box>
 
       {reactionError && (
         <Alert
@@ -158,8 +165,10 @@ const RetrospectiveContainer = () => {
         </Alert>
       )}
       {sprint && (
-        <ColumnContent>
+        <>
           <RetrospectiveColumnsContainer
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
             currentTab={currentTab}
             getUserNamesByIds={getUserNamesByIds}
             handleLikeToggle={toggleReaction}
@@ -170,7 +179,7 @@ const RetrospectiveContainer = () => {
             retroCards={retroCards}
             theme={theme}
           />
-        </ColumnContent>
+        </>
       )}
 
       {anchorEl && (
@@ -196,6 +205,7 @@ const RetrospectiveContainer = () => {
             schema={retrospectiveSchema}
             defaultValues={formData}
             title={editingCard ? "Edit Retro Card" : "Add Retro Card"}
+            context={sprint?.name}
             disabled={isSaving(editingCard?.id)}
             fieldConfig={{
               content: {

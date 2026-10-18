@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo, navigateSection } from "./support/demo";
+import {
+  discardUnsavedChanges,
+  enterDemo,
+  navigateSection,
+} from "./support/demo";
 test.use({ actionTimeout: 5000 });
 test("failed retrospective creation retains feedback and offers retry", async ({
   page,
@@ -22,6 +26,7 @@ test("failed retrospective creation retains feedback and offers retry", async ({
     "Keep this retrospective feedback draft",
   );
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await discardUnsavedChanges(page);
 });
 import type { APIRequestContext, Page } from "@playwright/test";
 
@@ -244,7 +249,7 @@ test("pending retrospective saves retain input and prevent duplicate submissions
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: "Save", exact: true }),
+      dialog.getByRole("button", { name: /^Sav(e|ing…)/ }),
     ).toBeDisabled();
     await expect(
       dialog.getByRole("button", { name: "Cancel", exact: true }),
@@ -357,6 +362,7 @@ test("a late retrospective save cannot close the next sprint's draft", async ({
       "Next sprint unsaved draft",
     );
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
     await expect(cardWith(page, "Retro B feedback")).toBeVisible();
   } finally {
     release();
@@ -436,6 +442,7 @@ for (const width of [390, 1280]) {
       animations: "disabled",
     });
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
     await expect(add).toBeFocused();
   });
 }
