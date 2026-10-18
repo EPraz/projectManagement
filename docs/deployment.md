@@ -137,4 +137,4 @@ Ejecuta el comando dentro de `backend`. La prueba rechaza hosts remotos y nombre
 
 ## Después del despliegue
 
-Quedan para otra fase el README orientado a reclutadores y el video walkthrough. Este documento describe la preparación técnica y la configuración manual.
+El README en inglés presenta el producto, la arquitectura y el arranque local. El video y su página pública usan los archivos estáticos del frontend en `/walkthrough`, con capítulos, transcripción y descargas independientes del backend. La [guía del walkthrough](walkthrough.md) y el [registro de verificación](verification.md) documentan las fuentes y la publicación.

@@ -1,7 +1,7 @@
 # 06: Deliver the public viewer and coherent publication
 
 Type: task
-Status: needs-info
+Status: claimed
 Blocked by: 04, 05
 
 ## What to build
@@ -40,3 +40,8 @@ Status needs-info means **explicit owner approval of the finished video before p
 ### Owner feedback incorporated
 
 The owner requested correcting the ticket cell visible at1:05 and re-recording only that part. Compact ticket design and five real scenes (1:00.20–1:44.32) are complete, with a cleaned join into the original Team footage.80frontend tests/12snapshots,16Taskboard/bulk and9viewer journeys pass; full decode/hash/visual joins pass. README Taskboard screenshot updated. [Evidence](../evidence/06-taskboard-feedback.md). Current review server: `http://127.0.0.1:61758/walkthrough`. Publication remains needs-info solely for explicit owner approval and subsequent hosted delivery.
+
+
+### Publication approved — 2026-10-18
+
+The owner accepts the corrected ticket design/video and explicitly asks implement to finish and publish. This satisfies the finished-video approval gate. Claim06, publish the exact approved composite (SHA2563cf48b72c5dd56c251f7f7ea1c0764d6e764b76b27cf0c1ffdc1195b0fd31e57) and existing frontend changes, then verify actual hosted delivery/README/CI before resolution. No new approval is required for the authorized publication. Preserve shared visitor data and existing free resources.

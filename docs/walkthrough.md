@@ -81,4 +81,4 @@ The composer requires the five real scenes and verified synchronization, retains
 
 ## Publication status
 
-This package is prepared locally for the owner's review. The intended online links above become valid after approval and deployment. **Video publication is pending explicit owner approval**; public media delivery is not yet verified. The capture source revision is separate from the eventual publication revision. After approval, verify the deployed viewing page, poster, MP4/VTT downloads, content types, byte-range seeking and playback on existing hosting. See [verification](verification.md).
+The owner approved the corrected video and authorized publication on 2026-10-18. The package is being published through the existing Vercel/GitHub setup. Hosted delivery, downloads, byte-range seeking and playback must pass before publication is recorded as complete. Capture-source revisions remain separate from the publication revision. See [verification](verification.md).

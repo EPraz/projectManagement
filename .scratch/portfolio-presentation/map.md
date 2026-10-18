@@ -163,3 +163,8 @@ Owner Taskboard feedback completed locally: compact ticket summary and five-scen
 
 
 Taskboard feedback follow-up Standards0/Spec0 against1575837..5523e48 is recorded in [the review](evidence/06-code-review.md). Served MP4 hash matches the current composite; caption, transcript and chapter files are byte-identical to1575837. Local review remains http://127.0.0.1:61758/walkthrough, publication unapproved.
+
+
+## Publication authorization received — 2026-10-18
+
+The owner explicitly accepts the corrected layout/video and requests implementation of the final part and publication. The approval gate is satisfied;06 is claimed. Publish the exact approved composite/hash via existing GitHub/Vercel resources, verify real hosted playback/seeking/downloads, README/media links, preserved demo entry and hosted CI, then resolve06 with actual deployment/source revisions. No additional permission, recording or public data reset is needed.

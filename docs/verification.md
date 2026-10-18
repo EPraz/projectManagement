@@ -25,7 +25,7 @@ No runtime dependency or database/schema/API change is introduced by this presen
 
 ## Publication gate and delivery checks
 
-**Prepared locally; not published.** The owner explicitly requires reviewing/approving the finished video before push, deploy or upload. The README contains intended deployment URLs; their new video/page assets are not yet claimed to be live. Ticket06 remains open for this approval and final public checks.
+**Owner publication approval received on 2026-10-18.** The corrected video and ticket design were accepted. Ticket06 is claimed for publication and actual hosted-delivery checks; completion will be recorded only after those checks and hosted CI pass.
 
 After approval and deployment to the existing Vercel hosting, record the exact publication commit and verify:
 
@@ -40,4 +40,4 @@ Do not resolve publication solely because local checks passed. The static video/
 
 ## Owner Taskboard feedback — subsequent focused verification
 
-The compact ticket summary and actual partial retake pass typecheck/lint/builds,80frontend tests/12snapshots,16Taskboard/bulk browser journeys and9viewer journeys. Layout captures cover320–1440px and both themes. The composite remains182.56s, with unchanged chapters/captions, full decode and inspected join/paused/fullscreen frames. Its hash matches the locally served build. The280-journey run above predates this small UI adjustment; these subsequent focused checks are not represented as another full run. No backend code, schema or dependencies changed. Publication still awaits owner approval.
+The compact ticket summary and actual partial retake pass typecheck/lint/builds,80frontend tests/12snapshots,16Taskboard/bulk browser journeys and9viewer journeys. Layout captures cover320–1440px and both themes. The composite remains182.56s, with unchanged chapters/captions, full decode and inspected join/paused/fullscreen frames. Its hash matches the locally served build. The280-journey run above predates this small UI adjustment; these subsequent focused checks are not represented as another full run. No backend code, schema or dependencies changed. The owner subsequently approved this corrected export and authorized publication.
