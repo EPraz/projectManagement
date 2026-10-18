@@ -77,7 +77,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [09: Refactor hierarchy and backlog without breaking linked work](issues/09-hierarchy-and-backlog.md) | resolved | 07 |
 | [10: Make sprint planning and goals consistent across views](issues/10-sprint-planning-and-goals.md) | resolved | 07 |
 | [11: Make team and capacity planning reliable](issues/11-team-and-capacity.md) | resolved | 07 |
-| [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | ready-for-agent | 07 |
+| [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | resolved | 07 |
 | [13: Reduce unnecessary initial and editor code loading](issues/13-initial-code-loading.md) | ready-for-agent | 08 |
 | [14: Reduce unnecessary project read payloads and query work](issues/14-project-read-efficiency.md) | ready-for-agent | 07 |
 | [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | ready-for-agent | 08 |
@@ -85,7 +85,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 ## Resume implementation
 
-- Tickets 01–11 are resolved. Next numbered frontier: 12, retrospective recovery, now unblocked. Later blockers remain unchanged.
+- Tickets 01–12 are resolved. Next numbered frontier: 13, measured code loading, now unblocked. Later blockers remain unchanged.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
@@ -95,3 +95,5 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 
 
+
+- 2026-10-17: [Ticket12](issues/12-retrospective-recovery.md) resolved: canonical recoverable feedback/reactions, authenticated immutable card relationships and truthful display controls. [Evidence](evidence/12-retrospective.md), [review](evidence/12-review.md);0a9705d,c9ca63e,c65118e. Two Standards P2s reproduced/fixed/re-reviewed;78browser/43API/77Jest checks pass, both axes0remaining.

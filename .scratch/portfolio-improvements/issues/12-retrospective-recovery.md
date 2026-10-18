@@ -4,16 +4,16 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** claimed
+**Status:** resolved
 
 Type: task
 
-- [ ] Characterize the actual supported retrospective interactions and selected-sprint context before extraction.
-- [ ] Separate request/domain/state/presentation responsibilities where useful and migrate affected consumers to the shared boundary.
-- [ ] Verify touched card/author/sprint relationships, validation and failure outcomes through the API; preserve credential filtering and confirmed socket updates.
-- [ ] Empty and failed collections are distinct; retries and pending interactions do not erase recoverable input or create misleading duplicate success.
-- [ ] Switching sprint/project and receiving another session's updates do not leave the wrong retrospective on screen.
-- [ ] Verify the workflow with keyboard/focus and representative narrow/wide layouts; preserve the existing visual direction.
+- [x] Characterize the actual supported retrospective interactions and selected-sprint context before extraction.
+- [x] Separate request/domain/state/presentation responsibilities where useful and migrate affected consumers to the shared boundary.
+- [x] Verify touched card/author/sprint relationships, validation and failure outcomes through the API; preserve credential filtering and confirmed socket updates.
+- [x] Empty and failed collections are distinct; retries and pending interactions do not erase recoverable input or create misleading duplicate success.
+- [x] Switching sprint/project and receiving another session's updates do not leave the wrong retrospective on screen.
+- [x] Verify the workflow with keyboard/focus and representative narrow/wide layouts; preserve the existing visual direction.
 
 ## Comments
 
@@ -25,3 +25,7 @@ Type: task
 2026-10-17 characterization: supported operations are create/edit/delete feedback in three fixed categories and toggle the shared demo's reaction in the selected sprint. The former Anonymous Feedback tab only blurred text and author display; it now honestly says Blurred feedback. Hide Names remains display-only and also suppresses reaction-name tooltips and deletion attribution. No anonymous storage, identity switching or private-feedback policy is introduced. Cards retain their original author and sprint when edited; create attribution is authenticated. Existing deployed payloads remain accepted where safe, with legacy reaction arrays reduced to the session user's desired reaction rather than replacing other reactions.
 
 2026-10-17 review correction: Standards P2 reproduced against the actual isolated bootstrap: string liked="false" returned200/likes1 while the HTTP fixture rejected it. The bootstrap enabled implicit DTO coercion while fixtures did not. Main and fixtures now share the same explicit ValidationPipe factory without implicit body conversion; intentional DTO date conversions and route primitive transformation remain. This bounded shared-boundary correction also preserves existing checklist/numeric validation evidence instead of adding isolated coercion workarounds. Rebuild and full integration verification required before closure.
+
+## Answer
+
+Resolved with cohesive canonical retrospective commands, truthful draft/delete/reaction recovery, authenticated immutable relationships, serialized persisted reactions/events and honest display controls. Shared strict bootstrap validation and explicit date compatibility are verified. [Evidence](../evidence/12-retrospective.md), [review](../evidence/12-review.md);0a9705d,c9ca63e,c65118e.78browser/43API/77Jest tests and type/lint/build gates pass; both review axes have0remainingfindings.
