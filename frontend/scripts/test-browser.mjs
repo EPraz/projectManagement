@@ -159,7 +159,7 @@ try {
   const productionFrontend = { ...env, NODE_ENV: "production" };
   await run(
     frontend,
-    ["node_modules/vite/bin/vite.js", "build"],
+    ["node_modules/vite/bin/vite.js", "build", "--mode", "browser-test"],
     productionFrontend
   );
   const apiServer = launch(backend, ["dist/main.js"], env, true);
@@ -168,6 +168,8 @@ try {
     [
       "node_modules/vite/bin/vite.js",
       "preview",
+      "--mode",
+      "browser-test",
       "--host",
       "127.0.0.1",
       "--port",

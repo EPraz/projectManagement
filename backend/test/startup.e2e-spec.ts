@@ -1,10 +1,69 @@
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import { AddressInfo, createServer } from 'node:net';
+import {
+  mkdtempSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname } from 'node:path';
 
 const cwd = join(__dirname, '..');
 
 describe('Safe contributor commands', () => {
+  it('builds browser fixtures without loading private frontend environment files', () => {
+    const fixture = mkdtempSync(join(tmpdir(), 'project-browser-env-'));
+    const frontend = join(cwd, '..', 'frontend');
+    try {
+      writeFileSync(
+        join(fixture, '.env'),
+        'VITE_PRIVATE_FIXTURE=fixture-private-sentinel',
+      );
+      writeFileSync(
+        join(fixture, 'index.html'),
+        '<script type="module" src="/main.js"></script>',
+      );
+      writeFileSync(
+        join(fixture, 'main.js'),
+        'console.log(import.meta.env.VITE_PRIVATE_FIXTURE)',
+      );
+      mkdirSync(join(fixture, 'out'));
+      const result = spawnSync(
+        process.execPath,
+        [
+          join(frontend, 'node_modules/vite/bin/vite.js'),
+          'build',
+          '--mode',
+          'browser-test',
+          '--config',
+          join(frontend, 'vite.config.ts'),
+          '--outDir',
+          join(fixture, 'out'),
+        ],
+        {
+          cwd: fixture,
+          env: { ...process.env, NODE_ENV: 'production' },
+          encoding: 'utf8',
+          timeout: 20000,
+        },
+      );
+      expect(result.error).toBeUndefined();
+      expect(result.status).toBe(0);
+      const assets = readdirSync(join(fixture, 'out/assets'))
+        .map((name) => readFileSync(join(fixture, 'out/assets', name), 'utf8'))
+        .join('');
+      expect(assets).not.toContain('fixture-private-sentinel');
+    } finally {
+      // Only the exact temporary directory created by this test is removed.
+      expect(dirname(fixture)).toBe(tmpdir());
+      rmSync(fixture, { recursive: true, force: true });
+    }
+  }, 30000);
+
   it.each([
     ['production', 'postgresql://quality@127.0.0.1/fixture_browser_test'],
     ['test', undefined],

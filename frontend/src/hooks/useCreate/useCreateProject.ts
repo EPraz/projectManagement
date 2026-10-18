@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useAuth } from "../../context/authContext";
 import { useSnackbar } from "../../context/snackbarContext";
 import type { Project } from "../../types/models/Project";
-import { readProject } from "../../services/projectResponse";
+import {
+  readProject,
+  readProjectSummaries
+} from "../../services/projectResponse";
 
 export const useCreateProject = () => {
   const { request } = useAuth();
@@ -20,6 +23,8 @@ export const useCreateProject = () => {
             "Could not create the project. Your draft is kept. Please try again."
         })
       );
+      // Creation enters both the workspace and the summary-list contracts.
+      readProjectSummaries([project]);
       showSnackbarMessage("Project created successfully!", "success");
       return project;
     } finally {

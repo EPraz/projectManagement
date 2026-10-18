@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { enterDemo } from "./support/demo";
 
-for (const failure of ["unavailable", "malformed"]) {
+for (const failure of ["unavailable", "malformed", "incomplete"]) {
   test(`project creation retains its draft after a ${failure} response and confirms retry`, async ({
     page,
     request
@@ -25,7 +25,20 @@ for (const failure of ["unavailable", "malformed"]) {
             body:
               failure === "unavailable"
                 ? '{"message":"Controlled outage"}'
-                : "{}"
+                : failure === "incomplete"
+                  ? JSON.stringify({
+                      id: "incomplete",
+                      title: marker,
+                      tickets: [],
+                      sprints: [],
+                      users: [],
+                      ticketStatuses: [],
+                      taskStatuses: [],
+                      epics: [],
+                      epicStatuses: [],
+                      featureStatuses: []
+                    })
+                  : "{}"
           })
     );
     let createdId: string | undefined;
