@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 — Navigate a project with shared sprint context.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -24,3 +24,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after 10. Preserve catalog-only membership and all real search/filters/roles, canonical capacity consistency and pending/retry safeguards; implement C responsive team presentation and clear confirmed membership removal without account/role editing.

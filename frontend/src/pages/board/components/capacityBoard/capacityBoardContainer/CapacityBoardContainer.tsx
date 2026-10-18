@@ -1,18 +1,18 @@
 import { useState, useEffect, useMemo } from "react";
 
-import { BoardContainer } from "../CapacityBoard.styles";
+import { Box } from "@mui/material";
 import CapacityBoardHeader from "../capacityBoardHeader/CapacityBoardHeader";
 import CapacityBoardEmptyState from "../capacityBoardEmptyState/CapacityBoardEmptyState";
 import CapacityBoardTable from "../capacityBoardTable/CapacityBoardTable";
 import { TeamMemberCapacity, User } from "../../../../../types";
 import {
   useCapacityPlanning,
-  type CapacityDraft
+  type CapacityDraft,
 } from "../useCapacityPlanning";
 import {
   DeleteConfirmationModal,
   DialogForm,
-  Portal
+  Portal,
 } from "../../../../../components";
 import { teamMemberCapacitySchema } from "../../../../../validations";
 
@@ -22,14 +22,14 @@ const CapacityBoardContainer = () => {
   // Estados para el diálogo (add/edit)
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [editingRecord, setEditingRecord] = useState<TeamMemberCapacity | null>(
-    null
+    null,
   );
 
   const [formData, setFormData] = useState<CapacityDraft>({
     userId: "",
     capacity: 0,
     daysOff: 0,
-    remainingWork: 0
+    remainingWork: 0,
   });
 
   // Estado para el modal de delete
@@ -64,7 +64,7 @@ const CapacityBoardContainer = () => {
       userId: record.userId,
       capacity: record.capacity,
       daysOff: record.daysOff,
-      remainingWork: record.remainingWork
+      remainingWork: record.remainingWork,
     });
     setOpenDialog(true);
   };
@@ -88,22 +88,31 @@ const CapacityBoardContainer = () => {
   // Calculate summary metrics
   const totalCapacity = useMemo(
     () => teamMembers.reduce((sum, member) => sum + member.capacity, 0),
-    [teamMembers]
+    [teamMembers],
   );
 
   const totalRemaining = useMemo(
     () => teamMembers.reduce((sum, member) => sum + member.remainingWork, 0),
-    [teamMembers]
+    [teamMembers],
   );
 
   return (
-    <BoardContainer>
+    <Box sx={{ display: "grid", gap: 3, minWidth: 0 }}>
       <CapacityBoardHeader
         handleOpenAddDialog={handleOpenAddDialog}
         sprint={sprint}
         teamMembers={teamMembers}
         totalCapacity={totalCapacity}
         totalRemaining={totalRemaining}
+        addDisabledReason={
+          !sprint
+            ? "Select or create a sprint first."
+            : !project?.users.length
+              ? "Add a project member in Team before planning capacity."
+              : !availableUsers.length
+                ? "Every project member already has capacity for this sprint."
+                : undefined
+        }
       />
 
       {teamMembers.length === 0 ? (
@@ -116,6 +125,7 @@ const CapacityBoardContainer = () => {
           handleOpenDeleteModal={handleOpenDeleteModal}
           handleOpenEditDialog={handleOpenEditDialog}
           teamMembers={teamMembers}
+          isPending={(id) => isSaving(id) || isDeleting(id)}
         />
       )}
 
@@ -127,6 +137,7 @@ const CapacityBoardContainer = () => {
             onClose={handleCloseDialog}
             onSubmit={handleFormSubmit}
             schema={teamMemberCapacitySchema}
+            context={sprint?.name}
             defaultValues={formData}
             title={
               editingRecord
@@ -148,21 +159,21 @@ const CapacityBoardContainer = () => {
                         value: editingRecord.userId,
                         label:
                           project?.users.find(
-                            (u: User) => u.id === editingRecord.userId
-                          )?.name || "Unknown"
-                      }
+                            (u: User) => u.id === editingRecord.userId,
+                          )?.name || "Unknown",
+                      },
                     ]
                   : availableUsers.map((u: User) => ({
                       value: u.id,
-                      label: `${u.name} (${u.email})`
-                    }))
+                      label: `${u.name} (${u.email})`,
+                    })),
               },
               capacity: { label: "Capacity (hours)", type: "number" },
               daysOff: { label: "Days Off", type: "number" },
               remainingWork: {
                 label: "Remaining Work (hours)",
-                type: "number"
-              }
+                type: "number",
+              },
             }}
           />
         </Portal>
@@ -179,7 +190,7 @@ const CapacityBoardContainer = () => {
           />
         </Portal>
       )}
-    </BoardContainer>
+    </Box>
   );
 };
 

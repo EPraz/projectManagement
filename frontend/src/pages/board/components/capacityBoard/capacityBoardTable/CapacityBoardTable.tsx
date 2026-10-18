@@ -1,199 +1,167 @@
 import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-  InfoOutlined as InfoOutlinedIcon
-} from "@mui/icons-material";
-import {
-  ActionButton,
-  MemberCell,
-  MemberName,
-  ProgressCell,
-  StyledLinearProgress,
-  StyledTable,
-  StyledTableContainer,
-  TableBodyCell,
-  TableHeaderCell
-} from "../CapacityBoard.styles";
-import {
   Avatar,
   Box,
-  Chip,
+  IconButton,
   Paper,
+  Table,
   TableBody,
+  TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
-  Typography
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { TeamMemberCapacity } from "../../../../../types";
-import {
-  computeCompletedWork,
-  computeProgress
-} from "../CapacityBoard.helpers";
+import { DeleteOutline, EditOutlined } from "@mui/icons-material";
+import type { TeamMemberCapacity } from "../../../../../types";
 import { getInitials } from "../../../../../helpers";
-
-type CapacityBoardTableProps = {
+import { computeCompletedWork } from "../CapacityBoard.helpers";
+import CapacityProgress from "../CapacityProgress";
+import MemberCapacityCard from "../MemberCapacityCard";
+type Props = {
   teamMembers: TeamMemberCapacity[];
   handleOpenEditDialog: (record: TeamMemberCapacity) => void;
   handleOpenDeleteModal: (record: TeamMemberCapacity) => void;
+  isPending: (id: string) => boolean;
 };
-
-const CapacityBoardTable = ({
+export default function CapacityBoardTable({
   teamMembers,
   handleOpenEditDialog,
-  handleOpenDeleteModal
-}: CapacityBoardTableProps) => {
+  handleOpenDeleteModal,
+  isPending,
+}: Props) {
+  const wide = useMediaQuery(useTheme().breakpoints.up("lg"));
+  if (!wide)
+    return (
+      <Box
+        role="region"
+        aria-label="Member capacity cards"
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0,1fr)",
+            sm: "repeat(2,minmax(0,1fr))",
+          },
+          gap: 2,
+        }}
+      >
+        {teamMembers.map((member) => (
+          <MemberCapacityCard
+            key={member.id}
+            member={member}
+            pending={isPending(member.id)}
+            edit={() => handleOpenEditDialog(member)}
+            remove={() => handleOpenDeleteModal(member)}
+          />
+        ))}
+      </Box>
+    );
   return (
-    <StyledTableContainer>
-      <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
-        <StyledTable>
+    <Paper variant="outlined" sx={{ borderRadius: "12px", overflow: "hidden" }}>
+      <TableContainer
+        role="region"
+        aria-label="Sprint capacity comparison"
+        tabIndex={0}
+        sx={{ maxHeight: "74dvh" }}
+      >
+        <Table
+          stickyHeader
+          aria-label="Member capacity"
+          sx={{ minWidth: 1000 }}
+        >
           <TableHead>
             <TableRow>
-              <TableHeaderCell>Team Member</TableHeaderCell>
-              <TableHeaderCell>Activity</TableHeaderCell>
-              <TableHeaderCell align="right">
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                    gap: 0.5
-                  }}
+              {[
+                "Team Member",
+                "Capacity (hours)",
+                "Days Off",
+                "Completed work",
+                "Progress",
+                "Actions",
+              ].map((label) => (
+                <TableCell
+                  key={label}
+                  sx={{ fontWeight: 600, whiteSpace: "nowrap" }}
                 >
-                  Capacity (hours)
-                  <Tooltip
-                    title="Total hours available for the sprint"
-                    arrow
-                    placement="top"
-                  >
-                    <InfoOutlinedIcon
-                      sx={{
-                        fontSize: 16,
-                        color: "text.secondary",
-                        ml: 0.5
-                      }}
-                    />
-                  </Tooltip>
-                </Box>
-              </TableHeaderCell>
-              <TableHeaderCell align="right">Days Off</TableHeaderCell>
-              <TableHeaderCell>Completed work</TableHeaderCell>
-              <TableHeaderCell>Progress</TableHeaderCell>
-              <TableHeaderCell align="right">Actions</TableHeaderCell>
+                  {label}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
-            {teamMembers.map((member) => {
-              const progress = computeProgress(member);
-              const completedWork = computeCompletedWork(member);
-              return (
-                <TableRow key={member.id} hover>
-                  <TableBodyCell>
-                    <MemberCell>
-                      <Avatar
-                        alt={member.user?.name || "Team member"}
-                        src={`/placeholder.svg?height=40&width=40&text=${getInitials(
-                          member.user?.name || ""
-                        )}`}
+            {teamMembers.map((member) => (
+              <TableRow key={member.id}>
+                <TableCell>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1.5,
+                      alignItems: "center",
+                      minWidth: 210,
+                    }}
+                  >
+                    <Avatar
+                      sx={{ bgcolor: "primary.light", color: "primary.main" }}
+                    >
+                      {getInitials(member.user?.name ?? "")}
+                    </Avatar>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography
                         sx={{
-                          width: 36,
-                          height: 36,
-                          bgcolor: "secondary.main",
-                          color: "white",
-                          fontWeight: "bold"
+                          fontWeight: 500,
+                          fontSize: 16,
+                          overflowWrap: "anywhere",
                         }}
                       >
-                        {member.user ? getInitials(member.user.name) : ""}
-                      </Avatar>
-                      <Box>
-                        <MemberName variant="body2">
-                          {member.user?.name || "Unknown"}
-                        </MemberName>
-                        <Typography variant="caption" color="text.secondary">
-                          {member.user?.email || ""}
-                        </Typography>
-                      </Box>
-                    </MemberCell>
-                  </TableBodyCell>
-                  <TableBodyCell>
-                    <Chip
-                      label="Development"
-                      size="small"
-                      sx={{
-                        bgcolor: "primary.light",
-                        color: "white",
-                        fontWeight: 500
-                      }}
-                    />
-                  </TableBodyCell>
-                  <TableBodyCell align="right">
-                    <Typography
-                      variant="body2"
-                      fontWeight="medium"
-                      sx={{ color: "primary.main" }}
-                    >
-                      {member.capacity}h
-                    </Typography>
-                  </TableBodyCell>
-                  <TableBodyCell align="right">
-                    <Chip
-                      label={member.daysOff}
-                      size="small"
-                      sx={{
-                        minWidth: 30,
-                        bgcolor: "background.default"
-                      }}
-                    />
-                  </TableBodyCell>
-                  <TableBodyCell>
-                    <Typography
-                      variant="body2"
-                      fontWeight="medium"
-                      sx={{ color: "secondary.main" }}
-                    >
-                      {completedWork.toFixed(1)}h
-                    </Typography>
-                  </TableBodyCell>
-                  <TableBodyCell>
-                    <ProgressCell>
-                      <StyledLinearProgress
-                        variant="determinate"
-                        value={progress}
-                      />
-                      <Typography variant="body2" color="text.secondary">
-                        {member.remainingWork}h remaining
+                        {member.user?.name ?? "Unknown member"}
                       </Typography>
-                    </ProgressCell>
-                  </TableBodyCell>
-                  <TableBodyCell align="right">
-                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Tooltip title="Edit member" arrow>
-                        <ActionButton
-                          size="small"
-                          onClick={() => handleOpenEditDialog(member)}
-                        >
-                          <EditIcon sx={{ color: "secondary.main" }} />
-                        </ActionButton>
-                      </Tooltip>
-                      <Tooltip title="Delete member" arrow>
-                        <ActionButton
-                          size="small"
-                          onClick={() => handleOpenDeleteModal(member)}
-                        >
-                          <DeleteIcon sx={{ color: "error.main" }} />
-                        </ActionButton>
-                      </Tooltip>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ overflowWrap: "anywhere" }}
+                      >
+                        {member.user?.email}
+                      </Typography>
                     </Box>
-                  </TableBodyCell>
-                </TableRow>
-              );
-            })}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  <Typography sx={{ fontWeight: 600 }}>
+                    {member.capacity}h
+                  </Typography>
+                </TableCell>
+                <TableCell>{member.daysOff}</TableCell>
+                <TableCell>
+                  {computeCompletedWork(member).toFixed(1)}h
+                </TableCell>
+                <TableCell>
+                  <CapacityProgress member={member} />
+                </TableCell>
+                <TableCell>
+                  <Box sx={{ display: "flex" }}>
+                    <IconButton
+                      aria-label="Edit capacity"
+                      disabled={isPending(member.id)}
+                      onClick={() => handleOpenEditDialog(member)}
+                    >
+                      <EditOutlined fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      aria-label="Delete capacity"
+                      color="error"
+                      disabled={isPending(member.id)}
+                      onClick={() => handleOpenDeleteModal(member)}
+                    >
+                      <DeleteOutline fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
-        </StyledTable>
+        </Table>
       </TableContainer>
-    </StyledTableContainer>
+    </Paper>
   );
-};
-
-export default CapacityBoardTable;
+}

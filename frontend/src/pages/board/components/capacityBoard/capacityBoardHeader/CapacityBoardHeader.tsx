@@ -1,117 +1,100 @@
-import {
-  CapacityMetric,
-  Header,
-  MetricLabel,
-  MetricValue
-} from "../CapacityBoard.styles";
-import { Box, Button, Chip, Typography } from "@mui/material";
-import {
-  Add as AddIcon,
-  AccessTime as AccessTimeIcon,
-  CalendarToday as CalendarTodayIcon,
-  WorkOutline as WorkOutlineIcon
-} from "@mui/icons-material";
-import { Sprint, TeamMemberCapacity } from "../../../../../types";
-
-type CapacityBoardHeaderProps = {
+import { Box, Button, Paper, Tooltip, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
+import type { Sprint, TeamMemberCapacity } from "../../../../../types";
+type Props = {
   sprint: Sprint | null;
   teamMembers: TeamMemberCapacity[];
   totalCapacity: number;
   totalRemaining: number;
   handleOpenAddDialog: () => void;
+  addDisabledReason?: string;
 };
-
-const CapacityBoardHeader = ({
+export default function CapacityBoardHeader({
   sprint,
+  teamMembers,
   totalCapacity,
   totalRemaining,
-  teamMembers,
-  handleOpenAddDialog
-}: CapacityBoardHeaderProps) => {
+  handleOpenAddDialog,
+  addDisabledReason,
+}: Props) {
   return (
-    <Header>
-      <Box>
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
-          Team Capacity
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {sprint?.name ? (
-            <>
-              Sprint:{" "}
-              <Chip
-                label={sprint.name}
-                size="small"
-                sx={{
-                  ml: 1,
-                  bgcolor: "primary.main",
-                  color: "white",
-                  fontWeight: 500
-                }}
-              />
-            </>
-          ) : (
-            "No active sprint"
-          )}
-        </Typography>
+    <Box sx={{ display: "grid", gap: 3 }}>
+      <Box
+        sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}
+      >
+        <Box sx={{ flex: "1 1 200px" }}>
+          <Typography component="h2" variant="h3">
+            Team Capacity
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            {sprint?.name ?? "No active sprint"}
+          </Typography>
+        </Box>
+        <Tooltip title={addDisabledReason ?? ""}>
+          <span>
+            <Button
+              startIcon={<Add />}
+              variant="contained"
+              onClick={handleOpenAddDialog}
+              disabled={Boolean(addDisabledReason) || !sprint}
+            >
+              Add capacity
+            </Button>
+          </span>
+        </Tooltip>
       </Box>
-
-      {/* Summary metrics */}
-      {teamMembers.length > 0 && (
+      {addDisabledReason && sprint && (
+        <Typography variant="body2" color="text.secondary">
+          {addDisabledReason}
+        </Typography>
+      )}
+      {sprint && (
         <Box
           sx={{
-            display: "flex",
-            flexWrap: "wrap",
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(2,minmax(0,1fr))",
+              sm: "repeat(3,minmax(0,1fr))",
+            },
             gap: 2,
-            mr: { xs: 0, md: 4 }
           }}
         >
-          <CapacityMetric>
-            <AccessTimeIcon color="secondary" />
-            <Box>
-              <MetricLabel>Total Capacity</MetricLabel>
-              <MetricValue>{totalCapacity}h</MetricValue>
-            </Box>
-          </CapacityMetric>
-
-          <CapacityMetric>
-            <WorkOutlineIcon color="secondary" />
-            <Box>
-              <MetricLabel>Remaining</MetricLabel>
-              <MetricValue>{totalRemaining}h</MetricValue>
-            </Box>
-          </CapacityMetric>
-
-          <CapacityMetric>
-            <CalendarTodayIcon color="secondary" />
-            <Box>
-              <MetricLabel>Team Members</MetricLabel>
-              <MetricValue>{teamMembers.length}</MetricValue>
-            </Box>
-          </CapacityMetric>
+          {[
+            ["Total Capacity", `${totalCapacity}h`],
+            ["Remaining", `${totalRemaining}h`],
+            ["Members with capacity", String(teamMembers.length)],
+          ].map(([label, value], index) => (
+            <Paper
+              variant="outlined"
+              key={label}
+              sx={{
+                p: { xs: 2, sm: 3 },
+                borderRadius: "12px",
+                minWidth: 0,
+                gridColumn: { xs: index === 2 ? "1 / -1" : "auto", sm: "auto" },
+                display: { xs: index === 2 ? "flex" : "block", sm: "block" },
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 2,
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                {label}
+              </Typography>
+              <Typography
+                sx={{
+                  mt: { xs: index === 2 ? 0 : 1, sm: 1 },
+                  fontSize: { xs: 26, sm: 30 },
+                  fontWeight: 600,
+                  overflowWrap: "anywhere",
+                }}
+              >
+                {value}
+              </Typography>
+            </Paper>
+          ))}
         </Box>
       )}
-
-      <Button
-        startIcon={<AddIcon />}
-        variant="contained"
-        sx={{
-          px: 3,
-          py: 1,
-          borderRadius: 1,
-          textTransform: "none",
-          fontWeight: 500,
-          bgcolor: "primary.main",
-          "&:hover": {
-            bgcolor: "primary.dark"
-          }
-        }}
-        onClick={handleOpenAddDialog}
-        disabled={!sprint?.id}
-      >
-        Add team member
-      </Button>
-    </Header>
+    </Box>
   );
-};
-
-export default CapacityBoardHeader;
+}

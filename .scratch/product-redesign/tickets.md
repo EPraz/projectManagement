@@ -6,7 +6,7 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 
 ## Current frontier
 
-**10 — Plan member capacity for the selected sprint** is the current frontier. Progress: 9/14 resolved; ticket 10 claimed.
+**11 — Manage the project’s team membership** is the current frontier. Progress: 10/14 resolved; ticket 11 claimed.
 
 ## Tickets and immediate blockers
 
@@ -21,8 +21,8 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 | 07 | [Work from a selected-sprint Backlog](issues/07-selected-sprint-backlog.md) | 05 | resolved |
 | 08 | [Explore project hierarchy and open linked tickets](issues/08-project-hierarchy.md) | 04 | resolved |
 | 09 | [Plan sprint goals and checklists](issues/09-sprint-goals-checklists.md) | 02 | resolved |
-| 10 | [Plan member capacity for the selected sprint](issues/10-member-capacity.md) | 02 | claimed |
-| 11 | [Manage the project's team membership](issues/11-project-team.md) | 02 | ready-for-agent |
+| 10 | [Plan member capacity for the selected sprint](issues/10-member-capacity.md) | 02 | resolved |
+| 11 | [Manage the project's team membership](issues/11-project-team.md) | 02 | claimed |
 | 12 | [Run a responsive sprint retrospective](issues/12-sprint-retrospective.md) | 02 | ready-for-agent |
 | 13 | [Verify coherent C journeys across the complete product](issues/13-integrated-verification.md) | 03, 06, 07, 08, 09, 10, 11, 12 | ready-for-agent |
 | 14 | [Publish and verify the complete C redesign](issues/14-publish-verify-cloud.md) | 13 | ready-for-agent |

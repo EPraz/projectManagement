@@ -17,10 +17,10 @@ test("a failed capacity edit retains the draft and saved summary", async ({
   const row = page
     .getByRole("row")
     .filter({
-      has: page.getByRole("button", { name: "Edit member", exact: true }),
+      has: page.getByRole("button", { name: "Edit capacity", exact: true }),
     })
     .first();
-  await row.getByRole("button", { name: "Edit member", exact: true }).click();
+  await row.getByRole("button", { name: "Edit capacity", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Capacity (hours)", { exact: true }).fill("99");
   await page.route("**/api/team-member-capacities/*", (route) =>
@@ -302,7 +302,7 @@ test("a late capacity response preserves the next sprint's draft", async ({
     await navigateSection(page, "Capacity");
     await chooseSprint(page, "Capacity A");
     await page
-      .getByRole("button", { name: "Edit member", exact: true })
+      .getByRole("button", { name: "Edit capacity", exact: true })
       .click();
     const dialog = page.getByRole("dialog");
     await dialog.getByLabel("Capacity (hours)", { exact: true }).fill("60");
@@ -322,7 +322,7 @@ test("a late capacity response preserves the next sprint's draft", async ({
     await navigateSection(page, "Capacity");
     await chooseSprint(page, "Capacity B");
     await page
-      .getByRole("button", { name: "Edit member", exact: true })
+      .getByRole("button", { name: "Edit capacity", exact: true })
       .click();
     await dialog.getByLabel("Capacity (hours)", { exact: true }).fill("90");
     release();
@@ -346,39 +346,57 @@ test("a late capacity response preserves the next sprint's draft", async ({
 for (const width of [390, 1280]) {
   test(`team and capacity controls remain reachable at ${width}px`, async ({
     page,
+    request,
   }, info) => {
-    await page.setViewportSize({ width, height: 900 });
-    await enterDemo(page);
-    await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await navigateSection(page, "Team");
-    const add = page.getByRole("button", { name: "Add Member", exact: true });
-    const teamBounds = await add.boundingBox();
-    expect(teamBounds!.x + teamBounds!.width).toBeLessThanOrEqual(width);
-    await add.focus();
-    await page.keyboard.press("Enter");
-    await expect(page.getByRole("dialog")).toContainText("Add Team Member");
-    await page.getByRole("button", { name: "Cancel", exact: true }).click();
-    await discardUnsavedChanges(page);
-    await navigateSection(page, "Taskboard");
-    await navigateSection(page, "Capacity");
-    const create = page.getByRole("button", {
-      name: "Add team member",
-      exact: true,
-    });
-    const capacityBounds = await create.boundingBox();
-    expect(capacityBounds!.x + capacityBounds!.width).toBeLessThanOrEqual(
-      width,
-    );
-    await create.focus();
-    await page.keyboard.press("Enter");
-    const dialog = page.getByRole("dialog");
-    await expect(dialog.getByRole("combobox", { name: /^User/ })).toBeVisible();
-    await page.screenshot({
-      path: info.outputPath(`capacity-form-${width}.png`),
-      animations: "disabled",
-    });
-    await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
-    await discardUnsavedChanges(page);
+    const fixture = await teamFixture(request);
+    try {
+      expect(
+        (
+          await request.delete(
+            `/api/team-member-capacities/${fixture.capacities[0].id}`,
+            { headers: fixture.headers },
+          )
+        ).ok(),
+      ).toBe(true);
+      await page.setViewportSize({ width, height: 900 });
+      await enterDemo(page);
+      await page.getByText(fixture.project.title, { exact: true }).click();
+      await navigateSection(page, "Team");
+      const add = page.getByRole("button", { name: "Add Member", exact: true });
+      const teamBounds = await add.boundingBox();
+      expect(teamBounds!.x + teamBounds!.width).toBeLessThanOrEqual(width);
+      await add.focus();
+      await page.keyboard.press("Enter");
+      await expect(page.getByRole("dialog")).toContainText("Add Team Member");
+      await page.getByRole("button", { name: "Cancel", exact: true }).click();
+      await discardUnsavedChanges(page);
+      await navigateSection(page, "Taskboard");
+      await navigateSection(page, "Capacity");
+      await chooseSprint(page, "Capacity A");
+      const create = page.getByRole("button", {
+        name: "Add capacity",
+        exact: true,
+      });
+      const capacityBounds = await create.boundingBox();
+      expect(capacityBounds!.x + capacityBounds!.width).toBeLessThanOrEqual(
+        width,
+      );
+      await expect(create).toBeEnabled();
+      await create.focus();
+      await page.keyboard.press("Enter");
+      const dialog = page.getByRole("dialog");
+      await expect(
+        dialog.getByRole("combobox", { name: /^User/ }),
+      ).toBeVisible();
+      await page.screenshot({
+        path: info.outputPath(`capacity-form-${width}.png`),
+        animations: "disabled",
+      });
+      await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+      await discardUnsavedChanges(page);
+    } finally {
+      await fixture.dispose();
+    }
   });
 }
 
@@ -409,12 +427,12 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     await chooseSprint(page, "Capacity A");
     await expect(
       page.getByRole("heading", {
-        name: "No team members added yet",
+        name: "No capacity planned yet",
         exact: true,
       }),
     ).toBeVisible();
     await page
-      .getByRole("button", { name: "Add team member", exact: true })
+      .getByRole("button", { name: "Add capacity", exact: true })
       .first()
       .click();
     const dialog = page.getByRole("dialog");
@@ -454,7 +472,9 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
       page.getByRole("columnheader", { name: "Completed work", exact: true }),
     ).toBeVisible();
     await expect(row).toContainText("30.0h");
-    await row.getByRole("button", { name: "Edit member", exact: true }).click();
+    await row
+      .getByRole("button", { name: "Edit capacity", exact: true })
+      .click();
     await dialog.getByLabel("Capacity (hours)", { exact: true }).fill("80");
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog).toHaveCount(0);
@@ -470,7 +490,7 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     const record = records.find((item) => item.userId === fixture.outsider.id)!;
     expect(record.capacity).toBe(80);
     await row
-      .getByRole("button", { name: "Delete member", exact: true })
+      .getByRole("button", { name: "Delete capacity", exact: true })
       .click();
     const path = `**/api/team-member-capacities/${record.id}`;
     await page.route(path, (route) =>
@@ -489,7 +509,7 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     await expect(dialog).toHaveCount(0);
     await expect(
       page.getByRole("heading", {
-        name: "No team members added yet",
+        name: "No capacity planned yet",
         exact: true,
       }),
     ).toBeVisible();
