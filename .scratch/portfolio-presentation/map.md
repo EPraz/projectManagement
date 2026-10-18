@@ -1,8 +1,10 @@
 # Portfolio presentation: README and walkthrough
 
-Status: ready-for-owner-design-feedback
+Status: deferred-until-product-redesign
 
 ## Quality handoff
+
+The owner now requests a complete mobile-first visual redesign before final README/walkthrough. Continue [the redesign interview](../product-redesign/map.md); the previous quality phase remains resolved. Final presentation should use the resulting reviewed design. This does not waive explicit owner readiness confirmation before recording.
 
 All 16 quality/refactor tickets are resolved. Verified application b2a6191 is live on the existing Vercel/Render domains; hosted CI39095797406 passed all three jobs. See [final evidence](../portfolio-improvements/evidence/16-finish.md) and [reconciled presentation handoff](../portfolio-improvements/evidence/16-presentation-handoff.md).
 

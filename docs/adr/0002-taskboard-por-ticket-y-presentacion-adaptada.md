@@ -1,0 +1,3 @@
+# Taskboard por ticket con presentación adaptada
+
+El propietario quiere conservar la organización del Taskboard de sprint al estilo Azure DevOps: cada fila representa un ticket y las columnas representan estados de sus tareas, mientras el ticket conserva su propio estado. El rediseño mantendrá esta relación en pantallas amplias y la presentará como una lista de tickets con acceso a sus tareas en móvil, conservando las operaciones; el espacio disponible determinará la adaptación de tablet. Se descartó la propuesta de sustituirlo por tarjetas de tickets agrupadas en columnas por estado, porque el propietario considera esencial ver la relación entre cada ticket y sus tareas en el tablero.
