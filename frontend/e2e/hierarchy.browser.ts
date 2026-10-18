@@ -197,37 +197,34 @@ test("backlog filters change the visible tickets without waiting for a data relo
   await page.goto(`/projects/${projectId}/board?tab=backlog`);
   const table = page.getByRole("table");
   await expect(
-    table.getByRole("cell", { name: "LOW", exact: true }).first(),
+    table.getByRole("cell", { name: "Low", exact: true }).first(),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Filter", exact: true }).click();
-  const priority = page
-    .getByText("Priority:", { exact: true })
-    .locator("..")
-    .getByRole("combobox");
+  await page.getByRole("button", { name: /^Filters/ }).click();
+  const priority = page.getByRole("combobox", {
+    name: "Priority",
+    exact: true,
+  });
   await priority.click();
-  await page.getByRole("option", { name: "HIGH", exact: true }).click();
+  await page.getByRole("option", { name: "High", exact: true }).click();
   await page.keyboard.press("Escape");
   await expect(
-    table.getByRole("cell", { name: "LOW", exact: true }),
+    table.getByRole("cell", { name: "Low", exact: true }),
   ).toHaveCount(0);
   await expect(
-    table.getByRole("cell", { name: "HIGH", exact: true }).first(),
+    table.getByRole("cell", { name: "High", exact: true }).first(),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Filter", exact: true }).click();
   await page
-    .getByRole("button", { name: "Reset Filters", exact: true })
+    .getByRole("button", { name: "Clear filters", exact: true })
     .click();
-  const blocked = page
-    .getByText("Blocked:", { exact: true })
-    .locator("..")
-    .getByRole("combobox");
+  await page.getByRole("button", { name: /^Filters/ }).click();
+  const blocked = page.getByRole("combobox", { name: "Blocked", exact: true });
   await blocked.click();
   await page.getByRole("option", { name: "Blocked", exact: true }).click();
   await blocked.click();
-  await page.getByRole("option", { name: "All", exact: true }).click();
+  await page.getByRole("option", { name: "All tickets", exact: true }).click();
   await page.keyboard.press("Escape");
   await expect(
-    table.getByRole("cell", { name: "BLOCKED", exact: true }).first(),
+    table.getByRole("cell", { name: "Blocked", exact: true }).first(),
   ).toBeVisible();
 });
 

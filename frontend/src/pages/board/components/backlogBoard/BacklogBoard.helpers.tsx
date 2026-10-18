@@ -1,185 +1,118 @@
 import { Box, Button, Chip, IconButton } from "@mui/material";
-import { Task, Ticket } from "../../../../types";
-import { StateIndicator, TagChip } from "./BacklogBoard.styles";
-import {
-  formatStatusName,
-  getTypeIcon,
-  truncatedTitle
-} from "../../../../helpers";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { TicketType } from "../../../../constants";
-
-// Función auxiliar para determinar el ancho de la columna
-export const getColumnWidth = (key: string): string => {
-  switch (key) {
-    case "order":
-    case "id":
-      return "10%";
-    case "state":
-      return "15%";
-    case "actions":
-      return "5%";
-    default:
-      return "auto";
-  }
-};
-
-// Función para renderizar el contenido de la celda según la clave de columna
+import { EditOutlined, DeleteOutline } from "@mui/icons-material";
+import type { Ticket } from "../../../../types";
+import { formatStatusName, getTypeIcon } from "../../../../helpers";
 export const renderCellContent = (
-  columnKey: string,
+  key: string,
   ticket: Ticket,
-  handleOpenEditTicket: (ticket: Ticket) => void,
-  handleOpenDeleteTicket: (ticket: Ticket) => void
+  open: (ticket: Ticket) => void,
+  remove: (ticket: Ticket) => void,
+  sprintName?: string,
 ) => {
-  switch (columnKey) {
+  switch (key) {
     case "order":
       return ticket.order;
     case "id":
-      return ticket.id;
-    case "state":
-      return (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <StateIndicator statusColor={ticket.status?.color} />
-          {ticket.status?.name ?? "Unspecified"}
-        </Box>
-      );
+      return `#${ticket.id}`;
     case "title":
       return (
+        <Button
+          aria-label={ticket.title}
+          onClick={() => open(ticket)}
+          sx={{
+            minWidth: 0,
+            p: 0,
+            color: "text.primary",
+            fontSize: 16,
+            textAlign: "left",
+            justifyContent: "flex-start",
+            overflowWrap: "anywhere",
+            lineHeight: 1.5,
+          }}
+        >
+          {ticket.title}
+        </Button>
+      );
+    case "state":
+      return (
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {getTypeIcon(ticket.type)}
-          <Button
-            variant="text"
-            aria-label={ticket.title}
+          <Box
+            component="span"
+            aria-hidden
             sx={{
-              color: "black",
-              ":hover": {
-                background: "none",
-                textDecoration: "underline"
-              }
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              flexShrink: 0,
+              bgcolor: ticket.status?.color ?? "text.secondary",
             }}
-            onClick={() => handleOpenEditTicket(ticket)}
-          >
-            {truncatedTitle(ticket.title)}
-          </Button>
+          />
+          {formatStatusName(ticket.status?.name ?? "Unclassified")}
         </Box>
       );
     case "priority":
+      return formatStatusName(ticket.priority);
+    case "type":
       return (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          {getTypeIcon(ticket.priority)}
-          {ticket.priority}
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          {getTypeIcon(ticket.type)}
+          {formatStatusName(ticket.type)}
         </Box>
       );
-    case "tags":
-      return (
-        ticket.tags &&
-        ticket.tags.map((tag) => <TagChip key={tag.id}>{tag.name}</TagChip>)
-      );
-    case "actions":
-      return (
-        <>
-          <IconButton
-            aria-label={`Edit ticket ${ticket.id}`}
-            onClick={() => handleOpenEditTicket(ticket)}
-            size="small"
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            aria-label={`Delete ticket ${ticket.id}`}
-            onClick={() => handleOpenDeleteTicket(ticket)}
-            size="small"
-          >
-            <DeleteIcon color="error" />
-          </IconButton>
-        </>
-      );
-    case "type":
-      return ticket.type;
     case "assignedTo":
-      return ticket.assignedUser?.name || "Unassigned";
+      return ticket.assignedUser?.name ?? "Unassigned";
     case "sprint":
-      return ticket.sprint?.name || "No Sprint";
+      return sprintName ?? ticket.sprint?.name ?? "Unplanned";
     case "dueDate":
       return ticket.dueDate
         ? new Date(ticket.dueDate).toLocaleDateString()
-        : "No Date";
+        : "No due date";
     case "estimatedHours":
-      return ticket.estimatedHours ?? "-";
+      return ticket.estimatedHours ?? "—";
     case "remainingHours":
-      return ticket.remainingHours ?? "-";
+      return ticket.remainingHours ?? "—";
     case "isBlocked":
-      return ticket.isBlocked ? (
-        <Chip size="small" color="error" label="Blocked" />
-      ) : (
-        <Chip size="small" color="success" label="Clear" />
-      );
-    default:
-      return null;
-  }
-};
-
-// Función para renderizar el contenido de la celda de tarea según la clave de columna
-export const renderTaskCellContent = (
-  columnKey: string,
-  task: Task,
-  // parentTicket: Ticket,
-  handleOpenEditTask: (task: Task) => void,
-  handleOpenDeleteTask: (task: Task) => void
-) => {
-  switch (columnKey) {
-    case "id":
-      return <Box sx={{ paddingLeft: 0 }}>{task.id}</Box>;
-    case "state":
       return (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <StateIndicator statusColor={task.status?.color} />
-          {formatStatusName(task.status?.name || "")}
-        </Box>
+        <Chip
+          size="small"
+          color={
+            ticket.isBlocked || ticket.status?.name === "BLOCKED"
+              ? "error"
+              : "default"
+          }
+          label={
+            ticket.isBlocked || ticket.status?.name === "BLOCKED"
+              ? "Blocked"
+              : "Clear"
+          }
+        />
       );
-    case "title":
+    case "tags":
       return (
-        <Box
-          sx={{ display: "flex", alignItems: "center", gap: 1, paddingLeft: 0 }}
-        >
-          {getTypeIcon(TicketType.TASK)}
-          <Button
-            variant="text"
-            aria-label={task.title}
-            sx={{
-              color: "black",
-              ":hover": {
-                background: "none",
-                textDecoration: "underline"
-              }
-            }}
-            onClick={() => handleOpenEditTask(task)}
-          >
-            {task.title}
-          </Button>
+        <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+          {ticket.tags?.map((tag) => (
+            <Chip key={tag.id} label={tag.name} size="small" />
+          ))}
         </Box>
       );
     case "actions":
       return (
-        <>
+        <Box sx={{ display: "flex", gap: 0.5 }}>
           <IconButton
-            aria-label={`Edit task ${task.id}`}
-            onClick={() => handleOpenEditTask(task)}
-            size="small"
+            aria-label={`Edit ticket ${ticket.id}`}
+            onClick={() => open(ticket)}
           >
-            <EditIcon />
+            <EditOutlined fontSize="small" />
           </IconButton>
           <IconButton
-            aria-label={`Delete task ${task.id}`}
-            onClick={() => handleOpenDeleteTask(task)}
-            size="small"
+            aria-label={`Delete ticket ${ticket.id}`}
+            color="error"
+            onClick={() => remove(ticket)}
           >
-            <DeleteIcon color="error" />
+            <DeleteOutline fontSize="small" />
           </IconButton>
-        </>
+        </Box>
       );
-    // Para las demás columnas, no mostramos nada en las filas de tareas
     default:
       return null;
   }

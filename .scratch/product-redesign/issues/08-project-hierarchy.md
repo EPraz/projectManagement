@@ -4,7 +4,7 @@
 
 **Blocked by:** 04 — Create and edit tickets without losing context.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -24,3 +24,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after 07. Preserve canonical epic/feature CRUD and dependent deletion, add C wide tree/narrow parent-aware navigation and open all linked tickets contextually without changing selected-sprint Backlog scope.

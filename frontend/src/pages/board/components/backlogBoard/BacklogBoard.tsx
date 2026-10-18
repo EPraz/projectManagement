@@ -1,239 +1,282 @@
-import React, { useMemo, useState } from "react";
+import { Fragment, useState } from "react";
 import {
+  Alert,
+  Button,
+  Box,
+  IconButton,
+  Paper,
   Table,
   TableBody,
+  TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  IconButton,
-  TableCell,
-  Typography
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-
-// Importaciones supuestas, reemplaza con las reales
-import { LayoutContextProps, Task, Ticket } from "../../../../types";
-import {
-  BoardContainer,
-  StyledTableCell,
-  StyledTableRow
-} from "./BacklogBoard.styles";
+import { ExpandMore, ChevronRight } from "@mui/icons-material";
 import { useOutletContext, useSearchParams } from "react-router-dom";
-import { backlogColumns, initialBacklogColumns } from "../../../../constants";
-import {
-  getColumnWidth,
-  renderCellContent,
-  renderTaskCellContent
-} from "./BacklogBoard.helpers";
+import type { LayoutContextProps, Task, Ticket } from "../../../../types";
+import { backlogColumns } from "../../../../constants";
 import { useTicket } from "../../../../context/ticketContext";
-
-const BacklogBoard = () => {
+import {
+  matchesSearch,
+  matchesTicket,
+} from "../workFilters/workFilterPredicates";
+import { renderCellContent } from "./BacklogBoard.helpers";
+import BacklogTasks from "./BacklogTasks";
+export default function BacklogBoard() {
   const { tickets } = useTicket();
   const {
+    sprint,
+    visibleColumns,
+    filters,
     setSelectedTicket,
-    // setOpenEditTicketDialog,
-    // handleDeleteTicket,
     setOpenDeleteTicketDialog,
     setSelectedTask,
-    // setOpenEditTaskDialog,
     setOpenDeleteTaskDialog,
-    visibleColumns,
-    filters
+    setSelectedTicketId,
+    setOpenTaskDialog,
   } = useOutletContext<LayoutContextProps>();
-  const [expandedTicketId, setExpandedTicketId] = useState<number | null>(null);
-  const [, setSearchParams] = useSearchParams();
-
-  const toggleExpand = (ticketId: number) => {
-    setExpandedTicketId((prev) => (prev === ticketId ? null : ticketId));
+  const [expanded, setExpanded] = useState(new Set<number>());
+  const [params, setParams] = useSearchParams();
+  const wide = useMediaQuery(useTheme().breakpoints.up("lg"));
+  const columns = [...backlogColumns]
+    .sort((a, b) => a.order - b.order)
+    .filter((column) => visibleColumns.includes(column.key));
+  const filtered = tickets
+    .filter(
+      (ticket) =>
+        matchesTicket(ticket, filters) &&
+        matchesSearch(ticket.title, ticket.id, filters.search),
+    )
+    .sort((a, b) => a.order - b.order);
+  const openTicket = (ticket: Ticket) => {
+    const next = new URLSearchParams(params);
+    next.set("ticketId", String(ticket.id));
+    next.delete("taskId");
+    next.delete("ticketTab");
+    setParams(next, { replace: true });
   };
-
-  const handleOpenEditTicket = (ticket: Ticket) => {
-    setSearchParams(
-      { tab: "backlog", ticketId: ticket.id.toString() },
-      { replace: true }
-    );
-    // setSelectedTicket(ticket);
-    // setOpenEditTicketDialog(true);
+  const openTask = (task: Task) => {
+    const next = new URLSearchParams(params);
+    next.set("taskId", String(task.id));
+    next.delete("ticketId");
+    next.delete("ticketTab");
+    setParams(next, { replace: true });
   };
-
-  const handleOpenEditTask = (task: Task) => {
-    setSearchParams(
-      { tab: "backlog", taskId: task.id.toString() },
-      { replace: true }
-    );
-    // setSelectedTask(task);
-    // setOpenEditTaskDialog(true);
-  };
-
-  const handleOpenDeleteTicket = (ticket: Ticket) => {
+  const removeTicket = (ticket: Ticket) => {
     setSelectedTicket(ticket);
     setOpenDeleteTicketDialog(true);
   };
-
-  const handleOpenDeleteTask = (task: Task) => {
+  const removeTask = (task: Task) => {
     setSelectedTask(task);
     setOpenDeleteTaskDialog(true);
   };
-
-  const sortedBacklogColumns = useMemo(() => {
-    return [...backlogColumns].sort((a, b) => {
-      // Obtener el índice de la columna en initialBacklogColumns para determinar el orden
-      const indexA = initialBacklogColumns.indexOf(a.key);
-      const indexB = initialBacklogColumns.indexOf(b.key);
-
-      // Si la columna no está en initialBacklogColumns, ponerla al final
-      if (indexA === -1) return 1;
-      if (indexB === -1) return -1;
-
-      return indexA - indexB;
+  const toggle = (id: number) =>
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
     });
-  }, []);
-
-  const filteredTickets = useMemo(() => {
-    return tickets
-      .filter((ticket) => {
-        if (filters.priority && ticket.priority !== filters.priority)
-          return false;
-        if (filters.status && ticket.status?.name !== filters.status)
-          return false;
-        if (
-          filters.assignedUser &&
-          ticket.assignedTo !== filters.assignedUser.id
-        )
-          return false;
-        if (filters.type && ticket.type !== filters.type) return false;
-        if (filters.dueDate && ticket.dueDate !== filters.dueDate) return false;
-        if (
-          filters.isBlocked !== undefined &&
-          ticket.isBlocked !== filters.isBlocked
-        )
-          return false;
-        return true;
-      })
-      .sort((a, b) => a.order - b.order);
-  }, [tickets, filters]);
-
+  const expand = (ticket: Ticket) => (
+    <IconButton
+      aria-label={`${expanded.has(ticket.id) ? "Collapse" : "Expand"} tasks for ${ticket.title}`}
+      aria-expanded={expanded.has(ticket.id)}
+      onClick={() => toggle(ticket.id)}
+    >
+      {expanded.has(ticket.id) ? <ExpandMore /> : <ChevronRight />}
+    </IconButton>
+  );
+  const tasks = (ticket: Ticket) => (
+    <BacklogTasks
+      ticket={ticket}
+      open={openTask}
+      remove={removeTask}
+      add={() => {
+        setSelectedTicketId(ticket.id);
+        setOpenTaskDialog(true);
+      }}
+    />
+  );
+  const value = (key: string, ticket: Ticket) =>
+    renderCellContent(key, ticket, openTicket, removeTicket, sprint?.name);
+  if (!columns.length)
+    return (
+      <Alert severity="info">
+        Select a column from Column Options to view the backlog.
+      </Alert>
+    );
   return (
-    <BoardContainer>
-      {!visibleColumns.length && (
-        <Typography sx={{ p: 2 }}>
-          Select a column from Column Options to view the backlog.
-        </Typography>
-      )}
-      <TableContainer>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {/* Columna de expansión siempre visible */}
-              {visibleColumns.length > 0 && (
-                <StyledTableCell
-                  className="header"
-                  sx={{ flexGrow: 1, width: "5%" }}
-                />
-              )}
-
-              {/* Mapeo dinámico de columnas */}
-              {sortedBacklogColumns
-                .filter((column) => visibleColumns.includes(column.key))
-                .map((column) => (
-                  <StyledTableCell
-                    key={column.key}
-                    className="header"
-                    sx={{
-                      flexGrow: column.key === "title" ? 2 : 1,
-                      width: getColumnWidth(column.key)
-                    }}
-                  >
-                    {column.label}
-                  </StyledTableCell>
-                ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {!filteredTickets.length && visibleColumns.length > 0 && (
-              <TableRow>
-                <TableCell colSpan={visibleColumns.length + 1}>
-                  No tickets match this sprint and its filters.
-                </TableCell>
-              </TableRow>
-            )}
-            {filteredTickets.map((ticket) => (
-              <React.Fragment key={ticket.id}>
-                {/* Ticket Row */}
-                <StyledTableRow>
-                  {/* Columna de expansión */}
-                  {visibleColumns.length > 0 && (
-                    <StyledTableCell>
-                      {ticket.tasks.length > 0 && (
-                        <IconButton
-                          aria-label={`${expandedTicketId === ticket.id ? "Collapse" : "Expand"} tasks for ${ticket.title}`}
-                          aria-expanded={expandedTicketId === ticket.id}
-                          onClick={() => toggleExpand(ticket.id)}
-                          size="small"
-                        >
-                          {expandedTicketId === ticket.id ? (
-                            <ArrowDropDownIcon />
-                          ) : (
-                            <ArrowRightIcon />
-                          )}
-                        </IconButton>
-                      )}
-                    </StyledTableCell>
-                  )}
-
-                  {/* Mapeo dinámico de celdas */}
-                  {sortedBacklogColumns
-                    .filter((column) => visibleColumns.includes(column.key))
-                    .map((column) => (
-                      <StyledTableCell key={column.key}>
-                        {renderCellContent(
-                          column.key,
-                          ticket,
-                          handleOpenEditTicket,
-                          handleOpenDeleteTicket
-                        )}
-                      </StyledTableCell>
-                    ))}
-                </StyledTableRow>
-
-                {/* Tasks Rows (Expanded) */}
-                {expandedTicketId === ticket.id &&
-                  ticket.tasks.length > 0 &&
-                  ticket.tasks.map((task) => (
-                    <StyledTableRow
-                      key={task.id}
+    <Box sx={{ minWidth: 0 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        {filtered.length} of {tickets.length} tickets · Selected sprint only
+      </Typography>
+      {!filtered.length ? (
+        <Alert severity="info">
+          {tickets.length
+            ? "No tickets match this sprint and its filters."
+            : "No tickets in this sprint yet. Add a ticket to start planning work."}
+        </Alert>
+      ) : wide ? (
+        <Paper variant="outlined" sx={{ borderRadius: 3, overflow: "hidden" }}>
+          <TableContainer
+            role="region"
+            aria-label="Backlog table"
+            tabIndex={0}
+            sx={{ maxHeight: "74dvh" }}
+          >
+            <Table
+              stickyHeader
+              aria-label="Selected sprint backlog"
+              sx={{
+                minWidth: columns.reduce(
+                  (sum, column) =>
+                    sum +
+                    (column.key === "title"
+                      ? 320
+                      : column.key === "state"
+                        ? 180
+                        : 130),
+                  60,
+                ),
+              }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell aria-label="Child tasks" sx={{ width: 60 }} />
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.key}
                       sx={{
-                        background: "#f9f9f9",
-                        "&:last-child td, &:last-child th": { border: 0 }
+                        fontWeight: 600,
+                        whiteSpace: "nowrap",
+                        minWidth: column.key === "title" ? 300 : 120,
                       }}
                     >
-                      {/* Columna de expansión */}
-                      {visibleColumns.length > 0 && <StyledTableCell />}
-
-                      {/* Mapeo dinámico de celdas para tareas */}
-                      {sortedBacklogColumns
-                        .filter((column) => visibleColumns.includes(column.key))
-                        .map((column) => (
-                          <StyledTableCell key={column.key}>
-                            {renderTaskCellContent(
-                              column.key,
-                              task,
-                              // ticket,
-                              handleOpenEditTask,
-                              handleOpenDeleteTask
-                            )}
-                          </StyledTableCell>
-                        ))}
-                    </StyledTableRow>
+                      {column.label}
+                    </TableCell>
                   ))}
-              </React.Fragment>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </BoardContainer>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filtered.map((ticket) => (
+                  <Fragment key={ticket.id}>
+                    <TableRow sx={{ "& > td": { verticalAlign: "top" } }}>
+                      <TableCell>{expand(ticket)}</TableCell>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.key}
+                          sx={{ overflowWrap: "anywhere" }}
+                        >
+                          {value(column.key, ticket)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                    {expanded.has(ticket.id) && (
+                      <TableRow>
+                        <TableCell colSpan={columns.length + 1}>
+                          {tasks(ticket)}
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </Fragment>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      ) : (
+        <Box
+          role="region"
+          aria-label="Selected sprint work list"
+          sx={{ display: "grid", gap: 2 }}
+        >
+          {filtered.map((ticket) => (
+            <Paper
+              component="article"
+              aria-label={`Ticket #${ticket.id}`}
+              variant="outlined"
+              key={ticket.id}
+              sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, minWidth: 0 }}
+            >
+              <Typography variant="overline" color="primary">
+                {visibleColumns.includes("id")
+                  ? `TICKET / #${ticket.id}`
+                  : "TICKET"}
+              </Typography>
+              <Box sx={{ mb: 2 }}>
+                {visibleColumns.includes("title") ? (
+                  value("title", ticket)
+                ) : (
+                  <Button onClick={() => openTicket(ticket)}>
+                    Open ticket
+                  </Button>
+                )}
+              </Box>
+              <Box
+                component="dl"
+                sx={{
+                  m: 0,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2,minmax(0,1fr))",
+                  gap: 2,
+                }}
+              >
+                {columns
+                  .filter(
+                    (column) =>
+                      !["title", "actions", "id"].includes(column.key),
+                  )
+                  .map((column) => (
+                    <Box key={column.key} sx={{ minWidth: 0 }}>
+                      <Typography
+                        component="dt"
+                        variant="body2"
+                        color="text.secondary"
+                      >
+                        {column.label}
+                      </Typography>
+                      <Box
+                        component="dd"
+                        sx={{
+                          m: 0,
+                          mt: 0.5,
+                          fontSize: 16,
+                          overflowWrap: "anywhere",
+                        }}
+                      >
+                        {value(column.key, ticket)}
+                      </Box>
+                    </Box>
+                  ))}
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  borderTop: "1px solid",
+                  borderColor: "divider",
+                  mt: 2,
+                  pt: 1,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  {expand(ticket)}
+                  <Typography variant="body2">
+                    {ticket.tasks.length} tasks
+                  </Typography>
+                </Box>
+                {visibleColumns.includes("actions") && value("actions", ticket)}
+              </Box>
+              {expanded.has(ticket.id) && tasks(ticket)}
+            </Paper>
+          ))}
+        </Box>
+      )}
+    </Box>
   );
-};
-
-export default BacklogBoard;
+}

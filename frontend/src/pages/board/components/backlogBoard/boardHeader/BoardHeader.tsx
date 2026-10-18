@@ -1,241 +1,83 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  Tooltip,
-  Popover,
-  Menu,
-  MenuItem,
-  Typography,
-  Switch
-} from "@mui/material";
 import { useState } from "react";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import ViewColumnIcon from "@mui/icons-material/ViewColumn";
-import {
-  initialBacklogColumns,
-  TicketPriority,
-  TicketType
-} from "../../../../../constants";
-import { BoardHeaderProps } from "../../../../../types";
-import {
-  ColumnToggleContainer,
-  ColumnToggleHeader,
-  ColumnToggleItem,
-  FilterContainer,
-  FilterLabel,
-  HeaderContainer,
-  StyledSelect
-} from "../BacklogBoard.styles";
-
-const BoardHeader: React.FC<BoardHeaderProps> = ({
+import { Box, Button, FormControlLabel, Menu, Switch } from "@mui/material";
+import { ViewColumn } from "@mui/icons-material";
+import type { BoardHeaderProps } from "../../../../../types";
+import { initialBacklogColumns } from "../../../../../constants";
+import WorkFilters from "../../workFilters/WorkFilters";
+export default function BoardHeader({
   columns,
   visibleColumns,
   setVisibleColumns,
   filters,
-  setFilters
-}) => {
-  const [filterAnchor, setFilterAnchor] = useState<null | HTMLElement>(null);
-  const [columnAnchor, setColumnAnchor] = useState<null | HTMLElement>(null);
-
-  const handleShowAll = () => {
-    setVisibleColumns(columns.map((col) => col.key));
-  };
-
-  const handleReset = () => {
-    setVisibleColumns(initialBacklogColumns);
-  };
-
-  const handleHideAll = () => {
-    setVisibleColumns([]);
-  };
-
+  setFilters,
+  project,
+}: BoardHeaderProps) {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   return (
-    <HeaderContainer>
-      <Box sx={{ display: "flex", gap: 1 }}>
-        <Tooltip title="Filter">
-          <IconButton
-            size="small"
-            onClick={(e) => setFilterAnchor(e.currentTarget)}
-          >
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Tooltip title="Column Options">
-          <IconButton
-            size="small"
-            onClick={(e) => setColumnAnchor(e.currentTarget)}
-          >
-            <ViewColumnIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Popover
-          open={Boolean(filterAnchor)}
-          anchorEl={filterAnchor}
-          onClose={() => setFilterAnchor(null)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+    <Box>
+      <WorkFilters
+        scope="ticket"
+        filters={filters}
+        setFilters={setFilters}
+        project={project}
+      />
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Button
+          variant="outlined"
+          startIcon={<ViewColumn />}
+          onClick={(e) => setAnchor(e.currentTarget)}
         >
-          <FilterContainer>
-            <Box>
-              <FilterLabel id="backlog-priority-filter">Priority:</FilterLabel>
-              <StyledSelect
-                labelId="backlog-priority-filter"
-                value={filters.priority || ""}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    priority: e.target.value as TicketPriority
-                  })
-                }
-                size="small"
-                displayEmpty
-              >
-                <MenuItem value="">All</MenuItem>
-                {Object.values(TicketPriority).map((priority) => (
-                  <MenuItem key={priority} value={priority}>
-                    {priority}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </Box>
-
-            {/* <Box>
-              <FilterLabel>Status:</FilterLabel>
-              <StyledSelect
-                value={filters.statusId.id || ""}
-                onChange={(e) =>
-                  setFilters({ ...filters, status: e.target.value })
-                }
-                size="small"
-                displayEmpty
-              >
-                <MenuItem value="">All</MenuItem>
-                {project?.ticketStatuses.map((status) => (
-                  <MenuItem key={status.id} value={status.name}>
-                    {status.name}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </Box> */}
-
-            <Box>
-              <FilterLabel id="backlog-type-filter">Type:</FilterLabel>
-              <StyledSelect
-                labelId="backlog-type-filter"
-                value={filters.type || ""}
-                onChange={(e) =>
-                  setFilters({ ...filters, type: e.target.value as TicketType })
-                }
-                size="small"
-                displayEmpty
-              >
-                <MenuItem value="">All</MenuItem>
-                {Object.values(TicketType).map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </Box>
-
-            {/* <Box>
-              <FilterLabel>Assigned To:</FilterLabel>
-              <StyledSelect
-                value={filters.assignedUser?.email || ""}
-                onChange={(e) =>
-                  setFilters({ ...filters, assignedUser: e.target.value })
-                }
-                size="small"
-                displayEmpty
-              >
-                <MenuItem value="">All</MenuItem>
-                {project?.users.map((projectUser) => (
-                  <MenuItem
-                    key={projectUser.user.email}
-                    value={projectUser.user.email}
-                  >
-                    {projectUser.user.name}
-                  </MenuItem>
-                ))}
-              </StyledSelect>
-            </Box> */}
-
-            <Box>
-              <FilterLabel id="backlog-blocked-filter">Blocked:</FilterLabel>
-              <StyledSelect
-                labelId="backlog-blocked-filter"
-                value={filters.isBlocked?.toString() || ""}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    isBlocked:
-                      e.target.value === ""
-                        ? undefined
-                        : e.target.value === "true"
-                  })
-                }
-                size="small"
-                displayEmpty
-              >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="true">Blocked</MenuItem>
-                <MenuItem value="false">Not Blocked</MenuItem>
-              </StyledSelect>
-            </Box>
-
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => setFilters({})}
-              sx={{ mt: 1 }}
-            >
-              Reset Filters
-            </Button>
-          </FilterContainer>
-        </Popover>
-
-        <Menu
-          anchorEl={columnAnchor}
-          open={Boolean(columnAnchor)}
-          onClose={() => setColumnAnchor(null)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-        >
-          <ColumnToggleContainer>
-            <ColumnToggleHeader>
-              <Button size="small" onClick={handleShowAll}>
-                Show All
-              </Button>
-              <Button size="small" onClick={handleHideAll}>
-                Hide All
-              </Button>
-              <Button size="small" onClick={handleReset}>
-                Reset
-              </Button>
-            </ColumnToggleHeader>
-
-            {columns.map((col) => (
-              <ColumnToggleItem key={col.key}>
-                <Typography variant="body2">{col.label}</Typography>
-                <Switch
-                  inputProps={{ "aria-label": `Show ${col.label} column` }}
-                  size="small"
-                  checked={visibleColumns.includes(col.key)}
-                  onChange={() => {
-                    const newColumns = visibleColumns.includes(col.key)
-                      ? visibleColumns.filter((c) => c !== col.key)
-                      : [...visibleColumns, col.key];
-                    setVisibleColumns(newColumns);
-                  }}
-                />
-              </ColumnToggleItem>
-            ))}
-          </ColumnToggleContainer>
-        </Menu>
+          Column Options
+        </Button>
       </Box>
-    </HeaderContainer>
+      <Menu
+        anchorEl={anchor}
+        open={Boolean(anchor)}
+        onClose={() => setAnchor(null)}
+      >
+        <Box sx={{ p: 2, width: "min(340px,calc(100vw - 32px))" }}>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
+            <Button
+              size="small"
+              onClick={() =>
+                setVisibleColumns(columns.map((column) => column.key))
+              }
+            >
+              Show All
+            </Button>
+            <Button size="small" onClick={() => setVisibleColumns([])}>
+              Hide All
+            </Button>
+            <Button
+              size="small"
+              onClick={() => setVisibleColumns(initialBacklogColumns)}
+            >
+              Reset
+            </Button>
+          </Box>
+          {columns.map((column) => (
+            <FormControlLabel
+              key={column.key}
+              sx={{ display: "flex", m: 0, justifyContent: "space-between" }}
+              labelPlacement="start"
+              label={column.label}
+              control={
+                <Switch
+                  inputProps={{ "aria-label": `Show ${column.label} column` }}
+                  checked={visibleColumns.includes(column.key)}
+                  onChange={() =>
+                    setVisibleColumns(
+                      visibleColumns.includes(column.key)
+                        ? visibleColumns.filter((key) => key !== column.key)
+                        : [...visibleColumns, column.key],
+                    )
+                  }
+                />
+              }
+            />
+          ))}
+        </Box>
+      </Menu>
+    </Box>
   );
-};
-
-export default BoardHeader;
+}

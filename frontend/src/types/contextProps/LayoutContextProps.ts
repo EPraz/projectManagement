@@ -7,7 +7,6 @@ import {
   Task,
   TaskStatus,
   Ticket,
-  User,
 } from "../models";
 import { useProject, useSprint, useTicket } from "../../context";
 import {
@@ -18,7 +17,6 @@ import {
   useUpdateTask,
   useUpdateTicket,
 } from "../../hooks";
-import { TicketPriority, TicketType } from "../../constants";
 
 export interface LayoutContextProps {
   // Project
@@ -79,23 +77,9 @@ export interface LayoutContextProps {
   setOpenDeleteTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
 
   // Local States -> Filters Backlog
-  filters: {
-    priority?: TicketPriority;
-    status?: string;
-    assignedUser?: User;
-    type?: TicketType;
-    dueDate?: string;
-    isBlocked?: boolean;
-  };
+  filters: import("../FilterProps").FilterProps;
   setFilters: React.Dispatch<
-    React.SetStateAction<{
-      priority?: TicketPriority;
-      status?: string;
-      assignedUser?: User;
-      type?: TicketType;
-      dueDate?: string;
-      isBlocked?: boolean;
-    }>
+    React.SetStateAction<import("../FilterProps").FilterProps>
   >;
   visibleColumns: string[];
   setVisibleColumns: React.Dispatch<React.SetStateAction<string[]>>;
