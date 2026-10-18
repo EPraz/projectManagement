@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { validateWorkItem } from "../../services/workItemUpdates";
 import type { Task, Ticket } from "../../types";
 
@@ -14,15 +14,26 @@ export const useWorkItemEditor = <T extends Task | Partial<Ticket>>(
   const [action, setAction] = useState<"save" | "delete" | null>(null);
   const identity = useRef<string>();
   const submitting = useRef(false);
+  const generation = useRef(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const nextIdentity = open && item ? `open:${item.id}` : "closed";
     if (identity.current === nextIdentity) return;
     identity.current = nextIdentity;
+    generation.current++;
+    submitting.current = false;
+    setAction(null);
     setDraft(item ? { ...item } : null);
     setErrors({});
     setFailure("");
   }, [item, open]);
+
+  useLayoutEffect(
+    () => () => {
+      generation.current++;
+    },
+    []
+  );
 
   const perform = async (
     kind: "save" | "delete",
@@ -36,19 +47,27 @@ export const useWorkItemEditor = <T extends Task | Partial<Ticket>>(
       return;
     }
     submitting.current = true;
+    const started = generation.current;
     setAction(kind);
     setFailure("");
     try {
-      if (await submit()) onClose();
+      const confirmed = await submit();
+      if (started !== generation.current) return;
+      if (confirmed) onClose();
       else
         setFailure(
           `Could not ${kind}. Your changes are kept. Please try again.`
         );
     } catch {
-      setFailure(`Could not ${kind}. Your changes are kept. Please try again.`);
+      if (started === generation.current)
+        setFailure(
+          `Could not ${kind}. Your changes are kept. Please try again.`
+        );
     } finally {
-      submitting.current = false;
-      setAction(null);
+      if (started === generation.current) {
+        submitting.current = false;
+        setAction(null);
+      }
     }
   };
 

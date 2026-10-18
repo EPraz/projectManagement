@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { usePendingWorkItems } from "../usePendingWorkItems";
 import { useSnackbar } from "../../context/snackbarContext";
 import { useAuth } from "../../context";
 import type { TicketUpdate } from "../../services/workItemUpdates";
-import { readWorkItemUpdate } from "../../services/workItemUpdates";
+import { readTicketUpdate } from "../../services/workItemUpdates";
 import { Ticket } from "../../types";
 
 export const useUpdateTicket = () => {
   const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
-  const [loading, setLoading] = useState(false);
+  const { begin, finish, loading, isPending } = usePendingWorkItems();
 
   const updateTicket = async (data: TicketUpdate): Promise<Ticket | null> => {
-    setLoading(true);
+    if (!begin(data.id)) return null;
 
     try {
       const response = await request<unknown>(`tickets/${data.id}`, {
@@ -19,7 +19,7 @@ export const useUpdateTicket = () => {
         body: data,
         errorMessage: "Failed to update ticket. Please try again."
       });
-      const updatedTicket = readWorkItemUpdate<Ticket>(response, data.id);
+      const updatedTicket = readTicketUpdate(response, data.id);
       showSnackbarMessage("Ticket updated successfully", "success");
       return updatedTicket;
     } catch (error) {
@@ -29,9 +29,9 @@ export const useUpdateTicket = () => {
       );
       return null;
     } finally {
-      setLoading(false);
+      finish(data.id);
     }
   };
 
-  return { updateTicket, loading };
+  return { updateTicket, loading, isPending };
 };

@@ -94,14 +94,30 @@ const Layout = () => {
   const location = useLocation();
 
   const { createTicket, loading: loadingPostTickets } = useCreateTicket();
-  const { updateTicket, loading: loadingUpdateTickets } = useUpdateTicket();
+  const {
+    updateTicket,
+    loading: loadingUpdateTickets,
+    isPending: isUpdatingTicket
+  } = useUpdateTicket();
   const { bulkUpdateTickets, loading: loadingBulkUpdateTickets } =
     useBulkUpdateTickets();
-  const { deleteTicket, loading: loadingDeleteTicket } = useDeleteTicket();
+  const {
+    deleteTicket,
+    loading: loadingDeleteTicket,
+    isPending: isDeletingTicket
+  } = useDeleteTicket();
 
   const { createTask, loading: loadingPostTasks } = useCreateTask();
-  const { updateTask, loading: loadingUpdateTask } = useUpdateTask();
-  const { deleteTask, loading: loadingDeleteTask } = useDeleteTask();
+  const {
+    updateTask,
+    loading: loadingUpdateTask,
+    isPending: isUpdatingTask
+  } = useUpdateTask();
+  const {
+    deleteTask,
+    loading: loadingDeleteTask,
+    isPending: isDeletingTask
+  } = useDeleteTask();
 
   const { createSprint, loading: loadingCreateSprint } = useCreateSprint();
   const { deleteSprint, loading: loadingDeleteSprint } = useDeleteSprint();
@@ -623,9 +639,9 @@ const Layout = () => {
           handleCreateTask={handleCreateTask}
           handleDeleteTask={handleDeleteTask}
           handleEditTask={handleEditTask}
-          loadingDeleteTask={loadingDeleteTask}
+          loadingDeleteTask={isDeletingTask(selectedTask?.id)}
           loadingPostTasks={loadingPostTasks}
-          loadingUpdateTask={loadingUpdateTask}
+          loadingUpdateTask={isUpdatingTask(selectedTask?.id)}
           openTaskDialog={openTaskDialog}
           selectedTasksStatuses={selectedTasksStatuses}
           selectedTask={selectedTask}
@@ -638,9 +654,9 @@ const Layout = () => {
           handleCreateTicket={handleCreateTicket}
           handleDeleteTicket={handleDeleteTicket}
           handleEditTicket={handleEditTicket}
-          loadingDeleteTicket={loadingDeleteTicket}
+          loadingDeleteTicket={isDeletingTicket(selectedTicket?.id)}
           loadingPostTickets={loadingPostTickets}
-          loadingUpdateTickets={loadingUpdateTickets}
+          loadingUpdateTickets={isUpdatingTicket(selectedTicket?.id)}
           openEditTicketDialog={openEditTicketDialog}
           openCreateTicketDialog={openCreateTicketDialog}
           selectedTicket={selectedTicket}

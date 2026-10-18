@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { usePendingWorkItems } from "../usePendingWorkItems";
 import { useSnackbar } from "../../context/snackbarContext";
 import { useAuth } from "../../context";
 import type { Task } from "../../types";
@@ -6,10 +6,10 @@ import type { Task } from "../../types";
 export const useDeleteTask = () => {
   const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
-  const [loading, setLoading] = useState(false);
+  const { begin, finish, loading, isPending } = usePendingWorkItems();
 
   const deleteTask = async (data: Partial<Task>): Promise<boolean> => {
-    setLoading(true);
+    if (!begin(data.id)) return false;
     try {
       const confirmed = await request<unknown>(`tasks/${data.id}`, {
         method: "DELETE",
@@ -28,8 +28,8 @@ export const useDeleteTask = () => {
       );
       return false;
     } finally {
-      setLoading(false);
+      finish(data.id);
     }
   };
-  return { deleteTask, loading };
+  return { deleteTask, loading, isPending };
 };

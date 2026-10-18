@@ -39,27 +39,87 @@ export type TicketUpdate = Partial<
     storyPoints?: number | null;
   };
 
-export const readWorkItemUpdate = <T extends Task | Ticket>(
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === "object" && !Array.isArray(value);
+const nullableString = (value: unknown) =>
+  value === null || typeof value === "string";
+const nullableNumber = (value: unknown) =>
+  value === null || (typeof value === "number" && Number.isFinite(value));
+const timestamp = (value: unknown) =>
+  typeof value === "string" && Number.isFinite(Date.parse(value));
+const status = (value: unknown) =>
+  value === null ||
+  (isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.name === "string");
+const assignee = (value: unknown) =>
+  value === null ||
+  (isRecord(value) &&
+    [value.id, value.name, value.email].every(
+      (field) => typeof field === "string"
+    ));
+const baseResponse = (value: unknown): value is Record<string, unknown> =>
+  isRecord(value) &&
+  typeof value.id === "number" &&
+  Number.isInteger(value.id) &&
+  typeof value.title === "string" &&
+  typeof value.createdBy === "string" &&
+  timestamp(value.createdAt) &&
+  timestamp(value.updatedAt) &&
+  nullableString(value.updatedBy) &&
+  nullableString(value.description) &&
+  nullableString(value.discussion) &&
+  nullableString(value.assignedTo) &&
+  assignee(value.assignedUser) &&
+  nullableString(value.statusId) &&
+  status(value.status) &&
+  [value.estimatedHours, value.remainingHours, value.completedHours].every(
+    nullableNumber
+  );
+const taskResponse = (value: unknown): value is Task =>
+  baseResponse(value) &&
+  typeof value.ticketId === "number" &&
+  Number.isInteger(value.ticketId);
+const unconfirmed = (): never => {
+  throw new ApiError(
+    502,
+    "The server did not confirm the saved item. Please refresh and try again."
+  );
+};
+
+export const readTaskUpdate = (value: unknown, id: number | undefined): Task =>
+  taskResponse(value) && value.id === id ? value : unconfirmed();
+
+export const readTicketUpdate = (
   value: unknown,
   id: number | undefined
-): T => {
+): Ticket => {
   if (
-    !value ||
-    typeof value !== "object" ||
-    !("id" in value) ||
+    !baseResponse(value) ||
     value.id !== id ||
-    !("title" in value) ||
-    typeof value.title !== "string" ||
-    !("updatedAt" in value) ||
-    typeof value.updatedAt !== "string" ||
-    !Number.isFinite(Date.parse(value.updatedAt))
-  ) {
-    throw new ApiError(
-      502,
-      "The server did not confirm the saved item. Please refresh and try again."
-    );
-  }
-  return value as T;
+    !nullableString(value.projectId) ||
+    !nullableString(value.sprintId) ||
+    !nullableString(value.featureId) ||
+    !Array.isArray(value.tasks) ||
+    !value.tasks.every(taskResponse) ||
+    typeof value.type !== "string" ||
+    typeof value.priority !== "string" ||
+    typeof value.isBlocked !== "boolean" ||
+    !nullableNumber(value.storyPoints) ||
+    !nullableNumber(value.blockedBy) ||
+    ![
+      value.acceptanceCriteria,
+      value.designInformation,
+      value.additionalDetails,
+      value.notes,
+      value.dueDate
+    ].every(nullableString) ||
+    !Array.isArray(value.tags) ||
+    !Array.isArray(value.blockedTickets) ||
+    !Array.isArray(value.pairProgrammingUsers)
+  )
+    return unconfirmed();
+  return value as Ticket;
 };
 
 const estimates = (item: Pick<Partial<Task>, keyof NullableEstimates>) => ({

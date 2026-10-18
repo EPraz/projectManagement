@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { usePendingWorkItems } from "../usePendingWorkItems";
 import { useSnackbar } from "../../context/snackbarContext";
 import { useAuth } from "../../context";
 import type { Ticket } from "../../types";
@@ -6,10 +6,10 @@ import type { Ticket } from "../../types";
 export const useDeleteTicket = () => {
   const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
-  const [loading, setLoading] = useState(false);
+  const { begin, finish, loading, isPending } = usePendingWorkItems();
 
   const deleteTicket = async (data: Partial<Ticket>): Promise<boolean> => {
-    setLoading(true);
+    if (!begin(data.id)) return false;
     try {
       const confirmed = await request<unknown>(`tickets/${data.id}`, {
         method: "DELETE",
@@ -28,8 +28,8 @@ export const useDeleteTicket = () => {
       );
       return false;
     } finally {
-      setLoading(false);
+      finish(data.id);
     }
   };
-  return { deleteTicket, loading };
+  return { deleteTicket, loading, isPending };
 };

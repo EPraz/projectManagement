@@ -7,6 +7,7 @@ async function editingFixture(request: APIRequestContext) {
   const headers = { Authorization: `Bearer ${accessToken}` };
   const projects: {
     id: string;
+    title: string;
     sprints: { id: string; name: string }[];
     tickets: {
       id: number;
@@ -28,6 +29,99 @@ async function editingFixture(request: APIRequestContext) {
   )!;
   return { headers, project, ticket, task: ticket.tasks[0] };
 }
+
+test("a pending editor cannot close a later editor after browser navigation", async ({
+  page,
+  request
+}) => {
+  const { headers, project, ticket, task } = await editingFixture(request);
+  const nextTask = ticket.tasks[1];
+  const pattern = `**/api/tasks/${task.id}`;
+  let release!: () => void;
+  let reached!: () => void;
+  const pending = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const received = new Promise<void>((resolve) => {
+    reached = resolve;
+  });
+  await page.route(pattern, async (route) => {
+    if (route.request().method() !== "PATCH") return route.continue();
+    const saved = await route.fetch();
+    reached();
+    await pending;
+    await route.fulfill({ response: saved });
+  });
+  try {
+    await enterDemo(page);
+    await page.getByText(project.title, { exact: true }).click();
+    await page.getByRole("button", { name: "Board", exact: true }).click();
+    const row = page
+      .getByRole("row")
+      .filter({
+        has: page.getByRole("heading", { name: ticket.title, exact: true })
+      });
+    await test.step("Open the first task", async () => {
+      await row
+        .getByText(`#${task.id}`, { exact: true })
+        .click({ timeout: 5000 });
+    });
+    await page
+      .getByPlaceholder("Task title")
+      .fill("First pending editor draft");
+    await page
+      .getByRole("dialog")
+      .getByRole("button", { name: "Save", exact: true })
+      .click();
+    await test.step("First save reaches the delayed response", async () => {
+      await received;
+    });
+    await test.step("Browser Back leaves the first editor", async () => {
+      await page.goBack({ waitUntil: "commit" });
+    });
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+    await page.getByRole("button", { name: "Board", exact: true }).click();
+    await test.step("Open the second task", async () => {
+      await row
+        .getByText(`#${nextTask.id}`, { exact: true })
+        .click({ timeout: 5000 });
+    });
+    await page
+      .getByPlaceholder("Task title")
+      .fill("Second unsaved editor draft");
+    const completed = page.waitForResponse(
+      (response) =>
+        response.url().endsWith(`/api/tasks/${task.id}`) &&
+        response.request().method() === "PATCH",
+      { timeout: 5000 }
+    );
+    release();
+    await completed;
+    await page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve))
+        )
+    );
+    await expect(page.getByPlaceholder("Task title")).toHaveValue(
+      "Second unsaved editor draft"
+    );
+    expect(new URL(page.url()).searchParams.get("taskId")).toBe(
+      String(nextTask.id)
+    );
+  } finally {
+    release();
+    await page.unroute(pattern);
+    await request.patch(`/api/tasks/${task.id}`, {
+      headers,
+      data: {
+        id: task.id,
+        title: task.title,
+        updatedBy: "visitor@demo.example"
+      }
+    });
+  }
+});
 
 test("task validation and unconfirmed server responses keep the editor open", async ({
   page,
@@ -70,6 +164,43 @@ test("task validation and unconfirmed server responses keep the editor open", as
   await page.unroute(pattern);
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
 });
+
+for (const kind of ["task", "ticket"] as const) {
+  test(`an incomplete nonempty ${kind} response cannot confirm a save`, async ({
+    page,
+    request
+  }) => {
+    const fixture = await editingFixture(request);
+    const item = fixture[kind];
+    await enterDemo(page);
+    await page.goto(
+      `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`
+    );
+    const draft = `Incomplete response ${kind} draft`;
+    const dialog = page.getByRole("dialog");
+    await dialog
+      .getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`)
+      .fill(draft);
+    await page.route(`**/api/${kind}s/${item.id}`, (route) =>
+      route.request().method() === "PATCH"
+        ? route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({
+              id: item.id,
+              title: draft,
+              updatedAt: new Date().toISOString()
+            })
+          })
+        : route.continue()
+    );
+    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await expect(dialog.getByRole("alert")).toContainText("Could not save");
+    await expect(
+      dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`)
+    ).toHaveValue(draft);
+  });
+}
 
 test("a delayed ticket-save response preserves a newer independent task change on the board", async ({
   page,
