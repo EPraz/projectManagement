@@ -1,0 +1,22 @@
+{
+  "origin": "https://project-management-murex-pi.vercel.app",
+  "results": [
+    {
+      "width": 390,
+      "defaultLightOnDarkSystem": true,
+      "bottomControls": true,
+      "contentAtTop": true,
+      "themePersists": true,
+      "browserErrors": 0
+    },
+    {
+      "width": 1440,
+      "defaultLightOnDarkSystem": true,
+      "bottomControls": true,
+      "contentAtTop": true,
+      "themePersists": true,
+      "browserErrors": 0
+    }
+  ],
+  "recording": false
+}

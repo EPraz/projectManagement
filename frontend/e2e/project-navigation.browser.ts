@@ -81,16 +81,16 @@ test("leaving a pending project load prevents it from replacing the next project
     await page
       .getByText("Launchpad — Customer Portal", { exact: true })
       .click();
-    await expect(
-      page.getByText("Launchpad — Customer Portal", { exact: true }).first(),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Launchpad — Customer Portal.",
+    );
   } finally {
     release();
   }
   await page.waitForLoadState("networkidle");
-  await expect(
-    page.getByText("Launchpad — Customer Portal", { exact: true }).first(),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Launchpad — Customer Portal.",
+  );
   await expect(
     page.getByText("Orbit — Product Delivery", { exact: true }),
   ).toHaveCount(0);

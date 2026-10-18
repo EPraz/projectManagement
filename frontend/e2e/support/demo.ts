@@ -45,11 +45,14 @@ export const showWorkspaceControls = async (page: Page) => {
   const menu = page.getByRole("button", {
     name: /^Open (project|workspace) navigation$/,
   });
-  await user
-    .or(menu)
-    .filter({ visible: true })
-    .first()
-    .waitFor({ state: "visible" });
+  // Wait for the destination workspace, not a control still visible on the leaving page.
+  if (/^\/projects\/[^/]+(?:\/|$)/.test(new URL(page.url()).pathname)) {
+    await showProjectNavigation(page);
+  } else {
+    await expect(
+      page.getByRole("heading", { name: "Projects.", exact: true }),
+    ).toBeVisible();
+  }
   if (!(await user.isVisible())) await menu.click();
 };
 
