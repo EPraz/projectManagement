@@ -4,7 +4,7 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,6 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after 07 resolved. Characterize real ticket tabs and task editor saves first, then separate draft/payload concerns and preserve failed edits through the shared request boundary.
+

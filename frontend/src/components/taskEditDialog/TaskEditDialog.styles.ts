@@ -5,26 +5,33 @@ export const StyledDialog = styled(Dialog)(() => ({
     borderRadius: 8,
     overflow: "hidden",
     maxWidth: 1200,
-    width: "100%",
-  },
+    width: "100%"
+  }
 }));
 
 export const Header = styled(Box)(({ theme }) => ({
   padding: "16px 24px",
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderBottom: `1px solid ${theme.palette.divider}`
 }));
 
 export const MainContent = styled(Box)(({ theme }) => ({
   display: "grid",
-  gridTemplateColumns: "1fr 300px",
+  gridTemplateColumns: "minmax(0, 1fr) 300px",
+  minWidth: 0,
   gap: theme.spacing(3),
   height: "calc(100vh - 200px)",
-  overflow: "auto",
+  [theme.breakpoints.down("md")]: {
+    gridTemplateColumns: "minmax(0, 1fr)",
+    height: "auto",
+    maxHeight: "calc(100dvh - 160px)",
+    "& > *": { overflow: "visible", minWidth: 0 }
+  },
+  overflow: "auto"
 }));
 
 export const LeftPanel = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
-  overflowY: "auto",
+  overflowY: "auto"
 }));
 
 export const RightPanel = styled(Paper)(({ theme }) => ({
@@ -34,21 +41,21 @@ export const RightPanel = styled(Paper)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   gap: theme.spacing(1.5),
-  overflow: "auto",
+  overflow: "auto"
 }));
 
 export const Section = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(1.5),
+  marginBottom: theme.spacing(1.5)
 }));
 
 export const SectionTitle = styled(Typography)(({ theme }) => ({
   fontSize: 14,
   fontWeight: 500,
-  marginBottom: theme.spacing(2),
+  marginBottom: theme.spacing(2)
 }));
 
 export const TimeTrackingGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr",
-  gap: theme.spacing(2),
+  gap: theme.spacing(2)
 }));

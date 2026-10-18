@@ -6,8 +6,8 @@ import { Task, User } from "../../../types";
 // Mockear useAuth para devolver un usuario de prueba
 jest.mock("../../../context", () => ({
   useAuth: () => ({
-    user: { email: "test@example.com" },
-  }),
+    user: { email: "test@example.com" }
+  })
 }));
 
 // Ejemplo de tarea para pruebas
@@ -25,19 +25,19 @@ const sampleTask: Task = {
   order: 1,
   estimatedHours: 5,
   remainingHours: 3,
-  completedHours: 2,
+  completedHours: 2
 };
 
 // Usuarios de ejemplo para el select "Assigned To"
 const users: User[] = [
   { id: "1", name: "Alice", email: "alice@example.com", projects: [] },
-  { id: "2", name: "Bob", email: "bob@example.com", projects: [] },
+  { id: "2", name: "Bob", email: "bob@example.com", projects: [] }
 ];
 
 describe("TaskEditDialog Component", () => {
   const onClose = jest.fn();
-  const onSave = jest.fn();
-  const onDelete = jest.fn();
+  const onSave = jest.fn().mockResolvedValue(true);
+  const onDelete = jest.fn().mockResolvedValue(true);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -93,7 +93,7 @@ describe("TaskEditDialog Component", () => {
     ) as HTMLInputElement;
     // Simula un cambio en el título
     fireEvent.change(titleInput, {
-      target: { value: "Updated Task Title", name: "title" },
+      target: { value: "Updated Task Title", name: "title" }
     });
 
     const saveButton = screen.getByRole("button", { name: /save/i });
@@ -103,7 +103,7 @@ describe("TaskEditDialog Component", () => {
       expect(onSave).toHaveBeenCalledWith(
         expect.objectContaining({
           title: "Updated Task Title",
-          updatedBy: "test@example.com",
+          updatedBy: "test@example.com"
         })
       );
     });

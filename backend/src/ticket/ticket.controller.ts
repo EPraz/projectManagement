@@ -10,12 +10,14 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
 import { CreateTicketDto, UpdateTicketDto } from 'src/dto';
 import { TicketService } from './ticket.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @UseGuards(JwtAuthGuard)
 @Controller('tickets')
@@ -70,8 +72,13 @@ export class TicketController {
   async update(
     @Param('id') id: number,
     @Body() request: UpdateTicketDto,
+    @Req() authenticatedRequest: Request & { user: { email: string } },
   ): Promise<Ticket | null> {
-    return await this.ticketService.update({ ...request, id });
+    return await this.ticketService.update({
+      ...request,
+      id,
+      updatedBy: authenticatedRequest.user.email,
+    });
   }
 
   @Delete('all')

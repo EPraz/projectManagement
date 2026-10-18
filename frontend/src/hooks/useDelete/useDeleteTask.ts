@@ -1,39 +1,35 @@
 import { useState } from "react";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi, useAuth } from "../../context";
-import { Task } from "../../types";
+import { useAuth } from "../../context";
+import type { Task } from "../../types";
 
 export const useDeleteTask = () => {
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
+  const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
   const deleteTask = async (data: Partial<Task>): Promise<boolean> => {
     setLoading(true);
-
     try {
-      const response = await fetch(`${apiUrl}/tasks/${data.id}`, {
+      const confirmed = await request<unknown>(`tasks/${data.id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
+        errorMessage: "Failed to delete task. Please try again."
       });
-
-      if (!response.ok) throw new Error("Failed to delete task");
-
-      const apiResponse: boolean = await response.json();
+      if (confirmed !== true)
+        throw new Error(
+          "The server did not confirm deletion. Please try again."
+        );
       showSnackbarMessage("Task deleted successfully", "success");
-      return apiResponse;
+      return true;
     } catch (error) {
-      console.error("Error deleting task:", error);
-      showSnackbarMessage("Failed to delete task", "error");
+      showSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to delete task",
+        "error"
+      );
       return false;
     } finally {
       setLoading(false);
     }
   };
-
   return { deleteTask, loading };
 };

@@ -1,3 +1,4 @@
+import type { TaskUpdate, TicketUpdate } from "../../services/workItemUpdates";
 import { DragEndEvent } from "@dnd-kit/core";
 import {
   GoalTask,
@@ -6,7 +7,7 @@ import {
   Task,
   TaskStatus,
   Ticket,
-  User,
+  User
 } from "../models";
 import { useProject, useSprint, useTicket } from "../../context";
 import {
@@ -16,7 +17,7 @@ import {
   useDeleteTask,
   useDeleteTicket,
   useUpdateTask,
-  useUpdateTicket,
+  useUpdateTicket
 } from "../../hooks";
 import { TicketPriority, TicketType } from "../../constants";
 
@@ -162,7 +163,7 @@ export interface LayoutContextProps {
   // Functions
   // Functions -> Tickets
   handleCreateTicket: (data: Partial<Ticket>) => Promise<void>;
-  handleEditTicket: (data: Partial<Ticket>) => Promise<void>;
+  handleEditTicket: (data: TicketUpdate) => Promise<boolean>;
   handleDeleteTicket: (data: Partial<Ticket>) => Promise<boolean>;
   handleUpdateTicketOrder: (
     ticketId: number,
@@ -175,8 +176,8 @@ export interface LayoutContextProps {
 
   // Functions -> Tasks
   handleCreateTask: (data: Partial<Task>) => Promise<void>;
-  handleEditTask: (data: Partial<Task>) => Promise<void>;
-  handleDeleteTask: (task: Partial<Task>) => Promise<boolean | undefined>;
+  handleEditTask: (data: TaskUpdate) => Promise<boolean>;
+  handleDeleteTask: (task: Partial<Task>) => Promise<boolean>;
   handleOnDragEndTask: (event: DragEndEvent) => Promise<void>;
 
   // Functions -> Goal Board -> Sprint Goal

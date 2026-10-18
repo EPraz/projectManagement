@@ -1,37 +1,32 @@
 import { useState } from "react";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi, useAuth } from "../../context";
+import { useAuth } from "../../context";
+import type { TicketUpdate } from "../../services/workItemUpdates";
+import { readWorkItemUpdate } from "../../services/workItemUpdates";
 import { Ticket } from "../../types";
 
 export const useUpdateTicket = () => {
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
+  const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
-  const updateTicket = async (
-    data: Partial<Ticket>
-  ): Promise<Ticket | null> => {
+  const updateTicket = async (data: TicketUpdate): Promise<Ticket | null> => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/tickets/${data.id}`, {
+      const response = await request<unknown>(`tickets/${data.id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(data),
+        body: data,
+        errorMessage: "Failed to update ticket. Please try again."
       });
-
-      if (!response.ok) throw new Error("Failed to update ticket");
-
-      const updatedTicket: Ticket = await response.json();
+      const updatedTicket = readWorkItemUpdate<Ticket>(response, data.id);
       showSnackbarMessage("Ticket updated successfully", "success");
       return updatedTicket;
     } catch (error) {
-      console.error("Error updating ticket:", error);
-      showSnackbarMessage("Failed to update ticket", "error");
+      showSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to update ticket",
+        "error"
+      );
       return null;
     } finally {
       setLoading(false);

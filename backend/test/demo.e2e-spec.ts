@@ -264,6 +264,89 @@ describe('Acceso demo HTTP API', () => {
     );
   }, 30000);
 
+  it('validates editor values and persists cleared planning fields without nested response data', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const [project, other] = projects.body as (TaskProjectView & {
+      ticketStatuses: { id: string }[];
+      sprints: { id: string }[];
+    })[];
+    const ticket = project.tickets[0];
+    const task = ticket.tasks[0];
+    for (const invalid of [{ title: '   ' }, { estimatedHours: -1 }]) {
+      await request(app.getHttpServer())
+        .patch(`/tasks/${task.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: task.id, updatedBy: 'visitor@demo.example', ...invalid })
+        .expect(400);
+    }
+    for (const invalid of [
+      { storyPoints: 1.5 },
+      { remainingHours: -1 },
+      { statusId: other.ticketStatuses[0].id },
+      { sprintId: other.sprints[0].id },
+    ]) {
+      await request(app.getHttpServer())
+        .patch(`/tickets/${ticket.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: ticket.id, updatedBy: 'visitor@demo.example', ...invalid })
+        .expect(400);
+    }
+    const clearedTask = await request(app.getHttpServer())
+      .patch(`/tasks/${task.id}`)
+      .auth(token, { type: 'bearer' })
+      .send({
+        id: task.id,
+        updatedBy: 'visitor@demo.example',
+        assignedTo: null,
+        estimatedHours: null,
+      })
+      .expect(200);
+    expect(clearedTask.body).toMatchObject({
+      assignedTo: null,
+      assignedUser: null,
+      estimatedHours: null,
+    });
+    await request(app.getHttpServer())
+      .patch(`/tasks/${task.id}`)
+      .auth(token, { type: 'bearer' })
+      .send({
+        id: task.id,
+        updatedBy: 'visitor@demo.example',
+        assignedTo: task.assignedTo,
+      })
+      .expect(200);
+    const clearedTicket = await request(app.getHttpServer())
+      .patch(`/tickets/${ticket.id}`)
+      .auth(token, { type: 'bearer' })
+      .send({
+        id: ticket.id,
+        updatedBy: 'spoofed@example.com',
+        sprintId: null,
+        featureId: null,
+        assignedTo: null,
+        storyPoints: null,
+      })
+      .expect(200);
+    expect(clearedTicket.body).toMatchObject({
+      sprintId: null,
+      featureId: null,
+      assignedTo: null,
+      storyPoints: null,
+      updatedBy: 'visitor@demo.example',
+    });
+    expect(JSON.stringify(clearedTicket.body)).not.toMatch(
+      /"password"|"refreshToken"/,
+    );
+  });
+
   it('attributes task changes to the authenticated demo session rather than the supplied actor', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

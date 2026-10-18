@@ -1,36 +1,32 @@
 import { useState } from "react";
 import { Task } from "../../types";
 import { useSnackbar } from "../../context/snackbarContext";
-import { useApi, useAuth } from "../../context";
+import { useAuth } from "../../context";
+import type { TaskUpdate } from "../../services/workItemUpdates";
+import { readWorkItemUpdate } from "../../services/workItemUpdates";
 
 export const useUpdateTask = () => {
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
+  const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
-  const updateTask = async (data: Partial<Task>): Promise<Task | null> => {
+  const updateTask = async (data: TaskUpdate): Promise<Task | null> => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${apiUrl}/tasks/${data.id}`, {
+      const response = await request<unknown>(`tasks/${data.id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify(data),
+        body: data,
+        errorMessage: "Failed to update task. Please try again."
       });
-
-      if (!response.ok) throw new Error("Failed to update task");
-
-      // await loadTicketsBySprint();
-      const updatedTask: Task = await response.json();
+      const updatedTask = readWorkItemUpdate<Task>(response, data.id);
       showSnackbarMessage("Task updated successfully", "success");
       return updatedTask;
     } catch (error) {
-      console.error("Error updating task:", error);
-      showSnackbarMessage("Failed to update task", "error");
+      showSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to update task",
+        "error"
+      );
       return null;
     } finally {
       setLoading(false);

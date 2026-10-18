@@ -9,6 +9,7 @@ import {
 } from 'src/helper';
 import { TICKET_INCLUDE } from 'src/constants';
 import { EventsGateway } from 'src/webSockets/events.gateway';
+import { validateTicketUpdate } from './validate-ticket-update';
 
 @Injectable()
 export class TicketService {
@@ -113,6 +114,8 @@ export class TicketService {
       });
 
       if (!ticket) throw new NotFoundException('Ticket not found');
+
+      await validateTicketUpdate(this.prisma, ticket, request);
 
       const { id, ...updateData } = request;
 

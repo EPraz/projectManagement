@@ -1,6 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { EstimateFields } from "../workItemEditor/EstimateFields";
+import { ticketUpdateFromDraft } from "../../services/workItemUpdates";
+import { useWorkItemEditor } from "../workItemEditor/useWorkItemEditor";
+import React, { useState } from "react";
 import {
   DialogContent,
+  Alert,
   TextField,
   Button,
   Box,
@@ -13,18 +17,18 @@ import {
   Avatar,
   Tab,
   Chip,
-  SelectChangeEvent,
+  SelectChangeEvent
 } from "@mui/material";
 import {
   Close as CloseIcon,
   Save as SaveIcon,
   Delete as DeleteIcon,
-  Block as BlockIcon,
+  Block as BlockIcon
 } from "@mui/icons-material";
 import type { Ticket, TicketEditDialogProps } from "../../types";
 import { TicketPriority, TicketType } from "../../constants";
-import { getPriorityColor, getTypeIcon, omitProps } from "../../helpers";
-import { useAuth, useSprint } from "../../context";
+import { getPriorityColor, getTypeIcon } from "../../helpers";
+import { useAuth } from "../../context";
 import {
   Header,
   LeftPanel,
@@ -35,7 +39,7 @@ import {
   SectionTitle,
   StyledDialog,
   StyledTabs,
-  TimeTrackingGrid,
+  TimeTrackingGrid
 } from "./TicketEditDialog.styles";
 
 const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
@@ -50,26 +54,22 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
   features,
   // projects,
   tickets,
-  disabled = false,
+  disabled = false
 }) => {
-  const { sprint } = useSprint();
-  const [editedTicket, setEditedTicket] = useState<Partial<Ticket> | null>(
-    null
-  );
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [activeTab, setActiveTab] = useState(0);
   const { user: currentUser } = useAuth();
-
-  useEffect(() => {
-    if (ticket) {
-      setEditedTicket({ ...ticket });
-    } else {
-      setEditedTicket(null);
-    }
-    setErrors({});
-    setActiveTab(0);
-  }, [ticket, open]);
-
+  const {
+    draft: editedTicket,
+    setDraft: setEditedTicket,
+    errors,
+    setErrors,
+    failure,
+    pending,
+    action,
+    save,
+    remove
+  } = useWorkItemEditor<Partial<Ticket>>(ticket, open, onClose);
+  const [activeTab, setActiveTab] = useState(0);
+  const readOnly = disabled || pending;
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
@@ -80,14 +80,14 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
 
     setEditedTicket({
       ...editedTicket,
-      [name]: value,
+      [name]: value
     });
 
     // Clear error when field is edited
     if (errors[name]) {
       setErrors({
         ...errors,
-        [name]: "",
+        [name]: ""
       });
     }
   };
@@ -98,7 +98,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
       e.target.value === "" ? null : Number(e.target.value);
     setEditedTicket({
       ...editedTicket,
-      blockedBy: selectedTicketId,
+      blockedBy: selectedTicketId
     });
   };
 
@@ -108,12 +108,12 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
     const newStatusId = e.target.value as string;
     setEditedTicket({
       ...editedTicket,
-      statusId: newStatusId,
+      statusId: newStatusId
     });
   };
 
   const handleBlockedChange = () => {
-    if (disabled) return;
+    if (readOnly) return;
     const newBlocked = !editedTicket?.isBlocked;
     setEditedTicket({
       ...editedTicket,
@@ -122,120 +122,38 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
         ? statuses?.find((x) => x.name === "BLOCKED")?.id ||
           editedTicket?.statusId
         : "",
-      blockedBy: newBlocked ? editedTicket?.blockedBy : null,
+      blockedBy: newBlocked ? editedTicket?.blockedBy : null
     });
   };
 
-  // const handleDateChange = (date: Date | null, fieldName: string) => {
-  //   if (!editedTicket) return;
-
-  //   setEditedTicket({
-  //     ...editedTicket,
-  //     [fieldName]: date ? date.toISOString() : undefined,
-  //   });
-  // };
-
-  const handleNumberChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    fieldName: string
-  ) => {
-    if (!editedTicket) return;
-
-    const value = e.target.value === "" ? undefined : Number(e.target.value);
-
-    setEditedTicket({
-      ...editedTicket,
-      [fieldName]: value,
-    });
+  const handleSave = () => {
+    if (!editedTicket || !currentUser?.email || readOnly) return;
+    void save(() =>
+      onSave(ticketUpdateFromDraft(editedTicket, currentUser.email))
+    );
   };
 
-  // const handleTagsChange = (
-  //   event: React.SyntheticEvent,
-  //   newValue: string[]
-  // ) => {
-  //   if (!editedTicket) return;
-
-  //   setEditedTicket({
-  //     ...editedTicket,
-  //     tags: newValue,
-  //   });
-  // };
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!editedTicket?.title) {
-      newErrors.title = "Title is required";
-    }
-
-    if (!editedTicket?.statusId) {
-      newErrors.statusId = "Status is required";
-    }
-
-    if (!editedTicket?.priority) {
-      newErrors.priority = "Priority is required";
-    }
-
-    if (!editedTicket?.type) {
-      newErrors.type = "Type is required";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  const handleDelete = () => {
+    if (!editedTicket || !onDelete || readOnly) return;
+    void remove(() => onDelete(editedTicket));
   };
-
-  const handleSave = useCallback(() => {
-    if (!editedTicket || !validateForm()) return;
-
-    const dataToSend = omitProps(editedTicket, [
-      "createdBy",
-      "createdAt",
-      "updatedAt",
-      "featureId",
-      "projectId",
-      "project",
-      "tasks",
-      "status",
-      "blockingTicket",
-      "blockedTickets",
-      "assignedUser",
-      "order",
-      "_count",
-      "sprint",
-      "feature",
-      "pairProgrammingUsers",
-    ]);
-
-    onSave({
-      ...dataToSend,
-      updatedBy: currentUser?.email,
-      sprintId: sprint?.id,
-    });
-    onClose();
-  }, [editedTicket, currentUser, onSave, onClose]);
-
-  const handleDelete = useCallback(() => {
-    if (!editedTicket || !onDelete) return;
-    onDelete(editedTicket);
-    onClose();
-  }, [editedTicket, onDelete, onClose]);
-
   if (!editedTicket) return null;
 
   return (
     <StyledDialog
       open={open}
       onClose={(_, reason) => {
-        if (reason === "backdropClick") return;
+        if (reason === "backdropClick" || pending) return;
         onClose();
       }}
       fullWidth
       maxWidth="lg"
+      aria-labelledby="ticket-editor-title"
     >
       <Header>
         <Box display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" alignItems="center" gap={1}>
-            <Typography variant="h6">
+            <Typography id="ticket-editor-title" variant="h6">
               {ticket?.id ? "Ticket Details" : "New Ticket"}
             </Typography>
             {editedTicket.priority && (
@@ -246,13 +164,19 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
               />
             )}
           </Box>
-          <IconButton onClick={onClose} size="small">
+          <IconButton
+            onClick={onClose}
+            disabled={pending}
+            aria-label="Close ticket editor"
+            size="small"
+          >
             <CloseIcon />
           </IconButton>
         </Box>
       </Header>
 
       <DialogContent sx={{ p: 0 }}>
+        {failure && <Alert severity="error">{failure}</Alert>}
         <MainContent>
           <LeftPanel>
             <StyledTabs
@@ -281,7 +205,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     error={!!errors.title}
                     helperText={errors.title}
                     required
-                    disabled={disabled}
+                    disabled={readOnly}
                     sx={{ mb: 2 }}
                   />
 
@@ -299,7 +223,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                         onChange={handleStatusChange}
                         label="Status"
                         required
-                        disabled={disabled || editedTicket.isBlocked}
+                        disabled={readOnly || editedTicket.isBlocked}
                       >
                         {statuses &&
                           statuses.map((status) => (
@@ -310,7 +234,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                                     width: 12,
                                     height: 12,
                                     borderRadius: "50%",
-                                    backgroundColor: status.color || "#ccc",
+                                    backgroundColor: status.color || "#ccc"
                                   }}
                                 />
                                 {status.name}
@@ -333,7 +257,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                         onChange={handleChange}
                         label="Type"
                         required
-                        disabled={disabled}
+                        disabled={readOnly}
                       >
                         {Object.values(TicketType).map((type) => (
                           <MenuItem key={type} value={type}>
@@ -362,7 +286,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     rows={4}
                     variant="outlined"
                     size="small"
-                    disabled={disabled}
+                    disabled={readOnly}
                   />
                 </Section>
 
@@ -375,7 +299,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                       color={editedTicket.isBlocked ? "error" : "default"}
                       variant={editedTicket.isBlocked ? "filled" : "outlined"}
                       onClick={handleBlockedChange}
-                      disabled={disabled}
+                      disabled={readOnly}
                     />
 
                     {editedTicket.isBlocked && (
@@ -386,7 +310,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                           value={editedTicket?.blockedBy?.toString() || ""}
                           onChange={handleBlockingTicketChange}
                           label="Blocked By Ticket"
-                          disabled={disabled}
+                          disabled={readOnly}
                         >
                           <MenuItem value="" disabled>
                             <em>Select a ticket</em>
@@ -415,13 +339,17 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                   <SectionTitle>Planning</SectionTitle>
                   <Box display="flex" gap={2} mb={2}>
                     <FormControl fullWidth size="small">
-                      <InputLabel>Sprint</InputLabel>
+                      <InputLabel shrink id="ticket-sprint-label">
+                        Sprint
+                      </InputLabel>
                       <Select
                         name="sprintId"
+                        labelId="ticket-sprint-label"
+                        displayEmpty
                         value={editedTicket.sprintId || ""}
                         onChange={handleChange}
                         label="Sprint"
-                        disabled={disabled}
+                        disabled={readOnly}
                       >
                         <MenuItem value="">
                           <em>Backlog</em>
@@ -435,13 +363,17 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     </FormControl>
 
                     <FormControl fullWidth size="small">
-                      <InputLabel>Feature</InputLabel>
+                      <InputLabel shrink id="ticket-feature-label">
+                        Feature
+                      </InputLabel>
                       <Select
                         name="featureId"
+                        labelId="ticket-feature-label"
+                        displayEmpty
                         value={editedTicket.featureId || ""}
                         onChange={handleChange}
                         label="Feature"
-                        disabled={disabled}
+                        disabled={readOnly}
                       >
                         <MenuItem value="">
                           <em>None</em>
@@ -468,7 +400,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                         onChange={handleChange}
                         label="Priority"
                         required
-                        disabled={disabled}
+                        disabled={readOnly}
                       >
                         {Object.values(TicketPriority).map((priority) => (
                           <MenuItem key={priority} value={priority}>
@@ -478,7 +410,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                                   width: 12,
                                   height: 12,
                                   borderRadius: "50%",
-                                  backgroundColor: getPriorityColor(priority),
+                                  backgroundColor: getPriorityColor(priority)
                                 }}
                               />
                               {priority}
@@ -497,61 +429,24 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
 
                 <Section>
                   <SectionTitle>Story Points & Estimation</SectionTitle>
-                  <Box display="flex" gap={2} mb={2}>
-                    <TextField
-                      label="Story Points"
-                      type="number"
-                      value={editedTicket.storyPoints ?? ""}
-                      onChange={(e) => handleNumberChange(e, "storyPoints")}
-                      fullWidth
-                      size="small"
-                      InputProps={{
-                        inputProps: { min: 0 },
+                  <Box
+                    display="grid"
+                    gridTemplateColumns="repeat(2, minmax(0, 1fr))"
+                    gap={2}
+                  >
+                    <EstimateFields
+                      values={editedTicket}
+                      errors={errors}
+                      disabled={readOnly}
+                      includeStoryPoints
+                      onChange={(field, value) => {
+                        setEditedTicket((previous) =>
+                          previous ? { ...previous, [field]: value } : null
+                        );
+                        setErrors((previous) => ({ ...previous, [field]: "" }));
                       }}
-                      disabled={disabled}
                     />
-
-                    <TextField
-                      label="Estimated Hours"
-                      type="number"
-                      value={editedTicket.estimatedHours ?? ""}
-                      onChange={(e) => handleNumberChange(e, "estimatedHours")}
-                      fullWidth
-                      size="small"
-                      InputProps={{
-                        inputProps: { min: 0, step: 0.5 },
-                      }}
-                      disabled={disabled}
-                    />
-                  </Box>
-
-                  <Box display="flex" gap={2}>
-                    <TextField
-                      label="Remaining Hours"
-                      type="number"
-                      value={editedTicket.remainingHours ?? ""}
-                      onChange={(e) => handleNumberChange(e, "remainingHours")}
-                      fullWidth
-                      size="small"
-                      InputProps={{
-                        inputProps: { min: 0, step: 0.5 },
-                      }}
-                      disabled={disabled}
-                    />
-
-                    <TextField
-                      label="Completed Hours"
-                      type="number"
-                      value={editedTicket.completedHours ?? ""}
-                      onChange={(e) => handleNumberChange(e, "completedHours")}
-                      fullWidth
-                      size="small"
-                      InputProps={{
-                        inputProps: { min: 0, step: 0.5 },
-                      }}
-                      disabled={disabled}
-                    />
-                  </Box>
+                  </Box>{" "}
                 </Section>
               </>
             )}
@@ -570,7 +465,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     rows={4}
                     variant="outlined"
                     size="small"
-                    disabled={disabled}
+                    disabled={readOnly}
                   />
                 </Section>
 
@@ -586,7 +481,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     rows={3}
                     variant="outlined"
                     size="small"
-                    disabled={disabled}
+                    disabled={readOnly}
                   />
                 </Section>
 
@@ -602,7 +497,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     rows={3}
                     variant="outlined"
                     size="small"
-                    disabled={disabled}
+                    disabled={readOnly}
                   />
                 </Section>
 
@@ -618,7 +513,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     rows={3}
                     variant="outlined"
                     size="small"
-                    disabled={disabled}
+                    disabled={readOnly}
                     sx={{ mb: 2 }}
                   />
 
@@ -632,7 +527,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                     rows={3}
                     variant="outlined"
                     size="small"
-                    disabled={disabled}
+                    disabled={readOnly}
                   />
                 </Section>
               </>
@@ -643,13 +538,17 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
             <Section>
               <SectionTitle>Assignment</SectionTitle>
               <FormControl fullWidth size="small">
-                <InputLabel>Assigned To</InputLabel>
+                <InputLabel shrink id="ticket-assignee-label">
+                  Assigned To
+                </InputLabel>
                 <Select
                   name="assignedTo"
+                  labelId="ticket-assignee-label"
+                  displayEmpty
                   value={editedTicket.assignedTo || ""}
                   onChange={handleChange}
                   label="Assigned To"
-                  disabled={disabled}
+                  disabled={readOnly}
                 >
                   <MenuItem value="">
                     <em>Unassigned</em>
@@ -671,44 +570,16 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
             <Section>
               <SectionTitle>Time Tracking</SectionTitle>
               <TimeTrackingGrid>
-                <TextField
-                  name="estimatedHours"
-                  label="Estimated Hours"
-                  type="number"
-                  value={editedTicket.estimatedHours?.toString() ?? ""}
-                  onChange={(e) => handleNumberChange(e, "estimatedHours")}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputProps: { min: 0, step: 0.5 },
+                <EstimateFields
+                  values={editedTicket}
+                  errors={errors}
+                  disabled={readOnly}
+                  onChange={(field, value) => {
+                    setEditedTicket((previous) =>
+                      previous ? { ...previous, [field]: value } : null
+                    );
+                    setErrors((previous) => ({ ...previous, [field]: "" }));
                   }}
-                  disabled={disabled}
-                />
-                <TextField
-                  name="remainingHours"
-                  label="Remaining Hours"
-                  type="number"
-                  value={editedTicket.remainingHours?.toString() ?? ""}
-                  onChange={(e) => handleNumberChange(e, "remainingHours")}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputProps: { min: 0, step: 0.5 },
-                  }}
-                  disabled={disabled}
-                />
-                <TextField
-                  name="completedHours"
-                  label="Completed Hours"
-                  type="number"
-                  value={editedTicket.completedHours?.toString() ?? ""}
-                  onChange={(e) => handleNumberChange(e, "completedHours")}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputProps: { min: 0, step: 0.5 },
-                  }}
-                  disabled={disabled}
                 />
               </TimeTrackingGrid>
             </Section>
@@ -726,7 +597,7 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                 variant="outlined"
                 onClick={onClose}
                 sx={{ mr: 1 }}
-                disabled={disabled}
+                disabled={readOnly}
               >
                 Cancel
               </Button>
@@ -736,9 +607,9 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                 color="primary"
                 startIcon={<SaveIcon />}
                 onClick={handleSave}
-                disabled={disabled}
+                disabled={readOnly}
               >
-                Save
+                {action === "save" ? "Saving…" : "Save"}
               </Button>
               {onDelete && (
                 <Button
@@ -747,9 +618,9 @@ const TicketEditDialog: React.FC<TicketEditDialogProps> = ({
                   color="error"
                   startIcon={<DeleteIcon />}
                   onClick={handleDelete}
-                  disabled={disabled}
+                  disabled={readOnly}
                 >
-                  Delete
+                  {action === "delete" ? "Deleting…" : "Delete"}
                 </Button>
               )}
             </Box>

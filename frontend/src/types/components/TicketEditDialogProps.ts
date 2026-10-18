@@ -1,18 +1,19 @@
+import type { TicketUpdate } from "../../services/workItemUpdates";
 import {
   Feature,
   Project,
   Sprint,
   Ticket,
   TicketStatus,
-  User,
+  User
 } from "../models";
 
 export interface TicketEditDialogProps {
   open: boolean;
   onClose: () => void;
   ticket: Ticket | null;
-  onSave: (ticket: Partial<Ticket>) => void;
-  onDelete?: (ticket: Partial<Ticket>) => void;
+  onSave: (ticket: TicketUpdate) => Promise<boolean>;
+  onDelete?: (ticket: Partial<Ticket>) => Promise<boolean>;
   statuses: TicketStatus[] | undefined;
   users: User[] | undefined;
   sprints: Sprint[] | null;

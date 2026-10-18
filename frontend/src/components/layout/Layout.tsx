@@ -1,4 +1,5 @@
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
+import type { TaskUpdate, TicketUpdate } from "../../services/workItemUpdates";
 import { useAuth, useProject, useSprint, useTicket } from "../../context";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
@@ -17,7 +18,7 @@ import {
   useUpdateSprintGoal,
   useUpdateTask,
   useUpdateGoalTask,
-  useUpdateTicket,
+  useUpdateTicket
 } from "../../hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -27,7 +28,7 @@ import {
   SprintGoal,
   Task,
   TaskStatus,
-  Ticket,
+  Ticket
 } from "../../types";
 import {
   changeSprintHandler,
@@ -39,23 +40,21 @@ import {
   deleteSprintGoalHandler,
   deleteSprintHandler,
   deleteGoalTaskHandler,
-  deleteTaskHandler,
   // deleteTicketHandler,
   editSprintGoalHandler,
   editGoalTaskHandler,
-  editTaskHandler,
   // editTicketHandler,
   onDragEndTaskHandler,
   updateTicketOrderHandler,
   updateTicketStatusHandler,
-  toggleTaskCompletionHandler,
+  toggleTaskCompletionHandler
 } from "../../helpers";
 import { initialBacklogColumns, TabPanels } from "../../constants";
 import {
   LayoutRoot,
   LayoutWrapper,
   MainContent,
-  PageContent,
+  PageContent
 } from "./Layout.styles";
 import DialogsContainer from "../dialogsContainer/DialogsContainer";
 import { Alert, Button } from "@mui/material";
@@ -67,7 +66,7 @@ const Layout = () => {
     loading: loadingProject,
     refreshing,
     error: projectError,
-    reloadProject,
+    reloadProject
   } = useProject();
   const { user: currentUser } = useAuth();
   const pendingTaskMoves = useRef(new Set<Task["id"]>());
@@ -77,7 +76,7 @@ const Layout = () => {
     listOfSprints,
     setSprint,
     addOnListOfSprints,
-    removeSprintFromState,
+    removeSprintFromState
     // removeSprintFromState,
   } = useSprint();
   const {
@@ -88,6 +87,7 @@ const Layout = () => {
     updateAllTickets,
     updateListOfTickets,
     applyTaskUpdate,
+    removeTask
   } = useTicket();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -157,7 +157,7 @@ const Layout = () => {
   const [filters, setFilters] = useState<FilterProps>({});
 
   const [visibleColumns, setVisibleColumns] = useState<string[]>(
-    initialBacklogColumns,
+    initialBacklogColumns
   );
 
   const handleApplyFilter = (newFilters: FilterProps) => {
@@ -224,10 +224,10 @@ const Layout = () => {
   const [selectedSprintGoal, setSelectedSprintGoal] =
     useState<SprintGoal | null>(null);
   const [selectedGoalTask, setSelectedGoalTask] = useState<GoalTask | null>(
-    null,
+    null
   );
   const [localSprintGoals, setLocalSprintGoals] = useState<SprintGoal[]>(
-    sprint?.sprintGoal || [],
+    sprint?.sprintGoal || []
   );
 
   useEffect(() => {
@@ -253,25 +253,26 @@ const Layout = () => {
   const handleCreateTicket = useCallback(
     async (data: Partial<Ticket>) => {
       const newTicket = await createTicket({
-        ...data,
+        ...data
       });
       if (newTicket) {
         addAllTickets(newTicket);
       }
     },
-    [createTicket, addAllTickets],
+    [createTicket, addAllTickets]
   );
 
   const handleEditTicket = useCallback(
-    async (data: Partial<Ticket>) => {
+    async (data: TicketUpdate) => {
       const updatedTicket = await updateTicket({
-        ...data,
+        ...data
       });
       if (updatedTicket) {
         updateAllTickets(updatedTicket);
       }
+      return Boolean(updatedTicket);
     },
-    [updateTicket, updateAllTickets],
+    [updateTicket, updateAllTickets]
   );
 
   const handleDeleteTicket = useCallback(
@@ -280,8 +281,9 @@ const Layout = () => {
       if (success) {
         removeAllTickets(data?.id || 0);
       }
+      return Boolean(success);
     },
-    [deleteTicket, removeAllTickets],
+    [deleteTicket, removeAllTickets]
   );
 
   const handleUpdateTicketOrder = useCallback(
@@ -289,9 +291,9 @@ const Layout = () => {
       bulkUpdateTickets,
       tickets,
       currentUser?.email,
-      updateListOfTickets,
+      updateListOfTickets
     ),
-    [bulkUpdateTickets, tickets, currentUser?.email, updateListOfTickets],
+    [bulkUpdateTickets, tickets, currentUser?.email, updateListOfTickets]
   );
 
   const handleUpdateTicketStatus = useCallback(
@@ -299,9 +301,9 @@ const Layout = () => {
       updateTicket,
       tickets,
       currentUser?.email,
-      updateAllTickets,
+      updateAllTickets
     ),
-    [updateTicket, tickets, currentUser?.email, updateAllTickets],
+    [updateTicket, tickets, currentUser?.email, updateAllTickets]
   );
 
   // Functions -> Tasks
@@ -310,19 +312,29 @@ const Layout = () => {
       createTask,
       selectedTicketId,
       tickets,
-      updateListOfTickets,
+      updateListOfTickets
     ),
-    [createTask, selectedTicketId, tickets, updateListOfTickets],
+    [createTask, selectedTicketId, tickets, updateListOfTickets]
   );
 
   const handleEditTask = useCallback(
-    editTaskHandler(updateTask, tickets, updateListOfTickets),
-    [updateTask, tickets, updateListOfTickets],
+    async (data: TaskUpdate) => {
+      const updatedTask = await updateTask(data);
+      if (updatedTask) applyTaskUpdate(updatedTask);
+      return Boolean(updatedTask);
+    },
+    [updateTask, applyTaskUpdate]
   );
 
   const handleDeleteTask = useCallback(
-    deleteTaskHandler(deleteTask, tickets, updateListOfTickets),
-    [deleteTask, tickets, updateListOfTickets],
+    async (data: Partial<Task>) => {
+      const success = await deleteTask(data);
+      if (success && data.id) {
+        removeTask(data.id);
+      }
+      return Boolean(success);
+    },
+    [deleteTask, removeTask]
   );
 
   const handleOnDragEndTask = useCallback(
@@ -332,31 +344,31 @@ const Layout = () => {
       project?.taskStatuses,
       applyTaskUpdate,
       currentUser?.email,
-      pendingTaskMoves.current,
+      pendingTaskMoves.current
     ),
     [
       updateTask,
       tickets,
       project?.taskStatuses,
       applyTaskUpdate,
-      currentUser?.email,
-    ],
+      currentUser?.email
+    ]
   );
 
   // Functions -> Sprint
   const handleCreateSprint = useCallback(
     createSprintHandler(createSprint, addOnListOfSprints),
-    [createSprint, addOnListOfSprints],
+    [createSprint, addOnListOfSprints]
   );
 
   const handleChangeSprint = useCallback(
     changeSprintHandler(listOfSprints, sprint, setSprint),
-    [listOfSprints, sprint, setSprint],
+    [listOfSprints, sprint, setSprint]
   );
 
   const handleDeleteSprint = useCallback(
     deleteSprintHandler(deleteSprint, removeSprintFromState),
-    [deleteSprint, removeSprintFromState],
+    [deleteSprint, removeSprintFromState]
   );
 
   // Functions -> Goal Board -> Sprint Goal
@@ -369,20 +381,20 @@ const Layout = () => {
       setSprint,
       setOpenCreateSprintGoalDialog,
       sprint?.id,
-      setLocalSprintGoals,
+      setLocalSprintGoals
     ),
     [
       createSprintGoal,
       setSprint,
       setOpenCreateSprintGoalDialog,
       sprint?.id,
-      setLocalSprintGoals,
-    ],
+      setLocalSprintGoals
+    ]
   );
 
   const handleDeleteSprintGoal = useCallback(
     deleteSprintGoalHandler(deleteSprintGoal, setSprint, setLocalSprintGoals),
-    [deleteSprintGoal, setSprint, setLocalSprintGoals],
+    [deleteSprintGoal, setSprint, setLocalSprintGoals]
   );
 
   const handleEditSprintGoal = useCallback(
@@ -391,15 +403,15 @@ const Layout = () => {
       selectedSprintGoal,
       setSprint,
       setOpenEditSprintGoalDialog,
-      setLocalSprintGoals,
+      setLocalSprintGoals
     ),
     [
       updateSprintGoal,
       selectedSprintGoal,
       setSprint,
       setOpenEditSprintGoalDialog,
-      setLocalSprintGoals,
-    ],
+      setLocalSprintGoals
+    ]
   );
 
   const handleCreateGoalTask = useCallback(
@@ -408,15 +420,15 @@ const Layout = () => {
       setSprint,
       setOpenCreateGoalTaskDialog,
       setLocalSprintGoals,
-      selectedSprintGoal,
+      selectedSprintGoal
     ),
     [
       createGoalTask,
       setSprint,
       setOpenCreateGoalTaskDialog,
       setLocalSprintGoals,
-      selectedSprintGoal,
-    ],
+      selectedSprintGoal
+    ]
   );
 
   const handleEditGoalTask = useCallback(
@@ -425,15 +437,15 @@ const Layout = () => {
       setSprint,
       setLocalSprintGoals,
       setOpenEditGoalTaskDialog,
-      selectedGoalTask,
+      selectedGoalTask
     ),
     [
       updateGoalTask,
       setSprint,
       setLocalSprintGoals,
       setOpenEditGoalTaskDialog,
-      selectedGoalTask,
-    ],
+      selectedGoalTask
+    ]
   );
 
   const handleDeleteGoalTask = useCallback(
@@ -441,9 +453,9 @@ const Layout = () => {
       deleteGoalTask,
       setSprint,
       setLocalSprintGoals,
-      setOpenEditGoalTaskDialog,
+      setOpenEditGoalTaskDialog
     ),
-    [deleteGoalTask, setSprint, setLocalSprintGoals, setOpenEditGoalTaskDialog],
+    [deleteGoalTask, setSprint, setLocalSprintGoals, setOpenEditGoalTaskDialog]
   );
 
   const handleToggleGoalTaskCompletion = useCallback(
@@ -451,9 +463,9 @@ const Layout = () => {
       updateGoalTask,
       updateSprintGoal,
       setSprint,
-      setLocalSprintGoals,
+      setLocalSprintGoals
     ),
-    [updateGoalTask, updateSprintGoal, setSprint, setLocalSprintGoals],
+    [updateGoalTask, updateSprintGoal, setSprint, setLocalSprintGoals]
   );
 
   return (
@@ -599,7 +611,7 @@ const Layout = () => {
                 handleOnDragEndTask,
                 // Functions -> Sprint Goal
                 handleCreateSprintGoal,
-                handleToggleGoalTaskCompletion,
+                handleToggleGoalTaskCompletion
               }}
             />
           </PageContent>

@@ -3,7 +3,7 @@ import {
   useContext,
   ReactNode,
   useMemo,
-  useCallback,
+  useCallback
 } from "react";
 import { Task, Ticket } from "../../types";
 import { mergeConfirmedTaskUpdate } from "../../helpers/tasks/mergeConfirmedTaskUpdate";
@@ -19,6 +19,7 @@ type TicketContextProps = {
   removeAllTickets: (ticketId: Ticket["id"]) => void;
   updateListOfTickets: (listofTickets: Ticket[]) => void;
   applyTaskUpdate: (task: Task) => void;
+  removeTask: (taskId: Task["id"]) => void;
 };
 const TicketContext = createContext<TicketContextProps | undefined>(undefined);
 
@@ -28,7 +29,7 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
   const allTickets = useMemo(() => project?.tickets ?? [], [project?.tickets]);
   const tickets = useMemo(
     () => allTickets.filter((ticket) => ticket.sprintId === sprint?.id),
-    [allTickets, sprint?.id],
+    [allTickets, sprint?.id]
   );
   const updateAllTickets = useCallback(
     (updated: Ticket) => {
@@ -37,13 +38,19 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
           ? current
           : {
               ...current,
-              tickets: current.tickets.map((ticket) =>
-                ticket.id === updated.id ? updated : ticket,
-              ),
-            },
+              tickets: current.tickets.map((ticket) => {
+                if (ticket.id !== updated.id) return ticket;
+                if (
+                  Date.parse(updated.updatedAt) < Date.parse(ticket.updatedAt)
+                )
+                  return ticket;
+                // A ticket PATCH changes ticket fields; task events own its task collection.
+                return { ...updated, tasks: ticket.tasks };
+              })
+            }
       );
     },
-    [setProject],
+    [setProject]
   );
   const applyTaskUpdate = useCallback(
     (task: Task) => {
@@ -51,11 +58,11 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
         (current) =>
           current && {
             ...current,
-            tickets: mergeConfirmedTaskUpdate(current.tickets, task),
-          },
+            tickets: mergeConfirmedTaskUpdate(current.tickets, task)
+          }
       );
     },
-    [setProject],
+    [setProject]
   );
   const updateListOfTickets = useCallback(
     (updates: Ticket[]) => {
@@ -65,12 +72,27 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
             ...current,
             tickets: current.tickets.map(
               (ticket) =>
-                updates.find((update) => update.id === ticket.id) ?? ticket,
-            ),
-          },
+                updates.find((update) => update.id === ticket.id) ?? ticket
+            )
+          }
       );
     },
-    [setProject],
+    [setProject]
+  );
+  const removeTask = useCallback(
+    (id: Task["id"]) => {
+      setProject(
+        (current) =>
+          current && {
+            ...current,
+            tickets: current.tickets.map((ticket) => ({
+              ...ticket,
+              tasks: ticket.tasks.filter((task) => task.id !== id)
+            }))
+          }
+      );
+    },
+    [setProject]
   );
   const addAllTickets = useCallback(
     (created: Ticket) => {
@@ -79,10 +101,10 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
         created.projectId !== current.id ||
         current.tickets.some((ticket) => ticket.id === created.id)
           ? current
-          : { ...current, tickets: [...current.tickets, created] },
+          : { ...current, tickets: [...current.tickets, created] }
       );
     },
-    [setProject],
+    [setProject]
   );
   const removeAllTickets = useCallback(
     (id: Ticket["id"]) => {
@@ -90,32 +112,32 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
         (current) =>
           current && {
             ...current,
-            tickets: current.tickets.filter((ticket) => ticket.id !== id),
-          },
+            tickets: current.tickets.filter((ticket) => ticket.id !== id)
+          }
       );
     },
-    [setProject],
+    [setProject]
   );
   const setTickets: TicketContextProps["setTickets"] = useCallback(
     (value) => {
       setProject((current) => {
         if (!current) return current;
         const scoped = current.tickets.filter(
-          (ticket) => ticket.sprintId === sprint?.id,
+          (ticket) => ticket.sprintId === sprint?.id
         );
         const next = typeof value === "function" ? value(scoped) : value;
         return {
           ...current,
           tickets: [
             ...current.tickets.filter(
-              (ticket) => ticket.sprintId !== sprint?.id,
+              (ticket) => ticket.sprintId !== sprint?.id
             ),
-            ...next,
-          ],
+            ...next
+          ]
         };
       });
     },
-    [setProject, sprint?.id],
+    [setProject, sprint?.id]
   );
   return (
     <TicketContext.Provider
@@ -125,9 +147,10 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
         setTickets,
         updateAllTickets,
         applyTaskUpdate,
+        removeTask,
         updateListOfTickets,
         addAllTickets,
-        removeAllTickets,
+        removeAllTickets
       }}
     >
       {children}

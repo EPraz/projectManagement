@@ -1,3 +1,4 @@
+import type { TaskUpdate, TicketUpdate } from "../../services/workItemUpdates";
 import {
   GoalTask,
   Sprint,
@@ -5,7 +6,7 @@ import {
   Task,
   TaskStatus,
   Ticket,
-  TicketStatus,
+  TicketStatus
 } from "../models";
 
 export interface DialogsContainerProps {
@@ -14,10 +15,10 @@ export interface DialogsContainerProps {
   setOpenTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   openEditTaskDialog: boolean;
   handleCreateTask: (data: Partial<Task>) => void;
-  handleDeleteTask: (data: Partial<Task>) => Promise<void>;
+  handleDeleteTask: (data: Partial<Task>) => Promise<boolean>;
   loadingPostTasks: boolean;
   setOpenEditTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  handleEditTask: (data: Partial<Task>) => void;
+  handleEditTask: (data: TaskUpdate) => Promise<boolean>;
   loadingUpdateTask: boolean;
   loadingDeleteTask: boolean;
   selectedTask: Task | null;
@@ -33,8 +34,8 @@ export interface DialogsContainerProps {
   openDeleteTicketDialog: boolean;
   setOpenDeleteTicketDialog: React.Dispatch<React.SetStateAction<boolean>>;
   handleCreateTicket: (data: Partial<Ticket>) => void;
-  handleEditTicket: (data: Partial<Ticket>) => void;
-  handleDeleteTicket: (data: Partial<Ticket>) => Promise<void>;
+  handleEditTicket: (data: TicketUpdate) => Promise<boolean>;
+  handleDeleteTicket: (data: Partial<Ticket>) => Promise<boolean>;
   loadingPostTickets: boolean;
   loadingUpdateTickets: boolean;
   loadingDeleteTicket: boolean;

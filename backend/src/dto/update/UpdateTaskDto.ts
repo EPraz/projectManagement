@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Matches, Min } from 'class-validator';
 
 export class UpdateTaskDto {
   @IsNumber()
@@ -13,6 +13,7 @@ export class UpdateTaskDto {
 
   @IsOptional()
   @IsString()
+  @Matches(/\S/, { message: 'title must not be blank' })
   title: string;
 
   @IsOptional()
@@ -25,17 +26,20 @@ export class UpdateTaskDto {
 
   @IsOptional()
   @IsString()
-  assignedTo?: string;
+  assignedTo?: string | null;
 
   @IsOptional()
   @IsNumber()
-  estimatedHours: number;
+  @Min(0)
+  estimatedHours?: number | null;
 
   @IsOptional()
   @IsNumber()
-  remainingHours: number;
+  @Min(0)
+  remainingHours?: number | null;
 
   @IsOptional()
   @IsNumber()
-  completedHours: number;
+  @Min(0)
+  completedHours?: number | null;
 }

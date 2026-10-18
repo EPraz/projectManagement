@@ -7,7 +7,7 @@ import {
   createSprintGoalSchema,
   editSprintGoalSchema,
   createGoalTaskSchema,
-  editGoalTaskSchema,
+  editGoalTaskSchema
 } from "../../validations";
 import { SprintGoalStatus } from "../../constants";
 import { CreateSprintFormData, DialogsContainerProps } from "../../types";
@@ -86,7 +86,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   openDeleteGoalTaskDialog,
   setSelectedGoalTask,
   setOpenDeleteGoalTaskDialog,
-  handleDeleteGoalTask,
+  handleDeleteGoalTask
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { id: projectId } = useParams();
@@ -96,10 +96,9 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   const { allTickets } = useTicket();
 
   const handleCloseCleanUrl = (param: "ticketId" | "taskId") => {
-    const currentTab = searchParams.get("tab") || "board";
     const newParams = new URLSearchParams(searchParams);
     newParams.delete(param);
-    setSearchParams({ tab: currentTab }, { replace: true });
+    setSearchParams(newParams, { replace: true });
   };
 
   return (
@@ -117,11 +116,11 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             title: "",
             description: "",
             createdBy: currentUser?.email,
-            sprintId: sprint?.id,
+            sprintId: sprint?.id
           }}
           fieldConfig={{
             createdBy: { disabled: true, hidden: true },
-            sprintId: { disabled: true, hidden: true },
+            sprintId: { disabled: true, hidden: true }
           }}
         />
       )}
@@ -137,10 +136,10 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           defaultValues={{
             title: "",
             description: "",
-            createdBy: currentUser?.email,
+            createdBy: currentUser?.email
           }}
           fieldConfig={{
-            createdBy: { disabled: true, hidden: true },
+            createdBy: { disabled: true, hidden: true }
           }}
         />
       )}
@@ -158,15 +157,15 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             startDate: new Date().toDateString(),
             endDate: null,
             projectId: projectId,
-            createdBy: currentUser?.email,
+            createdBy: currentUser?.email
           }}
           fieldConfig={{
             startDate: {
-              label: "startDate",
+              label: "startDate"
             },
             endDate: { label: "endDate" },
             projectId: { disabled: true, hidden: true },
-            createdBy: { disabled: true, hidden: true },
+            createdBy: { disabled: true, hidden: true }
           }}
         />
       )}
@@ -181,7 +180,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           disabled={loadingCreateSprintGoal}
           defaultValues={{
             title: "",
-            description: "",
+            description: ""
           }}
         />
       )}
@@ -195,7 +194,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           schema={createGoalTaskSchema}
           disabled={loadingCreateGoalTask}
           defaultValues={{
-            title: "",
+            title: ""
           }}
         />
       )}
@@ -213,7 +212,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           task={selectedTask}
           onDelete={handleDeleteTask}
           users={project?.users}
-          disabled={loadingUpdateTask}
+          disabled={loadingUpdateTask || loadingDeleteTask}
         />
       )}
 
@@ -233,7 +232,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           ticket={selectedTicket}
           tickets={allTickets}
           users={project?.users}
-          disabled={loadingUpdateTickets}
+          disabled={loadingUpdateTickets || loadingDeleteTicket}
         />
       )}
 
@@ -252,7 +251,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           defaultValues={{
             title: selectedSprintGoal.title,
             description: selectedSprintGoal.description || "",
-            goalsStatus: selectedSprintGoal.goalsStatus,
+            goalsStatus: selectedSprintGoal.goalsStatus
           }}
           fieldConfig={{
             goalsStatus: {
@@ -260,18 +259,18 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
               options: [
                 {
                   value: SprintGoalStatus.IN_PROGRESS,
-                  label: formatStatusName(SprintGoalStatus.IN_PROGRESS),
+                  label: formatStatusName(SprintGoalStatus.IN_PROGRESS)
                 },
                 {
                   value: SprintGoalStatus.COMPLETED,
-                  label: formatStatusName(SprintGoalStatus.COMPLETED),
+                  label: formatStatusName(SprintGoalStatus.COMPLETED)
                 },
                 {
                   value: SprintGoalStatus.AT_RISK,
-                  label: formatStatusName(SprintGoalStatus.AT_RISK),
-                },
-              ],
-            },
+                  label: formatStatusName(SprintGoalStatus.AT_RISK)
+                }
+              ]
+            }
           }}
         />
       )}
@@ -288,7 +287,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           schema={editGoalTaskSchema}
           disabled={loadingUpdateGoalTask}
           defaultValues={{
-            title: selectedGoalTask.title,
+            title: selectedGoalTask.title
           }}
         />
       )}

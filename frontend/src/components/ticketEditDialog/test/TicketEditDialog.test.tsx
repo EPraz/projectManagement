@@ -6,13 +6,13 @@ import { TicketPriority, TicketType } from "../../../constants";
 
 // Mocks de contexto
 const mockAuth = {
-  user: { email: "testuser@example.com" },
+  user: { email: "testuser@example.com" }
 };
 jest.mock("../../../context", () => ({
   useAuth: () => mockAuth,
   useSprint: () => ({
-    sprint: { id: "sprint1" },
-  }),
+    sprint: { id: "sprint1" }
+  })
 }));
 
 // Datos de ejemplo
@@ -29,7 +29,7 @@ const sampleTicket: Ticket = {
   status: {
     id: "status1",
     name: "status1",
-    position: 1,
+    position: 1
   },
   order: 1,
   estimatedHours: 5,
@@ -40,18 +40,18 @@ const sampleTicket: Ticket = {
   tasks: [],
   assignedTo: "1",
   _count: null,
-  pairProgrammingUsers: [],
+  pairProgrammingUsers: []
 };
 
 const sampleStatuses = [
   { id: "status1", name: "OPEN", color: "#00ff00", position: 1 },
   { id: "status2", name: "BLOCKED", color: "#ff0000", position: 2 },
-  { id: "status3", name: "CLOSED", color: "#0000ff", position: 3 },
+  { id: "status3", name: "CLOSED", color: "#0000ff", position: 3 }
 ];
 
 const sampleUsers: User[] = [
   { id: "1", name: "Alice", email: "alice@example.com", projects: [] },
-  { id: "2", name: "Bob", email: "bob@example.com", projects: [] },
+  { id: "2", name: "Bob", email: "bob@example.com", projects: [] }
 ];
 
 const sampleSprints: Sprint[] = [
@@ -79,17 +79,17 @@ const sampleSprints: Sprint[] = [
       epicStatuses: [],
       featureStatuses: [],
       type: "hello",
-      productManagers: [],
-    },
-  },
+      productManagers: []
+    }
+  }
 ];
 
 const sampleTickets = [sampleTicket];
 
 describe("TicketEditDialog Component", () => {
   const onClose = jest.fn();
-  const onSave = jest.fn();
-  const onDelete = jest.fn();
+  const onSave = jest.fn().mockResolvedValue(true);
+  const onDelete = jest.fn().mockResolvedValue(true);
 
   const renderComponent = (ticketProp = sampleTicket) =>
     render(
@@ -140,7 +140,7 @@ describe("TicketEditDialog Component", () => {
       /ticket title/i
     ) as HTMLInputElement;
     fireEvent.change(titleInput, {
-      target: { value: "Updated Ticket Title", name: "title" },
+      target: { value: "Updated Ticket Title", name: "title" }
     });
 
     // Clic en Save
@@ -152,7 +152,7 @@ describe("TicketEditDialog Component", () => {
         expect.objectContaining({
           title: "Updated Ticket Title",
           updatedBy: "testuser@example.com",
-          sprintId: "sprint1",
+          sprintId: null
         })
       );
     });
@@ -210,7 +210,7 @@ describe("TicketEditDialog Component", () => {
           isBlocked: true,
           statusId:
             sampleStatuses.find((s) => s.name === "BLOCKED")?.id ||
-            expect.any(String),
+            expect.any(String)
         })
       );
     });
@@ -222,7 +222,7 @@ describe("TicketEditDialog Component", () => {
       /estimated hours/i
     ) as HTMLInputElement;
     fireEvent.change(estimatedInput, {
-      target: { value: "8", name: "estimatedHours" },
+      target: { value: "8", name: "estimatedHours" }
     });
     expect(estimatedInput.value).toBe("8");
   });

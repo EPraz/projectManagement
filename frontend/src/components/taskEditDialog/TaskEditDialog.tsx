@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { EstimateFields } from "../workItemEditor/EstimateFields";
+import React from "react";
 import {
   DialogContent,
+  Alert,
   TextField,
   Button,
   Box,
@@ -11,15 +13,16 @@ import {
   Select,
   MenuItem,
   Avatar,
-  SelectChangeEvent,
+  SelectChangeEvent
 } from "@mui/material";
 import {
   Close as CloseIcon,
   Save as SaveIcon,
-  Delete as DeleteIcon,
+  Delete as DeleteIcon
 } from "@mui/icons-material";
-import { Task, TaskEditDialogProps } from "../../types";
-import { omitProps } from "../../helpers";
+import { TaskEditDialogProps } from "../../types";
+import { taskUpdateFromDraft } from "../../services/workItemUpdates";
+import { useWorkItemEditor } from "../workItemEditor/useWorkItemEditor";
 import { useAuth } from "../../context";
 import {
   Header,
@@ -29,7 +32,7 @@ import {
   Section,
   SectionTitle,
   StyledDialog,
-  TimeTrackingGrid,
+  TimeTrackingGrid
 } from "./TaskEditDialog.styles";
 
 const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
@@ -39,84 +42,79 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
   onSave,
   onDelete,
   users,
-  disabled = false,
+  disabled = false
 }) => {
-  const [editedTask, setEditedTask] = useState<Task | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const { user: currentUser } = useAuth();
-
-  useEffect(() => {
-    if (task) {
-      setEditedTask({ ...task });
-    } else {
-      setEditedTask(null);
-    }
-    setErrors({});
-  }, [task, open]);
-
+  const {
+    draft: editedTask,
+    setDraft: setEditedTask,
+    errors,
+    setErrors,
+    failure,
+    pending,
+    action,
+    save,
+    remove
+  } = useWorkItemEditor(task, open, onClose);
+  const readOnly = disabled || pending;
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<string>
   ) => {
     const { name, value } = e.target;
-    if (!editedTask) return;
-
-    const numericFields = [
+    if (!editedTask || readOnly) return;
+    const numeric = [
       "estimatedHours",
       "remainingHours",
-      "completedHours",
-    ];
-    const newValue = numericFields.includes(name)
-      ? value === ""
-        ? undefined
-        : Number(value)
-      : value;
-
-    setEditedTask((prev) => (prev ? { ...prev, [name]: newValue } : null));
-
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
+      "completedHours"
+    ].includes(name);
+    setEditedTask((previous) =>
+      previous
+        ? {
+            ...previous,
+            [name]: numeric ? (value === "" ? undefined : Number(value)) : value
+          }
+        : null
+    );
+    setErrors((previous) => ({ ...previous, [name]: "" }));
   };
 
-  const handleSave = useCallback(() => {
-    if (!editedTask) return;
-    const dataToSend = omitProps(editedTask, [
-      "createdAt",
-      "createdBy",
-      "status",
-      "ticketId",
-      "updatedAt",
-      "acceptanceCriteria",
-    ]);
-    onSave({ ...dataToSend, updatedBy: currentUser?.email });
-    onClose();
-  }, [editedTask, currentUser, onSave]);
+  const handleSave = () => {
+    if (!editedTask || !currentUser?.email || readOnly) return;
+    void save(() => onSave(taskUpdateFromDraft(editedTask, currentUser.email)));
+  };
 
   if (!editedTask) return null;
   return (
     <StyledDialog
       open={open}
       onClose={(_, reason) => {
-        if (reason === "backdropClick") return;
+        if (reason === "backdropClick" || pending) return;
         onClose();
       }}
       fullWidth
       maxWidth="lg"
+      aria-labelledby="task-editor-title"
     >
       <Header>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">
+          <Typography id="task-editor-title" variant="h6">
             {task?.id ? "Task Details" : "New Task"}
           </Typography>
-          <IconButton onClick={onClose} size="small">
+          <IconButton
+            onClick={onClose}
+            disabled={pending}
+            aria-label="Close task editor"
+            size="small"
+          >
             <CloseIcon />
           </IconButton>
         </Box>
       </Header>
 
       <DialogContent sx={{ p: 0 }}>
+        {failure && <Alert severity="error">{failure}</Alert>}
         <MainContent>
           <LeftPanel>
             <Section>
@@ -132,7 +130,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                 error={!!errors.title}
                 helperText={errors.title}
                 required
-                disabled={disabled}
+                disabled={readOnly}
               />
             </Section>
 
@@ -148,7 +146,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                 rows={4}
                 variant="outlined"
                 size="small"
-                disabled={disabled}
+                disabled={readOnly}
               />
             </Section>
 
@@ -164,7 +162,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                 rows={4}
                 variant="outlined"
                 size="small"
-                disabled={disabled}
+                disabled={readOnly}
               />
             </Section>
           </LeftPanel>
@@ -172,13 +170,17 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
           <RightPanel>
             <Section>
               <FormControl fullWidth size="small">
-                <InputLabel>Assigned To</InputLabel>
+                <InputLabel shrink id="task-assignee-label">
+                  Assigned To
+                </InputLabel>
                 <Select
                   name="assignedTo"
+                  labelId="task-assignee-label"
+                  displayEmpty
                   value={editedTask.assignedTo || ""}
                   onChange={handleChange}
                   label="Assigned To"
-                  disabled={disabled}
+                  disabled={readOnly}
                 >
                   <MenuItem value="">
                     <em>Unassigned</em>
@@ -200,43 +202,16 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
             <Section>
               <SectionTitle>Time Tracking</SectionTitle>
               <TimeTrackingGrid>
-                <TextField
-                  name="estimatedHours"
-                  label="Estimated Hours"
-                  type="number"
-                  value={editedTask.estimatedHours?.toString() ?? ""}
-                  onChange={handleChange}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputProps: { min: 0, step: 0.5 },
+                <EstimateFields
+                  values={editedTask}
+                  errors={errors}
+                  disabled={readOnly}
+                  onChange={(field, value) => {
+                    setEditedTask((previous) =>
+                      previous ? { ...previous, [field]: value } : null
+                    );
+                    setErrors((previous) => ({ ...previous, [field]: "" }));
                   }}
-                  disabled={disabled}
-                />
-                <TextField
-                  name="remainingHours"
-                  label="Remaining Hours"
-                  type="number"
-                  value={editedTask.remainingHours?.toString() ?? ""}
-                  onChange={handleChange}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputProps: { min: 0, step: 0.5 },
-                  }}
-                />
-                <TextField
-                  name="completedHours"
-                  label="Completed Hours"
-                  type="number"
-                  value={editedTask.completedHours?.toString() ?? ""}
-                  onChange={handleChange}
-                  fullWidth
-                  size="small"
-                  InputProps={{
-                    inputProps: { min: 0, step: 0.5 },
-                  }}
-                  disabled={disabled}
                 />
               </TimeTrackingGrid>
             </Section>
@@ -253,7 +228,7 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                 variant="outlined"
                 onClick={onClose}
                 sx={{ mr: 1 }}
-                disabled={disabled}
+                disabled={readOnly}
               >
                 Cancel
               </Button>
@@ -263,9 +238,9 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                 color="primary"
                 startIcon={<SaveIcon />}
                 onClick={handleSave}
-                disabled={disabled}
+                disabled={readOnly}
               >
-                Save
+                {action === "save" ? "Saving…" : "Save"}
               </Button>
               {onDelete && (
                 <Button
@@ -274,12 +249,11 @@ const TaskEditDialog: React.FC<TaskEditDialogProps> = ({
                   color="error"
                   startIcon={<DeleteIcon />}
                   onClick={() => {
-                    onDelete(editedTask);
-                    onClose();
+                    void remove(() => onDelete(editedTask));
                   }}
-                  disabled={disabled}
+                  disabled={readOnly}
                 >
-                  Delete
+                  {action === "delete" ? "Deleting…" : "Delete"}
                 </Button>
               )}
             </Box>

@@ -9,6 +9,9 @@ import {
   IsArray,
   IsBoolean,
   IsDateString,
+  IsInt,
+  Matches,
+  Min,
 } from 'class-validator';
 
 export class UpdateTicketDto {
@@ -17,6 +20,7 @@ export class UpdateTicketDto {
 
   @IsString({ message: 'title must be a string' })
   @IsOptional()
+  @Matches(/\S/, { message: 'title must not be blank' })
   title?: string;
 
   @IsString({ message: 'statusId must be a string' })
@@ -25,7 +29,11 @@ export class UpdateTicketDto {
 
   @IsString({ message: 'sprintId must be a string' })
   @IsOptional()
-  sprintId?: string;
+  sprintId?: string | null;
+
+  @IsString()
+  @IsOptional()
+  featureId?: string | null;
 
   @IsString({ message: 'description must be a string' })
   @IsOptional()
@@ -58,23 +66,28 @@ export class UpdateTicketDto {
 
   @IsString({ message: 'assignedTo must be a string' })
   @IsOptional()
-  assignedTo?: string;
+  assignedTo?: string | null;
 
   @IsNumber({}, { message: 'estimatedHours must be a number' })
   @IsOptional()
-  estimatedHours?: number;
+  @Min(0)
+  estimatedHours?: number | null;
 
   @IsNumber({}, { message: 'remainingHours must be a number' })
   @IsOptional()
-  remainingHours?: number;
+  @Min(0)
+  remainingHours?: number | null;
 
   @IsNumber({}, { message: 'completedHours must be a number' })
   @IsOptional()
-  completedHours?: number;
+  @Min(0)
+  completedHours?: number | null;
 
   @IsNumber({}, { message: 'storyPoints must be a number' })
   @IsOptional()
-  storyPoints?: number;
+  @IsInt()
+  @Min(0)
+  storyPoints?: number | null;
 
   @IsDateString({}, { message: 'dueDate must be a valid ISO date string' })
   @IsOptional()
