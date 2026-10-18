@@ -22,3 +22,18 @@ The approved README/setup, screenshots, genuine independent-session WebSocket de
 Ticket06 deliberately awaits owner publication approval and subsequent hosted-delivery checks. These are planned approval/delivery gates, not missing local implementation.
 
 Totals: Standards0; Spec0. No material issue in either axis. Publication remains unapproved and unperformed.
+
+
+## Owner Taskboard feedback follow-up — 1575837..5523e48
+
+Two independent read-only agents reviewed the UI/partial-retake delta against the same approved2339dbc base plus the owner's exact1:05 feedback.
+
+### Standards
+
+0material findings. Compact ticket summary preserves the ticket-row/task-column model and canonical behavior, reuses formatting and accessible names, and removes unavailable controls while preserving bulk-mutation assertions. Partial tooling verifies local paths, chapter budgets, synchronization and original encoded-shot hashes. Evidence distinguishes previous complete-suite results from subsequent focused checks. No actionable baseline smells.
+
+### Spec
+
+0material findings. Compact identity/state/metadata addresses the requested design polish without changing product scope. Five actual affected scenes replace only the Taskboard interval; other sources are retained. Holding Team's own ready frame is ordinary transition editing rather than extra recording/fabricated content. Source revisions and genuine WebSocket evidence are recorded. Publication still awaits explicit owner approval.
+
+Follow-up totals: Standards0; Spec0. No material issue in either axis. No reviewer mutations or duplicate test suites.

@@ -160,3 +160,6 @@ Owner requests correcting the ticket-cell design visible around1:05 before appro
 
 
 Owner Taskboard feedback completed locally: compact ticket summary and five-scene partial retake at2617324; unchanged182.56s/chapters/captions;11unaffected encoded shots identical and original Team opening held on its ready frame.80frontend tests/12snapshots,16Taskboard/bulk and9viewer checks pass; full decode and visual joins/paused/fullscreen pass. README screenshot updated. [Evidence](evidence/06-taskboard-feedback.md). Active local review: `http://127.0.0.1:61758/walkthrough`. No publication; owner review/approval remains pending under06.
+
+
+Taskboard feedback follow-up Standards0/Spec0 against1575837..5523e48 is recorded in [the review](evidence/06-code-review.md). Served MP4 hash matches the current composite; caption, transcript and chapter files are byte-identical to1575837. Local review remains http://127.0.0.1:61758/walkthrough, publication unapproved.
