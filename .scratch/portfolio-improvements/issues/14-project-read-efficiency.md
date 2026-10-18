@@ -4,7 +4,7 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -17,3 +17,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after13resolved atc21f8cf. Measure populated list/detail payload and Prisma query work against the isolated local PostgreSQL/application before selecting projections. Map project list/progress/avatar/team and canonical workspace/socket consumers; retain compatibility for default full reads and current stored data.

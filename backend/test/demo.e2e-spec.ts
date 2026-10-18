@@ -270,6 +270,103 @@ describe('Acceso demo HTTP API', () => {
     );
   }, 30000);
 
+  it('offers compatible summary and workspace project reads without redundant feature data', async () => {
+    const token = tokenOf(
+      await request(app.getHttpServer()).post('/auth/instant-login').send({}),
+    );
+    type ReadProject = {
+      id: string;
+      title: string;
+      users: { id: string; name: string; email: string }[];
+      tickets: { id: number; statusId: string; sprintId: string | null }[];
+      ticketStatuses: { id: string; name: string }[];
+      sprints: {
+        id: string;
+        tickets?: { id: number }[];
+        sprintGoal: unknown[];
+        retroCard: unknown[];
+        teamMemberCapacities: unknown[];
+      }[];
+    };
+    const full = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const source = full.body as ReadProject[];
+    const summary = await request(app.getHttpServer())
+      .get('/projects/?view=summary')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const summaries = summary.body as ReadProject[];
+    expect(summaries).toHaveLength(source.length);
+    for (const project of summaries) {
+      const original = source.find((item) => item.id === project.id)!;
+      expect(project.title).toBe(original.title);
+      expect(project).not.toHaveProperty('epics');
+      expect(project).not.toHaveProperty('taskStatuses');
+      expect(project.tickets).toEqual(
+        original.tickets.map((ticket) => ({ statusId: ticket.statusId })),
+      );
+      expect(project.sprints).toEqual(
+        original.sprints.map((sprint) => ({ id: sprint.id })),
+      );
+      expect(project.users).toEqual(
+        original.users.map((user) => ({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        })),
+      );
+      expect(project.ticketStatuses).toEqual(
+        original.ticketStatuses.map((status) => ({
+          id: status.id,
+          name: status.name,
+        })),
+      );
+    }
+    const projectId = source[0].id;
+    const detail = await request(app.getHttpServer())
+      .get(`/projects/${projectId}`)
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const workspace = await request(app.getHttpServer())
+      .get(`/projects/${projectId}?view=workspace`)
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const workspaceView = workspace.body as ReadProject;
+    const fullView = detail.body as ReadProject;
+    expect(workspaceView.tickets).toEqual(fullView.tickets);
+    expect(workspaceView.users).toEqual(fullView.users);
+    expect(workspaceView.ticketStatuses).toEqual(fullView.ticketStatuses);
+    for (const sprint of workspaceView.sprints) {
+      expect(sprint).not.toHaveProperty('tickets');
+      const original = fullView.sprints.find((item) => item.id === sprint.id)!;
+      expect(sprint.sprintGoal).toEqual(original.sprintGoal);
+      expect(sprint.retroCard).toEqual(original.retroCard);
+      expect(sprint.teamMemberCapacities).toEqual(
+        original.teamMemberCapacities,
+      );
+      expect(
+        workspaceView.tickets
+          .filter((ticket) => ticket.sprintId === sprint.id)
+          .map((ticket) => ticket.id),
+      ).toEqual(original.tickets!.map((ticket) => ticket.id));
+    }
+    expect(JSON.stringify([summary.body, workspace.body])).not.toMatch(
+      /"password"|"refreshToken"/,
+    );
+    for (const path of [
+      '/projects?view=unknown',
+      '/projects?view=summary&view=full',
+      `/projects/${projectId}?view=summary`,
+      `/projects/${projectId}?view=workspace&view=full`,
+    ])
+      await request(app.getHttpServer())
+        .get(path)
+        .auth(token, { type: 'bearer' })
+        .expect(400);
+  });
+
   it('attributes retrospective cards to the authenticated demo instead of a supplied author', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

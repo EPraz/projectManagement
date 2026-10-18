@@ -12,3 +12,4 @@ export * from "./TicketStatus";
 export * from "./User";
 export * from "./TeamMemberCapacity";
 export * from "./RetroCard";
+export * from "./ProjectSummary";

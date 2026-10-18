@@ -8,8 +8,13 @@ import {
   Patch,
   UseGuards,
   Req,
+  Query,
   UnauthorizedException,
 } from '@nestjs/common';
+import {
+  ProjectListQueryDto,
+  ProjectDetailQueryDto,
+} from './project-query.dto';
 import { ProjectService } from './project.service';
 import { Project, User } from '@prisma/client';
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
@@ -33,15 +38,21 @@ export class ProjectController {
 
   // Obtener todos los proyectos
   @Get()
-  async findAll(@Req() req: Request): Promise<Project[]> {
+  async findAll(
+    @Req() req: Request,
+    @Query() query: ProjectListQueryDto,
+  ): Promise<Project[]> {
     if (!req.user) throw new UnauthorizedException('Not authenticated');
-    return await this.projectService.findAll();
+    return await this.projectService.findAll(query.view);
   }
 
   // Obtener un proyecto por ID
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Project> {
-    return await this.projectService.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @Query() query: ProjectDetailQueryDto,
+  ): Promise<Project> {
+    return await this.projectService.findOne(id, query.view);
   }
 
   // Actualizar un proyecto

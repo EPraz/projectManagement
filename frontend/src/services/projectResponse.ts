@@ -1,11 +1,16 @@
 import { Project } from "../types/models/Project";
+import type { ProjectSummary } from "../types/models/ProjectSummary";
+import {
+  synchronizeProjectTickets,
+  type WorkspaceRead
+} from "./projectProjection";
 import { ApiError } from "./apiRequest";
 
 export const readProject = (value: unknown): Project => {
   if (!value || typeof value !== "object")
     throw new ApiError(
       502,
-      "The server returned an unexpected project. Please try again.",
+      "The server returned an unexpected project. Please try again."
     );
   const project = value as Record<string, unknown>;
   const collections = [
@@ -16,7 +21,7 @@ export const readProject = (value: unknown): Project => {
     "taskStatuses",
     "epics",
     "epicStatuses",
-    "featureStatuses",
+    "featureStatuses"
   ];
   if (
     typeof project.id !== "string" ||
@@ -25,17 +30,61 @@ export const readProject = (value: unknown): Project => {
   ) {
     throw new ApiError(
       502,
-      "The server returned an unexpected project. Please try again.",
+      "The server returned an unexpected project. Please try again."
     );
   }
-  return value as Project;
+  return synchronizeProjectTickets(value as WorkspaceRead);
 };
 
-export const readProjects = (value: unknown): Project[] => {
-  if (!Array.isArray(value))
-    throw new ApiError(
+const record = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === "object" && !Array.isArray(value);
+
+export const readProjectSummaries = (value: unknown): ProjectSummary[] => {
+  const invalid = () =>
+    new ApiError(
       502,
-      "The server returned an unexpected project list. Please try again.",
+      "The server returned an unexpected project list. Please try again."
     );
-  return value.map(readProject);
+  if (!Array.isArray(value)) throw invalid();
+  return value.map((item: unknown) => {
+    if (
+      !record(item) ||
+      typeof item.id !== "string" ||
+      typeof item.title !== "string" ||
+      typeof item.createdAt !== "string" ||
+      typeof item.createdBy !== "string" ||
+      !Array.isArray(item.tickets) ||
+      !item.tickets.every(
+        (ticket: unknown) =>
+          record(ticket) && typeof ticket.statusId === "string"
+      ) ||
+      !Array.isArray(item.sprints) ||
+      !item.sprints.every(
+        (sprint: unknown) => record(sprint) && typeof sprint.id === "string"
+      ) ||
+      !Array.isArray(item.ticketStatuses) ||
+      !item.ticketStatuses.every(
+        (status: unknown) =>
+          record(status) &&
+          typeof status.id === "string" &&
+          typeof status.name === "string"
+      ) ||
+      !Array.isArray(item.users) ||
+      !item.users.every(
+        (user: unknown) =>
+          record(user) &&
+          typeof user.id === "string" &&
+          typeof user.name === "string" &&
+          typeof user.email === "string"
+      ) ||
+      (item.updatedBy !== undefined &&
+        item.updatedBy !== null &&
+        typeof item.updatedBy !== "string") ||
+      (item.description !== undefined &&
+        item.description !== null &&
+        typeof item.description !== "string")
+    )
+      throw invalid();
+    return item as ProjectSummary;
+  });
 };

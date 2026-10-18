@@ -1,5 +1,5 @@
 import { NavigateFunction } from "react-router-dom";
-import { Project, Ticket } from "../models";
+import { ProjectSummary } from "../models";
 import { Theme } from "@mui/material";
 
 // Tipos reutilizables
@@ -14,13 +14,13 @@ type SetFavoriteId = React.Dispatch<React.SetStateAction<string | null>>;
 // Interfaces para los componentes
 
 export interface ProjectCardViewProps {
-  project: Project;
+  project: ProjectSummary;
   handleMenuClick: MenuClickHandler;
-  allTickets: Ticket[];
+  allTickets: ProjectSummary["tickets"];
 }
 
 export interface ProjectContainerViewProps {
-  projects: Project[];
+  projects: ProjectSummary[];
   loading: boolean;
   refreshing: boolean;
   onRefresh: () => void;
@@ -31,7 +31,7 @@ export interface ProjectContainerViewProps {
   canCreateProject: boolean;
   setOpenDialog: SetBoolean;
   favoriteId: string | null;
-  filteredProjects: Project[];
+  filteredProjects: ProjectSummary[];
   handleMenuClick: MenuClickHandler;
   setFavoriteId: SetFavoriteId;
   navigate: NavigateFunction;
@@ -44,7 +44,7 @@ export interface ProjectEmptyViewProps {
 }
 
 export interface ProjectGridViewProps {
-  filteredProjects: Project[];
+  filteredProjects: ProjectSummary[];
   setFavoriteId: SetFavoriteId;
   favoriteId: string | null;
   handleMenuClick: MenuClickHandler;
@@ -62,7 +62,7 @@ export interface ProjectHeaderProps {
 }
 
 export interface ProjectListViewProps {
-  filteredProjects: Project[];
+  filteredProjects: ProjectSummary[];
   setFavoriteId: SetFavoriteId;
   favoriteId: string | null;
   handleMenuClick: MenuClickHandler;

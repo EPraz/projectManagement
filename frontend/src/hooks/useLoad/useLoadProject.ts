@@ -1,27 +1,29 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../context/authContext";
-import { Project } from "../../types/models/Project";
-import { readProjects } from "../../services/projectResponse";
+import { ProjectSummary } from "../../types/models/ProjectSummary";
+import { readProjectSummaries } from "../../services/projectResponse";
 
 export const useLoadProject = () => {
   const { request } = useAuth();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const active = useRef<AbortController | null>(null);
 
-  const loadProjects = useCallback(async (): Promise<Project[] | null> => {
+  const loadProjects = useCallback(async (): Promise<
+    ProjectSummary[] | null
+  > => {
     active.current?.abort();
     const controller = new AbortController();
     active.current = controller;
     setLoading(true);
     try {
-      const data = readProjects(
-        await request<unknown>("/projects/", {
+      const data = readProjectSummaries(
+        await request<unknown>("/projects/?view=summary", {
           signal: controller.signal,
-          errorMessage: "Could not load projects. Please try again.",
-        }),
+          errorMessage: "Could not load projects. Please try again."
+        })
       );
       if (controller.signal.aborted) return null;
       setProjects(data);
@@ -33,7 +35,7 @@ export const useLoadProject = () => {
         setError(
           failure instanceof Error
             ? failure.message
-            : "Could not load projects. Please try again.",
+            : "Could not load projects. Please try again."
         );
       }
       return null;

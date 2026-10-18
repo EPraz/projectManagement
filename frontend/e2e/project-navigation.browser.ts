@@ -28,7 +28,7 @@ test("project API slash aliases stay JSON and the project deep link reloads", as
 test("a non-JSON detail response stays recoverable", async ({ page }) => {
   await enterDemo(page);
   const detail = page.waitForResponse((response) =>
-    /\/api\/projects\/[^/]+$/.test(response.url()),
+    /\/api\/projects\/[^/]+$/.test(new URL(response.url()).pathname),
   );
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
   const url = (await detail).url();

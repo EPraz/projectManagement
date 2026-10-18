@@ -3,9 +3,9 @@ import { User } from "../../../../types";
 
 const AvatarGroupsComponent = ({
   projectUsers,
-  max = 3,
+  max = 3
 }: {
-  projectUsers: User[];
+  projectUsers: Pick<User, "id" | "name" | "email">[];
   max: number;
 }) => {
   return (

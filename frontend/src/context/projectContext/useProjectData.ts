@@ -5,7 +5,7 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
+  useState
 } from "react";
 import { useAuth } from "../authContext";
 import { Project } from "../../types/models/Project";
@@ -21,7 +21,7 @@ export const useProjectData = (id: string | undefined) => {
     project: null,
     selectedSprintId:
       localStorage.getItem(`selectedSprintId:${id}`) ??
-      localStorage.getItem("selectedSprintId"),
+      localStorage.getItem("selectedSprintId")
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
@@ -30,19 +30,19 @@ export const useProjectData = (id: string | undefined) => {
     (value) => {
       dispatch({ type: "project", value, now: Date.now() });
     },
-    [],
+    []
   );
   const setListOfSprints: Dispatch<SetStateAction<Sprint[]>> = useCallback(
     (value) => {
       dispatch({ type: "sprints", value, now: Date.now() });
     },
-    [],
+    []
   );
   const setSprint: Dispatch<SetStateAction<Sprint | null>> = useCallback(
     (value) => {
       dispatch({ type: "sprint", value, now: Date.now() });
     },
-    [],
+    []
   );
 
   const reloadProject = useCallback(async () => {
@@ -53,15 +53,15 @@ export const useProjectData = (id: string | undefined) => {
     setLoading(true);
     try {
       const project = readProject(
-        await request<unknown>(`/projects/${id}`, {
+        await request<unknown>(`/projects/${id}?view=workspace`, {
           signal: controller.signal,
-          errorMessage: "Could not load this project. Please try again.",
-        }),
+          errorMessage: "Could not load this project. Please try again."
+        })
       );
       if (project.id !== id)
         throw new ApiError(
           502,
-          "The server returned an unexpected project. Please try again.",
+          "The server returned an unexpected project. Please try again."
         );
       if (!controller.signal.aborted) {
         setProject(project);
@@ -72,7 +72,7 @@ export const useProjectData = (id: string | undefined) => {
         setError(
           failure instanceof ApiError
             ? failure
-            : new ApiError(0, "Could not load this project. Please try again."),
+            : new ApiError(0, "Could not load this project. Please try again.")
         );
     } finally {
       if (active.current === controller) {
@@ -101,7 +101,7 @@ export const useProjectData = (id: string | undefined) => {
       // A socket change invalidates an in-flight snapshot; read again after that commit.
       if (active.current) void reloadProject();
     },
-    [reloadProject, setProject],
+    [reloadProject, setProject]
   );
   const remove = useCallback(() => {
     active.current?.abort();
@@ -123,8 +123,8 @@ export const useProjectData = (id: string | undefined) => {
     setListOfSprints,
     sprint:
       state.project?.sprints.find(
-        (sprint) => sprint.id === state.selectedSprintId,
+        (sprint) => sprint.id === state.selectedSprintId
       ) ?? null,
-    setSprint,
+    setSprint
   };
 };

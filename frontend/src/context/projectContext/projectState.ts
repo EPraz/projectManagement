@@ -1,3 +1,4 @@
+import { synchronizeProjectTickets } from "../../services/projectProjection";
 import { SetStateAction } from "react";
 import { Project } from "../../types/models/Project";
 import { Sprint } from "../../types/models/Sprint";
@@ -18,37 +19,28 @@ const selectSprint = (project: Project, id: string | null, now: number) =>
       sprint.startDate &&
       sprint.endDate &&
       new Date(sprint.startDate).getTime() <= now &&
-      new Date(sprint.endDate).getTime() >= now,
+      new Date(sprint.endDate).getTime() >= now
   ) ??
   project.sprints[0] ??
   null;
 
-// project.tickets owns work; sprint ticket collections are projections of that source.
-const synchronizeTickets = (project: Project): Project => ({
-  ...project,
-  sprints: project.sprints.map((sprint) => ({
-    ...sprint,
-    tickets: project.tickets.filter((ticket) => ticket.sprintId === sprint.id),
-  })),
-});
-
 const replaceProject = (
   state: ProjectState,
   project: Project | null,
-  now: number,
+  now: number
 ): ProjectState => {
   if (!project) return { project: null, selectedSprintId: null };
-  const synchronized = synchronizeTickets(project);
+  const synchronized = synchronizeProjectTickets(project);
   return {
     project: synchronized,
     selectedSprintId:
-      selectSprint(synchronized, state.selectedSprintId, now)?.id ?? null,
+      selectSprint(synchronized, state.selectedSprintId, now)?.id ?? null
   };
 };
 
 export const projectReducer = (
   state: ProjectState,
-  action: ProjectAction,
+  action: ProjectAction
 ): ProjectState => {
   if (action.type === "project") {
     const project =
@@ -69,7 +61,7 @@ export const projectReducer = (
   }
   const previous =
     state.project.sprints.find(
-      (sprint) => sprint.id === state.selectedSprintId,
+      (sprint) => sprint.id === state.selectedSprintId
     ) ?? null;
   const next =
     typeof action.value === "function" ? action.value(previous) : action.value;
@@ -80,12 +72,12 @@ export const projectReducer = (
   )
     return state;
   return {
-    project: synchronizeTickets({
+    project: synchronizeProjectTickets({
       ...state.project,
       sprints: state.project.sprints.map((sprint) =>
-        sprint.id === next.id ? next : sprint,
-      ),
+        sprint.id === next.id ? next : sprint
+      )
     }),
-    selectedSprintId: next.id,
+    selectedSprintId: next.id
   };
 };

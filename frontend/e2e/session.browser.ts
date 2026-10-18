@@ -201,12 +201,12 @@ test("session renewal and retry stay paused while logout is pending", async ({ p
 });
 
 test("an authenticated project request explains expiry immediately after demo entry", async ({ page }) => {
-  await page.route("**/api/projects/", (route) => route.fulfill({ status: 401, contentType: "application/json", body: '{"message":"Expired demo session"}' }));
+  await page.route("**/api/projects/?view=summary", (route) => route.fulfill({ status: 401, contentType: "application/json", body: '{"message":"Expired demo session"}' }));
   await page.goto("/auth/instantLogin");
   await page.getByRole("button", { name: /explore demo/i }).click();
   await expect(page).toHaveURL(/\/auth\/instantLogin$/);
   await expect(page.getByRole("alert").filter({ hasText: "session has ended" })).toBeVisible();
-  await page.unroute("**/api/projects/");
+  await page.unroute("**/api/projects/?view=summary");
   await page.getByRole("button", { name: /explore demo/i }).click();
   await expect(page.getByText("Orbit — Product Delivery", { exact: true })).toBeVisible();
 });

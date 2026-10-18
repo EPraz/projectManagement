@@ -30,7 +30,7 @@ test("ticket deletion during refresh cannot be restored by an older project snap
   });
   expect(created.status()).toBe(201);
   const ticket: { id: number } = await created.json();
-  const pattern = `**/api/projects/${id}`;
+  const pattern = `**/api/projects/${id}?view=workspace`;
   let release!: () => void;
   let reached!: () => void;
   let finished!: () => void;
@@ -65,7 +65,7 @@ test("ticket deletion during refresh cannot be restored by an older project snap
     await received;
     const refreshed = page.waitForResponse(
       (response) =>
-        response.url().endsWith(`/api/projects/${id}`) && response.ok(),
+        new URL(response.url()).pathname === `/api/projects/${id}` && response.ok(),
     );
     expect(
       (await request.delete(`/api/tickets/${ticket.id}`, { headers })).ok(),
@@ -92,7 +92,7 @@ for (const failure of ["unavailable", "non-JSON"]) {
   test(`project-list ${failure} failure stays recoverable instead of showing an empty workspace`, async ({
     page,
   }) => {
-    await page.route("**/api/projects/", (route) =>
+    await page.route("**/api/projects/?view=summary", (route) =>
       route.fulfill(
         failure === "unavailable"
           ? { status: 503, body: "unavailable" }
@@ -111,7 +111,7 @@ for (const failure of ["unavailable", "non-JSON"]) {
     await expect(
       page.getByText("No projects yet", { exact: true }),
     ).toHaveCount(0);
-    await page.unroute("**/api/projects/");
+    await page.unroute("**/api/projects/?view=summary");
     await page.getByRole("button", { name: "Retry projects" }).click();
     await expect(
       page.getByText("Orbit — Product Delivery", { exact: true }),
@@ -123,7 +123,7 @@ for (const failure of ["unavailable", "non-JSON"]) {
 test("a confirmed empty list differs from an unavailable workspace", async ({
   page,
 }) => {
-  await page.route("**/api/projects/", (route) =>
+  await page.route("**/api/projects/?view=summary", (route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "[]" }),
   );
   await page.goto("/auth/instantLogin");
@@ -134,7 +134,7 @@ test("a confirmed empty list differs from an unavailable workspace", async ({
   await expect(
     page.getByRole("button", { name: "Retry projects" }),
   ).toHaveCount(0);
-  await page.unroute("**/api/projects/");
+  await page.unroute("**/api/projects/?view=summary");
   await page.getByRole("button", { name: "Refresh projects" }).click();
   await expect(
     page.getByText("Orbit — Product Delivery", { exact: true }),
@@ -153,7 +153,7 @@ test("refresh keeps loaded projects visible through pending, failure and retry",
   const received = new Promise<void>((resolve) => {
     reached = resolve;
   });
-  await page.route("**/api/projects/", async (route) => {
+  await page.route("**/api/projects/?view=summary", async (route) => {
     reached();
     await delayed;
     await route.fulfill({ status: 503, body: "unavailable" });
@@ -176,7 +176,7 @@ test("refresh keeps loaded projects visible through pending, failure and retry",
   await expect(
     page.getByText("Orbit — Product Delivery", { exact: true }),
   ).toBeVisible();
-  await page.unroute("**/api/projects/");
+  await page.unroute("**/api/projects/?view=summary");
   await page.getByRole("button", { name: "Retry projects" }).click();
   await expect(
     page.getByRole("button", { name: "Retry projects" }),
@@ -270,7 +270,7 @@ test("a failed detail refresh retains the selected project and offers retry", as
     page.getByText("Overall Progress", { exact: true }),
   ).toBeVisible();
   const id = new URL(page.url()).pathname.split("/")[2];
-  const pattern = `**/api/projects/${id}`;
+  const pattern = `**/api/projects/${id}?view=workspace`;
   await page.route(pattern, (route) =>
     route.fulfill({ status: 503, body: "unavailable" }),
   );
@@ -394,7 +394,7 @@ test("a socket update invalidates an older pending project snapshot", async ({
     page.getByText("Overall Progress", { exact: true }),
   ).toBeVisible();
   const id = new URL(page.url()).pathname.split("/")[2];
-  const pattern = `**/api/projects/${id}`;
+  const pattern = `**/api/projects/${id}?view=workspace`;
   const login = await request.post("/api/auth/instant-login", { data: {} });
   const { accessToken } = await login.json();
   const headers = { Authorization: `Bearer ${accessToken}` };

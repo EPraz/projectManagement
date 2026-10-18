@@ -14,6 +14,10 @@ import {
 import { CreateProjectDto, UpdateProjectDto } from 'src/dto';
 import { checkDuplicateTitle, handlePrismaError } from 'src/helper';
 import { PrismaService } from 'src/prisma/prisma.service';
+import {
+  PROJECT_SUMMARY_INCLUDE,
+  PROJECT_WORKSPACE_INCLUDE,
+} from '../constants/projectReadInclude';
 import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
@@ -87,10 +91,10 @@ export class ProjectService {
   }
 
   // Get All Projects
-  async findAll(): Promise<Project[]> {
+  async findAll(view: 'full' | 'summary' = 'full'): Promise<Project[]> {
     try {
       return await this.prisma.project.findMany({
-        include: PROJECT_INCLUDE,
+        include: view === 'summary' ? PROJECT_SUMMARY_INCLUDE : PROJECT_INCLUDE,
       });
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -98,11 +102,15 @@ export class ProjectService {
   }
 
   // Get Project By ID
-  async findOne(id: string): Promise<Project> {
+  async findOne(
+    id: string,
+    view: 'full' | 'workspace' = 'full',
+  ): Promise<Project> {
     try {
       const project = await this.prisma.project.findUnique({
         where: { id },
-        include: PROJECT_INCLUDE,
+        include:
+          view === 'workspace' ? PROJECT_WORKSPACE_INCLUDE : PROJECT_INCLUDE,
       });
 
       if (!project) throw new NotFoundException(`Project #${id} not found!`);
