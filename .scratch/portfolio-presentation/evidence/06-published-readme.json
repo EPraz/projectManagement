@@ -1,0 +1,24 @@
+{
+  "url": "https://github.com/EPraz/projectManagement",
+  "date": "2026-10-18T17:50:33.481Z",
+  "currentImages": [
+    {
+      "alt": "Project overview showing project-wide progress alongside delivery metrics for the selected sprint",
+      "loaded": true
+    },
+    {
+      "alt": "Play the silent, English-captioned Project Management walkthrough",
+      "loaded": true
+    },
+    {
+      "alt": "Taskboard with ticket rows and separate task-state columns",
+      "loaded": true
+    },
+    {
+      "alt": "Ticket editor in a real narrow browser viewport",
+      "loaded": true
+    }
+  ],
+  "walkthroughLink": "verified",
+  "rendering": "actual public GitHub README"
+}

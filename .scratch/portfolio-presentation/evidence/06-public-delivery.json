@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-18T17:53:59.570Z",
+  "origin": "https://project-management-murex-pi.vercel.app",
+  "mp4": {
+    "sha256": "3cf48b72c5dd56c251f7f7ea1c0764d6e764b76b27cf0c1ffdc1195b0fd31e57",
+    "bytes": 5175291,
+    "seconds": 182.56,
+    "contentType": "video/mp4",
+    "rangeStatus": 206
+  },
+  "captions": "matching English text after Git newline normalization; text/vtt",
+  "poster": "exact reviewed JPEG",
+  "transcript": "matching text after Git newline normalization",
+  "layouts": [
+    {
+      "width": 390,
+      "theme": "light",
+      "playback": true,
+      "seek": true,
+      "fullscreen": true,
+      "downloads": 3,
+      "apiRequests": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "playback": true,
+      "seek": true,
+      "fullscreen": true,
+      "downloads": 3,
+      "apiRequests": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "playback": true,
+      "seek": true,
+      "fullscreen": true,
+      "downloads": 3,
+      "apiRequests": 0,
+      "horizontalOverflow": false
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "playback": true,
+      "seek": true,
+      "fullscreen": true,
+      "downloads": 3,
+      "apiRequests": 0,
+      "horizontalOverflow": false
+    }
+  ],
+  "existingSession": "cookie preserved; return to demo works",
+  "contentMutations": 0
+}

@@ -29,6 +29,7 @@ const expected = JSON.parse(
     path.join(root, ".scratch/portfolio-presentation/evidence/05-video.json"),
   ),
 );
+const normalizeNewlines = (text) => text.replace(/\r\n/g, "\n");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 async function get(asset, options = {}) {
   return fetch(new URL(asset, origin), {
@@ -67,8 +68,13 @@ async function main() {
   assert.equal(captions.status, 200);
   assert.match(captions.headers.get("content-type") || "", /text\/vtt/);
   assert.equal(
-    await captions.text(),
-    fs.readFileSync(path.join(root, "frontend/public", media.captions), "utf8"),
+    normalizeNewlines(await captions.text()),
+    normalizeNewlines(
+      fs.readFileSync(
+        path.join(root, "frontend/public", media.captions),
+        "utf8",
+      ),
+    ),
   );
   const poster = await get(media.poster);
   assert.equal(poster.status, 200);
@@ -80,10 +86,12 @@ async function main() {
   const transcript = await get("/walkthrough/transcript.md");
   assert.equal(transcript.status, 200);
   assert.equal(
-    await transcript.text(),
-    fs.readFileSync(
-      path.join(root, "frontend/public/walkthrough/transcript.md"),
-      "utf8",
+    normalizeNewlines(await transcript.text()),
+    normalizeNewlines(
+      fs.readFileSync(
+        path.join(root, "frontend/public/walkthrough/transcript.md"),
+        "utf8",
+      ),
     ),
   );
   console.log(
@@ -106,7 +114,7 @@ async function main() {
           await context.addCookies([
             {
               name: "jwt",
-              value: "expired-untrusted-demo-cookie",
+              value: "eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjF9.untrusted-signature",
               url: origin.origin,
               httpOnly: true,
             },
@@ -178,17 +186,29 @@ async function main() {
           await expect(
             page.getByRole("heading", { name: "Transcript", exact: true }),
           ).toBeVisible();
-          for (const [name, filename] of [
-            ["Download MP4", "project-management-walkthrough.mp4"],
-            ["English captions", "project-management-walkthrough.vtt"],
-            ["Download transcript", "project-management-transcript.md"],
+          for (const [name, asset] of [
+            ["Download MP4", media.video],
+            ["English captions", media.captions],
+            ["Download transcript", "/walkthrough/transcript.md"],
           ]) {
             const [download] = await Promise.all([
               page.waitForEvent("download"),
               page.getByRole("link", { name, exact: true }).click(),
             ]);
-            assert.equal(download.suggestedFilename(), filename);
             assert.equal(await download.failure(), null);
+            const downloaded = fs.readFileSync(await download.path());
+            if (asset === media.video)
+              assert.equal(sha256(downloaded), expected.sha256);
+            else
+              assert.equal(
+                normalizeNewlines(downloaded.toString("utf8")),
+                normalizeNewlines(
+                  fs.readFileSync(
+                    path.join(root, "frontend/public", asset),
+                    "utf8",
+                  ),
+                ),
+              );
           }
           assert.ok(
             await page.evaluate(
@@ -261,9 +281,9 @@ async function main() {
       contentType: response.headers.get("content-type"),
       rangeStatus: 206,
     },
-    captions: "exact file and text/vtt",
+    captions: "matching English text after Git newline normalization; text/vtt",
     poster: "exact reviewed JPEG",
-    transcript: "exact file",
+    transcript: "matching text after Git newline normalization",
     layouts,
     existingSession: "cookie preserved; return to demo works",
     contentMutations: 0,
