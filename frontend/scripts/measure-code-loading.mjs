@@ -39,8 +39,12 @@ async function main() {
       );
     const result = {
       label: "local-production-preview",
-      environment:
-        "Node22.20.0 / local production Vite preview / Chrome / fresh context / no throttling"
+      environment: {
+        node: process.version,
+        browser: browser.version(),
+        platform: process.platform,
+        conditions: "Local production preview / fresh context / no throttling"
+      }
     };
     await page.goto("/auth/instantLogin");
     await page.getByRole("button", { name: /explore demo/i }).waitFor();
