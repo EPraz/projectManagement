@@ -97,3 +97,9 @@ Backend/schema rewrite, personal accounts, audit history, task reparenting/order
 ## Owner refinement after publication — 2026-10-18
 
 Remove the desktop workspace header/breadcrumb/demo badge row so Projects and each project section start with their real page content. Place appearance and user controls at the bottom of the floating sidebar; retain refresh there. Mobile keeps a compact navigation entry and places these controls at the bottom of its drawer. The owner explicitly accepts losing breadcrumbs and requests light as the default, while remembered manual choices and an explicit system-follow option remain available.
+
+## Owner detail and entry refinement — 2026-10-18
+
+Center Backlog cell content within each row and group Column Options with the filter actions. Align the calendar date badges and content to the leading edge. Place appearance switching inside the user menu, removing the separate workspace/rail theme button; keep initial light, persisted manual choices and explicit system-follow. Compact epic/feature cards with header actions, aligned content and no reserved collapsed-child padding. Show each Projects metric as an inline icon/count/label, wrapping groups on narrow screens.
+
+Bring demo entry and the legacy hourglass loading surface into the accepted C identity: light editorial layout, local Plex type, shared mark/azure accents and a quiet indeterminate loading bar. Preserve real session entry, unavailable/malformed response feedback, pending guards, warm-up guidance, expiry/restoration and retry. Loading is an accessible status and respects reduced motion. No recording before owner approval.

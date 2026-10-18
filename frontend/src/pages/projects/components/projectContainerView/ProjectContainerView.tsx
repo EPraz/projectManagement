@@ -61,12 +61,10 @@ const ProjectContainerView = ({
       />
 
       {loading ? (
-        <Box role="status" sx={{ p: 6 }}>
-          <Loading />
-          <Typography color="text.secondary" align="center">
-            Loading projects…
-          </Typography>
-        </Box>
+        <Loading
+          message="Loading projects…"
+          description="Getting your projects ready. Please wait a moment."
+        />
       ) : unavailable ? null : projects.length === 0 && searchInput.trim() ? (
         <Box role="status" sx={{ p: 4, textAlign: "center" }}>
           <Typography component="h2" variant="h3">

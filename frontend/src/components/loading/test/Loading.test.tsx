@@ -4,7 +4,7 @@ import Loading from "../Loading";
 describe("Loading Component", () => {
   it("match snapshot", async () => {
     const { asFragment } = render(
-      <Loading variant="minimal" message="Loading minimal..." />
+      <Loading variant="minimal" message="Loading minimal..." />,
     );
     expect(asFragment).toMatchSnapshot();
   });
@@ -22,25 +22,29 @@ describe("Loading Component", () => {
         variant="default"
         message="Default Loading"
         description="Please wait while content loads"
-      />
+      />,
     );
     expect(screen.getByText("Default Loading")).toBeInTheDocument();
     expect(
-      screen.getByText("Please wait while content loads")
+      screen.getByText("Please wait while content loads"),
     ).toBeInTheDocument();
-    const dots = document.querySelectorAll(".dot");
-    expect(dots.length).toBe(3);
+    expect(
+      screen.getByRole("progressbar", { name: "Default Loading" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveAttribute("aria-busy", "true");
   });
 
-  it("renders fullscreen variant with proper height", () => {
-    const { container } = render(
+  it("renders a fullscreen loading status", () => {
+    render(
       <Loading
         variant="fullscreen"
         message="Fullscreen Loading"
         description="Please wait..."
-      />
+      />,
     );
-    const loadingContainer = container.firstChild;
-    expect(loadingContainer).toHaveStyle("height: 100vh");
+    expect(screen.getByRole("status")).toBeInTheDocument();
+    expect(
+      screen.getByRole("progressbar", { name: "Fullscreen Loading" }),
+    ).toBeInTheDocument();
   });
 });

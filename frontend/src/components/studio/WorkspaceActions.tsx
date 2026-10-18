@@ -1,6 +1,5 @@
 import { Box, IconButton, Tooltip } from "@mui/material";
 import { Refresh } from "@mui/icons-material";
-import AppearanceControl from "../appearanceControl/AppearanceControl";
 import UserMenu from "../header/userMenu/UserMenu";
 
 export type WorkspaceActionProps = {
@@ -43,7 +42,6 @@ export default function WorkspaceActions({
           </span>
         </Tooltip>
       )}
-      <AppearanceControl />
       <UserMenu rail={rail} />
     </Box>
   );

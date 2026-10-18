@@ -42,7 +42,8 @@ export default function UpcomingDeadlines({
             aria-label={`Open ticket #${ticket.id} ${ticket.title}`}
             sx={{
               display: "flex",
-              alignItems: "flex-start",
+              alignItems: "center",
+              justifyContent: "flex-start",
               gap: 1.5,
               textAlign: "left",
               width: "100%",
@@ -58,7 +59,8 @@ export default function UpcomingDeadlines({
                 borderRadius: 1,
                 p: 0.5,
                 textAlign: "center",
-                minWidth: 44,
+                width: 44,
+                flexShrink: 0,
               }}
             >
               <Typography sx={{ fontSize: 11 }}>
@@ -70,7 +72,7 @@ export default function UpcomingDeadlines({
                 {new Date(ticket.dueDate!).getDate()}
               </Typography>
             </Box>
-            <Box sx={{ minWidth: 0 }}>
+            <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography
                 variant="body2"
                 fontWeight={500}

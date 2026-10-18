@@ -4,7 +4,7 @@ import PrivateRoute from "../PrivateRoute";
 
 // Mockear useAuth del contexto
 jest.mock("../../../context/authContext", () => ({
-  useAuth: jest.fn()
+  useAuth: jest.fn(),
 }));
 
 import { useAuth as useAuthContext } from "../../../context/authContext";
@@ -21,7 +21,7 @@ describe("PrivateRoute Component", () => {
       loading: false,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: "fake-token"
+      accessToken: "fake-token",
     });
 
     // Renderizamos un dummy Protected Component a través de Outlet
@@ -32,7 +32,7 @@ describe("PrivateRoute Component", () => {
             <Route path="" element={<div>Protected Content</div>} />
           </Route>
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(asFragment).toMatchSnapshot();
@@ -44,7 +44,7 @@ describe("PrivateRoute Component", () => {
       loading: true,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: null
+      accessToken: null,
     });
 
     render(
@@ -52,11 +52,13 @@ describe("PrivateRoute Component", () => {
         <Routes>
           <Route path="/private" element={<PrivateRoute />} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
-    // Suponiendo que el componente Loading muestra "Cargando" (o un mensaje similar)
-    expect(screen.getByText(/cargando/i)).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveAttribute("aria-busy", "true");
+    expect(
+      screen.getByRole("progressbar", { name: "Loading workspace…" }),
+    ).toBeInTheDocument();
   });
 
   it("renders Outlet when user exists", () => {
@@ -65,7 +67,7 @@ describe("PrivateRoute Component", () => {
       loading: false,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: "fake-token"
+      accessToken: "fake-token",
     });
 
     // Renderizamos un dummy Protected Component a través de Outlet
@@ -76,7 +78,7 @@ describe("PrivateRoute Component", () => {
             <Route path="" element={<div>Protected Content</div>} />
           </Route>
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText("Protected Content")).toBeInTheDocument();
@@ -88,7 +90,7 @@ describe("PrivateRoute Component", () => {
       loading: false,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: null
+      accessToken: null,
     });
 
     render(
@@ -97,7 +99,7 @@ describe("PrivateRoute Component", () => {
           <Route path="/private" element={<PrivateRoute />} />
           <Route path="/auth/instantLogin" element={<div>Demo Page</div>} />
         </Routes>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText("Demo Page")).toBeInTheDocument();

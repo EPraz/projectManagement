@@ -20,16 +20,16 @@ export default function BoardHeader({
         filters={filters}
         setFilters={setFilters}
         project={project}
+        actions={
+          <Button
+            variant="outlined"
+            startIcon={<ViewColumn />}
+            onClick={(e) => setAnchor(e.currentTarget)}
+          >
+            Column Options
+          </Button>
+        }
       />
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button
-          variant="outlined"
-          startIcon={<ViewColumn />}
-          onClick={(e) => setAnchor(e.currentTarget)}
-        >
-          Column Options
-        </Button>
-      </Box>
       <Menu
         anchorEl={anchor}
         open={Boolean(anchor)}

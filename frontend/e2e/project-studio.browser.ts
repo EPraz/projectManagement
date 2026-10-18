@@ -8,23 +8,27 @@ test("new visitors start in light even on a dark system and manual appearance pe
   await page.emulateMedia({ colorScheme: "dark" });
 
   await enterDemo(page);
+  const account = page.getByRole("button", {
+    name: "Open user menu",
+    exact: true,
+  });
+  await account.click();
 
   await expect(
-    page.getByRole("button", { name: "Switch to dark theme", exact: true }),
+    page.getByRole("menuitem", { name: "Switch to dark theme", exact: true }),
   ).toBeVisible();
   await page
-    .getByRole("button", { name: "Switch to dark theme", exact: true })
+    .getByRole("menuitem", { name: "Switch to dark theme", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Switch to light theme", exact: true }),
+    page.getByRole("menuitem", { name: "Switch to light theme", exact: true }),
   ).toBeVisible();
+  await page.keyboard.press("Escape");
   await page.reload();
+  await account.click();
   await expect(
-    page.getByRole("button", { name: "Switch to light theme", exact: true }),
+    page.getByRole("menuitem", { name: "Switch to light theme", exact: true }),
   ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Open user menu", exact: true })
-    .click();
   const follow = page.getByRole("menuitemcheckbox", {
     name: /Follow system appearance/,
   });
@@ -32,8 +36,9 @@ test("new visitors start in light even on a dark system and manual appearance pe
   await follow.click();
   await page.keyboard.press("Escape");
   await page.emulateMedia({ colorScheme: "light" });
+  await account.click();
   await expect(
-    page.getByRole("button", { name: "Switch to dark theme", exact: true }),
+    page.getByRole("menuitem", { name: "Switch to dark theme", exact: true }),
   ).toBeVisible();
 });
 

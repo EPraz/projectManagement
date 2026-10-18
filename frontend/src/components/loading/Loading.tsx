@@ -1,59 +1,82 @@
-import { CircularProgress, Box, Typography } from "@mui/material";
-import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
 import {
-  LoadingContainer,
-  LoadingIcon,
-  MessageContainer,
-  ProgressDots,
-} from "./Loading.styles";
-import { LoadingProps } from "../../types";
+  CircularProgress,
+  LinearProgress,
+  Box,
+  Typography,
+} from "@mui/material";
+import StudioMark from "../studio/StudioMark";
+import type { LoadingProps } from "../../types";
 
-const Loading: React.FC<LoadingProps> = ({
-  message = "Cargando",
-  description = "Por favor espere mientras cargamos su contenido",
+export default function Loading({
+  message = "Loading workspace…",
+  description = "Preparing your view. Please wait a moment.",
   variant = "default",
-}) => {
+}: LoadingProps) {
   if (variant === "minimal") {
     return (
-      <Box display="flex" alignItems="center" gap={2} p={2}>
-        <CircularProgress size={24} />
+      <Box role="status" display="flex" alignItems="center" gap={2} p={2}>
+        <CircularProgress size={24} aria-label={message} />
         <Typography variant="body2" color="text.secondary">
           {message}
         </Typography>
       </Box>
     );
   }
-
   return (
-    <LoadingContainer
+    <Box
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
       sx={{
-        height: variant === "fullscreen" ? "100vh" : "100%",
-        minHeight: variant === "default" ? 400 : "auto",
+        minHeight: variant === "fullscreen" ? "100dvh" : "60dvh",
+        display: "grid",
+        placeItems: "center",
+        p: { xs: 3, sm: 4 },
+        bgcolor: "background.default",
+        color: "text.primary",
       }}
     >
-      <LoadingIcon>
-        <div className="outer-circle" />
-        <div className="inner-circle" />
-        <HourglassBottomIcon
-          sx={{ width: 40, height: 40 }}
-          className="spinner"
-        />
-      </LoadingIcon>
-
-      <MessageContainer>
-        <Typography variant="h6" className="primary-text">
+      <Box sx={{ width: "100%", maxWidth: 360 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3 }}>
+          <Box sx={{ display: "flex", color: "primary.main" }}>
+            <StudioMark />
+          </Box>
+          <Typography variant="body2" fontWeight={500}>
+            EPProject Management
+          </Typography>
+        </Box>
+        <Typography
+          sx={{
+            fontSize: 22,
+            lineHeight: 1.3,
+            fontWeight: 600,
+            overflowWrap: "anywhere",
+          }}
+        >
           {message}
         </Typography>
-        <Typography className="secondary-text">{description}</Typography>
-      </MessageContainer>
-
-      <ProgressDots>
-        <div className="dot" />
-        <div className="dot" />
-        <div className="dot" />
-      </ProgressDots>
-    </LoadingContainer>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 1, mb: 3 }}
+        >
+          {description}
+        </Typography>
+        <LinearProgress
+          aria-label={message}
+          sx={{
+            height: 3,
+            borderRadius: 1,
+            "@media (prefers-reduced-motion: reduce)": {
+              "& .MuiLinearProgress-bar": {
+                animation: "none",
+                transform: "none",
+                width: "40%",
+              },
+            },
+          }}
+        />
+      </Box>
+    </Box>
   );
-};
-
-export default Loading;
+}

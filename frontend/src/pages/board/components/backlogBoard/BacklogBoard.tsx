@@ -167,7 +167,7 @@ export default function BacklogBoard() {
               <TableBody>
                 {filtered.map((ticket) => (
                   <Fragment key={ticket.id}>
-                    <TableRow sx={{ "& > td": { verticalAlign: "top" } }}>
+                    <TableRow sx={{ "& > td": { verticalAlign: "middle" } }}>
                       <TableCell>{expand(ticket)}</TableCell>
                       {columns.map((column) => (
                         <TableCell

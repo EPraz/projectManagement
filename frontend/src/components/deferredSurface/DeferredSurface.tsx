@@ -34,7 +34,7 @@ export default function DeferredSurface({ label, children }: Props) {
         fallback={
           <Loading
             message={`Loading ${label}…`}
-            description="This view is loading. Please wait."
+            description="Preparing your view. Please wait a moment."
           />
         }
       >

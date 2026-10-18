@@ -3,18 +3,17 @@ import {
   Alert,
   Box,
   Button,
-  CardContent,
   CircularProgress,
   Typography,
 } from "@mui/material";
+import { ArrowForward } from "@mui/icons-material";
 import { useAuth } from "../../context/authContext";
 import {
   AuthCard,
   AuthWrapper,
+  AuthLayout,
+  EntryGrid,
   Form,
-  LeftSection,
-  RightSection,
-  WelcomeText,
 } from "./InstantLogin.styles";
 
 import AppearanceControl from "../../components/appearanceControl/AppearanceControl";
@@ -40,41 +39,113 @@ export default function InstantLogin() {
 
   return (
     <AuthWrapper>
-      <Box sx={{ position: "absolute", top: 16, right: 16 }}>
-        <AppearanceControl />
-      </Box>
-      <AuthCard>
-        <LeftSection>
-          <WelcomeText>
-            <StudioMark />
-            <Typography variant="overline" component="p" sx={{ mt: 2 }}>
-              Plan. Build. Deliver.
+      <AuthLayout>
+        <Box
+          component="header"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              minWidth: 0,
+            }}
+          >
+            <Box sx={{ color: "primary.main", display: "flex" }}>
+              <StudioMark />
+            </Box>
+            <Typography sx={{ fontWeight: 600, fontSize: { xs: 14, sm: 16 } }}>
+              EPProject Management
             </Typography>
-            <h1>EPProject Management</h1>
-            <p>
-              Explore projects, plan sprints and follow work from backlog to
-              delivery.
-            </p>
-          </WelcomeText>
-        </LeftSection>
-        <RightSection>
-          <CardContent>
+          </Box>
+          <AppearanceControl />
+        </Box>
+        <EntryGrid>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography variant="overline" color="primary.main">
+              A workspace for the work ahead
+            </Typography>
+            <Typography
+              component="h1"
+              sx={{
+                fontSize: { xs: 36, sm: 48, md: 60 },
+                fontWeight: 600,
+                lineHeight: 1.08,
+                letterSpacing: "-.04em",
+                mt: 2,
+                maxWidth: 540,
+              }}
+            >
+              A clear plan.
+              <br />
+              Room to build
+              <Box component="span" sx={{ color: "primary.main" }}>
+                .
+              </Box>
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 3, maxWidth: 440 }}>
+              Bring projects, people and sprint delivery into one shared space.
+              Follow the work from the first idea to the final retrospective.
+            </Typography>
+            <Box sx={{ display: { xs: "none", md: "grid" }, gap: 2.5, mt: 5 }}>
+              {[
+                [
+                  "01",
+                  "Plan the next step",
+                  "Connect epics, features and your backlog.",
+                ],
+                [
+                  "02",
+                  "Keep delivery moving",
+                  "Track tickets and tasks through the sprint.",
+                ],
+                [
+                  "03",
+                  "Learn as a team",
+                  "Review goals, capacity and retrospectives.",
+                ],
+              ].map(([number, title, detail]) => (
+                <Box
+                  key={number}
+                  sx={{ display: "flex", gap: 2, alignItems: "baseline" }}
+                >
+                  <Typography
+                    variant="caption"
+                    color="primary.main"
+                    sx={{ fontVariantNumeric: "tabular-nums" }}
+                  >
+                    {number}
+                  </Typography>
+                  <Box>
+                    <Typography fontWeight={500}>{title}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {detail}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+          <AuthCard elevation={0}>
+            <Typography variant="overline" color="primary.main">
+              Explore / Demo workspace
+            </Typography>
             <Typography
               component="h2"
-              variant="h5"
-              gutterBottom
-              fontWeight={600}
+              sx={{ fontSize: 28, lineHeight: 1.2, fontWeight: 600, mt: 2 }}
             >
-              Explore the demo
+              See the work in motion.
             </Typography>
-            <Typography color="text.secondary" sx={{ mb: 3 }}>
-              A populated workspace with fictional projects and a sample team.
-              No account or email required.
+            <Typography color="text.secondary" sx={{ mt: 2, mb: 3 }}>
+              Fictional projects, a sample team and populated sprints. No
+              account or email required.
             </Typography>
-            <Alert severity="info" sx={{ mb: 3 }}>
-              This is a shared, editable demo. Other visitors can see your
-              changes. Please use fictional information.
-            </Alert>
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
@@ -92,6 +163,7 @@ export default function InstantLogin() {
                 fullWidth
                 size="large"
                 disabled={loading}
+                endIcon={!loading ? <ArrowForward /> : undefined}
               >
                 {loading ? (
                   <>
@@ -112,9 +184,29 @@ export default function InstantLogin() {
                   : "The first visit after inactivity may take a little longer."}
               </Typography>
             </Form>
-          </CardContent>
-        </RightSection>
-      </AuthCard>
+            <Box
+              sx={{
+                mt: 3,
+                pt: 3,
+                borderTop: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Typography variant="body2" fontWeight={500}>
+                A shared, editable demo
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Other visitors can see your changes. Please use fictional
+                information.
+              </Typography>
+            </Box>
+          </AuthCard>
+        </EntryGrid>
+      </AuthLayout>
     </AuthWrapper>
   );
 }

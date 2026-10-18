@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import {
   Check,
+  DarkModeOutlined,
+  LightModeOutlined,
   LogoutOutlined,
   SettingsBrightnessOutlined,
 } from "@mui/icons-material";
@@ -21,7 +23,7 @@ export default function UserMenu({ rail = false }: { rail?: boolean }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [error, setError] = useState("");
   const { user, logout, closing } = useAuth();
-  const { systemPreference, setSystemPreference } = useTheme();
+  const { mode, setMode, systemPreference, setSystemPreference } = useTheme();
   const close = () => setAnchor(null);
   const leave = async () => {
     setError("");
@@ -95,6 +97,16 @@ export default function UserMenu({ rail = false }: { rail?: boolean }) {
           </Typography>
         </Box>
         <Divider />
+        <MenuItem onClick={() => setMode(mode === "light" ? "dark" : "light")}>
+          <ListItemIcon>
+            {mode === "light" ? (
+              <DarkModeOutlined fontSize="small" />
+            ) : (
+              <LightModeOutlined fontSize="small" />
+            )}
+          </ListItemIcon>
+          Switch to {mode === "light" ? "dark" : "light"} theme
+        </MenuItem>
         <MenuItem
           role="menuitemcheckbox"
           aria-checked={systemPreference}

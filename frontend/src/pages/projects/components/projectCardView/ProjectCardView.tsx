@@ -75,7 +75,7 @@ export default function ProjectCardView({
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+          gridTemplateColumns: "repeat(auto-fit,minmax(96px,1fr))",
           borderBlock: "1px solid",
           borderColor: "divider",
           py: 2,
@@ -85,23 +85,30 @@ export default function ProjectCardView({
         {metrics.map(({ label, count, Icon }) => (
           <Box
             key={label}
-            sx={{ display: "flex", gap: 1, alignItems: "center", minWidth: 0 }}
+            sx={{
+              display: "flex",
+              gap: 0.75,
+              alignItems: "center",
+              minWidth: 0,
+            }}
           >
             <Icon
               sx={{
                 color: label === "Done" ? "success.main" : "primary.main",
-                display: { xs: "none", sm: "block" },
-                fontSize: 21,
+                flexShrink: 0,
+                fontSize: 20,
               }}
             />
-            <Box>
-              <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
-                {count}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                {label}
-              </Typography>
-            </Box>
+            <Typography component="span" sx={{ fontWeight: 500, fontSize: 18 }}>
+              {count}
+            </Typography>
+            <Typography
+              component="span"
+              variant="caption"
+              color="text.secondary"
+            >
+              {label}
+            </Typography>
           </Box>
         ))}
       </Box>

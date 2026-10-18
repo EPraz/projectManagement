@@ -54,8 +54,13 @@ for (const width of [320, 768, 1024, 1440]) {
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: /^Switch to (light|dark) theme$/ }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     expect((await account.boundingBox())!.y).toBeGreaterThan(790);
+    await account.click();
+    await expect(
+      page.getByRole("menuitem", { name: /^Switch to (light|dark) theme$/ }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
     if (width < 900) await page.keyboard.press("Escape");
     expect(
       await page.evaluate(

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import {
   Box,
-  Button,
   Chip,
   IconButton,
   Paper,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import {
@@ -12,6 +12,8 @@ import {
   ExpandMore,
   LayersOutlined,
   AccountTreeOutlined,
+  EditOutlined,
+  DeleteOutline,
 } from "@mui/icons-material";
 import { formatStatusName } from "../../helpers";
 import type { HierarchyKind } from "./types";
@@ -50,12 +52,13 @@ export default function HierarchyCard({
       sx={{ borderRadius: "12px", minWidth: 0, overflow: "hidden" }}
     >
       <Box sx={{ p: { xs: 2, sm: 3 } }}>
-        <Box sx={{ display: "flex", gap: 1.5, alignItems: "start" }}>
+        <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
           {onExpand && (
             <IconButton
               aria-label={`${expanded ? "Collapse" : "Expand"} ${item.title}`}
-              aria-expanded={Boolean(expanded)}
+              aria-expanded={expanded === undefined ? undefined : expanded}
               onClick={onExpand}
+              sx={{ ml: -1 }}
             >
               {expanded ? <ExpandMore /> : <ChevronRight />}
             </IconButton>
@@ -67,78 +70,89 @@ export default function HierarchyCard({
                 gap: 1,
                 alignItems: "center",
                 flexWrap: "wrap",
-                mb: 1,
-                color: "primary.main",
+                minHeight: 44,
               }}
             >
-              {kind === "epic" ? (
-                <AccountTreeOutlined fontSize="small" />
-              ) : (
-                <LayersOutlined fontSize="small" />
-              )}
-              <Typography variant="overline">{kind}</Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 0.75,
+                  alignItems: "center",
+                  color: "primary.main",
+                }}
+              >
+                {kind === "epic" ? (
+                  <AccountTreeOutlined fontSize="small" />
+                ) : (
+                  <LayersOutlined fontSize="small" />
+                )}
+                <Typography variant="overline">{kind}</Typography>
+              </Box>
               <Chip
                 size="small"
                 label={formatStatusName(item.status?.name ?? "Unclassified")}
               />
             </Box>
-            <Typography
-              component={kind === "epic" ? "h2" : "h3"}
-              sx={{
-                fontSize: kind === "epic" ? 20 : 18,
-                fontWeight: 600,
-                overflowWrap: "anywhere",
-              }}
-            >
-              {item.title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              {count}
-            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", flexShrink: 0 }}>
+            <Tooltip title="Edit">
+              <IconButton aria-label={`Edit ${item.title}`} onClick={onEdit}>
+                <EditOutlined fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton
+                color="error"
+                aria-label={`Delete ${item.title}`}
+                onClick={onDelete}
+              >
+                <DeleteOutline fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Box>
+        <Typography
+          component={kind === "epic" ? "h2" : "h3"}
+          sx={{
+            mt: 1,
+            fontSize: kind === "epic" ? 20 : 18,
+            fontWeight: 600,
+            overflowWrap: "anywhere",
+          }}
+        >
+          {item.title}
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          {count}
+        </Typography>
         {item.description && (
           <Typography
-            sx={{ mt: 2, overflowWrap: "anywhere", whiteSpace: "pre-wrap" }}
+            variant="body2"
+            color="text.secondary"
+            sx={{ mt: 1.5, overflowWrap: "anywhere", whiteSpace: "pre-wrap" }}
           >
             {item.description}
           </Typography>
         )}
         {item.acceptanceCriteria && (
-          <Box component="details" sx={{ mt: 2, overflowWrap: "anywhere" }}>
+          <Box component="details" sx={{ mt: 1.5, overflowWrap: "anywhere" }}>
             <Typography
               component="summary"
               sx={{ cursor: "pointer", color: "text.secondary", fontSize: 14 }}
             >
               Acceptance criteria
             </Typography>
-            <Typography sx={{ mt: 1, whiteSpace: "pre-wrap" }}>
+            <Typography variant="body2" sx={{ mt: 1, whiteSpace: "pre-wrap" }}>
               {item.acceptanceCriteria}
             </Typography>
           </Box>
         )}
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            flexWrap: "wrap",
-            mt: 2,
-            justifyContent: "flex-end",
-          }}
-        >
-          <Button aria-label={`Edit ${item.title}`} onClick={onEdit}>
-            Edit
-          </Button>
-          <Button
-            color="error"
-            aria-label={`Delete ${item.title}`}
-            onClick={onDelete}
-          >
-            Delete
-          </Button>
-        </Box>
       </Box>
-      {children && <Box sx={{ px: { xs: 2, sm: 3 }, pb: 3 }}>{children}</Box>}
+      {children && (
+        <Box sx={{ px: { xs: 2, sm: 3 }, pb: expanded === false ? 0 : 3 }}>
+          {children}
+        </Box>
+      )}
     </Paper>
   );
 }

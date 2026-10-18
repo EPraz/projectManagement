@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ export default function WorkFilters({
   scope,
   taskState,
   onTaskState,
+  actions,
 }: {
   filters: FilterProps;
   setFilters: (filters: FilterProps) => void;
@@ -26,6 +27,7 @@ export default function WorkFilters({
   scope: "task" | "ticket";
   taskState?: string;
   onTaskState?: (id: string) => void;
+  actions?: ReactNode;
 }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const secondary = [
@@ -99,22 +101,33 @@ export default function WorkFilters({
             </EditorSelect>
           </Box>
         )}
-        <Button
-          variant="outlined"
-          startIcon={<FilterList />}
-          onClick={(e) => setAnchor(e.currentTarget)}
-        >
-          Filters{secondary ? ` (${secondary})` : ""}
-        </Button>
-        <Button
-          startIcon={<RestartAlt />}
-          onClick={() => {
-            setFilters({});
-            onTaskState?.("");
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            flexWrap: "wrap",
+            alignItems: "center",
+            flex: { xs: "1 1 100%", lg: "0 1 auto" },
           }}
         >
-          Clear filters
-        </Button>
+          <Button
+            variant="outlined"
+            startIcon={<FilterList />}
+            onClick={(e) => setAnchor(e.currentTarget)}
+          >
+            Filters{secondary ? ` (${secondary})` : ""}
+          </Button>
+          <Button
+            startIcon={<RestartAlt />}
+            onClick={() => {
+              setFilters({});
+              onTaskState?.("");
+            }}
+          >
+            Clear filters
+          </Button>
+          {actions}
+        </Box>
       </Box>
       <Typography variant="body2" color="text.secondary">
         {scope === "task"
