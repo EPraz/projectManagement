@@ -1,9 +1,7 @@
 import {
   createContext,
   useContext,
-  useState,
   ReactNode,
-  useEffect,
   useMemo,
   useCallback,
 } from "react";
@@ -11,8 +9,6 @@ import { Task, Ticket } from "../../types";
 import { mergeConfirmedTaskUpdate } from "../../helpers/tasks/mergeConfirmedTaskUpdate";
 import { useProject } from "../projectContext";
 import { useSprint } from "../sprintContext";
-import { Loading } from "../../components";
-import { useSocketTickets } from "../../hooks";
 
 type TicketContextProps = {
   tickets: Ticket[];
@@ -24,95 +20,114 @@ type TicketContextProps = {
   updateListOfTickets: (listofTickets: Ticket[]) => void;
   applyTaskUpdate: (task: Task) => void;
 };
-
 const TicketContext = createContext<TicketContextProps | undefined>(undefined);
 
 export const TicketProvider = ({ children }: { children: ReactNode }) => {
-  const { project, loading: projectLoading } = useProject();
-  const { sprint, loadingSprint } = useSprint();
-  const { useSocketTicketAdd, useSocketTicketRemove, useSocketTicketUpdate } =
-    useSocketTickets();
-
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [allTickets, setAllTickets] = useState<Ticket[]>([]);
-  const [, setLoadingTickets] = useState(false);
-
-  const projectData = useMemo(() => project, [project]);
-  const sprintData = useMemo(() => sprint, [sprint]);
-
-  useEffect(() => {
-    if (projectLoading || !projectData) return;
-
-    setLoadingTickets(true);
-    setAllTickets(projectData.tickets || []);
-    setLoadingTickets(false);
-  }, [projectData, projectLoading, setLoadingTickets, setAllTickets]);
-
-  useEffect(() => {
-    setTickets(allTickets.filter((x) => x.sprintId === sprintData?.id));
-  }, [allTickets, sprintData, setTickets]);
-
+  const { project, setProject } = useProject();
+  const { sprint } = useSprint();
+  const allTickets = useMemo(() => project?.tickets ?? [], [project?.tickets]);
+  const tickets = useMemo(
+    () => allTickets.filter((ticket) => ticket.sprintId === sprint?.id),
+    [allTickets, sprint?.id],
+  );
   const updateAllTickets = useCallback(
-    (updatedTicket: Ticket) => {
-      setAllTickets((prev) =>
-        prev.map((t) => (t.id === updatedTicket.id ? updatedTicket : t))
+    (updated: Ticket) => {
+      setProject((current) =>
+        !current || (updated.projectId && updated.projectId !== current.id)
+          ? current
+          : {
+              ...current,
+              tickets: current.tickets.map((ticket) =>
+                ticket.id === updated.id ? updated : ticket,
+              ),
+            },
       );
     },
-    [setAllTickets]
+    [setProject],
   );
-
-  const applyTaskUpdate = useCallback((task: Task) => {
-    setAllTickets((current) => mergeConfirmedTaskUpdate(current, task));
-  }, []);
-
+  const applyTaskUpdate = useCallback(
+    (task: Task) => {
+      setProject(
+        (current) =>
+          current && {
+            ...current,
+            tickets: mergeConfirmedTaskUpdate(current.tickets, task),
+          },
+      );
+    },
+    [setProject],
+  );
   const updateListOfTickets = useCallback(
-    (listofTickets: Ticket[]) => {
-      const updatedTickets: Ticket[] = allTickets.map((ticket) => {
-        const found = listofTickets.find((x) => x.id === ticket.id);
-        return found ? found : ticket;
-      });
-
-      setAllTickets(updatedTickets);
+    (updates: Ticket[]) => {
+      setProject(
+        (current) =>
+          current && {
+            ...current,
+            tickets: current.tickets.map(
+              (ticket) =>
+                updates.find((update) => update.id === ticket.id) ?? ticket,
+            ),
+          },
+      );
     },
-    [allTickets, setAllTickets]
+    [setProject],
   );
-
   const addAllTickets = useCallback(
-    (newTicket: Ticket) => {
-      setAllTickets((prev) => {
-        if (prev.find((t) => t.id === newTicket.id)) {
-          return prev;
-        }
-        return [...prev, newTicket];
+    (created: Ticket) => {
+      setProject((current) =>
+        !current ||
+        created.projectId !== current.id ||
+        current.tickets.some((ticket) => ticket.id === created.id)
+          ? current
+          : { ...current, tickets: [...current.tickets, created] },
+      );
+    },
+    [setProject],
+  );
+  const removeAllTickets = useCallback(
+    (id: Ticket["id"]) => {
+      setProject(
+        (current) =>
+          current && {
+            ...current,
+            tickets: current.tickets.filter((ticket) => ticket.id !== id),
+          },
+      );
+    },
+    [setProject],
+  );
+  const setTickets: TicketContextProps["setTickets"] = useCallback(
+    (value) => {
+      setProject((current) => {
+        if (!current) return current;
+        const scoped = current.tickets.filter(
+          (ticket) => ticket.sprintId === sprint?.id,
+        );
+        const next = typeof value === "function" ? value(scoped) : value;
+        return {
+          ...current,
+          tickets: [
+            ...current.tickets.filter(
+              (ticket) => ticket.sprintId !== sprint?.id,
+            ),
+            ...next,
+          ],
+        };
       });
     },
-    [setAllTickets]
+    [setProject, sprint?.id],
   );
-
-  const removeAllTickets = useCallback(
-    (ticketId: Ticket["id"]) => {
-      setAllTickets((prev) => prev.filter((t) => t.id !== ticketId));
-    },
-    [setAllTickets]
-  );
-
-  useSocketTicketUpdate((data) => updateAllTickets(data));
-  useSocketTicketAdd((data) => addAllTickets(data));
-  useSocketTicketRemove((data) => removeAllTickets(data.id));
-
-  if (loadingSprint || projectLoading) return <Loading />;
-
   return (
     <TicketContext.Provider
       value={{
         tickets,
-        setTickets,
         allTickets,
+        setTickets,
         updateAllTickets,
+        applyTaskUpdate,
+        updateListOfTickets,
         addAllTickets,
         removeAllTickets,
-        updateListOfTickets,
-        applyTaskUpdate,
       }}
     >
       {children}
@@ -123,6 +138,6 @@ export const TicketProvider = ({ children }: { children: ReactNode }) => {
 export const useTicket = () => {
   const context = useContext(TicketContext);
   if (!context)
-    throw new Error("useSprint must be used within a SprintProvider");
+    throw new Error("useTicket must be used within a TicketProvider");
   return context;
 };

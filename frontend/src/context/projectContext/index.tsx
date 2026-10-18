@@ -1,101 +1,43 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
-import { useParams } from "react-router-dom";
-import { Project, Sprint } from "../../types";
-import { useApi } from "../apiContext";
-import { Loading } from "../../components";
-import { useSocketProjects } from "../../hooks";
-import { useAuth } from "../authContext";
+import { createContext, useContext, ReactNode } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { Alert, Box, Button } from "@mui/material";
+import Loading from "../../components/loading/Loading";
+import { useProjectData } from "./useProjectData";
 
-const ProjectContext = createContext<{
-  project: Project | null;
-  loading: boolean;
-  listOfSprints: Sprint[];
-  setListOfSprints: React.Dispatch<React.SetStateAction<Sprint[]>>;
-  setProject: React.Dispatch<React.SetStateAction<Project | null>>;
-} | null>(null);
+const ProjectContext = createContext<ReturnType<typeof useProjectData> | null>(
+  null,
+);
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
   const { id } = useParams();
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
-  const { useSocketProjectUpdate } = useSocketProjects();
-
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [listOfSprints, setListOfSprints] = useState<Sprint[]>([]);
-
-  //  Verificar si estamos en una página de proyecto antes de cargar datos
-  const isProjectPage = useMemo(
-    () => /^\/projects\/[^/]+/.test(window.location.pathname),
-    [window.location.pathname]
-  );
-
-  const loadProject = useCallback(async () => {
-    if (!id || !isProjectPage) return;
-    setLoading(true);
-    try {
-      const response = await fetch(`${apiUrl}/projects/${id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) throw new Error("Failed to fetch project");
-      const data: Project = await response.json();
-      setProject(data);
-      setListOfSprints(data.sprints);
-    } catch (error) {
-      console.error("Error loading project:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [id, apiUrl, isProjectPage]);
-
-  useEffect(() => {
-    loadProject();
-  }, [loadProject]);
-
-  useEffect(() => {
-    setProject((prev) => {
-      if (!prev) return prev;
-      return { ...prev, sprints: listOfSprints };
-    });
-  }, [listOfSprints]);
-
-  const updateProject = useCallback(
-    (updatedProject: Project) => {
-      setProject(updatedProject);
-    },
-    [setProject]
-  );
-
-  useSocketProjectUpdate((data) => updateProject(data));
-
-  const memoizedProject = useMemo(() => project, [project]);
-
-  if (loading) return <Loading message="Cargando proyecto..." />;
-
+  const navigate = useNavigate();
+  const data = useProjectData(id);
+  if (data.loading) return <Loading message="Loading project…" />;
+  if (!data.project && data.error)
+    return (
+      <Box sx={{ p: 3, maxWidth: 640, mx: "auto", mt: 8 }}>
+        <Alert severity="error">
+          {data.error.status === 404
+            ? "Project not found. It may have been removed."
+            : data.error.message}
+        </Alert>
+        <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+          <Button
+            onClick={() => {
+              void data.reloadProject();
+            }}
+            disabled={data.refreshing}
+          >
+            Retry project
+          </Button>
+          <Button onClick={() => navigate("/projects", { replace: true })}>
+            Back to projects
+          </Button>
+        </Box>
+      </Box>
+    );
   return (
-    <ProjectContext.Provider
-      value={{
-        project: memoizedProject,
-        loading,
-        listOfSprints,
-        setListOfSprints,
-        setProject,
-      }}
-    >
-      {children}
-    </ProjectContext.Provider>
+    <ProjectContext.Provider value={data}>{children}</ProjectContext.Provider>
   );
 };
 

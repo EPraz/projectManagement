@@ -11,10 +11,16 @@ import {
 } from "./Header.styles";
 import { HeaderProps } from "../../types";
 import UserMenu from "./userMenu/UserMenu";
-import { Breadcrumbs, Link } from "@mui/material";
+import { Breadcrumbs, IconButton, Link, Tooltip } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
-const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
+const Header: React.FC<HeaderProps> = ({
+  projectName,
+  projectId,
+  onRefresh,
+  refreshing = false,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
@@ -43,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
           disabled={tab?.disabled}
         />
       )),
-    []
+    [],
   );
 
   const handleBreadcrumbClick = () => {
@@ -56,6 +62,9 @@ const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
       <TopBar>
         <Breadcrumbs aria-label="breadcrumb">
           <Link
+            component="button"
+            type="button"
+            aria-label="Back to projects"
             color="inherit"
             onClick={handleBreadcrumbClick}
             underline="hover"
@@ -65,6 +74,19 @@ const Header: React.FC<HeaderProps> = ({ projectName, projectId }) => {
           </Link>
           <ProjectTitle>{projectName}</ProjectTitle>
         </Breadcrumbs>
+        {onRefresh && (
+          <Tooltip title="Refresh project">
+            <span>
+              <IconButton
+                aria-label="Refresh project"
+                onClick={onRefresh}
+                disabled={refreshing}
+              >
+                <RefreshIcon fontSize="small" />
+              </IconButton>
+            </span>
+          </Tooltip>
+        )}
       </TopBar>
       <StyledTabs
         value={currentTab}

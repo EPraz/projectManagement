@@ -58,10 +58,17 @@ import {
   PageContent,
 } from "./Layout.styles";
 import DialogsContainer from "../dialogsContainer/DialogsContainer";
+import { Alert, Button } from "@mui/material";
 
 const Layout = () => {
   // Providers
-  const { project, loading: loadingProject } = useProject();
+  const {
+    project,
+    loading: loadingProject,
+    refreshing,
+    error: projectError,
+    reloadProject,
+  } = useProject();
   const { user: currentUser } = useAuth();
   const pendingTaskMoves = useRef(new Set<Task["id"]>());
 
@@ -71,8 +78,6 @@ const Layout = () => {
     setSprint,
     addOnListOfSprints,
     removeSprintFromState,
-    updateListOfSprints,
-    // updateListOfSprints,
     // removeSprintFromState,
   } = useSprint();
   const {
@@ -152,7 +157,7 @@ const Layout = () => {
   const [filters, setFilters] = useState<FilterProps>({});
 
   const [visibleColumns, setVisibleColumns] = useState<string[]>(
-    initialBacklogColumns
+    initialBacklogColumns,
   );
 
   const handleApplyFilter = (newFilters: FilterProps) => {
@@ -178,7 +183,7 @@ const Layout = () => {
       if (currentTab !== newTab) {
         setSearchParams({ tab: newTab }, { replace: true });
       }
-    } else {
+    } else if (searchParams.toString()) {
       setSearchParams({}, { replace: true });
     }
 
@@ -219,16 +224,15 @@ const Layout = () => {
   const [selectedSprintGoal, setSelectedSprintGoal] =
     useState<SprintGoal | null>(null);
   const [selectedGoalTask, setSelectedGoalTask] = useState<GoalTask | null>(
-    null
+    null,
   );
   const [localSprintGoals, setLocalSprintGoals] = useState<SprintGoal[]>(
-    sprint?.sprintGoal || []
+    sprint?.sprintGoal || [],
   );
 
   useEffect(() => {
     setLocalSprintGoals(sprint?.sprintGoal || []);
-    if (sprint) updateListOfSprints(sprint);
-  }, [sprint]);
+  }, [sprint?.id, sprint?.sprintGoal]);
 
   const [openCreateSprintGoalDialog, setOpenCreateSprintGoalDialog] =
     useState(false);
@@ -255,7 +259,7 @@ const Layout = () => {
         addAllTickets(newTicket);
       }
     },
-    [createTicket, addAllTickets]
+    [createTicket, addAllTickets],
   );
 
   const handleEditTicket = useCallback(
@@ -267,7 +271,7 @@ const Layout = () => {
         updateAllTickets(updatedTicket);
       }
     },
-    [updateTicket, updateAllTickets]
+    [updateTicket, updateAllTickets],
   );
 
   const handleDeleteTicket = useCallback(
@@ -277,7 +281,7 @@ const Layout = () => {
         removeAllTickets(data?.id || 0);
       }
     },
-    [deleteTicket, removeAllTickets]
+    [deleteTicket, removeAllTickets],
   );
 
   const handleUpdateTicketOrder = useCallback(
@@ -285,9 +289,9 @@ const Layout = () => {
       bulkUpdateTickets,
       tickets,
       currentUser?.email,
-      updateListOfTickets
+      updateListOfTickets,
     ),
-    [bulkUpdateTickets, tickets, currentUser?.email, updateListOfTickets]
+    [bulkUpdateTickets, tickets, currentUser?.email, updateListOfTickets],
   );
 
   const handleUpdateTicketStatus = useCallback(
@@ -295,9 +299,9 @@ const Layout = () => {
       updateTicket,
       tickets,
       currentUser?.email,
-      updateAllTickets
+      updateAllTickets,
     ),
-    [updateTicket, tickets, currentUser?.email, updateAllTickets]
+    [updateTicket, tickets, currentUser?.email, updateAllTickets],
   );
 
   // Functions -> Tasks
@@ -306,19 +310,19 @@ const Layout = () => {
       createTask,
       selectedTicketId,
       tickets,
-      updateListOfTickets
+      updateListOfTickets,
     ),
-    [createTask, selectedTicketId, tickets, updateListOfTickets]
+    [createTask, selectedTicketId, tickets, updateListOfTickets],
   );
 
   const handleEditTask = useCallback(
     editTaskHandler(updateTask, tickets, updateListOfTickets),
-    [updateTask, tickets, updateListOfTickets]
+    [updateTask, tickets, updateListOfTickets],
   );
 
   const handleDeleteTask = useCallback(
     deleteTaskHandler(deleteTask, tickets, updateListOfTickets),
-    [deleteTask, tickets, updateListOfTickets]
+    [deleteTask, tickets, updateListOfTickets],
   );
 
   const handleOnDragEndTask = useCallback(
@@ -328,25 +332,31 @@ const Layout = () => {
       project?.taskStatuses,
       applyTaskUpdate,
       currentUser?.email,
-      pendingTaskMoves.current
+      pendingTaskMoves.current,
     ),
-    [updateTask, tickets, project?.taskStatuses, applyTaskUpdate, currentUser?.email]
+    [
+      updateTask,
+      tickets,
+      project?.taskStatuses,
+      applyTaskUpdate,
+      currentUser?.email,
+    ],
   );
 
   // Functions -> Sprint
   const handleCreateSprint = useCallback(
     createSprintHandler(createSprint, addOnListOfSprints),
-    [createSprint, addOnListOfSprints]
+    [createSprint, addOnListOfSprints],
   );
 
   const handleChangeSprint = useCallback(
     changeSprintHandler(listOfSprints, sprint, setSprint),
-    [listOfSprints, sprint, setSprint]
+    [listOfSprints, sprint, setSprint],
   );
 
   const handleDeleteSprint = useCallback(
     deleteSprintHandler(deleteSprint, removeSprintFromState),
-    [deleteSprint, removeSprintFromState]
+    [deleteSprint, removeSprintFromState],
   );
 
   // Functions -> Goal Board -> Sprint Goal
@@ -359,7 +369,7 @@ const Layout = () => {
       setSprint,
       setOpenCreateSprintGoalDialog,
       sprint?.id,
-      setLocalSprintGoals
+      setLocalSprintGoals,
     ),
     [
       createSprintGoal,
@@ -367,12 +377,12 @@ const Layout = () => {
       setOpenCreateSprintGoalDialog,
       sprint?.id,
       setLocalSprintGoals,
-    ]
+    ],
   );
 
   const handleDeleteSprintGoal = useCallback(
     deleteSprintGoalHandler(deleteSprintGoal, setSprint, setLocalSprintGoals),
-    [deleteSprintGoal, setSprint, setLocalSprintGoals]
+    [deleteSprintGoal, setSprint, setLocalSprintGoals],
   );
 
   const handleEditSprintGoal = useCallback(
@@ -381,7 +391,7 @@ const Layout = () => {
       selectedSprintGoal,
       setSprint,
       setOpenEditSprintGoalDialog,
-      setLocalSprintGoals
+      setLocalSprintGoals,
     ),
     [
       updateSprintGoal,
@@ -389,7 +399,7 @@ const Layout = () => {
       setSprint,
       setOpenEditSprintGoalDialog,
       setLocalSprintGoals,
-    ]
+    ],
   );
 
   const handleCreateGoalTask = useCallback(
@@ -398,7 +408,7 @@ const Layout = () => {
       setSprint,
       setOpenCreateGoalTaskDialog,
       setLocalSprintGoals,
-      selectedSprintGoal
+      selectedSprintGoal,
     ),
     [
       createGoalTask,
@@ -406,7 +416,7 @@ const Layout = () => {
       setOpenCreateGoalTaskDialog,
       setLocalSprintGoals,
       selectedSprintGoal,
-    ]
+    ],
   );
 
   const handleEditGoalTask = useCallback(
@@ -415,7 +425,7 @@ const Layout = () => {
       setSprint,
       setLocalSprintGoals,
       setOpenEditGoalTaskDialog,
-      selectedGoalTask
+      selectedGoalTask,
     ),
     [
       updateGoalTask,
@@ -423,7 +433,7 @@ const Layout = () => {
       setLocalSprintGoals,
       setOpenEditGoalTaskDialog,
       selectedGoalTask,
-    ]
+    ],
   );
 
   const handleDeleteGoalTask = useCallback(
@@ -431,9 +441,9 @@ const Layout = () => {
       deleteGoalTask,
       setSprint,
       setLocalSprintGoals,
-      setOpenEditGoalTaskDialog
+      setOpenEditGoalTaskDialog,
     ),
-    [deleteGoalTask, setSprint, setLocalSprintGoals, setOpenEditGoalTaskDialog]
+    [deleteGoalTask, setSprint, setLocalSprintGoals, setOpenEditGoalTaskDialog],
   );
 
   const handleToggleGoalTaskCompletion = useCallback(
@@ -441,9 +451,9 @@ const Layout = () => {
       updateGoalTask,
       updateSprintGoal,
       setSprint,
-      setLocalSprintGoals
+      setLocalSprintGoals,
     ),
-    [updateGoalTask, updateSprintGoal, setSprint, setLocalSprintGoals]
+    [updateGoalTask, updateSprintGoal, setSprint, setLocalSprintGoals],
   );
 
   return (
@@ -455,8 +465,33 @@ const Layout = () => {
           setSidebarOpen={setSidebarOpen}
         />
         <MainContent sidebarOpen={sidebarOpen}>
-          <Header projectName={project?.title ?? ""} projectId={project?.id ?? ""} />
+          <Header
+            projectName={project?.title ?? ""}
+            projectId={project?.id ?? ""}
+            refreshing={refreshing}
+            onRefresh={() => {
+              void reloadProject();
+            }}
+          />
           <PageContent>
+            {projectError && (
+              <Alert
+                severity="error"
+                action={
+                  <Button
+                    color="inherit"
+                    disabled={refreshing}
+                    onClick={() => {
+                      void reloadProject();
+                    }}
+                  >
+                    Retry project
+                  </Button>
+                }
+              >
+                {projectError.message}
+              </Alert>
+            )}
             <Outlet
               context={{
                 // Project

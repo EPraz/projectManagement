@@ -4,7 +4,7 @@
 
 **Blocked by:** 06: Demo sessions and compatible request boundary.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after 06 resolved. Reuse its retained browser runner and authenticated request boundary. Regress false-empty failures and unrelated-project socket state, then align project/sprint ownership with compatible setters for existing workflows.

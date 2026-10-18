@@ -9,6 +9,8 @@ import ProjectListView from "../projectListView/ProjectListView";
 const ProjectContainerView = ({
   projects,
   loading,
+  refreshing,
+  onRefresh,
   searchInput,
   handleSearchChange,
   handleViewChange,
@@ -27,6 +29,8 @@ const ProjectContainerView = ({
   return (
     <Container>
       <ProjectHeader
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         searchInput={searchInput}
         handleSearchChange={handleSearchChange}
         handleViewChange={handleViewChange}

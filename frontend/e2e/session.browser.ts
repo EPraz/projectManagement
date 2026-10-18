@@ -1,10 +1,5 @@
-import { expect, Page, test } from "@playwright/test";
-
-const enterDemo = async (page: Page) => {
-  await page.goto("/auth/instantLogin");
-  await page.getByRole("button", { name: /explore demo/i }).click();
-  await expect(page.getByText("Orbit — Product Delivery", { exact: true })).toBeVisible();
-};
+import { expect, test } from "@playwright/test";
+import { enterDemo } from "./support/demo";
 
 test("legacy entry validates identity once, and a deep-link reload restores the session", async ({ page }) => {
   const authCalls: string[] = [];

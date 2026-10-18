@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Project } from "../../../../types";
 import {
   useCreateProject,
@@ -8,7 +8,7 @@ import {
 } from "../../../../hooks";
 import { useAuth } from "../../../../context";
 import { Role } from "../../../../constants";
-import { Box, useTheme } from "@mui/material";
+import { Alert, Box, Button, useTheme } from "@mui/material";
 import { DialogForm, Loading, Portal } from "../../../../components";
 import { useNavigate } from "react-router-dom";
 import { createProjectSchema } from "../../../../validations";
@@ -18,7 +18,8 @@ import ProjectMenu from "../projectMenu/ProjectMenu";
 
 const ProjectsPageContainer = () => {
   const { user } = useAuth();
-  const { loadProjects, loading } = useLoadProject();
+  const { projects, setProjects, loadProjects, loading, hasLoaded, error } =
+    useLoadProject();
   const { createProject, loading: postProjectLoading } = useCreateProject();
   const { deleteProject, loading: deleteProjectLoading } = useDeleteProject();
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ const ProjectsPageContainer = () => {
   const [searchInput, setSearchInput] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchInput, 300); // 300ms delay
 
-  const [projects, setProjects] = useState<Project[]>([]);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -40,19 +40,11 @@ const ProjectsPageContainer = () => {
     return savedView === "list" || savedView === "grid" ? savedView : "grid";
   });
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const data = await loadProjects();
-      setProjects(data);
-    };
-    fetchProjects();
-  }, []);
-
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchInput(e.target.value);
     },
-    []
+    [],
   );
 
   // Guardar la vista seleccionada en localStorage
@@ -71,24 +63,20 @@ const ProjectsPageContainer = () => {
     const newProject = await createProject({ ...data, createdBy: user?.email });
     if (newProject) {
       setOpenDialog(false);
-      setProjects([...projects, newProject]);
+      setProjects((current) => [...current, newProject]);
     }
   };
 
   const handleDeleteProject = async (data: Partial<Project>) => {
     const success = await deleteProject(data);
     if (success) {
-      const fetchProjects = async () => {
-        const data = await loadProjects();
-        setProjects(data);
-      };
-      fetchProjects();
+      await loadProjects();
     }
   };
 
   const handleMenuClick = (
     event: React.MouseEvent<HTMLButtonElement>,
-    projectId: string
+    projectId: string,
   ) => {
     event.stopPropagation();
     setAnchorEl(event.currentTarget);
@@ -103,7 +91,9 @@ const ProjectsPageContainer = () => {
   const filteredProjects = useMemo(() => {
     return projects
       .filter((project) =>
-        project.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+        project.title
+          .toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()),
       )
       .sort((a, b) => {
         if (a.id === favoriteId) return -1;
@@ -114,7 +104,7 @@ const ProjectsPageContainer = () => {
       });
   }, [projects, debouncedSearchQuery, favoriteId]);
 
-  if (loading || postProjectLoading) {
+  if (loading && !hasLoaded && !error) {
     return (
       <Box
         sx={{
@@ -131,22 +121,46 @@ const ProjectsPageContainer = () => {
 
   return (
     <ProjectsContainer>
-      <ProjectContainerView
-        projects={filteredProjects}
-        loading={loading}
-        searchInput={searchInput}
-        handleSearchChange={handleSearchChange}
-        handleViewChange={handleViewChange}
-        view={view}
-        canCreateProject={asPermission}
-        setOpenDialog={setOpenDialog}
-        favoriteId={favoriteId}
-        filteredProjects={filteredProjects}
-        handleMenuClick={handleMenuClick}
-        navigate={navigate}
-        setFavoriteId={setFavoriteId}
-        theme={theme}
-      />
+      {error && (
+        <Alert
+          severity="error"
+          action={
+            <Button
+              color="inherit"
+              disabled={loading}
+              onClick={() => {
+                void loadProjects();
+              }}
+            >
+              Retry projects
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
+      )}
+      {(hasLoaded || !error) && (
+        <ProjectContainerView
+          projects={filteredProjects}
+          loading={false}
+          refreshing={loading}
+          onRefresh={() => {
+            void loadProjects();
+          }}
+          searchInput={searchInput}
+          handleSearchChange={handleSearchChange}
+          handleViewChange={handleViewChange}
+          view={view}
+          canCreateProject={asPermission}
+          setOpenDialog={setOpenDialog}
+          favoriteId={favoriteId}
+          filteredProjects={filteredProjects}
+          handleMenuClick={handleMenuClick}
+          navigate={navigate}
+          setFavoriteId={setFavoriteId}
+          theme={theme}
+        />
+      )}
       {anchorEl && (
         <Portal>
           <ProjectMenu

@@ -22,6 +22,8 @@ export interface ProjectCardViewProps {
 export interface ProjectContainerViewProps {
   projects: Project[];
   loading: boolean;
+  refreshing: boolean;
+  onRefresh: () => void;
   searchInput: string;
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleViewChange: (newView: "grid" | "list") => void;
@@ -49,6 +51,8 @@ export interface ProjectGridViewProps {
 }
 
 export interface ProjectHeaderProps {
+  refreshing: boolean;
+  onRefresh: () => void;
   searchInput: string;
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleViewChange: (newView: "grid" | "list") => void;

@@ -11,7 +11,7 @@ import {
 import {
   Add as AddIcon,
   Search as SearchIcon,
-  FilterList as FilterListIcon,
+  Refresh as RefreshIcon,
   ViewModule as ViewModuleIcon,
   ViewList as ViewListIcon,
 } from "@mui/icons-material";
@@ -19,6 +19,8 @@ import { UserMenu } from "../../../../components";
 import { ProjectHeaderProps } from "../../../../types";
 
 const ProjectHeader = ({
+  refreshing,
+  onRefresh,
   searchInput,
   handleSearchChange,
   handleViewChange,
@@ -52,8 +54,13 @@ const ProjectHeader = ({
             ),
           }}
         />
-        <Button variant="outlined" startIcon={<FilterListIcon />}>
-          Filter
+        <Button
+          variant="outlined"
+          startIcon={<RefreshIcon />}
+          onClick={onRefresh}
+          disabled={refreshing}
+        >
+          {refreshing ? "Refreshing…" : "Refresh projects"}
         </Button>
         <Tooltip
           title={
