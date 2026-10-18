@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { Ticket } from '@prisma/client';
 import { IsString, IsDate, IsNotEmpty, IsOptional } from 'class-validator';
 
@@ -13,11 +14,13 @@ export class UpdateSprintDto {
   @IsOptional()
   tickets: Ticket[];
 
+  @Type(() => Date)
   @IsDate()
   @IsOptional()
   startDate: Date;
 
   @IsOptional()
+  @Type(() => Date)
   @IsDate()
   endDate: Date;
 

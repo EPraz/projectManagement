@@ -430,6 +430,61 @@ describe('Acceso demo HTTP API', () => {
       .expect(404);
   });
 
+  it('preserves ISO date updates through the shared strict bootstrap validation', async () => {
+    const token = tokenOf(
+      await request(app.getHttpServer()).post('/auth/instant-login').send({}),
+    );
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const projectId = (projects.body as { id: string }[])[0].id;
+    const created = await request(app.getHttpServer())
+      .post('/sprints')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId,
+        name: 'Isolated ISO date update fixture',
+        startDate: '2026-10-17T00:00:00Z',
+        endDate: '2026-10-31T00:00:00Z',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    try {
+      const updated = await request(app.getHttpServer())
+        .patch(`/sprints/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          projectId,
+          startDate: '2026-11-01T00:00:00Z',
+          endDate: '2026-11-15T00:00:00Z',
+        })
+        .expect(200);
+      expect(updated.body).toMatchObject({
+        startDate: '2026-11-01T00:00:00.000Z',
+        endDate: '2026-11-15T00:00:00.000Z',
+      });
+      await request(app.getHttpServer())
+        .patch(`/sprints/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .send({ projectId, startDate: 'invalid' })
+        .expect(400);
+      const saved = await request(app.getHttpServer())
+        .get(`/sprints/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(saved.body).toMatchObject({
+        startDate: '2026-11-01T00:00:00.000Z',
+        endDate: '2026-11-15T00:00:00.000Z',
+      });
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/sprints/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
   it('preserves other reactions, makes shared-demo likes idempotent and publishes committed retrospective state', async () => {
     const token = tokenOf(
       await request(app.getHttpServer()).post('/auth/instant-login').send({}),
