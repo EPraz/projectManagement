@@ -4,7 +4,7 @@
 
 **Blocked by:** 08: Refactored ticket/task editing. Session/navigation compatibility is already a transitive prerequisite.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -17,3 +17,5 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after12resolved at993bf02. Baseline production build UI0a9705d (backend validation compatibility commits do not change frontend):1,627.35kBraw/483.49kBgzip. Fresh Chrome production-preview measurements at entry/projects/workspace/board each download one script483,486encodedbodybytes (483,786transferbytes), without page errors. Inspect actual import boundaries before splitting; preserve providers and session state.

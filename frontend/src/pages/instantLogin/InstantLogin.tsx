@@ -1,8 +1,19 @@
 import { useState } from "react";
-import { Alert, Button, CardContent, CircularProgress, Typography } from "@mui/material";
-import { useAuth } from "../../context";
 import {
-  AuthCard, AuthWrapper, Form, LeftSection, RightSection, WelcomeText,
+  Alert,
+  Button,
+  CardContent,
+  CircularProgress,
+  Typography
+} from "@mui/material";
+import { useAuth } from "../../context/authContext";
+import {
+  AuthCard,
+  AuthWrapper,
+  Form,
+  LeftSection,
+  RightSection,
+  WelcomeText
 } from "./InstantLogin.styles";
 
 export default function InstantLogin() {
@@ -15,7 +26,11 @@ export default function InstantLogin() {
     try {
       await instantLogin();
     } catch (error) {
-      setError(error instanceof Error ? error.message : "We couldn't open the demo. Please try again in a moment.");
+      setError(
+        error instanceof Error
+          ? error.message
+          : "We couldn't open the demo. Please try again in a moment."
+      );
     }
   };
 
@@ -25,12 +40,20 @@ export default function InstantLogin() {
         <LeftSection>
           <WelcomeText>
             <h1>EPProject Management</h1>
-            <p>Explore projects, plan sprints and follow work from backlog to delivery.</p>
+            <p>
+              Explore projects, plan sprints and follow work from backlog to
+              delivery.
+            </p>
           </WelcomeText>
         </LeftSection>
         <RightSection>
           <CardContent>
-            <Typography component="h2" variant="h5" gutterBottom fontWeight={600}>
+            <Typography
+              component="h2"
+              variant="h5"
+              gutterBottom
+              fontWeight={600}
+            >
               Explore the demo
             </Typography>
             <Typography color="text.secondary" sx={{ mb: 3 }}>
@@ -38,14 +61,39 @@ export default function InstantLogin() {
               No account or email required.
             </Typography>
             <Alert severity="info" sx={{ mb: 3 }}>
-              This is a shared, editable demo. Other visitors can see your changes.
-              Please use fictional information.
+              This is a shared, editable demo. Other visitors can see your
+              changes. Please use fictional information.
             </Alert>
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            {sessionNotice && <Alert severity="warning" sx={{ mb: 2 }}>{sessionNotice}</Alert>}
+            {error && (
+              <Alert severity="error" sx={{ mb: 2 }}>
+                {error}
+              </Alert>
+            )}
+            {sessionNotice && (
+              <Alert severity="warning" sx={{ mb: 2 }}>
+                {sessionNotice}
+              </Alert>
+            )}
             <Form onSubmit={explore} aria-busy={loading}>
-              <Button type="submit" variant="contained" fullWidth size="large" disabled={loading}>
-                {loading ? <><CircularProgress size={20} color="inherit" sx={{ mr: 1 }} />Opening demo…</> : "Explore demo"}
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                size="large"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <CircularProgress
+                      size={20}
+                      color="inherit"
+                      sx={{ mr: 1 }}
+                    />
+                    Opening demo…
+                  </>
+                ) : (
+                  "Explore demo"
+                )}
               </Button>
               <Typography variant="body2" color="text.secondary" role="status">
                 {loading

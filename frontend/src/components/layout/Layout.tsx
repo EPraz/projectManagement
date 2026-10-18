@@ -33,7 +33,8 @@ import {
   updateTicketOrderHandler,
   updateTicketStatusHandler
 } from "../../helpers";
-import { initialBacklogColumns, TabPanels } from "../../constants";
+import { initialBacklogColumns } from "../../constants";
+import { TabPanels } from "../../constants/tabPanels";
 import {
   LayoutRoot,
   LayoutWrapper,

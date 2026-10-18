@@ -3,11 +3,11 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import PrivateRoute from "../PrivateRoute";
 
 // Mockear useAuth del contexto
-jest.mock("../../../context", () => ({
-  useAuth: jest.fn(),
+jest.mock("../../../context/authContext", () => ({
+  useAuth: jest.fn()
 }));
 
-import { useAuth as useAuthContext } from "../../../context";
+import { useAuth as useAuthContext } from "../../../context/authContext";
 const useAuth = useAuthContext as jest.Mock;
 
 describe("PrivateRoute Component", () => {
@@ -21,7 +21,7 @@ describe("PrivateRoute Component", () => {
       loading: false,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: "fake-token",
+      accessToken: "fake-token"
     });
 
     // Renderizamos un dummy Protected Component a través de Outlet
@@ -44,7 +44,7 @@ describe("PrivateRoute Component", () => {
       loading: true,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: null,
+      accessToken: null
     });
 
     render(
@@ -65,7 +65,7 @@ describe("PrivateRoute Component", () => {
       loading: false,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: "fake-token",
+      accessToken: "fake-token"
     });
 
     // Renderizamos un dummy Protected Component a través de Outlet
@@ -88,7 +88,7 @@ describe("PrivateRoute Component", () => {
       loading: false,
       logout: jest.fn(),
       instantLogin: jest.fn(),
-      accessToken: null,
+      accessToken: null
     });
 
     render(

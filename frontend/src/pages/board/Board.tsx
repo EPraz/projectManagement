@@ -16,7 +16,9 @@ import {
   TabButton,
   TabsWrapper
 } from "./Board.styles";
-import { backlogColumns, TabPanels } from "../../constants";
+import { backlogColumns } from "../../constants";
+import { TabPanels } from "../../constants/tabPanels";
+import DeferredSurface from "../../components/deferredSurface/DeferredSurface";
 import BoardHeader from "./components/backlogBoard/boardHeader/BoardHeader";
 
 const Board = () => {
@@ -36,6 +38,7 @@ const Board = () => {
     setOpenCreateSprintGoalDialog
   } = useOutletContext<LayoutContextProps>();
 
+  const Panel = TabPanels[tabValue].component;
   const isDisabled = !listOfSprints?.length;
 
   return (
@@ -159,7 +162,9 @@ const Board = () => {
       </BoardHeaderStyled>
 
       <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
-        {TabPanels[tabValue].component()}
+        <DeferredSurface key={tabValue} label={TabPanels[tabValue].label}>
+          <Panel />
+        </DeferredSurface>
       </Box>
     </BoardContainer>
   );

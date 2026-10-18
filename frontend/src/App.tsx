@@ -1,11 +1,8 @@
 import { CssBaseline } from "@mui/material";
 import AppRoutes from "./routes";
-import {
-  ApiProvider,
-  SnackbarProvider,
-  ThemeProvider,
-  useTheme,
-} from "./context";
+import { ApiProvider } from "./context/apiContext";
+import { SnackbarProvider } from "./context/snackbarContext";
+import { ThemeProvider, useTheme } from "./context/themeContext";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { ThemeProvider as StyledComponentsThemeProvider } from "styled-components";
 import { createAppTheme } from "./utils";

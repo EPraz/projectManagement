@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Box, TableHead, TableRow, TableBody, IconButton } from "@mui/material";
 import { closestCenter, DndContext } from "@dnd-kit/core";
-import { TaskColumn } from "../../../../components";
+import TaskColumn from "./taskColumn/TaskColumn";
 import { formatStatusName } from "../../../../helpers";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
