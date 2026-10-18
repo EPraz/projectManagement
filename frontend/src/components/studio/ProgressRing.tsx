@@ -53,7 +53,7 @@ export default function ProgressRing({
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: 23,
+          fontSize: size >= 120 ? 36 : 23,
           fontWeight: 500,
           color: "text.primary",
         }}

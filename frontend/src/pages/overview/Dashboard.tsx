@@ -1,241 +1,135 @@
-import { Box, Typography, Grid2 as Grid, Divider } from "@mui/material";
-import {
-  AccessTime as AccessTimeIcon,
-  InsertDriveFile as InsertDriveFileIcon,
-  FiberManualRecord as FiberManualRecordIcon,
-} from "@mui/icons-material";
-import {
-  DashboardContainer,
-  InfoGrid,
-  InfoLabel,
-  InfoValue,
-  ProgressContainer,
-  SectionTitle,
-  StatCard,
-  StatIcon,
-  StyledCard,
-  StyledLinearProgress,
-} from "./DashBoard.styles";
-import { useOutletContext } from "react-router-dom";
-import { LayoutContextProps } from "../../types";
-import { format } from "date-fns";
-
-import { getDaysRemaining } from "./DashBoard.helpers";
+import { Box, Button, Typography } from "@mui/material";
+import { ArrowForward } from "@mui/icons-material";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import type { LayoutContextProps, Ticket } from "../../types";
+import ProjectProfile from "./components/ProjectProfile";
+import ProjectMetadata from "./components/ProjectMetadata";
+import SprintExecution from "./components/SprintExecution";
 import RecentActivityFeed from "./components/recentActivity/RecentActivity";
 import SprintMetricsChart from "./components/sprintMetricsChart/SprintMetricsChart";
 import UpcomingDeadlines from "./components/upcomingDeadlines/UpcomingDeadlines";
 import TeamWorkload from "./components/teamWorkload/TeamWorkload";
 import BlockersAndImpediments from "./components/blockersAndImpediments/BlockersAndImpediments";
 import SprintGoalsAndMilestones from "./components/sprintGoalsAndMilestones/SprintGoalsAndMilestones";
-import { getProjectProgress } from "../../helpers/projectsPage/ProjectsPage.helper";
-
-const DashBoard = () => {
-  const { project, sprint, allTickets, tickets, listOfSprints } =
-    useOutletContext<LayoutContextProps>();
-  const projectProgress = getProjectProgress(
-    project?.ticketStatuses ?? [],
+export default function Dashboard() {
+  const {
+    project,
+    sprint,
     allTickets,
-  );
-
+    tickets,
+    listOfSprints,
+    setSelectedTicket,
+    setOpenEditTicketDialog,
+  } = useOutletContext<LayoutContextProps>();
+  const navigate = useNavigate();
+  if (!project) return null;
+  const openTicket = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+    setOpenEditTicketDialog(true);
+  };
   return (
-    <DashboardContainer>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6 }}>
-          <StyledCard>
-            <Box sx={{ p: 3 }}>
-              <SectionTitle>{project?.title}</SectionTitle>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                {project?.description}
-              </Typography>
-
-              <InfoGrid>
-                <InfoLabel>Project type</InfoLabel>
-                <InfoValue>{project?.type}</InfoValue>
-
-                <InfoLabel>Start date</InfoLabel>
-                <InfoValue>
-                  {project?.createdAt
-                    ? format(new Date(project.createdAt), "MMMM d, yyyy")
-                    : ""}
-                </InfoValue>
-
-                <InfoLabel>End date</InfoLabel>
-                <InfoValue>
-                  {project?.endDate || <em>Not estimated yet</em>}
-                </InfoValue>
-
-                <InfoLabel>Team members</InfoLabel>
-                <InfoValue>{project?.users.length}</InfoValue>
-                {/* 
-                <InfoLabel>Reports</InfoLabel>
-                <InfoValue>3</InfoValue> */}
-              </InfoGrid>
-
-              <ProgressContainer>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    mb: 1,
-                  }}
-                >
-                  <Typography variant="subtitle2">Overall Progress</Typography>
-                  <Typography variant="subtitle2" color="primary">
-                    {projectProgress}%
-                  </Typography>
-                </Box>
-                <StyledLinearProgress
-                  variant="determinate"
-                  value={projectProgress}
-                />
-              </ProgressContainer>
-
-              <Divider sx={{ my: 3 }} />
-
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <SprintMetricsChart tickets={tickets} />
-              </Box>
+    <Box sx={{ minWidth: 0 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 2,
+          mb: 3,
+        }}
+      >
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="overline" color="primary">
+            Project workspace / Overview
+          </Typography>
+          <Typography
+            component="h1"
+            variant="h1"
+            sx={{ overflowWrap: "anywhere" }}
+          >
+            {project.title}
+            <Box component="span" sx={{ color: "primary.main" }}>
+              .
             </Box>
-          </StyledCard>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 6 }}>
-          <Grid container spacing={3}>
-            <Grid
-              display={"flex"}
-              size={{ xs: 12 }}
-              justifyContent={"space-evenly"}
-              alignItems={"center"}
-            >
-              Sprint
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <StatCard>
-                <StatIcon sx={{ color: "secondary.light" }}>
-                  <AccessTimeIcon />
-                </StatIcon>
-                <Box>
-                  <Typography variant="h4" fontWeight="bold">
-                    {getDaysRemaining(sprint?.endDate)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Time remaining
-                  </Typography>
-                </Box>
-              </StatCard>
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <StatCard>
-                <StatIcon sx={{ color: "secondary.dark" }}>
-                  <InsertDriveFileIcon />
-                </StatIcon>
-                <Box>
-                  <Typography variant="h4" fontWeight="bold">
-                    {sprint?.tickets?.length || 0}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Total Tickets
-                  </Typography>
-                </Box>
-              </StatCard>
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <StatCard>
-                <StatIcon sx={{ color: "secondary.main" }}>
-                  <FiberManualRecordIcon />
-                </StatIcon>
-                <Box>
-                  <Typography variant="h4" fontWeight="bold">
-                    {sprint?.tickets
-                      ?.slice()
-                      ?.filter((x) => x.status.name == "IN_PROGRESS").length ||
-                      0}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Tickets in progress
-                  </Typography>
-                </Box>
-              </StatCard>
-            </Grid>
-
-            <Grid size={{ xs: 12, md: 6 }}>
-              <StatCard>
-                <StatIcon sx={{ color: "error.main" }}>
-                  <FiberManualRecordIcon />
-                </StatIcon>
-                <Box>
-                  <Typography variant="h4" fontWeight="bold">
-                    {sprint?.tickets
-                      ?.slice()
-                      .filter((x) => x.status.name == "BLOCKED").length || 0}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Blocked
-                  </Typography>
-                </Box>
-              </StatCard>
-            </Grid>
-
-            <Grid size={{ xs: 12 }}>
-              <RecentActivityFeed
-                project={project}
-                allTickets={allTickets}
-                tickets={tickets}
-                listOfSprints={listOfSprints}
-                limit={7}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid size={{ xs: 12 }}>
-          <Grid container spacing={3}>
-            {/* Option 1: Upcoming Deadlines */}
-            <Grid size={{ xs: 12 }}>
-              <StyledCard>
-                <Box sx={{ p: 3 }}>
-                  <SectionTitle>Upcoming Deadlines</SectionTitle>
-                  <UpcomingDeadlines sprint={sprint} />
-                </Box>
-              </StyledCard>
-            </Grid>
-
-            {/* Option 2: Team Workload */}
-            <Grid size={{ xs: 12 }}>
-              <StyledCard>
-                <Box sx={{ p: 3 }}>
-                  <SectionTitle>Team Workload</SectionTitle>
-                  <TeamWorkload tickets={tickets} />
-                </Box>
-              </StyledCard>
-            </Grid>
-
-            {/* Option 3: Blockers and Impediments */}
-            <Grid size={{ xs: 12 }}>
-              <StyledCard>
-                <Box sx={{ p: 3 }}>
-                  <SectionTitle>Blockers & Impediments</SectionTitle>
-                  <BlockersAndImpediments sprint={sprint} />
-                </Box>
-              </StyledCard>
-            </Grid>
-
-            {/* Option 4: Sprint Goals and Milestones */}
-            <Grid size={{ xs: 12 }}>
-              <StyledCard>
-                <Box sx={{ p: 3 }}>
-                  <SectionTitle>Sprint Goals & Milestones</SectionTitle>
-                  <SprintGoalsAndMilestones sprint={sprint} />
-                </Box>
-              </StyledCard>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Grid>
-    </DashboardContainer>
+          </Typography>
+        </Box>
+        <Button
+          variant="contained"
+          endIcon={<ArrowForward />}
+          onClick={() => navigate(`/projects/${project.id}/board?tab=board`)}
+        >
+          Open Taskboard
+        </Button>
+      </Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0,1fr)",
+            lg: "minmax(280px,.95fr) minmax(0,2fr)",
+          },
+          gridTemplateAreas: {
+            xs: '"execution" "operations" "profile" "calendar" "updates" "metadata" "workload" "goals"',
+            lg: '"profile execution" "profile operations" "calendar updates" "metadata workload" "goals goals"',
+          },
+          gap: 3,
+          alignItems: "start",
+        }}
+      >
+        <Box sx={{ gridArea: "execution", minWidth: 0 }}>
+          <SprintExecution
+            project={project}
+            sprint={sprint}
+            tickets={tickets}
+          />
+        </Box>
+        <Box
+          sx={{
+            gridArea: "operations",
+            minWidth: 0,
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "minmax(0,1fr)",
+              md: "minmax(0,1.2fr) minmax(0,1fr)",
+            },
+            gap: 3,
+          }}
+        >
+          <BlockersAndImpediments sprint={sprint} onOpen={openTicket} />
+          <SprintMetricsChart
+            tickets={tickets}
+            statuses={project.ticketStatuses}
+          />
+        </Box>
+        <Box sx={{ gridArea: "profile", minWidth: 0, height: "100%" }}>
+          <ProjectProfile project={project} tickets={allTickets} />
+        </Box>
+        <Box sx={{ gridArea: "calendar", minWidth: 0 }}>
+          <UpcomingDeadlines
+            key={sprint?.id ?? "none"}
+            sprint={sprint}
+            onOpen={openTicket}
+          />
+        </Box>
+        <Box sx={{ gridArea: "updates", minWidth: 0 }}>
+          <RecentActivityFeed
+            project={project}
+            allTickets={allTickets}
+            tickets={tickets}
+            listOfSprints={listOfSprints}
+          />
+        </Box>
+        <Box sx={{ gridArea: "metadata", minWidth: 0 }}>
+          <ProjectMetadata project={project} />
+        </Box>
+        <Box sx={{ gridArea: "workload", minWidth: 0 }}>
+          <TeamWorkload tickets={tickets} />
+        </Box>
+        <Box sx={{ gridArea: "goals", minWidth: 0 }}>
+          <SprintGoalsAndMilestones sprint={sprint} />
+        </Box>
+      </Box>
+    </Box>
   );
-};
-
-export default DashBoard;
+}

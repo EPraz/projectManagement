@@ -196,7 +196,11 @@ test("checklist failure, retry and deletion keep board, overview and persistence
       .click();
     await expect(page.getByText("100%", { exact: true })).toBeVisible();
     await navigateSection(page, "Overview");
-    await expect(page.getByText("completed", { exact: true })).toBeVisible();
+    await expect(
+      page
+        .getByRole("region", { name: "Sprint goals & milestones", exact: true })
+        .getByText("Completed", { exact: true }),
+    ).toBeVisible();
     await navigateSection(page, "Taskboard");
     await navigateSection(page, "Goals");
     await page

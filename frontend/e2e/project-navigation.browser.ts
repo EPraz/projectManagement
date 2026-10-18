@@ -21,8 +21,8 @@ test("project API slash aliases stay JSON and the project deep link reloads", as
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByText("Overall Progress", { exact: true }).locator(".."),
-  ).toContainText("33%");
+    page.getByRole("progressbar", { name: "Overall Progress", exact: true }),
+  ).toHaveAttribute("aria-valuenow", "33");
 });
 
 test("a non-JSON detail response stays recoverable", async ({ page }) => {

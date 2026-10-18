@@ -1,61 +1,71 @@
-import { Avatar, Box, Divider, Grid2 as Grid, Typography } from "@mui/material";
-import { Sprint } from "../../../../types";
-import { TaskCard } from "../../DashBoard.styles";
-
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import CrisisAlertIcon from "@mui/icons-material/CrisisAlert";
-import { SprintGoalStatus } from "../../../../constants";
+import { Box, Chip, LinearProgress, Typography } from "@mui/material";
+import type { Sprint } from "../../../../types";
 import { formatStatusName } from "../../../../helpers";
-
-const SprintGoalsAndMilestones = ({ sprint }: { sprint?: Sprint | null }) => {
+import OverviewPanel from "../OverviewPanel";
+export default function SprintGoalsAndMilestones({
+  sprint,
+}: {
+  sprint?: Sprint | null;
+}) {
   return (
-    <Grid container spacing={3}>
-      <Grid size={{ xs: 12 }}>
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-            Sprint Goal
-          </Typography>
-          <Typography variant="body1">
-            {sprint?.name || "Sprint name not defined"}
-          </Typography>
-        </Box>
-        <Divider sx={{ mb: 3 }} />
-        <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
-          Key Milestones
+    <OverviewPanel title="Sprint goals & milestones">
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Sprint: {sprint?.name || "None selected"}
+      </Typography>
+      {!sprint?.sprintGoal.length && (
+        <Typography variant="body2" color="text.secondary">
+          No goals in this sprint yet.
         </Typography>
-      </Grid>
-
-      {sprint?.sprintGoal.map((goal, index) => (
-        <Grid size={{ xs: 12, md: 6 }} key={`${goal.id}_${index}`}>
-          <TaskCard>
-            <Avatar
-              sx={{
-                bgcolor:
-                  goal.goalsStatus == SprintGoalStatus.COMPLETED
-                    ? "success.main"
-                    : goal.goalsStatus == SprintGoalStatus.IN_PROGRESS
-                    ? "info.main"
-                    : "error.main",
-              }}
-            >
-              {goal.goalsStatus == SprintGoalStatus.COMPLETED ? (
-                <TaskAltIcon width={20} height={20} />
-              ) : (
-                <CrisisAlertIcon width={20} height={20} />
-              )}
-            </Avatar>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" fontWeight="medium">
-                {goal.title}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {formatStatusName(goal.goalsStatus).toLowerCase()}
-              </Typography>
+      )}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0,1fr)",
+            md: "repeat(2,minmax(0,1fr))",
+          },
+          gap: 3,
+        }}
+      >
+        {sprint?.sprintGoal.map((goal) => (
+          <Box
+            key={goal.id}
+            sx={{
+              p: 2,
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 2,
+              minWidth: 0,
+            }}
+          >
+            <Typography fontWeight={500} sx={{ overflowWrap: "anywhere" }}>
+              {goal.title}
+            </Typography>
+            <Chip
+              size="small"
+              label={formatStatusName(goal.goalsStatus)}
+              variant="outlined"
+              sx={{ my: 1 }}
+            />
+            <Typography variant="body2" color="text.secondary">
+              {goal.description}
+            </Typography>
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center", mt: 1 }}>
+              <LinearProgress
+                aria-label={`${goal.title} progress`}
+                variant="determinate"
+                value={goal.progress ?? 0}
+                sx={{ flex: 1 }}
+              />
+              <Typography variant="caption">{goal.progress ?? 0}%</Typography>
             </Box>
-          </TaskCard>
-        </Grid>
-      ))}
-    </Grid>
+            <Typography variant="caption" color="text.secondary">
+              {goal.goalTask?.filter((task) => task.completed).length ?? 0} /{" "}
+              {goal.goalTask?.length ?? 0} checklist items complete
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    </OverviewPanel>
   );
-};
-export default SprintGoalsAndMilestones;
+}

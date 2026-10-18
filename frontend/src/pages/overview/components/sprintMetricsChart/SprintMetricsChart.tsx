@@ -1,237 +1,123 @@
-import React from "react";
-import { Box, Typography, Paper, Tooltip } from "@mui/material";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from "recharts";
-import { Ticket, TicketStatus } from "../../../../types";
+import { Box, Typography, useTheme } from "@mui/material";
+import type { Ticket, TicketStatus } from "../../../../types";
 import { formatStatusName } from "../../../../helpers";
-
-// Fallback colors in case status doesn't have a color
-const FALLBACK_COLORS = [
-  "#2196f3", // Blue
-  "#4caf50", // Green
-  "#ff9800", // Orange
-  "#f44336", // Red
-  "#9c27b0", // Purple
-  "#00bcd4", // Cyan
-];
-
-interface SprintMetricsChartProps {
+import OverviewPanel from "../OverviewPanel";
+export default function SprintMetricsChart({
+  tickets,
+  statuses,
+}: {
   tickets: Ticket[];
-}
-
-const SprintMetricsChart: React.FC<SprintMetricsChartProps> = ({ tickets }) => {
-  if (tickets.length === 0) {
-    return (
-      <Paper
-        elevation={0}
+  statuses: TicketStatus[];
+}) {
+  const theme = useTheme();
+  const groups = [...statuses]
+    .sort((a, b) => a.position - b.position)
+    .map((status) => ({
+      ...status,
+      count: tickets.filter((ticket) => ticket.statusId === status.id).length,
+    }));
+  const unclassified = tickets.filter(
+    (ticket) => !statuses.some((status) => status.id === ticket.statusId),
+  ).length;
+  if (unclassified)
+    groups.push({
+      id: "unclassified",
+      name: "Unclassified",
+      position: groups.length,
+      color: theme.palette.text.secondary,
+      count: unclassified,
+    });
+  let offset = 0;
+  const segments = groups
+    .filter((group) => group.count)
+    .map((group) => {
+      const start = offset;
+      offset += (group.count / tickets.length) * 100;
+      return `${group.color || theme.palette.primary.main} ${start}% ${offset}%`;
+    });
+  return (
+    <OverviewPanel title="Ticket states">
+      <Box
+        role="img"
+        aria-label={`Selected sprint ticket states: ${groups.map((group) => `${formatStatusName(group.name)} ${group.count}`).join(", ")}`}
         sx={{
-          p: 2,
-          borderRadius: 2,
-          bgcolor: "background.paper",
-          width: "100%",
+          width: 150,
+          height: 150,
+          mx: "auto",
+          my: 3,
+          borderRadius: "50%",
+          background: segments.length
+            ? `conic-gradient(${segments.join(",")})`
+            : theme.palette.divider,
+          display: "grid",
+          placeItems: "center",
         }}
       >
-        <Typography variant="subtitle1" fontWeight="medium" align="left">
-          Sprint Progress
-        </Typography>
         <Box
           sx={{
-            height: 200,
-            width: "100%",
+            width: 124,
+            height: 124,
+            borderRadius: "50%",
+            bgcolor: "background.paper",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            textAlign={"center"}
-          >
-            No tickets in this sprint
+          <Typography sx={{ fontSize: 30, fontWeight: 500 }}>
+            {tickets.length}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            sprint tickets
           </Typography>
         </Box>
-      </Paper>
-    );
-  }
-
-  // Group tickets by status
-  const statusGroups: Record<
-    string,
-    { status: TicketStatus; tickets: Ticket[] }
-  > = tickets.reduce((acc, ticket) => {
-    if (!ticket.status) return acc;
-
-    const statusId = ticket.status.id;
-    if (!acc[statusId]) {
-      acc[statusId] = {
-        status: ticket.status,
-        tickets: [],
-      };
-    }
-    acc[statusId].tickets.push(ticket);
-    return acc;
-  }, {} as Record<string, { status: TicketStatus; tickets: Ticket[] }>);
-
-  // Create data for the pie chart
-  const statusData = Object.values(statusGroups)
-    .sort((a, b) => a.status.position - b.status.position) // Sort by position
-    .map((group, index) => ({
-      name: group.status.name,
-      value: group.tickets.length,
-      color:
-        group.status.color || FALLBACK_COLORS[index % FALLBACK_COLORS.length],
-    }));
-
-  // Calculate blocked tickets
-  const blockedCount = tickets.filter((ticket) => ticket.isBlocked).length;
-
-  // Calculate completion metrics
-  const totalTickets = tickets.length;
-
-  // Find the "Done" status (assuming it has a name like "Done", "Completed", etc.)
-  const doneStatusIds = Object.values(statusGroups)
-    .filter(
-      (group) =>
-        group.status.name.toLowerCase() === "done" ||
-        group.status.name.toLowerCase() === "completed"
-    )
-    .map((group) => group.status.id);
-
-  const completedTickets = tickets.filter(
-    (ticket) => ticket.status && doneStatusIds.includes(ticket.status.id)
-  ).length;
-
-  const completionPercentage =
-    totalTickets > 0 ? Math.round((completedTickets / totalTickets) * 100) : 0;
-
-  // Calculate story points
-  const totalStoryPoints = tickets.reduce(
-    (sum, ticket) => sum + (ticket.storyPoints || 0),
-    0
-  );
-
-  const completedStoryPoints = tickets
-    .filter(
-      (ticket) => ticket.status && doneStatusIds.includes(ticket.status.id)
-    )
-    .reduce((sum, ticket) => sum + (ticket.storyPoints || 0), 0);
-
-  // Calculate estimated vs remaining hours
-  const totalEstimatedHours = tickets.reduce(
-    (sum, ticket) => sum + (ticket.estimatedHours || 0),
-    0
-  );
-  const totalRemainingHours = tickets.reduce(
-    (sum, ticket) => sum + (ticket.remainingHours || 0),
-    0
-  );
-
-  return (
-    <Box sx={{ width: "100%" }}>
-      <Paper
-        elevation={0}
-        sx={{ p: 2, borderRadius: 2, bgcolor: "background.paper" }}
-      >
-        <Typography variant="subtitle1" fontWeight="medium" mb={1}>
-          Sprint Progress
+      </Box>
+      {!tickets.length && (
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          No tickets in this sprint.
         </Typography>
-
-        <Box sx={{ height: 200, mt: 5 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={statusData}
-                cx="50%"
-                cy="50%"
-                innerRadius={30}
-                outerRadius={60}
-                paddingAngle={2}
-                dataKey="value"
-                label={({ name, percent }) =>
-                  `${formatStatusName(name)} ${(percent * 100).toFixed(0)}%`
-                }
-                labelLine={false}
-                fontSize={12}
-              >
-                {statusData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </Box>
-
-        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-          <Tooltip title="Total number of tickets in this sprint">
-            <Box sx={{ textAlign: "center" }}>
-              <Typography variant="h5" fontWeight="bold">
-                {totalTickets}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Total Tickets
-              </Typography>
-            </Box>
-          </Tooltip>
-
-          <Tooltip title="Percentage of completed tickets">
-            <Box sx={{ textAlign: "center" }}>
-              <Typography variant="h5" fontWeight="bold">
-                {completionPercentage}%
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Completion
-              </Typography>
-            </Box>
-          </Tooltip>
-
-          <Tooltip title="Number of blocked tickets">
-            <Box sx={{ textAlign: "center" }}>
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                color={blockedCount > 0 ? "error.main" : "inherit"}
-              >
-                {blockedCount}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Blocked
-              </Typography>
-            </Box>
-          </Tooltip>
-        </Box>
-      </Paper>
-
-      <Paper
-        elevation={0}
-        sx={{ p: 2, mt: 2, borderRadius: 2, bgcolor: "background.paper" }}
+      )}
+      <Box
+        component="ul"
+        sx={{
+          m: 0,
+          p: 0,
+          listStyle: "none",
+          display: "grid",
+          gridTemplateColumns: "repeat(2,minmax(0,1fr))",
+          gap: 1.5,
+        }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Tooltip title="Total story points in this sprint">
-            <Box sx={{ textAlign: "center" }}>
-              <Typography variant="h5" fontWeight="bold">
-                {completedStoryPoints}/{totalStoryPoints}
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Story Points
-              </Typography>
-            </Box>
-          </Tooltip>
-
-          <Tooltip title="Estimated hours remaining">
-            <Box sx={{ textAlign: "center" }}>
-              <Typography variant="h5" fontWeight="bold">
-                {totalRemainingHours}/{totalEstimatedHours}h
-              </Typography>
-              <Typography variant="caption" color="text.secondary">
-                Hours Remaining
-              </Typography>
-            </Box>
-          </Tooltip>
-        </Box>
-      </Paper>
-    </Box>
+        {groups.map((group) => (
+          <Box
+            component="li"
+            key={group.id}
+            sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}
+          >
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                flexShrink: 0,
+                borderRadius: "50%",
+                bgcolor: group.color || "primary.main",
+                border: "1px solid",
+                borderColor: "text.secondary",
+              }}
+            />
+            <Typography
+              variant="caption"
+              sx={{ flex: 1, overflowWrap: "anywhere" }}
+            >
+              {formatStatusName(group.name)}
+            </Typography>
+            <Typography variant="body2" fontWeight={500}>
+              {group.count}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    </OverviewPanel>
   );
-};
-
-export default SprintMetricsChart;
+}

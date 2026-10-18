@@ -1,7 +1,7 @@
 import { differenceInDays, isPast } from "date-fns";
 
 export const getDaysRemaining = (
-  endDateString: string | Date | null | undefined
+  endDateString: string | Date | null | undefined,
 ) => {
   if (!endDateString) return "No date";
 

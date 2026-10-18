@@ -1,89 +1,103 @@
-import { Box, Typography, Avatar } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { formatDistanceToNow } from "date-fns";
-import { Project, Sprint, Ticket } from "../../../../types"; // Adjust import path as needed
-import {
-  ActivityCard,
-  ActivityItem,
-  SectionTitle,
-} from "../../DashBoard.styles";
-import {
-  Activity,
-  generateActivities,
-  getAvatarText,
-} from "./RecentActivity.helpers";
-
-interface RecentActivityProps {
+import type { Project, Sprint, Ticket } from "../../../../types";
+import { generateActivities, getAvatarText } from "./RecentActivity.helpers";
+export default function RecentActivityFeed({
+  project,
+  allTickets,
+  tickets,
+  listOfSprints,
+  limit = 6,
+}: {
   project: Project | null;
   allTickets: Ticket[];
   tickets: Ticket[];
   listOfSprints: Sprint[];
   limit?: number;
-}
-
-export const RecentActivityFeed: React.FC<RecentActivityProps> = ({
-  project,
-  allTickets,
-  tickets,
-  listOfSprints,
-  limit = 7,
-}) => {
-  const activities: Activity[] = generateActivities(
+}) {
+  const updates = generateActivities(
     project,
     allTickets,
     tickets,
     listOfSprints,
-    limit
+    limit,
   );
-
-  // If no activities found
-  if (activities.length === 0) {
-    return (
-      <ActivityCard>
-        <SectionTitle variant="h6">Recent Activity</SectionTitle>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          align="center"
-          sx={{ py: 3 }}
-        >
-          No recent activity found
-        </Typography>
-      </ActivityCard>
-    );
-  }
-
   return (
-    <ActivityCard>
-      <SectionTitle variant="h6">Recent Activity</SectionTitle>
-
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {activities.map((activity, index) => (
-          <ActivityItem key={activity.id}>
+    <Box sx={{ minWidth: 0 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          gap: 1,
+          mb: 2,
+        }}
+      >
+        <Typography component="h2" variant="h3">
+          Recent updates
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          Project-wide
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0,1fr)",
+            sm: "repeat(2,minmax(0,1fr))",
+          },
+          gap: 2,
+        }}
+      >
+        {updates.map((update) => (
+          <Box
+            key={update.id}
+            sx={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 1.5,
+              minWidth: 0,
+            }}
+          >
             <Avatar
               sx={{
-                width: 40,
-                height: 40,
-                bgcolor:
-                  index % 2 === 0 ? ["warning.light"] : ["secondary.light"],
+                width: 32,
+                height: 32,
+                bgcolor: "primary.light",
+                color: "primary.main",
+                fontSize: 11,
               }}
             >
-              {getAvatarText(activity.user.name)}
+              {getAvatarText(update.user.name)}
             </Avatar>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="body2">
-                <strong>{activity.user.name}</strong> {activity.action}
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="body2" sx={{ overflowWrap: "anywhere" }}>
+                {update.action}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                {formatDistanceToNow(new Date(activity.timestamp), {
+                {update.user.name} ·{" "}
+                {formatDistanceToNow(new Date(update.timestamp), {
                   addSuffix: true,
                 })}
               </Typography>
             </Box>
-          </ActivityItem>
+          </Box>
         ))}
       </Box>
-    </ActivityCard>
+      {!updates.length && (
+        <Typography variant="body2" color="text.secondary">
+          No known updates yet.
+        </Typography>
+      )}
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ display: "block", mt: 2 }}
+      >
+        Known creations and latest modifications, based on item timestamps. This
+        is not an audit history.
+      </Typography>
+    </Box>
   );
-};
-
-export default RecentActivityFeed;
+}

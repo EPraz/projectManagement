@@ -1,68 +1,100 @@
-import { Avatar, Box, Grid2 as Grid, Typography } from "@mui/material";
-import { Sprint } from "../../../../types";
-import { TaskCard } from "../../DashBoard.styles";
-import ScheduleIcon from "@mui/icons-material/Schedule";
-
-const UpcomingDeadlines = ({ sprint }: { sprint?: Sprint | null }) => {
-  // Sort tickets by due date (closest first)
-  const upcomingTickets =
-    sprint?.tickets
-      ?.filter(
-        (ticket) => ticket.dueDate && new Date(ticket.dueDate) > new Date()
-      )
-      .sort(
-        (a, b) =>
-          new Date(a.dueDate!).getTime() - new Date(b.dueDate!).getTime()
-      )
-      .slice(0, 4) || [];
-
-  if (upcomingTickets.length === 0) {
-    return (
-      <Box sx={{ textAlign: "center", py: 3 }}>
-        <Typography variant="body2" color="text.secondary">
-          No upcoming deadlines
-        </Typography>
-      </Box>
-    );
-  }
-
+import { useState } from "react";
+import { Box, ButtonBase, Tabs, Tab, Typography } from "@mui/material";
+import type { Sprint, Ticket } from "../../../../types";
+import { getTicketDeadlines } from "../../overviewMetrics";
+import OverviewPanel from "../OverviewPanel";
+export default function UpcomingDeadlines({
+  sprint,
+  onOpen,
+}: {
+  sprint?: Sprint | null;
+  onOpen: (ticket: Ticket) => void;
+}) {
+  const { overdue, upcoming } = getTicketDeadlines(sprint?.tickets ?? []);
+  const [tab, setTab] = useState(overdue.length ? 0 : 1);
+  const shown = tab === 0 ? overdue : upcoming;
   return (
-    <Grid container spacing={3}>
-      {upcomingTickets.map((ticket, index) => (
-        <Grid size={{ xs: 12, md: 6 }} key={`${ticket.id}_${index}`}>
-          <TaskCard>
-            <Avatar sx={{ bgcolor: "warning.main" }}>
-              <ScheduleIcon width={20} height={20} />
-            </Avatar>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" fontWeight="medium">
-                {ticket.title}
+    <OverviewPanel title="On the calendar">
+      <Tabs
+        value={tab}
+        onChange={(_, value) => setTab(value)}
+        variant="fullWidth"
+        sx={{ mb: 1 }}
+      >
+        <Tab label={`Overdue · ${overdue.length}`} />
+        <Tab label={`Upcoming · ${upcoming.length}`} />
+      </Tabs>
+      {!sprint ? (
+        <Typography variant="body2" color="text.secondary">
+          Select a sprint to see its deadlines.
+        </Typography>
+      ) : !shown.length ? (
+        <Typography variant="body2" color="text.secondary" sx={{ py: 2 }}>
+          {tab === 0
+            ? "No overdue unfinished tickets."
+            : "No upcoming unfinished tickets."}
+        </Typography>
+      ) : (
+        shown.slice(0, 4).map((ticket) => (
+          <ButtonBase
+            key={ticket.id}
+            onClick={() => onOpen(ticket)}
+            aria-label={`Open ticket #${ticket.id} ${ticket.title}`}
+            sx={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 1.5,
+              textAlign: "left",
+              width: "100%",
+              py: 2,
+              borderBottom: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Box
+              sx={{
+                bgcolor: tab === 0 ? "error.light" : "primary.light",
+                color: tab === 0 ? "error.main" : "primary.main",
+                borderRadius: 1,
+                p: 0.5,
+                textAlign: "center",
+                minWidth: 44,
+              }}
+            >
+              <Typography sx={{ fontSize: 11 }}>
+                {new Date(ticket.dueDate!).toLocaleDateString("en-US", {
+                  month: "short",
+                })}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {ticket.assignedUser?.name || "Unassigned"}
+              <Typography sx={{ fontSize: 22 }}>
+                {new Date(ticket.dueDate!).getDate()}
               </Typography>
             </Box>
-            <Box sx={{ textAlign: "right" }}>
-              <Typography variant="caption" color="text.secondary">
-                Due Date
-              </Typography>
+            <Box sx={{ minWidth: 0 }}>
               <Typography
                 variant="body2"
-                color={
-                  new Date(ticket.dueDate!) <
-                  new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
-                    ? "error.main"
-                    : "text.primary"
-                }
+                fontWeight={500}
+                sx={{ overflowWrap: "anywhere" }}
               >
+                {ticket.title}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {tab === 0 ? "Overdue" : "Upcoming"} ·{" "}
                 {new Date(ticket.dueDate!).toLocaleDateString()}
               </Typography>
             </Box>
-          </TaskCard>
-        </Grid>
-      ))}
-    </Grid>
+          </ButtonBase>
+        ))
+      )}
+      {shown.length > 4 && (
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block", mt: 2 }}
+        >
+          Showing 4 of {shown.length} deadlines.
+        </Typography>
+      )}
+    </OverviewPanel>
   );
-};
-
-export default UpcomingDeadlines;
+}

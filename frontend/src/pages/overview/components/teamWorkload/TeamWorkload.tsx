@@ -1,105 +1,90 @@
-import React from "react";
-import { Ticket } from "../../../../types";
-import { Avatar, Box, Grid2 as Grid, Typography } from "@mui/material";
-import { StyledLinearProgress, TaskCard } from "../../DashBoard.styles";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-
-const TeamWorkload = ({ tickets }: { tickets?: Ticket[] }) => {
-  // Group tickets by assignee and calculate workload
-
-  //actualizar despues con ticket in progress / r4qa / r4ba/ done en base al total de tickets
-  const teamWorkload = React.useMemo(() => {
-    if (!tickets) return [];
-
-    const assigneeMap = new Map();
-
-    tickets.forEach((ticket) => {
-      const assigneeId = ticket.assignedTo || "unassigned";
-      const assigneeName = ticket.assignedUser?.name || "Unassigned";
-
-      if (!assigneeMap.has(assigneeId)) {
-        assigneeMap.set(assigneeId, {
-          id: assigneeId,
-          name: assigneeName,
-          totalTickets: 0,
-          completedTickets: 0,
-          storyPoints: 0,
-          completedStoryPoints: 0,
-        });
-      }
-
-      const userData = assigneeMap.get(assigneeId);
-      userData.totalTickets += 1;
-      userData.storyPoints += ticket.storyPoints || 0;
-
-      if (
-        ticket.status?.name.toLowerCase() === "done" ||
-        ticket.status?.name.toLowerCase() === "completed"
-      ) {
-        userData.completedTickets += 1;
-        userData.completedStoryPoints += ticket.storyPoints || 0;
-      }
-    });
-
-    return Array.from(assigneeMap.values())
-      .filter((user) => user.totalTickets > 0)
-      .sort((a, b) => b.totalTickets - a.totalTickets)
-      .slice(0, 4);
-  }, [tickets]);
-
-  if (teamWorkload.length === 0) {
-    return (
-      <Box sx={{ textAlign: "center", py: 3 }}>
-        <Typography variant="body2" color="text.secondary">
-          No assigned tickets in this sprint
-        </Typography>
-      </Box>
-    );
-  }
-
+import { Avatar, Box, LinearProgress, Typography } from "@mui/material";
+import type { Ticket } from "../../../../types";
+import OverviewPanel from "../OverviewPanel";
+export default function TeamWorkload({ tickets = [] }: { tickets?: Ticket[] }) {
+  const groups = new Map<
+    string,
+    {
+      name: string;
+      total: number;
+      done: number;
+      points: number;
+      completedPoints: number;
+    }
+  >();
+  tickets.forEach((ticket) => {
+    const id = ticket.assignedTo || "unassigned";
+    const member = groups.get(id) || {
+      name: ticket.assignedUser?.name || "Unassigned",
+      total: 0,
+      done: 0,
+      points: 0,
+      completedPoints: 0,
+    };
+    member.total++;
+    member.points += ticket.storyPoints ?? 0;
+    if (ticket.status?.name === "COMPLETED") {
+      member.done++;
+      member.completedPoints += ticket.storyPoints ?? 0;
+    }
+    groups.set(id, member);
+  });
   return (
-    <Grid container spacing={3}>
-      {teamWorkload.map((user, index) => (
-        <Grid size={{ xs: 12, md: 6 }} key={`${user.id}_${index}`}>
-          <TaskCard>
-            <Avatar sx={{ bgcolor: "primary.main" }}>
-              <PersonOutlineIcon width={20} height={20} />
+    <OverviewPanel title="Team workload">
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Ticket assignments in the selected sprint
+      </Typography>
+      {!groups.size && (
+        <Typography variant="body2" color="text.secondary">
+          No tickets in this sprint.
+        </Typography>
+      )}
+      {[...groups]
+        .sort((a, b) => b[1].total - a[1].total)
+        .map(([id, member]) => (
+          <Box
+            key={id}
+            sx={{
+              display: "flex",
+              gap: 1.5,
+              alignItems: "flex-start",
+              py: 2,
+              borderBottom: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Avatar
+              sx={{
+                width: 32,
+                height: 32,
+                fontSize: 12,
+                bgcolor: "primary.light",
+                color: "primary.main",
+              }}
+            >
+              {member.name
+                .split(" ")
+                .map((part) => part[0])
+                .slice(0, 2)
+                .join("")}
             </Avatar>
-            <Box sx={{ flex: 1 }}>
-              <Typography variant="subtitle1" fontWeight="medium">
-                {user.name}
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography variant="body2" fontWeight={500}>
+                {member.name}
               </Typography>
-              <Box sx={{ mt: 1 }}>
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <span>Progress</span>
-                  <span>
-                    {user.completedTickets}/{user.totalTickets} tickets
-                  </span>
-                </Typography>
-                <StyledLinearProgress
-                  variant="determinate"
-                  value={(user.completedTickets / user.totalTickets) * 100}
-                  sx={{ mt: 0.5, height: 6, borderRadius: 1 }}
-                />
-              </Box>
-            </Box>
-            <Box sx={{ textAlign: "right" }}>
               <Typography variant="caption" color="text.secondary">
-                Story Points
+                {member.done} / {member.total} tickets complete ·{" "}
+                {member.completedPoints} / {member.points} story points
               </Typography>
-              <Typography variant="body2">
-                {user.completedStoryPoints}/{user.storyPoints}
-              </Typography>
+              <LinearProgress
+                aria-label={`${member.name} ticket completion`}
+                variant="determinate"
+                value={(member.done / member.total) * 100}
+                sx={{ mt: 1 }}
+              />
             </Box>
-          </TaskCard>
-        </Grid>
-      ))}
-    </Grid>
+          </Box>
+        ))}
+    </OverviewPanel>
   );
-};
-
-export default TeamWorkload;
+}

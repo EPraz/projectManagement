@@ -1,64 +1,89 @@
-import {
-  Alert,
-  AlertTitle,
-  Avatar,
-  Box,
-  Chip,
-  Grid2 as Grid,
-  Typography,
-} from "@mui/material";
-import { Sprint } from "../../../../types";
-import { TaskCard } from "../../DashBoard.styles";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-
-const BlockersAndImpediments = ({ sprint }: { sprint?: Sprint | null }) => {
-  // Get blocked tickets
-  const blockedTickets =
-    sprint?.tickets?.filter((ticket) => ticket.isBlocked).slice(0, 4) || [];
-
-  if (blockedTickets.length === 0) {
-    return (
-      <Alert severity="success" sx={{ mb: 3 }}>
-        <AlertTitle>No Blockers</AlertTitle>
-        All tickets are currently unblocked
-      </Alert>
-    );
-  }
-
+import { Box, ButtonBase, Chip, Typography } from "@mui/material";
+import { LockOutlined, ChevronRight } from "@mui/icons-material";
+import type { Sprint, Ticket } from "../../../../types";
+import { getBlockedTickets } from "../../overviewMetrics";
+import OverviewPanel from "../OverviewPanel";
+export default function BlockersAndImpediments({
+  sprint,
+  onOpen,
+}: {
+  sprint?: Sprint | null;
+  onOpen: (ticket: Ticket) => void;
+}) {
+  const blocked = getBlockedTickets(sprint?.tickets ?? []);
   return (
-    <>
-      <Alert severity="warning" sx={{ mb: 3 }}>
-        <AlertTitle>Attention Required</AlertTitle>
-        {blockedTickets.length} ticket
-        {blockedTickets.length > 1 ? "s are" : " is"} currently blocked
-      </Alert>
-
-      <Grid container spacing={3}>
-        {blockedTickets.map((ticket, index) => (
-          <Grid size={{ xs: 12, md: 6 }} key={`${ticket.id}_${index}`}>
-            <TaskCard>
-              <Avatar sx={{ bgcolor: "error.main" }}>
-                <WarningAmberIcon width={20} height={20} />
-              </Avatar>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="subtitle1" fontWeight="medium">
+    <OverviewPanel
+      title="Needs attention"
+      action={
+        sprint && (
+          <Chip
+            size="small"
+            color={blocked.length ? "error" : "default"}
+            variant="outlined"
+            label={`${blocked.length} blocked`}
+          />
+        )
+      }
+    >
+      {!sprint ? (
+        <Typography color="text.secondary" variant="body2">
+          Select a sprint to see attention items.
+        </Typography>
+      ) : !blocked.length ? (
+        <Typography color="text.secondary" variant="body2">
+          No blocked tickets in this sprint.
+        </Typography>
+      ) : (
+        <>
+          {blocked.slice(0, 4).map((ticket) => (
+            <ButtonBase
+              key={ticket.id}
+              aria-label={`Open ticket #${ticket.id} ${ticket.title}`}
+              onClick={() => onOpen(ticket)}
+              sx={{
+                display: "flex",
+                width: "100%",
+                alignItems: "flex-start",
+                textAlign: "left",
+                gap: 1.5,
+                py: 2,
+                borderBottom: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <LockOutlined sx={{ color: "error.main", fontSize: 21 }} />
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography
+                  variant="body2"
+                  fontWeight={500}
+                  sx={{ overflowWrap: "anywhere" }}
+                >
                   {ticket.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {ticket.assignedUser?.name || "Unassigned"}
+                <Typography variant="caption" color="text.secondary">
+                  #{ticket.id} ·{" "}
+                  {ticket.blockedBy
+                    ? `Blocked by #${ticket.blockedBy}`
+                    : ticket.isBlocked
+                      ? "Marked blocked"
+                      : "Blocked ticket state"}
                 </Typography>
               </Box>
-              <Chip
-                label="Blocked"
-                color="error"
-                size="small"
-                variant="outlined"
-              />
-            </TaskCard>
-          </Grid>
-        ))}
-      </Grid>
-    </>
+              <ChevronRight sx={{ fontSize: 18 }} />
+            </ButtonBase>
+          ))}
+          {blocked.length > 4 && (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mt: 2 }}
+            >
+              Showing 4 of {blocked.length} blocked tickets. All remain
+              available in the Taskboard.
+            </Typography>
+          )}
+        </>
+      )}
+    </OverviewPanel>
   );
-};
-export default BlockersAndImpediments;
+}

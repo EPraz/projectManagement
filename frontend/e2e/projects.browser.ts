@@ -329,8 +329,8 @@ test("sprint selections are retained separately for each project", async ({
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
   await expect(page.getByRole("combobox")).toHaveValue("Sprint 1 — Foundation");
   await expect(
-    page.getByText("Overall Progress", { exact: true }).locator(".."),
-  ).toContainText("33%");
+    page.getByRole("progressbar", { name: "Overall Progress", exact: true }),
+  ).toHaveAttribute("aria-valuenow", "33");
   await expect(
     page.getByText("Completion", { exact: true }).locator(".."),
   ).toContainText("100%");
