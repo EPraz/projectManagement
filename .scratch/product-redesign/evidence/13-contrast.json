@@ -1,0 +1,226 @@
+[
+  {
+    "theme": "light",
+    "fg": "ink",
+    "bg": "background",
+    "ratio": 14.378324373302807,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "ink",
+    "bg": "paper",
+    "ratio": 15.703912083895364,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "ink",
+    "bg": "soft",
+    "ratio": 15.018850872528114,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "muted",
+    "bg": "background",
+    "ratio": 5.69450907967846,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "muted",
+    "bg": "paper",
+    "ratio": 6.2195056688425945,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "muted",
+    "bg": "soft",
+    "ratio": 5.948188428600766,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "blue",
+    "bg": "background",
+    "ratio": 5.668652111695224,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "blue",
+    "bg": "paper",
+    "ratio": 6.191264857088564,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "blue",
+    "bg": "soft",
+    "ratio": 5.921179582780247,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "green",
+    "bg": "greenTint",
+    "ratio": 6.01111239799449,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "red",
+    "bg": "redTint",
+    "ratio": 5.575811764726289,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "amber",
+    "bg": "amberTint",
+    "ratio": 6.10379742462829,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "blue",
+    "bg": "tint",
+    "ratio": 5.46146325970033,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "onBlue",
+    "bg": "blue",
+    "ratio": 6.191264857088564,
+    "minimum": 4.5
+  },
+  {
+    "theme": "light",
+    "fg": "control",
+    "bg": "background",
+    "ratio": 3.2710066146397447,
+    "minimum": 3
+  },
+  {
+    "theme": "light",
+    "fg": "control",
+    "bg": "paper",
+    "ratio": 3.572572086182755,
+    "minimum": 3
+  },
+  {
+    "theme": "dark",
+    "fg": "ink",
+    "bg": "background",
+    "ratio": 15.983694367938936,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "ink",
+    "bg": "paper",
+    "ratio": 13.83956195031345,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "ink",
+    "bg": "soft",
+    "ratio": 12.278594129477225,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "muted",
+    "bg": "background",
+    "ratio": 9.411005852856706,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "muted",
+    "bg": "paper",
+    "ratio": 8.148566627789416,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "muted",
+    "bg": "soft",
+    "ratio": 7.229487661447482,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "blue",
+    "bg": "background",
+    "ratio": 8.967458180138374,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "blue",
+    "bg": "paper",
+    "ratio": 7.764518650319596,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "blue",
+    "bg": "soft",
+    "ratio": 6.888756556046294,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "green",
+    "bg": "greenTint",
+    "ratio": 7.716914297221559,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "red",
+    "bg": "redTint",
+    "ratio": 6.90616389966147,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "amber",
+    "bg": "amberTint",
+    "ratio": 7.6586943741528755,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "blue",
+    "bg": "tint",
+    "ratio": 6.280856739061052,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "onBlue",
+    "bg": "blue",
+    "ratio": 8.040959740850594,
+    "minimum": 4.5
+  },
+  {
+    "theme": "dark",
+    "fg": "control",
+    "bg": "background",
+    "ratio": 4.835414404141893,
+    "minimum": 3
+  },
+  {
+    "theme": "dark",
+    "fg": "control",
+    "bg": "paper",
+    "ratio": 4.186767818570903,
+    "minimum": 3
+  }
+]

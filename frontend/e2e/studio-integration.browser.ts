@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { mkdir } from "node:fs/promises";
 import { enterDemo, navigateSection } from "./support/demo";
 
@@ -20,8 +21,11 @@ for (const theme of ["light", "dark"] as const) {
       expect(
         await page.evaluate(() => document.fonts.check('16px "IBM Plex Sans"')),
       ).toBe(true);
-      const output = resolve(
-        ".design/product-redesign/screenshots/production-c",
+      const output = fileURLToPath(
+        new URL(
+          "../../.design/product-redesign/screenshots/production-c/",
+          import.meta.url,
+        ),
       );
       await mkdir(output, { recursive: true });
       for (const section of [
@@ -35,7 +39,58 @@ for (const theme of ["light", "dark"] as const) {
         "Retrospective",
       ]) {
         await navigateSection(page, section);
-        await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+        const title =
+          section === "Overview"
+            ? "Orbit — Product Delivery."
+            : section === "Team"
+              ? "Team Members."
+              : `${section}.`;
+        await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
+        await expect(
+          page.getByText("This view is loading. Please wait.", { exact: true }),
+        ).toHaveCount(0);
+        if (section === "Taskboard")
+          await expect(
+            page.getByRole("region", {
+              name:
+                width >= 1200
+                  ? "Sprint task matrix"
+                  : "Tickets grouped by ticket state",
+              exact: true,
+            }),
+          ).toBeVisible();
+        if (section === "Backlog")
+          await expect(
+            page.getByRole("region", {
+              name:
+                width >= 1200 ? "Backlog table" : "Selected sprint work list",
+              exact: true,
+            }),
+          ).toBeVisible();
+        if (section === "Goals")
+          await expect(
+            page.getByRole("region", {
+              name: "Sprint goal cards",
+              exact: true,
+            }),
+          ).toBeVisible();
+        if (section === "Capacity")
+          await expect(
+            page.getByRole("region", {
+              name:
+                width >= 1200
+                  ? "Sprint capacity comparison"
+                  : "Member capacity cards",
+              exact: true,
+            }),
+          ).toBeVisible();
+        if (section === "Retrospective")
+          await expect(
+            page.getByRole("region", {
+              name: "Positive feedback",
+              exact: true,
+            }),
+          ).toBeVisible();
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth,

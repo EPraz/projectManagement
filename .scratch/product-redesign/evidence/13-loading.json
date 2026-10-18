@@ -1,0 +1,787 @@
+{
+  "label": "local-production-preview",
+  "environment": {
+    "node": "v22.20.0",
+    "browser": "155.0.8059.80",
+    "platform": "win32",
+    "conditions": "Local production preview / fresh context / no throttling"
+  },
+  "entry": [
+    {
+      "name": "/assets/index-CHHvM066.js",
+      "transferSize": 157924,
+      "encodedBodySize": 157624,
+      "decodedBodySize": 471333,
+      "duration": 42
+    }
+  ],
+  "projects": [
+    {
+      "name": "/assets/index-CHHvM066.js",
+      "transferSize": 157924,
+      "encodedBodySize": 157624,
+      "decodedBodySize": 471333,
+      "duration": 42
+    },
+    {
+      "name": "/assets/ProjectsPage-CjQDCW09.js",
+      "transferSize": 5686,
+      "encodedBodySize": 5386,
+      "decodedBodySize": 14363,
+      "duration": 47
+    },
+    {
+      "name": "/assets/index-ClVa8Qyk.js",
+      "transferSize": 16757,
+      "encodedBodySize": 16457,
+      "decodedBodySize": 51571,
+      "duration": 48
+    },
+    {
+      "name": "/assets/TextField-BqIWGBmr.js",
+      "transferSize": 19517,
+      "encodedBodySize": 19217,
+      "decodedBodySize": 64097,
+      "duration": 48
+    },
+    {
+      "name": "/assets/ownerWindow-BWbrGT9o.js",
+      "transferSize": 556,
+      "encodedBodySize": 256,
+      "decodedBodySize": 256,
+      "duration": 38
+    },
+    {
+      "name": "/assets/index-C6W9mHtf.js",
+      "transferSize": 862,
+      "encodedBodySize": 562,
+      "decodedBodySize": 562,
+      "duration": 37
+    },
+    {
+      "name": "/assets/index-BebWwQfE.js",
+      "transferSize": 1371,
+      "encodedBodySize": 1071,
+      "decodedBodySize": 2791,
+      "duration": 49
+    },
+    {
+      "name": "/assets/Role-BDJ6N7O9.js",
+      "transferSize": 707,
+      "encodedBodySize": 407,
+      "decodedBodySize": 407,
+      "duration": 48
+    },
+    {
+      "name": "/assets/StatusIndicator-BgQC6Mks.js",
+      "transferSize": 9459,
+      "encodedBodySize": 9159,
+      "decodedBodySize": 25951,
+      "duration": 56
+    },
+    {
+      "name": "/assets/Chip-C9Wt6Jy6.js",
+      "transferSize": 3066,
+      "encodedBodySize": 2766,
+      "decodedBodySize": 9369,
+      "duration": 73
+    },
+    {
+      "name": "/assets/ListItemIcon-Bk6--Rb6.js",
+      "transferSize": 1113,
+      "encodedBodySize": 813,
+      "decodedBodySize": 813,
+      "duration": 70
+    },
+    {
+      "name": "/assets/retrospectiveSchema-QbRzb0KV.js",
+      "transferSize": 15687,
+      "encodedBodySize": 15387,
+      "decodedBodySize": 45806,
+      "duration": 79
+    },
+    {
+      "name": "/assets/index.esm-BTc5g7kJ.js",
+      "transferSize": 9552,
+      "encodedBodySize": 9252,
+      "decodedBodySize": 24493,
+      "duration": 78
+    },
+    {
+      "name": "/assets/DeleteOutline-CtjzEBn9.js",
+      "transferSize": 492,
+      "encodedBodySize": 192,
+      "decodedBodySize": 192,
+      "duration": 57
+    },
+    {
+      "name": "/assets/Portal-CNrvOYsw.js",
+      "transferSize": 42659,
+      "encodedBodySize": 42359,
+      "decodedBodySize": 144836,
+      "duration": 87
+    },
+    {
+      "name": "/assets/index-a-u6gXxQ.js",
+      "transferSize": 967,
+      "encodedBodySize": 667,
+      "decodedBodySize": 1307,
+      "duration": 84
+    },
+    {
+      "name": "/assets/useEditorExit-C8gdtr05.js",
+      "transferSize": 4018,
+      "encodedBodySize": 3718,
+      "decodedBodySize": 10371,
+      "duration": 85
+    },
+    {
+      "name": "/assets/listItemButtonClasses-ctl8pyE7.js",
+      "transferSize": 543,
+      "encodedBodySize": 243,
+      "decodedBodySize": 243,
+      "duration": 82
+    },
+    {
+      "name": "/assets/UserMenu-CiXoySp5.js",
+      "transferSize": 2021,
+      "encodedBodySize": 1721,
+      "decodedBodySize": 3339,
+      "duration": 86
+    },
+    {
+      "name": "/assets/Avatar-BhQi9lBA.js",
+      "transferSize": 1655,
+      "encodedBodySize": 1355,
+      "decodedBodySize": 2685,
+      "duration": 89
+    },
+    {
+      "name": "/assets/Divider-CCrzxnzd.js",
+      "transferSize": 1597,
+      "encodedBodySize": 1297,
+      "decodedBodySize": 3730,
+      "duration": 89
+    },
+    {
+      "name": "/assets/Search-C40TpR5k.js",
+      "transferSize": 629,
+      "encodedBodySize": 329,
+      "decodedBodySize": 329,
+      "duration": 88
+    },
+    {
+      "name": "/assets/ProgressRing-itWt9QOG.js",
+      "transferSize": 2047,
+      "encodedBodySize": 1747,
+      "decodedBodySize": 3353,
+      "duration": 91
+    }
+  ],
+  "workspace": [
+    {
+      "name": "/assets/index-CHHvM066.js",
+      "transferSize": 157924,
+      "encodedBodySize": 157624,
+      "decodedBodySize": 471333,
+      "duration": 42
+    },
+    {
+      "name": "/assets/ProjectsPage-CjQDCW09.js",
+      "transferSize": 5686,
+      "encodedBodySize": 5386,
+      "decodedBodySize": 14363,
+      "duration": 47
+    },
+    {
+      "name": "/assets/index-ClVa8Qyk.js",
+      "transferSize": 16757,
+      "encodedBodySize": 16457,
+      "decodedBodySize": 51571,
+      "duration": 48
+    },
+    {
+      "name": "/assets/TextField-BqIWGBmr.js",
+      "transferSize": 19517,
+      "encodedBodySize": 19217,
+      "decodedBodySize": 64097,
+      "duration": 48
+    },
+    {
+      "name": "/assets/ownerWindow-BWbrGT9o.js",
+      "transferSize": 556,
+      "encodedBodySize": 256,
+      "decodedBodySize": 256,
+      "duration": 38
+    },
+    {
+      "name": "/assets/index-C6W9mHtf.js",
+      "transferSize": 862,
+      "encodedBodySize": 562,
+      "decodedBodySize": 562,
+      "duration": 37
+    },
+    {
+      "name": "/assets/index-BebWwQfE.js",
+      "transferSize": 1371,
+      "encodedBodySize": 1071,
+      "decodedBodySize": 2791,
+      "duration": 49
+    },
+    {
+      "name": "/assets/Role-BDJ6N7O9.js",
+      "transferSize": 707,
+      "encodedBodySize": 407,
+      "decodedBodySize": 407,
+      "duration": 48
+    },
+    {
+      "name": "/assets/StatusIndicator-BgQC6Mks.js",
+      "transferSize": 9459,
+      "encodedBodySize": 9159,
+      "decodedBodySize": 25951,
+      "duration": 56
+    },
+    {
+      "name": "/assets/Chip-C9Wt6Jy6.js",
+      "transferSize": 3066,
+      "encodedBodySize": 2766,
+      "decodedBodySize": 9369,
+      "duration": 73
+    },
+    {
+      "name": "/assets/ListItemIcon-Bk6--Rb6.js",
+      "transferSize": 1113,
+      "encodedBodySize": 813,
+      "decodedBodySize": 813,
+      "duration": 70
+    },
+    {
+      "name": "/assets/retrospectiveSchema-QbRzb0KV.js",
+      "transferSize": 15687,
+      "encodedBodySize": 15387,
+      "decodedBodySize": 45806,
+      "duration": 79
+    },
+    {
+      "name": "/assets/index.esm-BTc5g7kJ.js",
+      "transferSize": 9552,
+      "encodedBodySize": 9252,
+      "decodedBodySize": 24493,
+      "duration": 78
+    },
+    {
+      "name": "/assets/DeleteOutline-CtjzEBn9.js",
+      "transferSize": 492,
+      "encodedBodySize": 192,
+      "decodedBodySize": 192,
+      "duration": 57
+    },
+    {
+      "name": "/assets/Portal-CNrvOYsw.js",
+      "transferSize": 42659,
+      "encodedBodySize": 42359,
+      "decodedBodySize": 144836,
+      "duration": 87
+    },
+    {
+      "name": "/assets/index-a-u6gXxQ.js",
+      "transferSize": 967,
+      "encodedBodySize": 667,
+      "decodedBodySize": 1307,
+      "duration": 84
+    },
+    {
+      "name": "/assets/useEditorExit-C8gdtr05.js",
+      "transferSize": 4018,
+      "encodedBodySize": 3718,
+      "decodedBodySize": 10371,
+      "duration": 85
+    },
+    {
+      "name": "/assets/listItemButtonClasses-ctl8pyE7.js",
+      "transferSize": 543,
+      "encodedBodySize": 243,
+      "decodedBodySize": 243,
+      "duration": 82
+    },
+    {
+      "name": "/assets/UserMenu-CiXoySp5.js",
+      "transferSize": 2021,
+      "encodedBodySize": 1721,
+      "decodedBodySize": 3339,
+      "duration": 86
+    },
+    {
+      "name": "/assets/Avatar-BhQi9lBA.js",
+      "transferSize": 1655,
+      "encodedBodySize": 1355,
+      "decodedBodySize": 2685,
+      "duration": 89
+    },
+    {
+      "name": "/assets/Divider-CCrzxnzd.js",
+      "transferSize": 1597,
+      "encodedBodySize": 1297,
+      "decodedBodySize": 3730,
+      "duration": 89
+    },
+    {
+      "name": "/assets/Search-C40TpR5k.js",
+      "transferSize": 629,
+      "encodedBodySize": 329,
+      "decodedBodySize": 329,
+      "duration": 88
+    },
+    {
+      "name": "/assets/ProgressRing-itWt9QOG.js",
+      "transferSize": 2047,
+      "encodedBodySize": 1747,
+      "decodedBodySize": 3353,
+      "duration": 91
+    },
+    {
+      "name": "/assets/ProjectLayout-BvGREQNe.js",
+      "transferSize": 25170,
+      "encodedBodySize": 24870,
+      "decodedBodySize": 89656,
+      "duration": 22
+    },
+    {
+      "name": "/assets/usePendingWorkItems-DhdlLi7e.js",
+      "transferSize": 634,
+      "encodedBodySize": 334,
+      "decodedBodySize": 334,
+      "duration": 9
+    },
+    {
+      "name": "/assets/LayersOutlined-Yg1gqixU.js",
+      "transferSize": 637,
+      "encodedBodySize": 337,
+      "decodedBodySize": 337,
+      "duration": 9
+    },
+    {
+      "name": "/assets/Close-c3eweLIc.js",
+      "transferSize": 1541,
+      "encodedBodySize": 1241,
+      "decodedBodySize": 2860,
+      "duration": 10
+    },
+    {
+      "name": "/assets/ChevronRight-BJ8ZCnE5.js",
+      "transferSize": 456,
+      "encodedBodySize": 156,
+      "decodedBodySize": 156,
+      "duration": 9
+    },
+    {
+      "name": "/assets/FormControlLabel-C-PocQkz.js",
+      "transferSize": 2274,
+      "encodedBodySize": 1974,
+      "decodedBodySize": 4557,
+      "duration": 14
+    },
+    {
+      "name": "/assets/tabPanels-DheiYXyX.js",
+      "transferSize": 1948,
+      "encodedBodySize": 1648,
+      "decodedBodySize": 3642,
+      "duration": 20
+    },
+    {
+      "name": "/assets/SprintGoalStatus-DxcJ3k9h.js",
+      "transferSize": 410,
+      "encodedBodySize": 110,
+      "decodedBodySize": 110,
+      "duration": 16
+    },
+    {
+      "name": "/assets/EditorSelect-D6AkU1ME.js",
+      "transferSize": 770,
+      "encodedBodySize": 470,
+      "decodedBodySize": 470,
+      "duration": 16
+    },
+    {
+      "name": "/assets/format-AO1xnLaj.js",
+      "transferSize": 3733,
+      "encodedBodySize": 3433,
+      "decodedBodySize": 13066,
+      "duration": 33
+    },
+    {
+      "name": "/assets/en-US-F4pnv9B3.js",
+      "transferSize": 3151,
+      "encodedBodySize": 2851,
+      "decodedBodySize": 7928,
+      "duration": 35
+    },
+    {
+      "name": "/assets/endOfMonth-7tTpUgdO.js",
+      "transferSize": 581,
+      "encodedBodySize": 281,
+      "decodedBodySize": 281,
+      "duration": 21
+    },
+    {
+      "name": "/assets/Tabs-CnwSbnhr.js",
+      "transferSize": 5571,
+      "encodedBodySize": 5271,
+      "decodedBodySize": 15195,
+      "duration": 35
+    },
+    {
+      "name": "/assets/Dashboard-BHPypNUY.js",
+      "transferSize": 6645,
+      "encodedBodySize": 6345,
+      "decodedBodySize": 21809,
+      "duration": 5
+    },
+    {
+      "name": "/assets/LinearProgress-BAdKcmoc.js",
+      "transferSize": 2176,
+      "encodedBodySize": 1876,
+      "decodedBodySize": 6364,
+      "duration": 4
+    }
+  ],
+  "board": [
+    {
+      "name": "/assets/index-CHHvM066.js",
+      "transferSize": 157924,
+      "encodedBodySize": 157624,
+      "decodedBodySize": 471333,
+      "duration": 42
+    },
+    {
+      "name": "/assets/ProjectsPage-CjQDCW09.js",
+      "transferSize": 5686,
+      "encodedBodySize": 5386,
+      "decodedBodySize": 14363,
+      "duration": 47
+    },
+    {
+      "name": "/assets/index-ClVa8Qyk.js",
+      "transferSize": 16757,
+      "encodedBodySize": 16457,
+      "decodedBodySize": 51571,
+      "duration": 48
+    },
+    {
+      "name": "/assets/TextField-BqIWGBmr.js",
+      "transferSize": 19517,
+      "encodedBodySize": 19217,
+      "decodedBodySize": 64097,
+      "duration": 48
+    },
+    {
+      "name": "/assets/ownerWindow-BWbrGT9o.js",
+      "transferSize": 556,
+      "encodedBodySize": 256,
+      "decodedBodySize": 256,
+      "duration": 38
+    },
+    {
+      "name": "/assets/index-C6W9mHtf.js",
+      "transferSize": 862,
+      "encodedBodySize": 562,
+      "decodedBodySize": 562,
+      "duration": 37
+    },
+    {
+      "name": "/assets/index-BebWwQfE.js",
+      "transferSize": 1371,
+      "encodedBodySize": 1071,
+      "decodedBodySize": 2791,
+      "duration": 49
+    },
+    {
+      "name": "/assets/Role-BDJ6N7O9.js",
+      "transferSize": 707,
+      "encodedBodySize": 407,
+      "decodedBodySize": 407,
+      "duration": 48
+    },
+    {
+      "name": "/assets/StatusIndicator-BgQC6Mks.js",
+      "transferSize": 9459,
+      "encodedBodySize": 9159,
+      "decodedBodySize": 25951,
+      "duration": 56
+    },
+    {
+      "name": "/assets/Chip-C9Wt6Jy6.js",
+      "transferSize": 3066,
+      "encodedBodySize": 2766,
+      "decodedBodySize": 9369,
+      "duration": 73
+    },
+    {
+      "name": "/assets/ListItemIcon-Bk6--Rb6.js",
+      "transferSize": 1113,
+      "encodedBodySize": 813,
+      "decodedBodySize": 813,
+      "duration": 70
+    },
+    {
+      "name": "/assets/retrospectiveSchema-QbRzb0KV.js",
+      "transferSize": 15687,
+      "encodedBodySize": 15387,
+      "decodedBodySize": 45806,
+      "duration": 79
+    },
+    {
+      "name": "/assets/index.esm-BTc5g7kJ.js",
+      "transferSize": 9552,
+      "encodedBodySize": 9252,
+      "decodedBodySize": 24493,
+      "duration": 78
+    },
+    {
+      "name": "/assets/DeleteOutline-CtjzEBn9.js",
+      "transferSize": 492,
+      "encodedBodySize": 192,
+      "decodedBodySize": 192,
+      "duration": 57
+    },
+    {
+      "name": "/assets/Portal-CNrvOYsw.js",
+      "transferSize": 42659,
+      "encodedBodySize": 42359,
+      "decodedBodySize": 144836,
+      "duration": 87
+    },
+    {
+      "name": "/assets/index-a-u6gXxQ.js",
+      "transferSize": 967,
+      "encodedBodySize": 667,
+      "decodedBodySize": 1307,
+      "duration": 84
+    },
+    {
+      "name": "/assets/useEditorExit-C8gdtr05.js",
+      "transferSize": 4018,
+      "encodedBodySize": 3718,
+      "decodedBodySize": 10371,
+      "duration": 85
+    },
+    {
+      "name": "/assets/listItemButtonClasses-ctl8pyE7.js",
+      "transferSize": 543,
+      "encodedBodySize": 243,
+      "decodedBodySize": 243,
+      "duration": 82
+    },
+    {
+      "name": "/assets/UserMenu-CiXoySp5.js",
+      "transferSize": 2021,
+      "encodedBodySize": 1721,
+      "decodedBodySize": 3339,
+      "duration": 86
+    },
+    {
+      "name": "/assets/Avatar-BhQi9lBA.js",
+      "transferSize": 1655,
+      "encodedBodySize": 1355,
+      "decodedBodySize": 2685,
+      "duration": 89
+    },
+    {
+      "name": "/assets/Divider-CCrzxnzd.js",
+      "transferSize": 1597,
+      "encodedBodySize": 1297,
+      "decodedBodySize": 3730,
+      "duration": 89
+    },
+    {
+      "name": "/assets/Search-C40TpR5k.js",
+      "transferSize": 629,
+      "encodedBodySize": 329,
+      "decodedBodySize": 329,
+      "duration": 88
+    },
+    {
+      "name": "/assets/ProgressRing-itWt9QOG.js",
+      "transferSize": 2047,
+      "encodedBodySize": 1747,
+      "decodedBodySize": 3353,
+      "duration": 91
+    },
+    {
+      "name": "/assets/ProjectLayout-BvGREQNe.js",
+      "transferSize": 25170,
+      "encodedBodySize": 24870,
+      "decodedBodySize": 89656,
+      "duration": 22
+    },
+    {
+      "name": "/assets/usePendingWorkItems-DhdlLi7e.js",
+      "transferSize": 634,
+      "encodedBodySize": 334,
+      "decodedBodySize": 334,
+      "duration": 9
+    },
+    {
+      "name": "/assets/LayersOutlined-Yg1gqixU.js",
+      "transferSize": 637,
+      "encodedBodySize": 337,
+      "decodedBodySize": 337,
+      "duration": 9
+    },
+    {
+      "name": "/assets/Close-c3eweLIc.js",
+      "transferSize": 1541,
+      "encodedBodySize": 1241,
+      "decodedBodySize": 2860,
+      "duration": 10
+    },
+    {
+      "name": "/assets/ChevronRight-BJ8ZCnE5.js",
+      "transferSize": 456,
+      "encodedBodySize": 156,
+      "decodedBodySize": 156,
+      "duration": 9
+    },
+    {
+      "name": "/assets/FormControlLabel-C-PocQkz.js",
+      "transferSize": 2274,
+      "encodedBodySize": 1974,
+      "decodedBodySize": 4557,
+      "duration": 14
+    },
+    {
+      "name": "/assets/tabPanels-DheiYXyX.js",
+      "transferSize": 1948,
+      "encodedBodySize": 1648,
+      "decodedBodySize": 3642,
+      "duration": 20
+    },
+    {
+      "name": "/assets/SprintGoalStatus-DxcJ3k9h.js",
+      "transferSize": 410,
+      "encodedBodySize": 110,
+      "decodedBodySize": 110,
+      "duration": 16
+    },
+    {
+      "name": "/assets/EditorSelect-D6AkU1ME.js",
+      "transferSize": 770,
+      "encodedBodySize": 470,
+      "decodedBodySize": 470,
+      "duration": 16
+    },
+    {
+      "name": "/assets/format-AO1xnLaj.js",
+      "transferSize": 3733,
+      "encodedBodySize": 3433,
+      "decodedBodySize": 13066,
+      "duration": 33
+    },
+    {
+      "name": "/assets/en-US-F4pnv9B3.js",
+      "transferSize": 3151,
+      "encodedBodySize": 2851,
+      "decodedBodySize": 7928,
+      "duration": 35
+    },
+    {
+      "name": "/assets/endOfMonth-7tTpUgdO.js",
+      "transferSize": 581,
+      "encodedBodySize": 281,
+      "decodedBodySize": 281,
+      "duration": 21
+    },
+    {
+      "name": "/assets/Tabs-CnwSbnhr.js",
+      "transferSize": 5571,
+      "encodedBodySize": 5271,
+      "decodedBodySize": 15195,
+      "duration": 35
+    },
+    {
+      "name": "/assets/Dashboard-BHPypNUY.js",
+      "transferSize": 6645,
+      "encodedBodySize": 6345,
+      "decodedBodySize": 21809,
+      "duration": 5
+    },
+    {
+      "name": "/assets/LinearProgress-BAdKcmoc.js",
+      "transferSize": 2176,
+      "encodedBodySize": 1876,
+      "decodedBodySize": 6364,
+      "duration": 4
+    },
+    {
+      "name": "/assets/Board-DUnNMVw1.js",
+      "transferSize": 4161,
+      "encodedBodySize": 3861,
+      "decodedBodySize": 9955,
+      "duration": 9
+    },
+    {
+      "name": "/assets/WorkFilters-DgdY9mKs.js",
+      "transferSize": 1862,
+      "encodedBodySize": 1562,
+      "decodedBodySize": 3757,
+      "duration": 10
+    },
+    {
+      "name": "/assets/FilterList-ZdVO0okJ.js",
+      "transferSize": 448,
+      "encodedBodySize": 148,
+      "decodedBodySize": 148,
+      "duration": 8
+    },
+    {
+      "name": "/assets/TaskBoard-Cs8i78Zq.js",
+      "transferSize": 17260,
+      "encodedBodySize": 16960,
+      "decodedBodySize": 50543,
+      "duration": 16
+    },
+    {
+      "name": "/assets/workFilterPredicates-oidtqhoJ.js",
+      "transferSize": 1219,
+      "encodedBodySize": 919,
+      "decodedBodySize": 919,
+      "duration": 6
+    },
+    {
+      "name": "/assets/TableRow-DH7H7drp.js",
+      "transferSize": 2392,
+      "encodedBodySize": 2092,
+      "decodedBodySize": 6325,
+      "duration": 12
+    },
+    {
+      "name": "/assets/ExpandMore-Fdo_WS3h.js",
+      "transferSize": 452,
+      "encodedBodySize": 152,
+      "decodedBodySize": 152,
+      "duration": 6
+    }
+  ],
+  "errors": [],
+  "entryTotals": {
+    "requests": 1,
+    "encodedBodySize": 157624,
+    "transferSize": 157924
+  },
+  "projectsTotals": {
+    "requests": 23,
+    "encodedBodySize": 291985,
+    "transferSize": 298885
+  },
+  "workspaceTotals": {
+    "requests": 38,
+    "encodedBodySize": 343182,
+    "transferSize": 354582
+  },
+  "boardTotals": {
+    "requests": 45,
+    "encodedBodySize": 368876,
+    "transferSize": 382376
+  }
+}

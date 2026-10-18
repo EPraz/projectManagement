@@ -4,7 +4,7 @@
 
 **Blocked by:** 13 — Verify coherent C journeys across the complete product.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -24,3 +24,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after verified integration. Publish to the existing GitHub-connected free services, verify hosted CI/revisions and bounded public HTTP/browser/socket behavior; preserve data and recording checkpoint.

@@ -4,17 +4,17 @@
 
 **Blocked by:** 03 — See a truthful operational Overview; 06 — Execute a sprint through the responsive Taskboard; 07 — Work from a selected-sprint Backlog; 08 — Explore project hierarchy and open linked tickets; 09 — Plan sprint goals and checklists; 10 — Plan member capacity for the selected sprint; 11 — Manage the project's team membership; 12 — Run a responsive sprint retrospective.
 
-**Status:** claimed
+**Status:** resolved
 
 Type: task
 
-- [ ] Run integrated entry → Projects → Overview → Taskboard/Backlog → ticket/task → hierarchy/planning/team/retrospective journeys, including project/sprint changes, deep links, return paths and canonical live updates.
-- [ ] Check both themes at representative 320–390 mobile, 768/1024 tablet and 1280/1440 desktop widths; verify zoom/reflow, portrait/landscape behavior, contrast, reduced motion, touch targets, keyboard, visible focus and modal focus return. Allow only intentional local two-dimensional scrolling.
-- [ ] Validate real loading/empty/no matches/error/retry/pending/unsaved/deletion states across surfaces, not only populated happy-path screenshots. Each earlier ticket already owns its local checks; this ticket covers integration gaps.
-- [ ] Preserve meaningful HTTP/WebSocket PostgreSQL regressions and existing browser guarantees, plus targeted new blocker/deadline/state/filter tests. Use isolated local test databases, never the public/private Neon database for fixtures or resets.
-- [ ] Pass current frontend/backend builds, types, lint and required CI checks; review against approved behavior and documented conventions and resolve material findings. Check loading/bundle/performance regressions where changes warrant comparison against recorded quality baselines.
-- [ ] Remove old duplicate navigation, obsolete styles/components/compatibility paths only when no caller remains; keep retained functionality and CI green. Exclude disposable prototype routes/controls/data from production builds.
-- [ ] Record final screenshots, verification evidence and material limitations for handoff. README/walkthrough remain deferred and no video is recorded here.
+- [x] Run integrated entry → Projects → Overview → Taskboard/Backlog → ticket/task → hierarchy/planning/team/retrospective journeys, including project/sprint changes, deep links, return paths and canonical live updates.
+- [x] Check both themes at representative 320–390 mobile, 768/1024 tablet and 1280/1440 desktop widths; verify zoom/reflow, portrait/landscape behavior, contrast, reduced motion, touch targets, keyboard, visible focus and modal focus return. Allow only intentional local two-dimensional scrolling.
+- [x] Validate real loading/empty/no matches/error/retry/pending/unsaved/deletion states across surfaces, not only populated happy-path screenshots. Each earlier ticket already owns its local checks; this ticket covers integration gaps.
+- [x] Preserve meaningful HTTP/WebSocket PostgreSQL regressions and existing browser guarantees, plus targeted new blocker/deadline/state/filter tests. Use isolated local test databases, never the public/private Neon database for fixtures or resets.
+- [x] Pass current frontend/backend builds, types, lint and required CI checks; review against approved behavior and documented conventions and resolve material findings. Check loading/bundle/performance regressions where changes warrant comparison against recorded quality baselines.
+- [x] Remove old duplicate navigation, obsolete styles/components/compatibility paths only when no caller remains; keep retained functionality and CI green. Exclude disposable prototype routes/controls/data from production builds.
+- [x] Record final screenshots, verification evidence and material limitations for handoff. README/walkthrough remain deferred and no video is recorded here.
 
 ## Shared completion requirements
 
@@ -28,3 +28,7 @@ Type: task
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
 
 - 2026-10-18: Claimed after all twelve domain deliveries. Verify complete production journeys, both themes/devices and required gates; final review baseline confirmed by owner: d355d98.
+
+## Answer
+
+Complete integrated local verification passes:257 native production-browser journeys,15 final capture/reflow checks,80 frontend tests/12 snapshots,58 API/WebSocket/startup tests, actual env-isolation build, schema/types/lint/build. Reviewed48 populated captures and32 semantic contrast pairs. Corrected panel radii, former-member assignment presentation and capture waits; retired nine unused stylesheets. Independent Standards review:0 hard violations/2 nonblocking maintenance judgments; Spec:0 material findings. Full evidence and measured limits: [integration](../evidence/13-integration.md), [review](../evidence/13-review.md). Ticket14 owns hosted CI/publication; no cloud/data reset or recording.

@@ -8,14 +8,14 @@ if (
   origin.password
 )
   throw new Error(
-    "Measurements require an isolated loopback production preview"
+    "Measurements require an isolated loopback production preview",
   );
 async function main() {
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
     const context = await browser.newContext({
       baseURL: origin.origin,
-      viewport: { width: 1280, height: 900 }
+      viewport: { width: 1280, height: 900 },
     });
     const page = await context.newPage();
     const failures = [];
@@ -27,15 +27,15 @@ async function main() {
           .filter(
             (entry) =>
               entry.initiatorType === "script" ||
-              /\/assets\/.*\.js/.test(entry.name)
+              /\/assets\/.*\.js/.test(entry.name),
           )
           .map((entry) => ({
             name: new URL(entry.name).pathname,
             transferSize: entry.transferSize,
             encodedBodySize: entry.encodedBodySize,
             decodedBodySize: entry.decodedBodySize,
-            duration: Math.round(entry.duration)
-          }))
+            duration: Math.round(entry.duration),
+          })),
       );
     const result = {
       label: "local-production-preview",
@@ -43,8 +43,8 @@ async function main() {
         node: process.version,
         browser: browser.version(),
         platform: process.platform,
-        conditions: "Local production preview / fresh context / no throttling"
-      }
+        conditions: "Local production preview / fresh context / no throttling",
+      },
     };
     await page.goto("/auth/instantLogin");
     await page.getByRole("button", { name: /explore demo/i }).waitFor();
@@ -55,12 +55,17 @@ async function main() {
     await page.waitForLoadState("networkidle");
     result.projects = await resources();
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).waitFor();
+    await page
+      .getByRole("button", { name: "Taskboard", exact: true })
+      .waitFor();
     await page.waitForLoadState("networkidle");
     result.workspace = await resources();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
+    await page.getByRole("button", { name: "Taskboard", exact: true }).click();
     await page
       .getByRole("button", { name: "Add New Item", exact: true })
+      .waitFor();
+    await page
+      .getByRole("region", { name: "Sprint task matrix", exact: true })
       .waitFor();
     await page.waitForLoadState("networkidle");
     result.board = await resources();
@@ -70,14 +75,14 @@ async function main() {
         requests: result[stage].length,
         encodedBodySize: result[stage].reduce(
           (n, r) => n + r.encodedBodySize,
-          0
+          0,
         ),
-        transferSize: result[stage].reduce((n, r) => n + r.transferSize, 0)
+        transferSize: result[stage].reduce((n, r) => n + r.transferSize, 0),
       };
     assert.equal(
       failures.length,
       0,
-      "The measured application must not have page errors"
+      "The measured application must not have page errors",
     );
     console.log(JSON.stringify(result, null, 2));
   } finally {
