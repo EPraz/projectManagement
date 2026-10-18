@@ -22,11 +22,9 @@ const TaskBoard = () => {
   const { tickets } = useTicket();
   const {
     project,
-    // loadingBulkUpdateTickets,
     setSelectedTicketId,
     selectedTasksStatuses,
     setOpenTaskDialog,
-    handleUpdateTicketOrder,
     handleUpdateTicketStatus,
     handleOnDragEndTask
   } = useOutletContext<LayoutContextProps>();
@@ -64,21 +62,15 @@ const TaskBoard = () => {
                           <OrderButtons>
                             <IconButton
                               size="small"
-                              onClick={() =>
-                                handleUpdateTicketOrder(ticket.id, "up")
-                              }
-                              // disabled={isFirst || loadingBulkUpdateTickets}
+                              aria-label="Move ticket up (unavailable)"
                               disabled={true}
                             >
                               <ArrowUpwardIcon fontSize="small" />
                             </IconButton>
                             <IconButton
                               size="small"
-                              onClick={() =>
-                                handleUpdateTicketOrder(ticket.id, "down")
-                              }
+                              aria-label="Move ticket down (unavailable)"
                               disabled={true}
-                              // disabled={isLast || loadingBulkUpdateTickets}
                             >
                               <ArrowDownwardIcon fontSize="small" />
                             </IconButton>

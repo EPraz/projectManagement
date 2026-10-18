@@ -4,7 +4,7 @@
 
 **Blocked by:** 08: Reliable ticket-editing contracts and mutation coordination.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,7 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after14resolved atfab824c. Existing bulk PATCH accepts an array of ticket updates; its sole wired UI callback is the known-broken reorder helper behind deliberately disabled board arrows. Preserve the spec's ticket-ordering limitations; do not enable a new reorder feature. Characterize and harden the retained API with real HTTP/PostgreSQL/socket tests, remove unreachable request/context/helper wiring after confirming consumers, and keep disabled controls honest. Review existing body-size and global cleanup behavior with explicit dispositions, without inventing per-visitor budgets or access policy.
+
+2026-10-17 bounded safeguard proposal: remove the unused global all-ticket cleanup route/service (no UI or documented consumer) and validate numeric ticket route IDs. Existing per-ticket/project deletion and explicit private seed restoration remain supported. This removes obsolete global cleanup rather than adding a visitor quota, role or tenancy policy. Keep the bulk-update array contract, legacy order field and default request-byte protection; validate each target's relationships without inventing a same-project batch restriction.

@@ -1,9 +1,12 @@
 import { BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import type { Prisma } from '@prisma/client';
 import { UpdateTicketDto } from '../dto/update/UpdateTicketDto';
 
 export async function validateTicketUpdate(
-  prisma: PrismaService,
+  prisma: Pick<
+    Prisma.TransactionClient,
+    'ticketStatus' | 'sprint' | 'feature' | 'ticket'
+  >,
   ticket: { id: number; projectId: string | null },
   update: UpdateTicketDto,
 ) {

@@ -11,7 +11,6 @@ import {
 } from "../models";
 import { useProject, useSprint, useTicket } from "../../context";
 import {
-  useBulkUpdateTickets,
   useCreateTask,
   useCreateTicket,
   useDeleteTask,
@@ -48,11 +47,6 @@ export interface LayoutContextProps {
 
   updateTicket: ReturnType<typeof useUpdateTicket>["updateTicket"];
   loadingUpdateTickets: ReturnType<typeof useUpdateTicket>["loading"];
-
-  bulkUpdateTickets: ReturnType<
-    typeof useBulkUpdateTickets
-  >["bulkUpdateTickets"];
-  loadingBulkUpdateTickets: ReturnType<typeof useBulkUpdateTickets>["loading"];
 
   deleteTicket: ReturnType<typeof useDeleteTicket>["deleteTicket"];
   loadingDeleteTicket: ReturnType<typeof useDeleteTicket>["loading"];
@@ -158,10 +152,6 @@ export interface LayoutContextProps {
   handleCreateTicket: (data: Partial<Ticket>) => Promise<void>;
   handleEditTicket: (data: TicketUpdate) => Promise<boolean>;
   handleDeleteTicket: (data: Partial<Ticket>) => Promise<boolean>;
-  handleUpdateTicketOrder: (
-    ticketId: number,
-    direction: "up" | "down"
-  ) => Promise<void>;
   handleUpdateTicketStatus: (
     ticketId: number,
     newStatusId: string

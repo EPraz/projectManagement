@@ -5,7 +5,6 @@ import { useSprintPlanning } from "./useSprintPlanning";
 import Header from "../header/Header";
 import Sidebar from "../sidebar/Sidebar";
 import {
-  useBulkUpdateTickets,
   useCreateTask,
   useCreateTicket,
   useDeleteTask,
@@ -30,7 +29,6 @@ import {
   // deleteTicketHandler,
   // editTicketHandler,
   onDragEndTaskHandler,
-  updateTicketOrderHandler,
   updateTicketStatusHandler
 } from "../../helpers";
 import { initialBacklogColumns } from "../../constants";
@@ -77,8 +75,6 @@ const Layout = () => {
     loading: loadingUpdateTickets,
     isPending: isUpdatingTicket
   } = useUpdateTicket();
-  const { bulkUpdateTickets, loading: loadingBulkUpdateTickets } =
-    useBulkUpdateTickets();
   const {
     deleteTicket,
     loading: loadingDeleteTicket,
@@ -269,16 +265,6 @@ const Layout = () => {
     [deleteTicket, removeAllTickets]
   );
 
-  const handleUpdateTicketOrder = useCallback(
-    updateTicketOrderHandler(
-      bulkUpdateTickets,
-      tickets,
-      currentUser?.email,
-      updateListOfTickets
-    ),
-    [bulkUpdateTickets, tickets, currentUser?.email, updateListOfTickets]
-  );
-
   const handleUpdateTicketStatus = useCallback(
     updateTicketStatusHandler(
       updateTicket,
@@ -424,8 +410,6 @@ const Layout = () => {
                 loadingPostTickets,
                 updateTicket,
                 loadingUpdateTickets,
-                bulkUpdateTickets,
-                loadingBulkUpdateTickets,
                 deleteTicket,
                 loadingDeleteTicket,
                 // Local Variables
@@ -496,7 +480,6 @@ const Layout = () => {
                 handleCreateTicket,
                 handleEditTicket,
                 handleDeleteTicket,
-                handleUpdateTicketOrder,
                 handleUpdateTicketStatus,
                 // Functions -> Tasks
                 handleCreateTask,

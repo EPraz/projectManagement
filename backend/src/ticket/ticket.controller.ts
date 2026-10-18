@@ -4,8 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
-  HttpStatus,
   Param,
   Patch,
   Post,
@@ -15,6 +13,9 @@ import {
 } from '@nestjs/common';
 import { Ticket } from '@prisma/client';
 import { CreateTicketDto, UpdateTicketDto } from 'src/dto';
+import { TicketIdDto } from './ticket-id.dto';
+import { BulkUpdateTicketDto } from './bulk-update-ticket.dto';
+import { BulkTicketUpdatesPipe } from './bulk-ticket-updates.pipe';
 import { TicketService } from './ticket.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
@@ -59,36 +60,36 @@ export class TicketController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Ticket | null> {
-    return await this.ticketService.findOne(id);
+  async findOne(@Param() params: TicketIdDto): Promise<Ticket | null> {
+    return await this.ticketService.findOne(params.id);
   }
 
   @Patch('bulk-update')
-  async bulkUpdate(@Body() request: UpdateTicketDto[]): Promise<Ticket[]> {
-    return await this.ticketService.bulkUpdate(request);
+  async bulkUpdate(
+    @Body(BulkTicketUpdatesPipe) request: BulkUpdateTicketDto[],
+    @Req() authenticatedRequest: Request & { user: { email: string } },
+  ): Promise<Ticket[]> {
+    return await this.ticketService.bulkUpdate(
+      request,
+      authenticatedRequest.user.email,
+    );
   }
 
   @Patch(':id')
   async update(
-    @Param('id') id: number,
+    @Param() params: TicketIdDto,
     @Body() request: UpdateTicketDto,
     @Req() authenticatedRequest: Request & { user: { email: string } },
   ): Promise<Ticket | null> {
     return await this.ticketService.update({
       ...request,
-      id,
+      id: params.id,
       updatedBy: authenticatedRequest.user.email,
     });
   }
 
-  @Delete('all')
-  @HttpCode(HttpStatus.NO_CONTENT) // 204 No Content
-  async deleteAll(): Promise<void> {
-    await this.ticketService.deleteAll();
-  }
-
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<boolean> {
-    return await this.ticketService.delete(id);
+  async delete(@Param() params: TicketIdDto): Promise<boolean> {
+    return await this.ticketService.delete(params.id);
   }
 }

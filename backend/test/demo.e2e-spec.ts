@@ -65,7 +65,88 @@ process.env.NODE_ENV = 'test';
 describe('Acceso demo HTTP API', () => {
   let app: INestApplication<App>;
   const prisma = new PrismaClient({ datasourceUrl: databaseUrl });
+  const serverLogs: unknown[][] = [];
+  const captureLog = (...values: unknown[]) => {
+    serverLogs.push(values);
+  };
   const demoId = 'd0000000-0000-4000-8000-000000000001';
+
+  async function bulkFixture() {
+    const token = tokenOf(
+      await request(app.getHttpServer())
+        .post('/auth/instant-login')
+        .send({})
+        .expect(201),
+    );
+    const projectIds: string[] = [];
+    const dispose = async () => {
+      for (const id of projectIds)
+        await request(app.getHttpServer())
+          .delete(`/projects/${id}`)
+          .auth(token, { type: 'bearer' })
+          .expect(200);
+    };
+    try {
+      const projects: {
+        id: string;
+        ticketStatuses: { id: string }[];
+        sprints: { id: string }[];
+      }[] = [];
+      for (const name of ['Selected', 'Other']) {
+        const created = await request(app.getHttpServer())
+          .post('/projects')
+          .auth(token, { type: 'bearer' })
+          .send({
+            title: `Isolated bulk ${name} ${Date.now()}`,
+            description: 'Temporary HTTP fixture',
+            createdBy: 'visitor@demo.example',
+          })
+          .expect(201);
+        projectIds.push(idOf(created));
+        const sprint = await request(app.getHttpServer())
+          .post('/sprints')
+          .auth(token, { type: 'bearer' })
+          .send({
+            projectId: idOf(created),
+            name: `Bulk ${name}`,
+            startDate: '2026-10-17T00:00:00Z',
+            endDate: '2026-10-31T00:00:00Z',
+            createdBy: 'visitor@demo.example',
+          })
+          .expect(201);
+        projects.push({
+          ...(created.body as { id: string; ticketStatuses: { id: string }[] }),
+          sprints: [{ id: idOf(sprint) }],
+        });
+      }
+      const tickets: {
+        id: number;
+        title: string;
+        order: number;
+        projectId: string;
+      }[] = [];
+      for (const [index, title] of [
+        'Bulk ticket A',
+        'Bulk ticket B',
+        'Other project bulk ticket',
+      ].entries()) {
+        const created = await request(app.getHttpServer())
+          .post('/tickets')
+          .auth(token, { type: 'bearer' })
+          .send({
+            title,
+            sprintId: projects[index === 2 ? 1 : 0].sprints[0].id,
+            createdBy: 'visitor@demo.example',
+          })
+          .expect(201);
+        tickets.push(created.body as (typeof tickets)[number]);
+      }
+      return { token, projects, tickets, dispose };
+    } catch (error) {
+      await dispose();
+      throw error;
+    }
+  }
 
   beforeAll(async () => {
     await prisma.$executeRawUnsafe(
@@ -87,6 +168,14 @@ describe('Acceso demo HTTP API', () => {
       imports: [AppModule],
     }).compile();
     app = module.createNestApplication<INestApplication<App>>();
+    app.useLogger({
+      log: () => {},
+      error: captureLog,
+      warn: captureLog,
+      debug: () => {},
+      verbose: () => {},
+      fatal: captureLog,
+    });
     app.use(cookieParser());
     app.useGlobalPipes(createValidationPipe());
     await app.listen(0, '127.0.0.1');
@@ -269,6 +358,380 @@ describe('Acceso demo HTTP API', () => {
       /"password"|"refreshToken"/,
     );
   }, 30000);
+
+  it('attributes bulk changes to the demo and publishes only complete committed results', async () => {
+    const fixture = await bulkFixture();
+    const [first, second] = fixture.tickets;
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      autoConnect: false,
+      reconnection: false,
+      timeout: 5000,
+    });
+    const events: {
+      id: number;
+      title: string;
+      order: number;
+      updatedBy: string;
+    }[] = [];
+    const observedReads: Promise<{ id: number; title: string }>[] = [];
+    try {
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      observer.on('ticketUpdated', (event: (typeof events)[number]) => {
+        if (![first.id, second.id].includes(event.id)) return;
+        events.push(event);
+        const otherId = event.id === first.id ? second.id : first.id;
+        observedReads.push(
+          request(app.getHttpServer())
+            .get(`/tickets/${otherId}`)
+            .auth(fixture.token, { type: 'bearer' })
+            .expect(200)
+            .then((response) => response.body as { id: number; title: string }),
+        );
+      });
+      const updated = await request(app.getHttpServer())
+        .patch('/tickets/bulk-update')
+        .auth(fixture.token, { type: 'bearer' })
+        .send([
+          {
+            id: second.id,
+            order: first.order,
+            title: 'Confirmed bulk B',
+            updatedBy: 'spoofed@example.com',
+          },
+          {
+            id: first.id,
+            order: second.order,
+            title: 'Confirmed bulk A',
+            updatedBy: 'spoofed@example.com',
+          },
+        ])
+        .expect(200);
+      const records = updated.body as (typeof events)[number][];
+      expect(records.map((item) => item.id)).toEqual([second.id, first.id]);
+      expect(
+        records.every((item) => item.updatedBy === 'visitor@demo.example'),
+      ).toBe(true);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(2);
+      expect(events.find((item) => item.id === first.id)).toMatchObject({
+        title: 'Confirmed bulk A',
+        order: second.order,
+        updatedBy: 'visitor@demo.example',
+      });
+      expect(events.find((item) => item.id === second.id)).toMatchObject({
+        title: 'Confirmed bulk B',
+        order: first.order,
+        updatedBy: 'visitor@demo.example',
+      });
+      const fresh = await Promise.all(observedReads);
+      expect(fresh.find((item) => item.id === first.id)?.title).toBe(
+        'Confirmed bulk A',
+      );
+      expect(fresh.find((item) => item.id === second.id)?.title).toBe(
+        'Confirmed bulk B',
+      );
+      expect(JSON.stringify([updated.body, events])).not.toMatch(
+        /"password"|"refreshToken"/,
+      );
+    } finally {
+      observer.disconnect();
+      await fixture.dispose();
+    }
+  });
+
+  it('rejects malformed, empty and duplicate bulk commands without changing records', async () => {
+    const fixture = await bulkFixture();
+    const first = fixture.tickets[0];
+    const command = { id: first.id, updatedBy: 'visitor@demo.example' };
+    try {
+      for (const invalid of [
+        [],
+        {},
+        [null],
+        [JSON.stringify(command)],
+        [{ ...command, id: 0 }],
+        [{ ...command, id: -1 }],
+        [{ ...command, id: 1.5 }],
+        [{ ...command, id: 2147483648 }],
+        [{ ...command, order: -1 }],
+        [{ ...command, order: null }],
+        [{ ...command, storyPoints: -1 }],
+        [{ ...command, storyPoints: 1.5 }],
+        [{ ...command, storyPoints: 2147483648 }],
+        [{ ...command, title: '   ' }],
+        [{ ...command, title: null }],
+        [{ ...command, type: null }],
+        [{ ...command, isBlocked: 'false' }],
+        [{ ...command, isBlocked: null }],
+        [{ ...command, tags: null }],
+        [{ ...command, projectId: fixture.projects[1].id }],
+        [command, command],
+      ])
+        await request(app.getHttpServer())
+          .patch('/tickets/bulk-update')
+          .auth(fixture.token, { type: 'bearer' })
+          .send(invalid)
+          .expect(400);
+      const saved = await request(app.getHttpServer())
+        .get(`/tickets/${first.id}`)
+        .auth(fixture.token, { type: 'bearer' })
+        .expect(200);
+      expect(saved.body).toMatchObject({
+        title: first.title,
+        order: first.order,
+      });
+    } finally {
+      await fixture.dispose();
+    }
+  });
+
+  it('accepts ordinary bulk planning across projects and retains the existing request-byte boundary', async () => {
+    const fixture = await bulkFixture();
+    const [first, , other] = fixture.tickets;
+    try {
+      const updated = await request(app.getHttpServer())
+        .patch('/tickets/bulk-update')
+        .auth(fixture.token, { type: 'bearer' })
+        .send([
+          {
+            id: first.id,
+            storyPoints: 5,
+            tags: ['Bulk planning'],
+            blockedBy: null,
+          },
+          {
+            id: other.id,
+            storyPoints: null,
+            statusId: fixture.projects[1].ticketStatuses[0].id,
+          },
+        ])
+        .expect(200);
+      const records = updated.body as {
+        id: number;
+        storyPoints: number | null;
+        updatedBy: string;
+        tags: { name: string }[];
+      }[];
+      expect(records[0]).toMatchObject({
+        id: first.id,
+        storyPoints: 5,
+        updatedBy: 'visitor@demo.example',
+      });
+      expect(records[0].tags.map((tag) => tag.name)).toContain('Bulk planning');
+      expect(records[1]).toMatchObject({
+        id: other.id,
+        storyPoints: null,
+        updatedBy: 'visitor@demo.example',
+      });
+      await request(app.getHttpServer())
+        .patch('/tickets/bulk-update')
+        .auth(fixture.token, { type: 'bearer' })
+        .send([{ id: first.id, notes: 'x'.repeat(120000) }])
+        .expect(413);
+      for (const path of ['all', '0', '-1', '1.5', '2147483648'])
+        await request(app.getHttpServer())
+          .delete(`/tickets/${path}`)
+          .auth(fixture.token, { type: 'bearer' })
+          .expect(400);
+      for (const ticket of fixture.tickets)
+        await request(app.getHttpServer())
+          .get(`/tickets/${ticket.id}`)
+          .auth(fixture.token, { type: 'bearer' })
+          .expect(200);
+    } finally {
+      await fixture.dispose();
+    }
+  });
+
+  it('serializes overlapping reversed bulk commands without partial confirmed batches', async () => {
+    const fixture = await bulkFixture();
+    const [first, second] = fixture.tickets;
+    try {
+      await prisma.$executeRawUnsafe(
+        'CREATE FUNCTION quality_bulk_delay() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM pg_sleep(0.1); RETURN NEW; END; $$',
+      );
+      await prisma.$executeRawUnsafe(
+        `CREATE TRIGGER quality_bulk_delay BEFORE UPDATE ON "Ticket" FOR EACH ROW WHEN (NEW.id IN (${first.id}, ${second.id})) EXECUTE FUNCTION quality_bulk_delay()`,
+      );
+      const batches = await Promise.all([
+        request(app.getHttpServer())
+          .patch('/tickets/bulk-update')
+          .auth(fixture.token, { type: 'bearer' })
+          .send([
+            { id: first.id, title: 'Batch A first' },
+            { id: second.id, title: 'Batch A second' },
+          ])
+          .expect(200),
+        request(app.getHttpServer())
+          .patch('/tickets/bulk-update')
+          .auth(fixture.token, { type: 'bearer' })
+          .send([
+            { id: second.id, title: 'Batch B second' },
+            { id: first.id, title: 'Batch B first' },
+          ])
+          .expect(200),
+      ]);
+      expect(
+        (batches[0].body as { title: string }[]).map((item) => item.title),
+      ).toEqual(['Batch A first', 'Batch A second']);
+      expect(
+        (batches[1].body as { title: string }[]).map((item) => item.title),
+      ).toEqual(['Batch B second', 'Batch B first']);
+      const saved = await Promise.all(
+        [first, second].map(async (ticket) => {
+          const response = await request(app.getHttpServer())
+            .get(`/tickets/${ticket.id}`)
+            .auth(fixture.token, { type: 'bearer' })
+            .expect(200);
+          return (response.body as { title: string }).title;
+        }),
+      );
+      expect([
+        ['Batch A first', 'Batch A second'],
+        ['Batch B first', 'Batch B second'],
+      ]).toContainEqual(saved);
+    } finally {
+      await prisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS quality_bulk_delay ON "Ticket"',
+      );
+      await prisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS quality_bulk_delay()',
+      );
+      await fixture.dispose();
+    }
+  });
+
+  it('rejects foreign bulk relationships and missing records atomically', async () => {
+    const fixture = await bulkFixture();
+    const [first, second, outsider] = fixture.tickets;
+    try {
+      for (const invalid of [
+        { statusId: fixture.projects[1].ticketStatuses[0].id },
+        { sprintId: fixture.projects[1].sprints[0].id },
+        { featureId: 'missing-feature' },
+        { blockedBy: outsider.id },
+      ]) {
+        await request(app.getHttpServer())
+          .patch('/tickets/bulk-update')
+          .auth(fixture.token, { type: 'bearer' })
+          .send([
+            {
+              id: first.id,
+              title: 'Must roll back',
+              updatedBy: 'visitor@demo.example',
+            },
+            { id: second.id, ...invalid, updatedBy: 'visitor@demo.example' },
+          ])
+          .expect(400);
+        const saved = await request(app.getHttpServer())
+          .get(`/tickets/${first.id}`)
+          .auth(fixture.token, { type: 'bearer' })
+          .expect(200);
+        expect(saved.body).toMatchObject({ title: first.title });
+      }
+      await request(app.getHttpServer())
+        .patch('/tickets/bulk-update')
+        .auth(fixture.token, { type: 'bearer' })
+        .send([
+          {
+            id: first.id,
+            title: 'Must roll back',
+            updatedBy: 'visitor@demo.example',
+          },
+          {
+            id: 2147483647,
+            title: 'Missing',
+            updatedBy: 'visitor@demo.example',
+          },
+        ])
+        .expect(404);
+      const saved = await request(app.getHttpServer())
+        .get(`/tickets/${first.id}`)
+        .auth(fixture.token, { type: 'bearer' })
+        .expect(200);
+      expect(saved.body).toMatchObject({ title: first.title });
+    } finally {
+      await fixture.dispose();
+    }
+  });
+
+  it('rolls back failed bulk persistence and emits safe actionable diagnostics without partial events', async () => {
+    const fixture = await bulkFixture();
+    const [first, second] = fixture.tickets;
+    const sentinel = 'fixture-redaction-secret';
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      autoConnect: false,
+      reconnection: false,
+      timeout: 5000,
+    });
+    const events: unknown[] = [];
+    try {
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      observer.on('ticketUpdated', (event: { id: number }) => {
+        if ([first.id, second.id].includes(event.id)) events.push(event);
+      });
+      await prisma.$executeRawUnsafe(
+        `CREATE FUNCTION quality_bulk_failure() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'postgresql://fixture:${sentinel}@invalid.local/fixture'; END; $$`,
+      );
+      await prisma.$executeRawUnsafe(
+        `CREATE TRIGGER quality_bulk_failure BEFORE UPDATE ON "Ticket" FOR EACH ROW WHEN (NEW.id = ${second.id}) EXECUTE FUNCTION quality_bulk_failure()`,
+      );
+      const start = serverLogs.length;
+      const failed = await request(app.getHttpServer())
+        .patch('/tickets/bulk-update')
+        .auth(fixture.token, { type: 'bearer' })
+        .send([
+          {
+            id: first.id,
+            title: 'Must roll back',
+            updatedBy: 'visitor@demo.example',
+          },
+          {
+            id: second.id,
+            title: 'Forced failure',
+            updatedBy: 'visitor@demo.example',
+          },
+        ])
+        .expect(500);
+      expect(JSON.stringify(failed.body)).not.toMatch(
+        /postgresql:|fixture-redaction-secret|Prisma|Invalid.*invocation/,
+      );
+      const logs = JSON.stringify(serverLogs.slice(start));
+      expect(logs).not.toContain(sentinel);
+      expect(logs).not.toContain('postgresql:');
+      expect(logs).toContain('ticket.bulkUpdate');
+      for (const ticket of [first, second]) {
+        const saved = await request(app.getHttpServer())
+          .get(`/tickets/${ticket.id}`)
+          .auth(fixture.token, { type: 'bearer' })
+          .expect(200);
+        expect(saved.body).toMatchObject({ title: ticket.title });
+      }
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(0);
+    } finally {
+      observer.disconnect();
+      await prisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS quality_bulk_failure ON "Ticket"',
+      );
+      await prisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS quality_bulk_failure()',
+      );
+      await fixture.dispose();
+    }
+  });
 
   it('offers compatible summary and workspace project reads without redundant feature data', async () => {
     const token = tokenOf(

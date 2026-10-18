@@ -80,7 +80,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | resolved | 07 |
 | [13: Reduce unnecessary initial and editor code loading](issues/13-initial-code-loading.md) | resolved | 08 |
 | [14: Reduce unnecessary project read payloads and query work](issues/14-project-read-efficiency.md) | resolved | 07 |
-| [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | ready-for-agent | 08 |
+| [15: Make bulk ticket operations and their diagnostics predictable](issues/15-bulk-ticket-operations.md) | claimed | 08 |
 | [16: Verify product finish in CI and the cloud, then hand off presentation](issues/16-cloud-quality-verification.md) | ready-for-agent | 02, 03, 04, 05, 09, 10, 11, 12, 13, 14, 15 |
 
 ## Resume implementation
