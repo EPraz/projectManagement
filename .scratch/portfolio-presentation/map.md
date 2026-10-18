@@ -1,6 +1,6 @@
 # Portfolio presentation: README and walkthrough
 
-Status: ready-for-implementation
+Status: spec-ready-for-agent
 
 ## Current presentation handoff — 2026-10-18
 
@@ -105,3 +105,13 @@ No final media has been recorded and no runtime/product behavior changed while r
 ### Public viewing page added by the owner
 
 After confirming Q1/Q2/Q3, the owner explicitly asks for an Aster-style website extension to watch the video. The current spec and tickets04/06 now include a public walkthrough route, native HTML video playback, poster, chapter access, readable English transcript, direct MP4/caption downloads and return to the live demo. It must work without joining/restoring a demo session. The README poster opens this page. Verify native playback/seeking, direct entry/reload, reflow and media byte ranges. Existing free Vercel hosting is sufficient; no custom playback engine or paid service is implied. This owner instruction supersedes the former no-player-page boundary. The six-ticket sequence remains coherent;04/05 still gate06's complete publication outcome.
+
+## Explicit to-spec consolidation — 2026-10-18
+
+The owner now explicitly invokes to-spec. Reused the current spec instead of duplicating it. Product scope, six-ticket history and recording-readiness authorization remain confirmed. Verified current routing/authentication and static-hosting boundaries: the public viewing page must work independently of a sleeping API or expired demo session.
+
+The consolidated test boundaries are real browser product/viewing journeys, exported/published media, and reproducible README/setup. Existing highest-level browser/HTTP/WebSocket and artifact checks are retained; no private implementation seam is introduced. One testing-expectation question is pending per to-spec's explicit check requirement, including public viewing with backend unavailable. The spec is temporarily needs-info until that answer, then it can be published ready-for-agent without another scope interview. No implementation or recording has started in this pass.
+
+### To-spec validation confirmed
+
+The owner replies “Sí, validar así” to the consolidated external verification. The [current spec](spec.md) is now ready-for-agent in the local tracker. It includes the real independent-session WebSocket journey, public viewing without login/with unavailable backend, complete exported-media review, actual delivery links and reproducible README/setup. No additional test seam, scope decision or recording-readiness confirmation remains pending. This closes the explicit to-spec pass; keep the existing six-ticket history for the subsequent to-tickets reconciliation.

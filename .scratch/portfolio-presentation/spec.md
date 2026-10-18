@@ -2,6 +2,8 @@
 
 Status: ready-for-agent
 
+Scope and consolidated testing boundaries confirmed by the owner on 2026-10-18. Recording readiness was already authorized.
+
 ## Problem Statement
 
 The redesigned full-stack application is published and verified, but the repository still presents its earlier interface and inaccurate feature/stack claims. Recruiters need to understand the product and the owner's contribution without exploring every screen. Developers also need an accurate route from cloning the repository to a populated local application.
@@ -12,7 +14,7 @@ The former presentation plan was paused for the completed quality/refactor and r
 
 Publish an English recruiter-first README, three complementary current screenshots, a compact architecture explanation, a public web page for viewing the video, and a silent 1080p product walkthrough with English captions, a poster and matching transcript/chapters. Use the polish of the owner's Aster reference with this project's Plex/carbon/azure identity.
 
-Follow Orbit and Sprint 2 through a connected planning-to-delivery story. Its centerpiece is genuine WebSocket collaboration: change a ticket's state and move one of its tasks, showing the confirmed result in a second independent session without refreshing that observer. Retain concise coverage of hierarchy/backlog, team/capacity/goals, retrospective and a genuine narrow-viewport segment. Target3:00–3:30, with3:30 as the ceiling.
+Follow Orbit and Sprint 2 through a connected planning-to-delivery story. Its centerpiece is genuine WebSocket collaboration: change a ticket's state and move one of its tasks, showing the confirmed result in a second independent session without refreshing that observer. Retain concise coverage of hierarchy/backlog, team/capacity/goals, retrospective and a genuine narrow-viewport segment. Target 3:00–3:30, with 3:30 as the ceiling.
 
 ## User Stories
 
@@ -58,31 +60,33 @@ Follow Orbit and Sprint 2 through a connected planning-to-delivery story. Its ce
 - Show ticket inspection and a real ticket-state transition. Move a task between its actual task-state columns; do not present ticket dragging/reordering as supported behavior.
 - Use separate authenticated browser contexts for writer and observer. Show the observer receiving canonical updates without refresh or a compensating explicit read inserted by the recorder. Verify persistence independently. Make the difference between editing annotations and product behavior clear.
 - Preserve accurate metric scopes. Moving In Progress to Code Review need not increase project completion; never fabricate a progress increase or alter records to fit narration.
-- Show light as the principal appearance. Reserve20–25 seconds for an actual mobile viewport and a brief dark-theme view within the existing duration ceiling. Mobile footage may use the same local backend; do not claim native apps or physical-device testing.
-- Adapt Aster's polished1080p presentation: short chapter labels, smooth pointer/click cues, restrained zooms and at most two readable English caption lines, clear of player controls. Match this project's identity rather than copying Aster's palette/product claims.
+- Show light as the principal appearance. Reserve 20–25 seconds for an actual mobile viewport and a brief dark-theme view within the existing duration ceiling. Mobile footage may use the same local backend; do not claim native apps or physical-device testing.
+- Adapt Aster's polished 1080p presentation: short chapter labels, smooth pointer/click cues, restrained zooms and at most two readable English caption lines, clear of player controls. Match this project's identity rather than copying Aster's palette/product claims.
 - Capture real interactions/results. Remove idle waits or loading flashes only through transparent ordinary editing; never fabricate UI, synchronization or successful actions. Preserve raw takes and enough timing metadata to review the edit.
 - Deliver H.264 MP4, a poster and English caption/transcript/chapters. Use web-compatible pixel format and fast-start playback. Tools/raw clips stay outside runtime dependencies and deployed assets; only reviewed presentation artifacts are published.
 - The README leads with problem, original contribution, demo/video and connected workflow, then architecture/engineering, verification and local setup. It must remain useful without a demo visit.
 - Use three complementary current images: desktop overview, ticket-row Taskboard/work editing and a mobile flow. Retire obsolete presentation images from the README without deleting unrelated user artifacts.
 - Describe the real stack, including Recharts. Do not claim enforced RBAC, complete audit history, ticket dragging, native mobile apps or unqualified production readiness. Explain the shared editable demo and disabled personal registration/login.
 - Describe original personal authorship positively and accurately. The owner's image inspiration does not imply copied application code, a tutorial or affiliation with Azure DevOps.
-- Provide a verified clone-to-running route using Node22, both committed lockfiles, example configuration, a dedicated PostgreSQL database, Prisma generation, migrations, explicit demo initialization and application startup. DATABASE_URL remains the sole database connection variable.
+- Provide a verified clone-to-running route using Node 22, both committed lockfiles, example configuration, a dedicated PostgreSQL database, Prisma generation, migrations, explicit demo initialization and application startup. DATABASE_URL remains the sole database connection variable.
 - Reuse and correct the existing detailed development/deployment documentation; keep the recruiter README concise and link to deeper instructions. Do not add or change a license incidentally.
 - Publish through existing free repository/provider hosting. The owner additionally requests a public walkthrough page like Aster. Use the existing frontend deployment with a public route outside demo authentication, a native HTML video player, reviewed poster/media, chapter access, readable English transcript, MP4/caption downloads and a return-to-demo link. Do not require a session, autoplay with sound or introduce a paid/external player dependency.
 - Make the walkthrough page the README's primary video destination, with a clickable current poster and direct download/transcript alternatives. Direct entry, reload and native seek/playback must work on mobile/desktop, including media byte-range delivery. Keep API/deep-link routing intact.
-- The public viewer follows the current product identity and remembered theme, without mounting the authenticated workspace navigation or forcing a demo session just to watch.
+- The public viewer follows the current product identity and remembered theme, without mounting the authenticated workspace navigation or forcing a demo session just to watch. It must remain usable when the API is asleep/unavailable or the visitor has an expired demo cookie; opening the viewer must not destroy an existing demo session.
+- Use browser-native playback with an initially paused poster and bounded initial media loading. Keep captions legible in paused/fullscreen playback. If media cannot load, provide understandable feedback and a real download or retry path rather than a blank viewing area.
+- Keep recording/rehearsal, exported media metadata/chapters, the public viewing surface and recruiter/developer documentation cohesive but separately owned. Reuse existing routing, theme and browser-test boundaries; do not make the viewing page depend on authenticated project state.
 
 ## Testing Decisions
 
-The owner previously approved the presentation testing boundaries. This reconciliation retains them and extends the existing real-browser journey to the explicitly accepted task movement, mobile segment and stronger WebSocket proof; no lower-level testing seam is needed.
+The owner confirmed the consolidated verification below on 2026-10-18 ("Sí, validar así"). Validate observable behavior at the highest existing boundaries; avoid tests of private hook state, recorder internals or styling that merely mirror the implementation.
 
-- Prefer external behavior at the actual browser/API/WebSocket boundary. Rehearse the selected journey against the isolated production applications, with independent writer/observer contexts and canonical backend confirmation. Prior art is the retained session, taskboard, editor and socket browser/API coverage.
-- Keep rehearsal database mutations local. Verify public entry, navigation and presentation links without staging public data changes or running fixture cleanup against Neon.
-- Verify documented installation in a clone-equivalent isolated setup with examples and a dedicated database. Do not use private environment files as proof that setup instructions work.
-- Inspect the actual exported MP4: metadata, duration, full-file decoding, chronological review frames, full-resolution key moments, readable captions, chapter/transcript correspondence and the two-session update. Check dark, mobile and theme transitions for blank frames or obscured controls.
-- Verify the real public walkthrough page with no existing demo session: direct entry/reload, poster, native playback/seeking/fullscreen affordance, chapter navigation, readable transcript, downloads, return to demo and mobile reflow. Verify video metadata, successful full decode and media byte ranges on the deployed asset. Ensure public viewing does not require or force session authentication. Record source revision and evidence without exposing authenticated state or credentials.
-- Run checks appropriate to changed source/scripts. Reuse the existing green product evidence instead of rerunning the entire product QA as a substitute for media review. Any actual product fix requires its own meaningful regression and relevant gates.
-- Report current evidence with date/revision. The current baseline is271 browser journeys,80 frontend tests/12 snapshots and58 backend tests; old advisory counts/scaffold failures are historical, not present-tense README claims or a security certification.
+- **Real product journey in the browser:** rehearse the selected Orbit/Sprint 2 workflow against isolated production applications, with independent authenticated writer/observer browser contexts. Verify actual ticket-state/task movement delivery while the observer does not reload or receive recorder-injected reads, then confirm canonical persistence. Ticket and task states and project/sprint metric scopes remain distinct. Prior art is the retained session, taskboard, editor and HTTP/WebSocket journeys.
+- **Public viewing journey in the browser:** enter and reload the video page without a session and with the API unavailable; repeat with expired/existing session state to ensure viewing is neither blocked nor destructive. Verify poster, initially paused native playback, meaningful media failure feedback, seeking, native fullscreen affordance, chapter navigation, readable transcript, downloads, return to demo, keyboard reachability and mobile/desktop reflow. Use the existing real-browser runner rather than inventing a lower-level player API.
+- **Exported artifacts and published delivery:** fully decode the final MP4 and inspect metadata, duration, chronological frames and full-resolution key moments, including the genuine two-session update. Compare captions, chapter timing and transcript; inspect mobile/dark/theme transitions for blank frames or obscured controls. On existing public hosting verify real URLs, content types, successful playback/seeking/download, media byte ranges and image/poster rendering. Aster's inspected capture/render review and media-delivery checks provide prior art, not proof that this project's output works.
+- **README and reproducible setup:** check current feature/stack claims against the implemented product, render the README and verify local/public image, diagram, video and transcript links. Run the documented installation in a clone-equivalent isolated setup with examples, lockfiles and a dedicated local database; private environment files are not setup evidence.
+- Keep rehearsal mutations local. Public verification must not stage visitor-data changes or run fixture cleanup against Neon. Store capture-source and publication revisions separately where they differ; never imply a test/recording verified another revision.
+- Run appropriate types/lint/builds and focused regressions for modified application/scripts. Reuse the existing green product evidence for unchanged behavior; full media review is still required. Any actual product fix gets a meaningful regression and its relevant gates.
+- Cite verification with date/revision. The current baseline is 271 browser journeys, 80 frontend tests/12 snapshots and 58 backend tests; reconcile final counts after any viewing-page tests are added. Historical advisory counts/scaffold failures are not present-tense README claims or security certification.
 
 ## Out of Scope
 
@@ -95,9 +99,9 @@ The owner previously approved the presentation testing boundaries. This reconcil
 
 ## Further Notes
 
-The owner confirmed Q1/Q2/Q3 after inspecting the shipped redesign and recommending the sibling Aster video, then explicitly added an Aster-style public web viewing page. Aster's3:06 silent1080p video, storyboard/captures and isolated capture/render tooling were inspected read-only. The prior Keelwatch reference remains useful for the recruiter-first README order.
+The owner confirmed Q1/Q2/Q3 after inspecting the shipped redesign and recommending the sibling Aster video, then explicitly added an Aster-style public web viewing page. Aster's 3:06 silent 1080p video, storyboard/captures and isolated capture/render tooling were inspected read-only. The prior Keelwatch reference remains useful for the recruiter-first README order.
 
-Illustrative editing budget (rehearsal may redistribute seconds without exceeding3:30):
+Illustrative editing budget (rehearsal may redistribute seconds without exceeding 3:30):
 
 | Time | Chapter |
 | --- | --- |
@@ -109,4 +113,4 @@ Illustrative editing budget (rehearsal may redistribute seconds without exceedin
 | 2:38–3:03 | Genuine mobile flow and brief dark appearance |
 | 3:03–3:20 | Result, compact architecture and live-demo invitation |
 
-The earlier proposed spec/ticket file is historical. Keep the original six-ticket numbering:01/02 are resolved by existing quality evidence;03–06 are the remaining presentation work. No new architectural trade-off or domain concept requires an ADR/glossary addition.
+The earlier proposed spec/ticket file is historical. Keep the original six-ticket numbering: 01/02 are resolved by existing quality evidence; 03–06 are the remaining presentation work. No new architectural trade-off or domain concept requires an ADR/glossary addition.
