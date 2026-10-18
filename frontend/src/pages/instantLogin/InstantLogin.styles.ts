@@ -1,117 +1,50 @@
-import { Box, Card, styled, keyframes } from "@mui/material";
-
-const gradientAnimation = keyframes`
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-`;
-
-const diagonalAnimation = keyframes`
-  0% {
-    transform: translateX(-100%) rotate(-45deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(-45deg);
-  }
-`;
-
+import { Box, Card, styled } from "@mui/material";
 export const AuthWrapper = styled(Box)(({ theme }) => ({
-  minHeight: "100vh",
+  minHeight: "100dvh",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   padding: theme.spacing(2),
-  background: `linear-gradient(-45deg, ${theme.palette.primary.main}, #9c27b0, #2196f3)`,
-  backgroundSize: "400% 400%",
-  animation: `${gradientAnimation} 15s ease infinite`,
+  backgroundColor: theme.palette.background.default,
   position: "relative",
-  overflow: "hidden",
-
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    width: "200%",
-    height: "100px",
-    background: "rgba(255, 255, 255, 0.1)",
-    animation: `${diagonalAnimation} 15s linear infinite`,
-  },
 }));
-
 export const AuthCard = styled(Card)(({ theme }) => ({
   width: "100%",
-  maxWidth: 900,
-  display: "flex",
-  borderRadius: theme.shape.borderRadius * 3,
-  boxShadow: "0 8px 40px rgba(0, 0, 0, 0.12)",
+  maxWidth: 1000,
+  display: "grid",
+  gridTemplateColumns: "1fr",
   overflow: "hidden",
-  [theme.breakpoints.down("md")]: {
-    flexDirection: "column",
-  },
+  [theme.breakpoints.up("md")]: { gridTemplateColumns: "1fr 1fr" },
 }));
-
 export const LeftSection = styled(Box)(({ theme }) => ({
-  flex: 1,
-  padding: theme.spacing(6),
-  background: "linear-gradient(135deg, #8e2de2, #4a00e0)",
-  color: "white",
-  position: "relative",
-  overflow: "hidden",
+  padding: theme.spacing(4),
+  backgroundColor: theme.palette.sidebar.background,
+  color: theme.palette.sidebar.text,
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-
-  "&::after": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background:
-      "linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)",
-    transform: "skewX(-15deg)",
-  },
-
-  [theme.breakpoints.down("md")]: {
-    padding: theme.spacing(4),
-  },
+  minHeight: 280,
+  [theme.breakpoints.up("md")]: { padding: theme.spacing(6), minHeight: 540 },
 }));
-
 export const RightSection = styled(Box)(({ theme }) => ({
-  flex: 1,
-  padding: theme.spacing(6),
-  backgroundColor: "white",
-  [theme.breakpoints.down("md")]: {
-    padding: theme.spacing(4),
-  },
+  padding: theme.spacing(2),
+  display: "flex",
+  alignItems: "center",
+  [theme.breakpoints.up("sm")]: { padding: theme.spacing(4) },
 }));
-
 export const Form = styled("form")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: theme.spacing(3),
+  gap: theme.spacing(2),
 }));
-
-export const WelcomeText = styled(Box)(({ theme }) => ({
+export const WelcomeText = styled(Box)({
   "& h1": {
-    fontSize: "2.5rem",
-    fontWeight: 700,
-    marginBottom: theme.spacing(2),
-    background: "linear-gradient(45deg, #fff, #f0f0f0)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    textWrap: "wrap",
+    fontSize: "clamp(2rem, 4vw, 3rem)",
+    fontWeight: 500,
+    lineHeight: 1.15,
+    letterSpacing: "-.035em",
+    margin: "28px 0 20px",
+    overflowWrap: "anywhere",
   },
-  "& p": {
-    fontSize: "1.1rem",
-    opacity: 0.9,
-    lineHeight: 1.6,
-  },
-}));
-
+  "& p": { fontSize: "1rem", lineHeight: 1.7, color: "#bcbcb8", maxWidth: 340 },
+});

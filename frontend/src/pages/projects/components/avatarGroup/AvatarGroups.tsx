@@ -3,7 +3,7 @@ import { User } from "../../../../types";
 
 const AvatarGroupsComponent = ({
   projectUsers,
-  max = 3
+  max = 3,
 }: {
   projectUsers: Pick<User, "id" | "name" | "email">[];
   max: number;
@@ -16,10 +16,19 @@ const AvatarGroupsComponent = ({
       {projectUsers?.map((user) => (
         <Tooltip key={user.id} title={user.name}>
           <Avatar
-            src={user.email}
             alt={user.name}
-            sx={{ backgroundColor: "secondary.dark" }}
-          />
+            sx={{
+              backgroundColor: "primary.light",
+              color: "primary.main",
+              fontSize: 12,
+            }}
+          >
+            {user.name
+              .split(" ")
+              .map((part) => part[0])
+              .slice(0, 2)
+              .join("")}
+          </Avatar>
         </Tooltip>
       ))}
     </AvatarGroup>

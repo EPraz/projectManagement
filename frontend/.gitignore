@@ -26,3 +26,6 @@ dist-ssr
 .env
 test-results/
 playwright-report/
+
+# Owned local verification environments
+.tmp/

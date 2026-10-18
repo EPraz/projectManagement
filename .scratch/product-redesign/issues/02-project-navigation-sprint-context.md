@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 — Enter the demo and use Projects in C.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -25,3 +25,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after ticket 01; preserve project providers, scoped sprint persistence and known URLs while replacing duplicate navigation.

@@ -8,8 +8,8 @@ import {
 } from "../../../../hooks";
 import { useAuth } from "../../../../context";
 import { Role } from "../../../../constants";
-import { Alert, Box, Button, useTheme } from "@mui/material";
-import { DialogForm, Loading, Portal } from "../../../../components";
+import { Alert, Button, useTheme } from "@mui/material";
+import { DialogForm, Portal } from "../../../../components";
 import { useNavigate } from "react-router-dom";
 import { createProjectSchema } from "../../../../validations";
 import { ProjectsContainer } from "../../ProjectsPage.styles";
@@ -70,6 +70,7 @@ const ProjectsPageContainer = () => {
     if (success) {
       await loadProjects();
     }
+    return success;
   };
 
   const handleMenuClick = (
@@ -102,21 +103,6 @@ const ProjectsPageContainer = () => {
       });
   }, [projects, debouncedSearchQuery, favoriteId]);
 
-  if (loading && !hasLoaded && !error) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          minHeight: "60vh",
-        }}
-      >
-        <Loading />
-      </Box>
-    );
-  }
-
   return (
     <ProjectsContainer>
       {error && (
@@ -137,10 +123,11 @@ const ProjectsPageContainer = () => {
           {error}
         </Alert>
       )}
-      {(hasLoaded || !error) && (
+      {
         <ProjectContainerView
           projects={filteredProjects}
-          loading={false}
+          loading={loading && !hasLoaded}
+          unavailable={Boolean(error && !hasLoaded)}
           refreshing={loading}
           onRefresh={() => {
             void loadProjects();
@@ -158,7 +145,7 @@ const ProjectsPageContainer = () => {
           setFavoriteId={setFavoriteId}
           theme={theme}
         />
-      )}
+      }
       {anchorEl && (
         <Portal>
           <ProjectMenu
@@ -167,6 +154,10 @@ const ProjectsPageContainer = () => {
             handleDeleteProject={handleDeleteProject}
             asPermission={asPermission}
             selectedProjectId={selectedProject}
+            projectTitle={
+              projects.find((project) => project.id === selectedProject)
+                ?.title ?? "this project"
+            }
             loading={deleteProjectLoading}
           />
         </Portal>

@@ -1,51 +1,46 @@
+import { useState } from "react";
 import { Menu, MenuItem } from "@mui/material";
-import { ProjectMenuProps } from "../../../../types";
-
-const ProjectMenu = ({
+import type { ProjectMenuProps } from "../../../../types";
+import DeleteConfirmationModal from "../../../../components/deleteConfirmationModal/DeleteConfirmationModal";
+export default function ProjectMenu({
   anchorEl,
   handleMenuClose,
   asPermission,
   loading,
   handleDeleteProject,
   selectedProjectId,
-}: ProjectMenuProps) => {
+  projectTitle,
+}: ProjectMenuProps) {
+  const [confirm, setConfirm] = useState(false);
   return (
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={handleMenuClose}
-      elevation={3}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "right",
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-    >
-      <MenuItem onClick={handleMenuClose} disabled={true}>
-        Edit Project
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose} disabled={true}>
-        Manage Team
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose} disabled={true}>
-        Project Settings
-      </MenuItem>
-      <MenuItem
-        onClick={() => {
-          if (selectedProjectId) {
-            handleDeleteProject({ id: selectedProjectId });
-          }
-        }}
-        disabled={!asPermission || loading}
-        sx={{ color: "error.main" }}
+    <>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl) && !confirm}
+        onClose={handleMenuClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        Delete Project
-      </MenuItem>
-    </Menu>
+        <MenuItem
+          onClick={() => setConfirm(true)}
+          disabled={!asPermission || loading}
+          sx={{ color: "error.main" }}
+        >
+          Delete Project
+        </MenuItem>
+      </Menu>
+      <DeleteConfirmationModal
+        open={confirm}
+        onClose={handleMenuClose}
+        itemName={projectTitle}
+        itemKey={selectedProjectId ?? ""}
+        disabled={loading}
+        onConfirm={() =>
+          selectedProjectId
+            ? handleDeleteProject({ id: selectedProjectId })
+            : Promise.resolve(false)
+        }
+      />
+    </>
   );
-};
-
-export default ProjectMenu;
+}

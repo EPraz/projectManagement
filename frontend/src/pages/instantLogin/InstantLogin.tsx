@@ -1,10 +1,11 @@
 import { useState } from "react";
 import {
   Alert,
+  Box,
   Button,
   CardContent,
   CircularProgress,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useAuth } from "../../context/authContext";
 import {
@@ -13,8 +14,11 @@ import {
   Form,
   LeftSection,
   RightSection,
-  WelcomeText
+  WelcomeText,
 } from "./InstantLogin.styles";
+
+import AppearanceControl from "../../components/appearanceControl/AppearanceControl";
+import StudioMark from "../../components/studio/StudioMark";
 
 export default function InstantLogin() {
   const { instantLogin, loading, sessionNotice } = useAuth();
@@ -29,16 +33,23 @@ export default function InstantLogin() {
       setError(
         error instanceof Error
           ? error.message
-          : "We couldn't open the demo. Please try again in a moment."
+          : "We couldn't open the demo. Please try again in a moment.",
       );
     }
   };
 
   return (
     <AuthWrapper>
+      <Box sx={{ position: "absolute", top: 16, right: 16 }}>
+        <AppearanceControl />
+      </Box>
       <AuthCard>
         <LeftSection>
           <WelcomeText>
+            <StudioMark />
+            <Typography variant="overline" component="p" sx={{ mt: 2 }}>
+              Plan. Build. Deliver.
+            </Typography>
             <h1>EPProject Management</h1>
             <p>
               Explore projects, plan sprints and follow work from backlog to

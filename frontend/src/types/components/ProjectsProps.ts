@@ -5,7 +5,7 @@ import { Theme } from "@mui/material";
 // Tipos reutilizables
 type MenuClickHandler = (
   event: React.MouseEvent<HTMLButtonElement>,
-  projectId: string
+  projectId: string,
 ) => void;
 
 type SetBoolean = React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,6 +22,7 @@ export interface ProjectCardViewProps {
 export interface ProjectContainerViewProps {
   projects: ProjectSummary[];
   loading: boolean;
+  unavailable?: boolean;
   refreshing: boolean;
   onRefresh: () => void;
   searchInput: string;
@@ -75,6 +76,7 @@ export interface ProjectMenuProps {
   handleMenuClose: () => void;
   asPermission: boolean;
   loading: boolean;
-  handleDeleteProject: (data: { id: string }) => void;
+  handleDeleteProject: (data: { id: string }) => Promise<boolean>;
+  projectTitle: string;
   selectedProjectId: string | null;
 }

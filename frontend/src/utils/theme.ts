@@ -1,11 +1,5 @@
-import {
-  createTheme,
-  type PaletteMode,
-  type ThemeOptions,
-  type Theme,
-} from "@mui/material";
-import type { Components } from "@mui/material/styles";
-
+import { createTheme, type PaletteMode } from "@mui/material";
+import { studioPalette } from "./studioPalette";
 declare module "@mui/material/styles" {
   interface Palette {
     sidebar: {
@@ -47,273 +41,157 @@ declare module "@mui/material/styles" {
   }
 }
 
-const getDesignTokens = (mode: PaletteMode): ThemeOptions => {
-  // Opción 1: Verde (original)
-  const primaryColor = "#1E8E3E";
-  const primaryDark = "#167F30";
-  const primaryLight = "#2EA350";
-  // Primary color (60%)
-  // const primaryColor = "#8e2de2";
-  // const primaryDark = "#4a00e0";
-  // const primaryLight = "#a44cf6";
-
-  // Secondary color (30%)
-  const secondaryColor = "#2d9cdb";
-  const secondaryDark = "#1a73e8";
-  const secondaryLight = "#56ccf2";
-
-  // Accent color (10%)
-  const accentColor = "#f2994a";
-  const accentDark = "#f2784b";
-  const accentLight = "#f2c94c";
-
-  const components: Components<Omit<Theme, "components">> = {
-    MuiButton: {
-      defaultProps: {
-        disableElevation: true,
-      },
-      styleOverrides: {
-        root: () => ({
-          textTransform: "none",
-          borderRadius: "8px",
-          fontWeight: 500,
-          padding: "8px 16px",
-        }),
-        contained: () => ({
-          backgroundColor: primaryColor,
-          color: "#FFFFFF",
-          "&:hover": {
-            backgroundColor: primaryDark,
-          },
-        }),
-      },
-    },
-    MuiDrawer: {
-      styleOverrides: {
-        paper: ({ theme }: { theme: Theme }) => ({
-          backgroundColor:
-            theme.palette.mode === "light" ? "#FFFFFF" : "#0F1A1A",
-          color: theme.palette.mode === "light" ? "#1F2937" : "#FFFFFF",
-          boxShadow:
-            theme.palette.mode === "light"
-              ? "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)"
-              : "0 4px 6px -1px rgb(0 0 0 / 0.2), 0 2px 4px -2px rgb(0 0 0 / 0.2)",
-        }),
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          backgroundColor:
-            theme.palette.mode === "light" ? "#FFFFFF" : "#0F1A1A",
-          borderRadius: "12px",
-          boxShadow:
-            theme.palette.mode === "light"
-              ? "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)"
-              : "0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2)",
-        }),
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          backgroundColor:
-            theme.palette.mode === "light" ? "#FFFFFF" : "#0F1A1A",
-          backgroundImage: "none",
-        }),
-      },
-    },
-    MuiDivider: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          borderColor:
-            theme.palette.mode === "light"
-              ? "#E5E7EB"
-              : "rgba(255, 255, 255, 0.1)",
-        }),
-      },
-    },
-    MuiListItemButton: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          borderRadius: "8px",
-          "&:hover": {
-            backgroundColor:
-              theme.palette.mode === "light"
-                ? "rgba(0, 0, 0, 0.04)"
-                : "rgba(255, 255, 255, 0.08)",
-          },
-          "&.Mui-selected": {
-            backgroundColor:
-              theme.palette.mode === "light"
-                ? "rgba(0, 0, 0, 0.08)"
-                : "rgba(255, 255, 255, 0.12)",
-            "&:hover": {
-              backgroundColor:
-                theme.palette.mode === "light"
-                  ? "rgba(0, 0, 0, 0.12)"
-                  : "rgba(255, 255, 255, 0.16)",
-            },
-          },
-        }),
-      },
-    },
-    MuiTabs: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          borderBottom: `1px solid ${
-            theme.palette.mode === "light"
-              ? "#E5E7EB"
-              : "rgba(255, 255, 255, 0.1)"
-          }`,
-        }),
-        indicator: {
-          backgroundColor: primaryColor,
-          height: 3,
-        },
-      },
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: ({ theme }: { theme: Theme }) => ({
-          textTransform: "none",
-          fontWeight: 500,
-          color: theme.palette.mode === "light" ? "#6B7280" : "#9CA3AF",
-          "&.Mui-selected": {
-            color: theme.palette.mode === "light" ? "#1F2937" : "#FFFFFF",
-          },
-        }),
-      },
-    },
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          margin: 0,
-          padding: 0,
-          boxSizing: "border-box",
-          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-          WebkitFontSmoothing: "antialiased",
-          MozOsxFontSmoothing: "grayscale",
-        },
-        "*": {
-          boxSizing: "border-box",
-        },
-      },
-    },
-  };
-
-  return {
+export const createAppTheme = (mode: PaletteMode) => {
+  const c = studioPalette[mode];
+  return createTheme({
     palette: {
       mode,
-      primary: {
-        main: primaryColor,
-        dark: primaryDark,
-        light: primaryLight,
-        contrastText: "#FFFFFF",
-      },
+      primary: { main: c.blue, contrastText: c.onBlue, light: c.tint },
       secondary: {
-        main: secondaryColor,
-        dark: secondaryDark,
-        light: secondaryLight,
-        contrastText: "#FFFFFF",
+        main: c.green,
+        contrastText: mode === "light" ? "#fff" : "#17271d",
       },
-      warning: {
-        main: accentColor,
-        dark: accentDark,
-        light: accentLight,
-        contrastText: "#FFFFFF",
-      },
-      background: {
-        default: mode === "light" ? "#F9FAFB" : "#0A1014",
-        paper: mode === "light" ? "#FFFFFF" : "#0F1A1A",
-      },
-      text: {
-        primary: mode === "light" ? "#1F2937" : "#FFFFFF",
-        secondary: mode === "light" ? "#6B7280" : "#9CA3AF",
-      },
-      divider: mode === "light" ? "#E5E7EB" : "rgba(255, 255, 255, 0.1)",
+      success: { main: c.green, light: c.greenTint },
+      error: { main: c.red, light: c.redTint },
+      warning: { main: c.amber, light: c.amberTint },
+      info: { main: c.blue, light: c.tint },
+      background: { default: c.background, paper: c.paper },
+      text: { primary: c.ink, secondary: c.muted },
+      divider: c.line,
       sidebar: {
-        background: mode === "light" ? "#0F1A1A" : "#fff",
-        hover:
-          mode === "light"
-            ? "rgba(0, 0, 0, 0.04)"
-            : "rgba(255, 255, 255, 0.08)",
-        active:
-          mode === "light"
-            ? "rgba(0, 0, 0, 0.08)"
-            : "rgba(255, 255, 255, 0.12)",
-        text: mode === "light" ? "#fff" : "#1F2937",
-        textSecondary: mode === "light" ? "#6B7280" : "#9CA3AF",
-        border: mode === "light" ? "#E5E7EB" : "rgba(255, 255, 255, 0.1)",
+        background: mode === "light" ? "#141d20" : "#101111",
+        hover: "#283237",
+        active: "#303b41",
+        text: "#f2f2ef",
+        textSecondary: "#bcbcb8",
+        border: "#444440",
       },
       roleColors: {
-        ADMIN: "#8e2de2", // Primary - Admin gets primary color
-        PROJECT_MANAGER: "#2d9cdb", // Secondary - Project managers get secondary color
-        PRODUCT_OWNER: "#f2994a", // Accent - Product owners get accent color
-        BUSINESS_ANALYST: "#27ae60", // Green for business analysts
-        DEVELOPER: "#6366f1", // Indigo for developers
-        QUALITY_ASSURANCE: "#9c5700", // Brown for QA
-        default: "#64748b", // Default gray
+        ADMIN: c.blue,
+        PROJECT_MANAGER: c.green,
+        PRODUCT_OWNER: c.amber,
+        BUSINESS_ANALYST: c.green,
+        DEVELOPER: c.blue,
+        QUALITY_ASSURANCE: c.amber,
+        default: c.muted,
       },
     },
     typography: {
-      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+      fontFamily: '"IBM Plex Sans", sans-serif',
       h1: {
+        fontSize: "clamp(2.125rem, 3vw, 2.75rem)",
         fontWeight: 600,
-        fontSize: "1.875rem",
+        lineHeight: 1.15,
+        letterSpacing: "-.035em",
       },
-      h2: {
-        fontWeight: 600,
-        fontSize: "1.5rem",
-      },
-      h3: {
-        fontWeight: 600,
-        fontSize: "1.25rem",
-      },
-      h4: {
-        fontWeight: 600,
-        fontSize: "1.125rem",
-      },
-      h5: {
-        fontWeight: 600,
-        fontSize: "1rem",
-      },
-      h6: {
-        fontWeight: 600,
-        fontSize: "0.875rem",
-      },
-      subtitle1: {
-        fontSize: "1rem",
-        fontWeight: 500,
-      },
-      subtitle2: {
-        fontSize: "0.875rem",
-        fontWeight: 500,
-      },
-      body1: {
-        fontSize: "1rem",
-      },
-      body2: {
-        fontSize: "0.875rem",
-      },
-      button: {
-        fontWeight: 500,
-      },
-      caption: {
-        fontSize: "0.75rem",
-      },
+      h2: { fontSize: "1.5rem", fontWeight: 600, lineHeight: 1.3 },
+      h3: { fontSize: "1.25rem", fontWeight: 600 },
+      h4: { fontSize: "1.125rem", fontWeight: 600 },
+      h5: { fontSize: "1rem", fontWeight: 600 },
+      h6: { fontSize: "1rem", fontWeight: 600 },
+      body1: { fontSize: "1rem", lineHeight: 1.6 },
+      body2: { fontSize: ".875rem", lineHeight: 1.6 },
+      caption: { fontSize: ".8125rem", lineHeight: 1.5 },
       overline: {
-        fontSize: "0.75rem",
-        textTransform: "uppercase",
+        fontSize: ".6875rem",
+        letterSpacing: ".16em",
         fontWeight: 500,
       },
+      button: { fontSize: ".875rem", fontWeight: 500, textTransform: "none" },
     },
-    shape: {
-      borderRadius: 8,
+    shape: { borderRadius: 8 },
+    components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          ":root": { "--studio-focus": c.blue, colorScheme: mode },
+          body: { backgroundColor: c.background },
+          "@media (prefers-reduced-motion: reduce)": {
+            "*, *::before, *::after": {
+              animationDuration: ".01ms !important",
+              transitionDuration: ".01ms !important",
+            },
+          },
+        },
+      },
+      MuiButton: {
+        defaultProps: { disableElevation: true },
+        styleOverrides: {
+          root: {
+            minHeight: 44,
+            borderRadius: 7,
+            padding: "9px 16px",
+            textTransform: "none",
+          },
+          outlined: { borderColor: c.control },
+        },
+      },
+      MuiIconButton: {
+        styleOverrides: { root: { minWidth: 44, minHeight: 44 } },
+      },
+      MuiPaper: {
+        defaultProps: { elevation: 0 },
+        styleOverrides: {
+          root: { backgroundImage: "none" },
+          outlined: { borderColor: c.line },
+        },
+      },
+      MuiCard: {
+        styleOverrides: {
+          root: {
+            border: `1px solid ${c.line}`,
+            borderRadius: 12,
+            boxShadow: "0 2px 4px rgb(0 0 0 / .025)",
+          },
+        },
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          root: { backgroundColor: c.paper, minHeight: 44 },
+          notchedOutline: { borderColor: c.control },
+          input: { fontSize: "1rem" },
+        },
+      },
+      MuiInputLabel: { styleOverrides: { root: { color: c.muted } } },
+      MuiTableCell: {
+        styleOverrides: {
+          root: { borderColor: c.line, fontSize: ".875rem" },
+          head: { backgroundColor: c.soft, fontWeight: 500, color: c.muted },
+        },
+      },
+      MuiTab: {
+        styleOverrides: { root: { textTransform: "none", minHeight: 44 } },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          paper: {
+            border: `1px solid ${c.line}`,
+            backgroundImage: "none",
+            borderRadius: 12,
+          },
+        },
+      },
+      MuiDialogActions: {
+        styleOverrides: {
+          root: {
+            padding: 16,
+            gap: 8,
+            borderTop: `1px solid ${c.line}`,
+            flexWrap: "wrap",
+          },
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: { root: { minHeight: 44, whiteSpace: "normal" } },
+      },
+      MuiChip: { styleOverrides: { root: { borderRadius: 5 } } },
+      MuiLinearProgress: {
+        styleOverrides: { root: { borderRadius: 4, backgroundColor: c.line } },
+      },
+      MuiAlert: {
+        styleOverrides: {
+          root: { border: `1px solid ${c.line}`, alignItems: "center" },
+        },
+      },
     },
-    components,
-  };
+  });
 };
-
-export const createAppTheme = (mode: PaletteMode) =>
-  createTheme(getDesignTokens(mode));

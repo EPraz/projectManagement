@@ -2,6 +2,7 @@ import { Header, SearchBar } from "../../ProjectsPage.styles";
 import {
   Box,
   Button,
+  Chip,
   IconButton,
   InputAdornment,
   TextField,
@@ -9,16 +10,19 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  Add as AddIcon,
-  Search as SearchIcon,
-  Refresh as RefreshIcon,
-  ViewModule as ViewModuleIcon,
-  ViewList as ViewListIcon,
+  Add,
+  Search,
+  Refresh,
+  ViewModule,
+  ViewList,
+  GridView,
 } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 import { UserMenu } from "../../../../components";
-import { ProjectHeaderProps } from "../../../../types";
-
-const ProjectHeader = ({
+import type { ProjectHeaderProps } from "../../../../types";
+import AppearanceControl from "../../../../components/appearanceControl/AppearanceControl";
+import StudioMark from "../../../../components/studio/StudioMark";
+export default function ProjectHeader({
   refreshing,
   onRefresh,
   searchInput,
@@ -27,65 +31,95 @@ const ProjectHeader = ({
   view,
   canCreateProject,
   setOpenDialog,
-}: ProjectHeaderProps) => {
+}: ProjectHeaderProps) {
+  const viewLabel =
+    view === "grid" ? "Switch to list view" : "Switch to grid view";
   return (
     <Header>
-      <Box>
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Projects
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Manage and organize your team projects
-        </Typography>
-      </Box>
-
-      <SearchBar>
-        <TextField
-          size="small"
-          placeholder="Search projects..."
-          value={searchInput}
-          onChange={handleSearchChange}
-          sx={{ width: { xs: "100%", md: 300 } }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button
-          variant="outlined"
-          startIcon={<RefreshIcon />}
-          onClick={onRefresh}
-          disabled={refreshing}
-        >
-          {refreshing ? "Refreshing…" : "Refresh projects"}
-        </Button>
-        <Tooltip
-          title={
-            view === "grid" ? "Switch to list view" : "Switch to grid view"
-          }
-        >
+      <Box
+        component="nav"
+        aria-label="Workspace"
+        sx={{
+          display: { xs: "none", md: "flex" },
+          position: "fixed",
+          top: 22,
+          left: 22,
+          bottom: 22,
+          width: 74,
+          bgcolor: "sidebar.background",
+          color: "#91b8ff",
+          borderRadius: "19px",
+          alignItems: "center",
+          flexDirection: "column",
+          pt: 3,
+          gap: 4,
+        }}
+      >
+        <StudioMark />
+        <Tooltip title="All projects" placement="right">
           <IconButton
-            onClick={() => handleViewChange(view === "grid" ? "list" : "grid")}
-            color={view === "grid" ? "primary" : "default"}
+            component={Link}
+            to="/projects"
+            aria-label="All projects"
+            aria-current="page"
+            sx={{
+              color: "inherit",
+              bgcolor: "sidebar.active",
+              borderRadius: 2,
+            }}
           >
-            {view === "grid" ? <ViewListIcon /> : <ViewModuleIcon />}
+            <GridView />
           </IconButton>
         </Tooltip>
+      </Box>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
+        <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+          Projects
+        </Typography>
+        <Chip
+          variant="outlined"
+          size="small"
+          label="Demo workspace"
+          sx={{ display: { xs: "none", sm: "flex" } }}
+        />
+        <AppearanceControl />
+        <UserMenu />
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 2,
+          mt: { xs: 1, md: 2 },
+        }}
+      >
+        <Box>
+          <Typography variant="overline" color="primary">
+            Your workspace / Projects
+          </Typography>
+          <Typography component="h1" variant="h1" sx={{ mt: 0.5, mb: 1 }}>
+            Projects
+            <Box component="span" sx={{ color: "primary.main" }}>
+              .
+            </Box>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            A shared space for the work ahead.
+          </Typography>
+        </Box>
         <Tooltip
           title={
             !canCreateProject
               ? "You need ADMIN or PROJECT_MANAGER role to create projects"
               : ""
           }
-          arrow
         >
           <span>
             <Button
               variant="contained"
-              startIcon={<AddIcon />}
+              startIcon={<Add />}
               onClick={() => setOpenDialog(true)}
               disabled={!canCreateProject}
             >
@@ -93,10 +127,40 @@ const ProjectHeader = ({
             </Button>
           </span>
         </Tooltip>
+      </Box>
+      <SearchBar>
+        <TextField
+          size="small"
+          placeholder="Search projects..."
+          inputProps={{ "aria-label": "Search projects" }}
+          value={searchInput}
+          onChange={handleSearchChange}
+          sx={{ width: { xs: "100%", sm: 340 }, mr: { sm: "auto" } }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search fontSize="small" />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button
+          variant="text"
+          startIcon={<Refresh />}
+          onClick={onRefresh}
+          disabled={refreshing}
+        >
+          {refreshing ? "Refreshing…" : "Refresh projects"}
+        </Button>
+        <Tooltip title={viewLabel}>
+          <IconButton
+            aria-label={viewLabel}
+            onClick={() => handleViewChange(view === "grid" ? "list" : "grid")}
+          >
+            {view === "grid" ? <ViewList /> : <ViewModule />}
+          </IconButton>
+        </Tooltip>
       </SearchBar>
-      <UserMenu />
     </Header>
   );
-};
-
-export default ProjectHeader;
+}

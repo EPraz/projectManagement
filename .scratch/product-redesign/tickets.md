@@ -6,14 +6,14 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 
 ## Current frontier
 
-**01 — Enter the demo and use Projects in C** is the only initially unblocked ticket. All 14 are specified and ready-for-agent; dependency edges determine when each can be claimed. Current progress: 0/14 resolved, none claimed. When work starts, follow the local claim/resolve conventions and append evidence to the individual issue.
+**02 — Navigate a project with shared sprint context** is the current frontier. Progress: 1/14 resolved; ticket 02 claimed. Ticket 01 records its real browser and visual evidence.
 
 ## Tickets and immediate blockers
 
 | Ticket | Delivery | Blocked by | Status |
 | --- | --- | --- | --- |
-| 01 | [Enter the demo and use Projects in C](issues/01-demo-entry-projects.md) | None | ready-for-agent |
-| 02 | [Navigate a project with shared sprint context](issues/02-project-navigation-sprint-context.md) | 01 | ready-for-agent |
+| 01 | [Enter the demo and use Projects in C](issues/01-demo-entry-projects.md) | None | resolved |
+| 02 | [Navigate a project with shared sprint context](issues/02-project-navigation-sprint-context.md) | 01 | claimed |
 | 03 | [See a truthful operational Overview](issues/03-truthful-overview.md) | 02 | ready-for-agent |
 | 04 | [Create and edit tickets without losing context](issues/04-ticket-editor.md) | 02 | ready-for-agent |
 | 05 | [Create, edit and change task status within its ticket](issues/05-task-editor-status.md) | 04 | ready-for-agent |

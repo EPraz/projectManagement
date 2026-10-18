@@ -1,84 +1,47 @@
+import { CardContent } from "@mui/material";
+import { Star, StarBorder } from "@mui/icons-material";
 import {
   FavoriteButton,
   ProjectCard,
   ProjectGrid,
-  ProjectStats,
+  ProjectList,
 } from "../../ProjectsPage.styles";
-import { AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import {
-  Star as StarIcon,
-  StarBorder as StarBorderIcon,
-} from "@mui/icons-material";
-import { CardContent, Typography, useTheme } from "@mui/material";
-import { cardVariants } from "../../../../constants";
-import { ProjectGridViewProps } from "../../../../types";
-import { formatProjectDate } from "../../../../helpers";
+import type { ProjectGridViewProps } from "../../../../types";
 import ProjectCardView from "../projectCardView/ProjectCardView";
-
-const ProjectGridView = ({
+export default function ProjectGridView({
   filteredProjects,
   setFavoriteId,
   favoriteId,
   handleMenuClick,
-}: ProjectGridViewProps) => {
-  const navigate = useNavigate();
-  const theme = useTheme();
-
+  list = false,
+}: ProjectGridViewProps & { list?: boolean }) {
+  const Collection = list ? ProjectList : ProjectGrid;
   return (
-    <ProjectGrid>
-      <AnimatePresence>
-        {filteredProjects.map((project, index) => (
-          <ProjectCard
-            key={project.id}
-            elevation={0}
-            onClick={() => navigate(`/projects/${project.id}/overview`)}
-            variants={cardVariants}
-            initial="hidden"
-            animate="visible"
-            exit="hidden"
-            transition={{ duration: 0.3, delay: index * 0.1 }}
+    <Collection>
+      {filteredProjects.map((project) => (
+        <ProjectCard key={project.id}>
+          <FavoriteButton
+            aria-label={`Favorite ${project.title}`}
+            aria-pressed={favoriteId === project.id}
+            onClick={() =>
+              setFavoriteId(favoriteId === project.id ? null : project.id)
+            }
           >
-            <FavoriteButton
-              aria-label={`Favorite ${project.title}`}
-              aria-pressed={favoriteId === project.id}
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                setFavoriteId(favoriteId === project.id ? null : project.id);
-              }}
-            >
-              {favoriteId === project.id ? (
-                <StarIcon sx={{ color: theme.palette.warning.main }} />
-              ) : (
-                <StarBorderIcon />
-              )}
-            </FavoriteButton>
-
-            <CardContent sx={{ flex: 1 }}>
-              <ProjectCardView
-                project={project}
-                allTickets={project.tickets}
-                handleMenuClick={handleMenuClick}
-              />
-            </CardContent>
-
-            <ProjectStats>
-              <Typography variant="caption" color="text.secondary">
-                Created by {project.createdBy} •{" "}
-                {formatProjectDate(project.createdAt)}
-              </Typography>
-              {project.updatedBy && (
-                <Typography variant="caption" color="text.secondary">
-                  Updated by {project.updatedBy}
-                </Typography>
-              )}
-            </ProjectStats>
-          </ProjectCard>
-        ))}
-      </AnimatePresence>
-    </ProjectGrid>
+            {favoriteId === project.id ? (
+              <Star sx={{ color: "warning.main" }} />
+            ) : (
+              <StarBorder sx={{ color: "text.secondary" }} />
+            )}
+          </FavoriteButton>
+          <CardContent sx={{ p: { xs: 2, sm: 3 }, "&:last-child": { pb: 3 } }}>
+            <ProjectCardView
+              project={project}
+              allTickets={project.tickets}
+              handleMenuClick={handleMenuClick}
+            />
+          </CardContent>
+        </ProjectCard>
+      ))}
+    </Collection>
   );
-};
-
-export default ProjectGridView;
+}

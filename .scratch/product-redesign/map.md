@@ -147,3 +147,5 @@ C / Project studio, extended representative screens and all 14 tickets are appro
 ## Implementation run
 
 - 2026-10-18: Owner authorizes all 14 tickets without intermediate reviews unless a genuine owner decision is needed. Work branch: `feat/project-studio-redesign`; baseline `d355d98fe617a78680de0d2d334868b241832078`. Final code-review base confirmation requested asynchronously per skill. Ticket 01 claimed. Preserve public deployment until the verified complete release; no walkthrough recording.
+
+- 2026-10-18 implementation: owner explicitly confirms `d355d98` as final code-review base. Ticket 01 resolved: C demo entry/Projects, real progress, system/manual themes, confirmed project deletion; 30 relevant browser checks, types and lint pass. Public deployment/data preserved. Ticket 02 claimed for the shared project navigation/sprint journey; final video-readiness checkpoint remains required.

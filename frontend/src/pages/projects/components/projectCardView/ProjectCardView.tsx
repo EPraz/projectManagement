@@ -1,110 +1,148 @@
 import { Link } from "react-router-dom";
-import { Box, IconButton, LinearProgress, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import {
-  MoreVert as MoreVertIcon,
-  Assignment as AssignmentIcon,
-  Group as GroupIcon,
-  Speed as SpeedIcon,
+  ArrowForward,
+  MoreHoriz,
+  FormatListBulleted,
+  Done,
+  GroupOutlined,
 } from "@mui/icons-material";
-import { ProjectCardViewProps } from "../../../../types";
+import type { ProjectCardViewProps } from "../../../../types";
 import { getProjectProgress } from "../../../../helpers";
-import { MetricBox } from "../../ProjectsPage.styles";
 import AvatarGroupsComponent from "../avatarGroup/AvatarGroups";
-
-const ProjectCardView = ({
+import ProgressRing from "../../../../components/studio/ProgressRing";
+export default function ProjectCardView({
   project,
   handleMenuClick,
   allTickets,
-}: ProjectCardViewProps) => {
+}: ProjectCardViewProps) {
+  const done = allTickets.filter(
+    (ticket) =>
+      project.ticketStatuses.find((status) => status.id === ticket.statusId)
+        ?.name === "COMPLETED",
+  ).length;
+  const progress = getProjectProgress(project.ticketStatuses, allTickets);
+  const metrics = [
+    { label: "Tickets", count: allTickets.length, Icon: FormatListBulleted },
+    { label: "Done", count: done, Icon: Done },
+    { label: "Members", count: project.users.length, Icon: GroupOutlined },
+  ];
   return (
     <>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6" fontWeight="bold" gutterBottom>
-          <Link
-            to={`/projects/${project.id}/overview`}
-            onClick={(event) => event.stopPropagation()}
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            {project.title}
-          </Link>
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {project.description || "No description available"}
-        </Typography>
-
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" color="text.secondary" gutterBottom>
-            Progress
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <LinearProgress
-              variant="determinate"
-              value={getProjectProgress(project.ticketStatuses, allTickets)}
-              sx={{ flex: 1, height: 6, borderRadius: 3 }}
-            />
-            <Typography variant="caption" color="text.secondary">
-              {getProjectProgress(project.ticketStatuses, allTickets)}%
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-
-      <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-        <MetricBox>
-          <AssignmentIcon className="icon" fontSize="small" />
-          <Box>
-            <Typography variant="caption" color="text.secondary">
-              Tickets
-            </Typography>
-            <Typography variant="subtitle2">
-              {allTickets?.length || 0}
-            </Typography>
-          </Box>
-        </MetricBox>
-
-        <MetricBox>
-          <SpeedIcon className="icon" fontSize="small" />
-          <Box>
-            <Typography variant="caption" color="text.secondary">
-              Sprints
-            </Typography>
-            <Typography variant="subtitle2">
-              {project.sprints?.length || 0}
-            </Typography>
-          </Box>
-        </MetricBox>
-
-        <MetricBox>
-          <GroupIcon className="icon" fontSize="small" />
-          <Box>
-            <Typography variant="caption" color="text.secondary">
-              Team
-            </Typography>
-            <Typography variant="subtitle2">
-              {project.users?.length || 0}
-            </Typography>
-          </Box>
-        </MetricBox>
-      </Box>
-
+      <Typography
+        component="p"
+        variant="overline"
+        color="text.secondary"
+        sx={{ mb: 3, pr: 5 }}
+      >
+        {project.sprints.length} sprints / Project
+      </Typography>
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          gap: 2,
           alignItems: "center",
+          mb: 3,
+          minWidth: 0,
+        }}
+      >
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Typography
+            component="h2"
+            variant="h2"
+            sx={{ overflowWrap: "anywhere" }}
+          >
+            <Link to={`/projects/${project.id}/overview`}>{project.title}</Link>
+          </Typography>
+        </Box>
+        <ProgressRing value={progress} label="Project progress" />
+      </Box>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          mb: 3,
+          minHeight: 45,
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          overflowWrap: "anywhere",
+        }}
+      >
+        {project.description || "No description available"}
+      </Typography>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3,minmax(0,1fr))",
+          borderBlock: "1px solid",
+          borderColor: "divider",
+          py: 2,
+          gap: 1,
+        }}
+      >
+        {metrics.map(({ label, count, Icon }) => (
+          <Box
+            key={label}
+            sx={{ display: "flex", gap: 1, alignItems: "center", minWidth: 0 }}
+          >
+            <Icon
+              sx={{
+                color: label === "Done" ? "success.main" : "primary.main",
+                display: { xs: "none", sm: "block" },
+                fontSize: 21,
+              }}
+            />
+            <Box>
+              <Typography sx={{ fontWeight: 500, fontSize: 20 }}>
+                {count}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {label}
+              </Typography>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", gap: 1, mt: 2 }}
+      >
+        <Typography variant="caption" color="text.secondary">
+          Project progress
+        </Typography>
+        <Typography variant="caption">
+          {done} / {allTickets.length} tickets done
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 1,
+          mt: 2,
         }}
       >
         <AvatarGroupsComponent max={4} projectUsers={project.users} />
-        <IconButton
-          aria-label={`Project actions for ${project.title}`}
-          size="small"
-          onClick={(e) => handleMenuClick(e, project.id)}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Button
+            component={Link}
+            to={`/projects/${project.id}/overview`}
+            aria-label={`Open project ${project.title}`}
+            endIcon={<ArrowForward fontSize="small" />}
+          >
+            Open project
+          </Button>
+          <IconButton
+            aria-label={`Project actions for ${project.title}`}
+            onClick={(event) => handleMenuClick(event, project.id)}
+          >
+            <MoreHoriz />
+          </IconButton>
+        </Box>
       </Box>
     </>
   );
-};
-
-export default ProjectCardView;
+}

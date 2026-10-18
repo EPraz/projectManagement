@@ -2,97 +2,69 @@ import {
   createContext,
   useContext,
   useState,
-  ReactNode,
+  type ReactNode,
   useEffect,
   useCallback,
   useMemo,
 } from "react";
-import { PaletteMode } from "@mui/material";
-import { ThemeContextProps } from "../../types";
+import type { PaletteMode } from "@mui/material";
+import type { ThemeContextProps } from "../../types";
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
-
+const systemMode = (): PaletteMode =>
+  window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+const readPreference = () => {
+  const savedMode = localStorage.getItem("theme-mode");
+  const manual =
+    localStorage.getItem("theme-system-preference") !== "true" &&
+    (savedMode === "dark" || savedMode === "light");
+  return { mode: manual ? savedMode : systemMode(), system: !manual } as {
+    mode: PaletteMode;
+    system: boolean;
+  };
+};
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [mode, setMode] = useState<PaletteMode>("light");
-  const [systemPreference, setSystemPreference] = useState<boolean>(true);
-
-  //  Cargar preferencias del tema desde localStorage
-  useEffect(() => {
-    if (typeof window === "undefined") return; // Evitar errores en SSR
-
-    const savedMode = localStorage.getItem("theme-mode") as PaletteMode | null;
-    const savedSystemPref = localStorage.getItem("theme-system-preference");
-
-    if (savedSystemPref === "true") {
-      setSystemPreference(true);
-      const systemMode = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-      setMode(systemMode);
-    } else if (savedMode) {
-      setSystemPreference(false);
-      setMode(savedMode);
-    }
-  }, []);
-
-  //  Escuchar cambios en la preferencia del sistema
+  const [initial] = useState(readPreference);
+  const [mode, setMode] = useState<PaletteMode>(initial.mode);
+  const [systemPreference, setSystemPreference] = useState(initial.system);
   useEffect(() => {
     if (!systemPreference) return;
-
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (e: MediaQueryListEvent) =>
-      setMode(e.matches ? "dark" : "light");
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = () => setMode(media.matches ? "dark" : "light");
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
   }, [systemPreference]);
-
-  // Cambiar manualmente el modo de tema
-  const handleSetMode = useCallback((newMode: PaletteMode) => {
-    setMode(newMode);
-    localStorage.setItem("theme-mode", newMode);
-    localStorage.setItem("theme-system-preference", "false");
+  const handleSetMode = useCallback((value: PaletteMode) => {
+    setMode(value);
     setSystemPreference(false);
+    localStorage.setItem("theme-mode", value);
+    localStorage.setItem("theme-system-preference", "false");
   }, []);
-
-  // Usar la preferencia del sistema
-  const handleSetSystemPreference = useCallback((useSystem: boolean) => {
-    setSystemPreference(useSystem);
-    localStorage.setItem("theme-system-preference", String(useSystem));
-
-    if (useSystem) {
-      const systemMode = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-      setMode(systemMode);
-    }
-  }, []);
-
-  //  Memorizar valores para evitar renders innecesarios
-  const contextValue = useMemo(
+  const handleSetSystemPreference = useCallback(
+    (value: boolean) => {
+      setSystemPreference(value);
+      localStorage.setItem("theme-system-preference", String(value));
+      if (value) setMode(systemMode());
+      else localStorage.setItem("theme-mode", mode);
+    },
+    [mode],
+  );
+  const value = useMemo(
     () => ({
       mode,
       setMode: handleSetMode,
       systemPreference,
       setSystemPreference: handleSetSystemPreference,
     }),
-    [mode, handleSetMode, systemPreference, handleSetSystemPreference]
+    [mode, handleSetMode, systemPreference, handleSetSystemPreference],
   );
-
   return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
 };
-
-//  Hook personalizado para acceder al tema
 export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
+  const value = useContext(ThemeContext);
+  if (!value) throw new Error("useTheme must be used within a ThemeProvider");
+  return value;
 };

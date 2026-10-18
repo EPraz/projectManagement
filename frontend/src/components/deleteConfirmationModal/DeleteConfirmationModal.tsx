@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogTitle,
   Button,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DeleteConfirmationModalProps } from "../../types";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -16,7 +16,7 @@ const DeleteConfirmationModal = ({
   onConfirm,
   itemName,
   itemKey,
-  disabled = false
+  disabled = false,
 }: DeleteConfirmationModalProps) => {
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState("");
@@ -91,11 +91,7 @@ const DeleteConfirmationModal = ({
           onClick={handleSubmit}
           //   color="primary"
           variant="contained"
-          sx={{
-            backgroundColor: "green",
-            color: "white",
-            ":hover": { backgroundColor: "white", color: "green" }
-          }}
+          color="error"
           disabled={disabled || pending}
         >
           {pending ? "Deleting…" : "Proceed"}
