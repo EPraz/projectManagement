@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { IsString, IsDate, IsNotEmpty, IsEmail } from 'class-validator';
 
 export class CreateSprintDto {
@@ -6,6 +6,10 @@ export class CreateSprintDto {
   @IsNotEmpty()
   projectId: string;
 
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  @IsNotEmpty()
   @IsString()
   @IsNotEmpty()
   name: string;

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Sprint } from '@prisma/client';
 import { SPRINT_INCLUDE } from 'src/constants';
 import { CreateSprintDto, UpdateSprintDto } from 'src/dto';
@@ -21,6 +25,9 @@ export class SprintService {
       });
 
       if (!project) throw new NotFoundException('Project not found');
+
+      if (request.endDate < request.startDate)
+        throw new BadRequestException('End date must not precede start date');
 
       const response = await this.prisma.sprint.create({
         data: { ...request },

@@ -5,7 +5,7 @@ import {
   Button,
   ListItem,
   Chip,
-  Tooltip,
+  Tooltip
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -26,7 +26,7 @@ import {
   ListItemTextStyled,
   StyledLinearProgress,
   TaskList,
-  TaskSectionBox,
+  TaskSectionBox
 } from "./GoalBoard.styles";
 import { useOutletContext } from "react-router-dom";
 
@@ -40,12 +40,14 @@ const GoalBoard = () => {
     setOpenDeleteSprintGoalDialog,
     setOpenCreateGoalTaskDialog,
     setSelectedSprintGoal,
-    localSprintGoals,
+    isGoalTaskPending,
     setOpenEditGoalTaskDialog,
     setOpenDeleteGoalTaskDialog,
     setSelectedGoalTask,
-    handleToggleGoalTaskCompletion,
+    handleToggleGoalTaskCompletion
   } = useOutletContext<LayoutContextProps>();
+
+  const goals = sprint?.sprintGoal ?? [];
 
   const handleEditGoalTask = (task: GoalTask) => {
     setSelectedGoalTask(task);
@@ -68,8 +70,8 @@ const GoalBoard = () => {
       </Header>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {localSprintGoals.length > 0 ? (
-          localSprintGoals.map((goal) => {
+        {goals.length > 0 ? (
+          goals.map((goal) => {
             const uiStatus = goal.goalsStatus;
             return (
               <GoalCard key={goal.id}>
@@ -128,7 +130,7 @@ const GoalBoard = () => {
                       sx={{
                         display: "flex",
                         justifyContent: "space-between",
-                        mb: 1,
+                        mb: 1
                       }}
                     >
                       <Typography
@@ -214,6 +216,12 @@ const GoalBoard = () => {
                           >
                             <ActionButton
                               size="small"
+                              disabled={isGoalTaskPending(task.id)}
+                              aria-label={
+                                task.completed
+                                  ? "Mark as incomplete"
+                                  : "Mark as complete"
+                              }
                               sx={{ mr: 1 }}
                               onClick={() =>
                                 handleToggleGoalTaskCompletion(task)
@@ -252,8 +260,8 @@ const GoalBoard = () => {
         ) : (
           <EmptySprintBox>
             <Typography variant="body1" color="text.secondary">
-              No localSprintGoals added yet. Click "Add goal" to create your
-              first sprint goal.
+              No goals added yet. Click "Add goal" to create your first sprint
+              goal.
             </Typography>
           </EmptySprintBox>
         )}

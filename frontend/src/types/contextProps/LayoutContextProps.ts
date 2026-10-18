@@ -118,12 +118,9 @@ export interface LayoutContextProps {
   // Local States -> Sprint
   openCreateSprintDialog: boolean;
   setOpenCreateSprintDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateSprint: (data: Partial<Sprint>) => Promise<Sprint | null>;
+  handleCreateSprint: (data: Partial<Sprint>) => Promise<boolean>;
   handleChangeSprint: (newSprintId: string) => Promise<void>;
-  handleDeleteSprint: (
-    dataId: string,
-    event: React.MouseEvent
-  ) => Promise<void>;
+  handleDeleteSprint: (data: Partial<Sprint>) => Promise<boolean>;
   openDeleteSprintDialog: boolean;
   setOpenDeleteSprintDialog: React.Dispatch<React.SetStateAction<boolean>>;
   selectedSprint: Sprint | null;
@@ -132,8 +129,7 @@ export interface LayoutContextProps {
   loadingDeleteSprint: boolean;
 
   // Local States -> SprintGoal -> Goal Board
-  localSprintGoals: SprintGoal[];
-  setLocalSprintGoals: React.Dispatch<React.SetStateAction<SprintGoal[]>>;
+  isGoalTaskPending: (id: string) => boolean;
   selectedSprintGoal: SprintGoal | null;
   setSelectedSprintGoal: React.Dispatch<
     React.SetStateAction<SprintGoal | null>
@@ -178,10 +174,10 @@ export interface LayoutContextProps {
   handleOnDragEndTask: (event: DragEndEvent) => Promise<void>;
 
   // Functions -> Goal Board -> Sprint Goal
-  handleCreateSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
-  handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
-  handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleCreateSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
+  handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
+  handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
   handleToggleGoalTaskCompletion: (
     goalTask: Partial<GoalTask>
-  ) => Promise<void>;
+  ) => Promise<boolean>;
 }

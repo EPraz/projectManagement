@@ -10,7 +10,7 @@ import {
   SprintIcon,
   SprintMenuItem,
   SprintNameContainer,
-  StyledTextField,
+  StyledTextField
 } from "./SprintSelector.styles";
 
 const SprintSelector = () => {
@@ -22,7 +22,7 @@ const SprintSelector = () => {
     setOpenCreateSprintDialog,
     setOpenDeleteSprintDialog,
     sprint,
-    loadingCreateSprint,
+    loadingCreateSprint
   } = useOutletContext<LayoutContextProps>();
 
   return (
@@ -31,7 +31,9 @@ const SprintSelector = () => {
       <Autocomplete
         value={sprint ? sprint : undefined}
         onChange={(_, newValue) => {
-          if (newValue && newValue.id !== "new") {
+          if (newValue?.id === "new") {
+            setOpenCreateSprintDialog(true);
+          } else if (newValue) {
             handleChangeSprint(newValue.id);
           }
         }}
@@ -48,10 +50,10 @@ const SprintSelector = () => {
               loadingCreateSprint
                 ? "Creating sprint"
                 : loadingDeleteSprint
-                ? "Deleting sprint"
-                : listOfSprints?.length
-                ? "Select Sprint"
-                : "No Sprints Available"
+                  ? "Deleting sprint"
+                  : listOfSprints?.length
+                    ? "Select Sprint"
+                    : "No Sprints Available"
             }
             size="small"
           />
@@ -83,6 +85,7 @@ const SprintSelector = () => {
                 <DeleteButton
                   size="small"
                   data-testid={"delete-button"}
+                  aria-label={`Delete ${option.name}`}
                   onClick={(e) => {
                     e.stopPropagation(); // Evita cerrar el Autocomplete al eliminar un sprint
                     setSelectedSprint(option);
@@ -103,21 +106,21 @@ const SprintSelector = () => {
             fontSize: "0.875rem",
             backgroundColor: "transparent",
             "& fieldset": {
-              border: "none",
+              border: "none"
             },
             "&:hover fieldset": {
-              border: "none",
+              border: "none"
             },
             "&.Mui-focused fieldset": {
-              border: "none",
+              border: "none"
             },
             "& .MuiOutlinedInput-input": {
-              padding: 1,
-            },
+              padding: 1
+            }
           },
           "& .MuiAutocomplete-endAdornment": {
-            display: "none",
-          },
+            display: "none"
+          }
         }}
         slotProps={{
           paper: {
@@ -127,11 +130,11 @@ const SprintSelector = () => {
               "& .MuiAutocomplete-listbox": {
                 p: 0.5,
                 "& .MuiAutocomplete-option": {
-                  p: 0,
-                },
-              },
-            },
-          },
+                  p: 0
+                }
+              }
+            }
+          }
         }}
       />
     </SelectorContainer>

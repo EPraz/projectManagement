@@ -1,11 +1,25 @@
+import { Transform } from 'class-transformer';
 import { GoalStatus } from '@prisma/client';
-import { IsString, IsOptional, IsEnum, IsInt, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  IsInt,
+  Min,
+  Max,
+  ValidateIf,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class UpdateSprintGoalDto {
   @IsString()
   id: string;
 
-  @IsOptional()
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  @IsNotEmpty()
   @IsString()
   title?: string;
 

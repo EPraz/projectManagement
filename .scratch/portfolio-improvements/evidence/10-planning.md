@@ -1,0 +1,23 @@
+# Ticket 10 — coherent sprint planning and goals
+
+Date: 2026-10-17. Changes and destructive fixtures are limited to the isolated loopback PostgreSQL databases. No Neon reset, private environment, schema migration, dependency migration or recording.
+
+## Demonstrated defects and bounded corrections
+
+- A real goal-create 503 closed its form and discarded the draft. DialogForm now awaits the existing submit callback, retains explicit failures and rejected requests, guards pending actions and invalidates obsolete completion. Defaults reset at form identity/opening rather than every new object reference from a parent render. Legacy void callbacks remain compatible; this ticket migrates the actual sprint/goal/checklist callers. Later workflows remain separately tracked.
+- Checklist completion saved a task while progress remained 0%; the old frontend tried a second asynchronous goal request inside a React state updater. Task creation/update/deletion and aggregate progress/status now commit in one transaction, serializing changes to a goal. Unchecking completed work returns its status to IN_PROGRESS; a marked risk remains meaningful until completion. Empty checklists yield 0. Existing stored status names and manual goal editing remain.
+- The transaction publishes a confirmed sprint only after commit. A forced aggregate failure rolls back the task, keeps the saved goal and emits no success. Independent simultaneous task updates reach 50 then 100 percent; deleting a checklist item publishes its confirmed removal. HTTP reads and the independent socket client verify persistence/credential filtering.
+- Blank sprint/goal/task titles, reversed sprint dates and nonboolean/null completion were accepted or reached persistence errors. Existing DTOs trim/reject blank values, validate booleans and reject reversed dates; explicit missing-parent reads/writes yield 404. No new access policy or schema.
+- Nine obsolete request hooks and their duplicate mirror-state helpers have no remaining callers and are removed. A feature-local planning hook submits explicit writable payloads through Auth.request, checks the specific confirmation and refreshes canonical project data. It never appends an old response to the currently selected sprint. Per-item pending tracking is shared with the existing work-item hooks. Errors are scoped to the sprint in which they occurred.
+- Board goals now use canonical selected-sprint data directly. Navigation/sprint changes close obsolete planning forms; a late response cannot close a later form or replace its draft. Sprint selection retains the existing project-scoped storage, removing the redundant legacy global write.
+- Existing board section controls were non-keyboard divs; they are now styled native buttons. New Sprint selection also works through Enter. The mobile Add New Goal control exceeded the viewport (495px on a 390px viewport); header controls now wrap. Associated form labels and delete-action names are reachable without a redesign. Mobile/wide dialog screenshots were inspected.
+
+## Verification
+
+Ten retained planning browser journeys pass: failed create/retry, keyboard navigation, checklist failure/retry/delete with overview and persistence, late response across navigation/selection, 390/1280px forms, independent confirmed update preserving a draft, failed task editing/retry/create, failed goal deletion/retry/empty state, backlog assignment across sprint boards/reload, sprint create failure/retry/selection/delete, and duplicate-submit pending protection.
+
+35 API/startup tests, 77 frontend Jest tests / 15 suites / 12 snapshots, frontend and backend types and lint pass at the inspected revision. Frontend lint has 20 visible warnings (previously29); backend has zero. No suppressions or snapshot regeneration. Backend build passes. The final frontend build, integrated retained browser run and independent Standards/Spec review will be recorded before closure.
+
+Test corrections were explicit: existing controls are named Add New Goal and Proceed, and the ticket editor's Sprint field is on Planning. The selected-sprint helper handles an already selected option. Card title text is visually truncated, so the board assertion uses its full accessible heading name. The delayed-response test uses real SPA/browser Back rather than a full document reload that cancels the request. A concurrent-event assertion now sorts numbers numerically instead of lexically. These corrections did not weaken product expectations.
+
+Free hosting, shared Usuario demo, explicit restoration and preservation across deploys remain. Presentation stays deferred through ticket16 and the owner's pre-recording design checkpoint.

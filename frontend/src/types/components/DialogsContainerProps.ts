@@ -46,8 +46,8 @@ export interface DialogsContainerProps {
   listOfSprints: Sprint[] | null;
   openCreateSprintDialog: boolean;
   setOpenCreateSprintDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateSprint: (data: Partial<Sprint>) => Promise<void>;
-  handleDeleteSprint: (data: Partial<Sprint>) => Promise<void>;
+  handleCreateSprint: (data: Partial<Sprint>) => Promise<boolean>;
+  handleDeleteSprint: (data: Partial<Sprint>) => Promise<boolean>;
   openDeleteSprintDialog: boolean;
   setOpenDeleteSprintDialog: React.Dispatch<React.SetStateAction<boolean>>;
   selectedSprint: Sprint | null;
@@ -57,7 +57,7 @@ export interface DialogsContainerProps {
   // Local States -> SprintGoal -> Goal Board
   openCreateSprintGoalDialog: boolean;
   loadingCreateSprintGoal: boolean;
-  handleCreateSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleCreateSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
   setOpenCreateSprintGoalDialog: React.Dispatch<React.SetStateAction<boolean>>;
   selectedSprintGoal: SprintGoal | null;
   openDeleteSprintGoalDialog: boolean;
@@ -65,8 +65,8 @@ export interface DialogsContainerProps {
   setSelectedSprintGoal: React.Dispatch<
     React.SetStateAction<SprintGoal | null>
   >;
-  handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
-  handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<void>;
+  handleDeleteSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
+  handleEditSprintGoal: (data: Partial<SprintGoal>) => Promise<boolean>;
   loadingDeleteSprintGoal: boolean;
   loadingUpdateSprintGoal: boolean;
   openEditSprintGoalDialog: boolean;
@@ -74,16 +74,16 @@ export interface DialogsContainerProps {
 
   openCreateTaskToSprintGoalDialog: boolean;
   setOpenCreateGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
-  handleCreateGoalTask: (data: Partial<GoalTask>) => Promise<void>;
+  handleCreateGoalTask: (data: Partial<GoalTask>) => Promise<boolean>;
   loadingCreateGoalTask: boolean;
   loadingUpdateGoalTask: boolean;
-  handleEditGoalTask: (data: Partial<GoalTask>) => Promise<void>;
+  handleEditGoalTask: (data: Partial<GoalTask>) => Promise<boolean>;
   openEditGoalTaskDialog: boolean;
   setOpenEditGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   openDeleteGoalTaskDialog: boolean;
   setOpenDeleteGoalTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   loadingDeleteGoalTask: boolean;
-  handleDeleteGoalTask: (goalTask: Partial<GoalTask>) => Promise<void>;
+  handleDeleteGoalTask: (goalTask: Partial<GoalTask>) => Promise<boolean>;
   selectedGoalTask: GoalTask | null;
   setSelectedGoalTask: React.Dispatch<React.SetStateAction<GoalTask | null>>;
 }

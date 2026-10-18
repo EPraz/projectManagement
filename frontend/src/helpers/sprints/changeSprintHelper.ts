@@ -11,6 +11,5 @@ export const changeSprintHandler =
     const newSprint = listOfSprints?.find((s) => s.id === newSprintId);
     if (newSprint && newSprint.id !== sprint?.id) {
       setSprint(newSprint);
-      localStorage.setItem("selectedSprintId", newSprint.id);
     }
   };

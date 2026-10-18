@@ -10,6 +10,17 @@ import { io } from 'socket.io-client';
 
 const tokenOf = (response: { body: unknown }) =>
   (response.body as { accessToken: string }).accessToken;
+const idOf = (response: { body: unknown }) =>
+  (response.body as { id: string }).id;
+type PlanningGoalView = {
+  id: string;
+  title: string;
+  progress: number;
+  goalsStatus: string;
+  goalTask: { id: string; title: string; completed: boolean }[];
+};
+const planningGoalsOf = (response: { body: unknown }) =>
+  response.body as PlanningGoalView[];
 type ProjectView = {
   title: string;
   sprints: {
@@ -263,6 +274,322 @@ describe('Acceso demo HTTP API', () => {
       /"password"|"refreshToken"/,
     );
   }, 30000);
+
+  it('rejects malformed planning values and missing parents without changing persisted goals', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const project = (
+      projects.body as { id: string; sprints: { id: string }[] }[]
+    )[0];
+    const sprintId = project.sprints[0].id;
+    await request(app.getHttpServer())
+      .post('/sprints')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: project.id,
+        name: '   ',
+        startDate: '2026-10-17T00:00:00Z',
+        endDate: '2026-10-31T00:00:00Z',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(400);
+    await request(app.getHttpServer())
+      .post('/sprints')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: project.id,
+        name: 'Invalid dates',
+        startDate: '2026-10-31T00:00:00Z',
+        endDate: '2026-10-17T00:00:00Z',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(400);
+    await request(app.getHttpServer())
+      .post('/sprint-goals')
+      .auth(token, { type: 'bearer' })
+      .send({ sprintId, title: '   ' })
+      .expect(400);
+    await request(app.getHttpServer())
+      .get('/sprint-goals/not-a-sprint')
+      .auth(token, { type: 'bearer' })
+      .expect(404);
+    await request(app.getHttpServer())
+      .post('/sprint-goals')
+      .auth(token, { type: 'bearer' })
+      .send({ sprintId: 'missing', title: 'Missing parent' })
+      .expect(404);
+    await request(app.getHttpServer())
+      .post('/sprint-goals/goalTask')
+      .auth(token, { type: 'bearer' })
+      .send({ goalId: 'missing', title: 'Missing parent' })
+      .expect(404);
+    const goals = await request(app.getHttpServer())
+      .get(`/sprint-goals/${sprintId}`)
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const goal = planningGoalsOf(goals)[0];
+    const task = goal.goalTask[0];
+    for (const completed of ['true', 1, null]) {
+      await request(app.getHttpServer())
+        .patch(`/sprint-goals/goalTask/${task.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: task.id, completed })
+        .expect(400);
+    }
+    await request(app.getHttpServer())
+      .patch(`/sprint-goals/${goal.id}`)
+      .auth(token, { type: 'bearer' })
+      .send({ id: goal.id, title: ' ' })
+      .expect(400);
+    const after = await request(app.getHttpServer())
+      .get(`/sprint-goals/${sprintId}`)
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    expect(after.body).toEqual(goals.body);
+  });
+
+  it('rolls back a failed checklist aggregate and emits only committed results to another client', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const sprint = await request(app.getHttpServer())
+      .post('/sprints')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: (projects.body as { id: string }[])[0].id,
+        name: 'Atomic planning sprint',
+        startDate: '2026-10-17T00:00:00Z',
+        endDate: '2026-10-31T00:00:00Z',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      reconnection: false,
+      autoConnect: false,
+      timeout: 5000,
+    });
+    const events: {
+      id: string;
+      sprintGoal: {
+        id: string;
+        progress: number;
+        goalTask: { id: string; completed: boolean }[];
+      }[];
+    }[] = [];
+    const removeFault = async () => {
+      await prisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS quality_fail_goal_rollup ON "SprintGoal"',
+      );
+      await prisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS quality_fail_goal_rollup()',
+      );
+    };
+    try {
+      const goal = await request(app.getHttpServer())
+        .post('/sprint-goals')
+        .auth(token, { type: 'bearer' })
+        .send({ sprintId: idOf(sprint), title: 'Atomic planning fixture' })
+        .expect(201);
+      const tasks: string[] = [];
+      for (const title of ['Atomic one', 'Atomic two']) {
+        const task = await request(app.getHttpServer())
+          .post('/sprint-goals/goalTask')
+          .auth(token, { type: 'bearer' })
+          .send({ goalId: idOf(goal), title })
+          .expect(201);
+        tasks.push(idOf(task));
+      }
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      observer.on('sprintUpdated', (event: (typeof events)[number]) => {
+        if (event.id === idOf(sprint)) events.push(event);
+      });
+      await prisma.$executeRawUnsafe(
+        `CREATE FUNCTION quality_fail_goal_rollup() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'Isolated aggregate failure'; END; $$`,
+      );
+      await prisma.$executeRawUnsafe(
+        `CREATE TRIGGER quality_fail_goal_rollup BEFORE UPDATE ON "SprintGoal" FOR EACH ROW WHEN (OLD.title = 'Atomic planning fixture') EXECUTE FUNCTION quality_fail_goal_rollup()`,
+      );
+      await request(app.getHttpServer())
+        .patch(`/sprint-goals/goalTask/${tasks[0]}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: tasks[0], completed: true })
+        .expect(500);
+      const after = await request(app.getHttpServer())
+        .get(`/sprint-goals/${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(planningGoalsOf(after)[0]).toMatchObject({
+        progress: 0,
+        goalsStatus: 'IN_PROGRESS',
+      });
+      expect(planningGoalsOf(after)[0].goalTask).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ id: tasks[0], completed: false }),
+        ]),
+      );
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(0);
+      await removeFault();
+      await Promise.all(
+        tasks.map((id) =>
+          request(app.getHttpServer())
+            .patch(`/sprint-goals/goalTask/${id}`)
+            .auth(token, { type: 'bearer' })
+            .send({ id, completed: true })
+            .expect(200),
+        ),
+      );
+      const confirmed = await request(app.getHttpServer())
+        .get(`/sprint-goals/${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(planningGoalsOf(confirmed)[0]).toMatchObject({
+        progress: 100,
+        goalsStatus: 'COMPLETED',
+      });
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(2);
+      expect(
+        events
+          .map(
+            (event) =>
+              event.sprintGoal.find((item) => item.id === idOf(goal))!.progress,
+          )
+          .sort((a, b) => a - b),
+      ).toEqual([50, 100]);
+      expect(JSON.stringify(events)).not.toMatch(/password|refreshToken/);
+      await request(app.getHttpServer())
+        .delete(`/sprint-goals/goalTask/${tasks[0]}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(3);
+      expect(events[2].sprintGoal[0].goalTask).toEqual([
+        expect.objectContaining({ id: tasks[1] }),
+      ]);
+    } finally {
+      observer.disconnect();
+      await removeFault();
+      await request(app.getHttpServer())
+        .delete(`/sprints/${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
+  it('keeps checklist progress and status consistent through persisted task changes', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const sprint = await request(app.getHttpServer())
+      .post('/sprints')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: (projects.body as { id: string }[])[0].id,
+        name: 'Isolated planning workflow',
+        startDate: '2026-10-17T00:00:00.000Z',
+        endDate: '2026-10-31T00:00:00.000Z',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    try {
+      const goal = await request(app.getHttpServer())
+        .post('/sprint-goals')
+        .auth(token, { type: 'bearer' })
+        .send({ sprintId: idOf(sprint), title: 'Confirmed checklist' })
+        .expect(201);
+      const tasks: string[] = [];
+      for (const title of ['First checkpoint', 'Second checkpoint']) {
+        const task = await request(app.getHttpServer())
+          .post('/sprint-goals/goalTask')
+          .auth(token, { type: 'bearer' })
+          .send({ goalId: idOf(goal), title })
+          .expect(201);
+        tasks.push(idOf(task));
+      }
+      const read = async () =>
+        planningGoalsOf(
+          await request(app.getHttpServer())
+            .get(`/sprint-goals/${idOf(sprint)}`)
+            .auth(token, { type: 'bearer' })
+            .expect(200),
+        )[0];
+      await request(app.getHttpServer())
+        .patch(`/sprint-goals/goalTask/${tasks[0]}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: tasks[0], completed: true })
+        .expect(200);
+      expect(await read()).toMatchObject({
+        progress: 50,
+        goalsStatus: 'IN_PROGRESS',
+      });
+      await request(app.getHttpServer())
+        .patch(`/sprint-goals/goalTask/${tasks[1]}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: tasks[1], completed: true })
+        .expect(200);
+      expect(await read()).toMatchObject({
+        progress: 100,
+        goalsStatus: 'COMPLETED',
+      });
+      await request(app.getHttpServer())
+        .patch(`/sprint-goals/goalTask/${tasks[0]}`)
+        .auth(token, { type: 'bearer' })
+        .send({ id: tasks[0], completed: false })
+        .expect(200);
+      expect(await read()).toMatchObject({
+        progress: 50,
+        goalsStatus: 'IN_PROGRESS',
+      });
+      await request(app.getHttpServer())
+        .delete(`/sprint-goals/goalTask/${tasks[0]}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(await read()).toMatchObject({
+        progress: 100,
+        goalsStatus: 'COMPLETED',
+      });
+      await request(app.getHttpServer())
+        .delete(`/sprint-goals/goalTask/${tasks[1]}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(await read()).toMatchObject({
+        progress: 0,
+        goalsStatus: 'IN_PROGRESS',
+        goalTask: [],
+      });
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/sprints/${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
 
   it('reads and edits the real project hierarchy without breaking parent-child associations', async () => {
     const login = await request(app.getHttpServer())

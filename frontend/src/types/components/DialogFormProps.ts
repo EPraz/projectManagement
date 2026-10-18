@@ -5,7 +5,8 @@ export interface DialogFormProps<T extends FieldValues> {
   open: boolean;
   onClose: () => void;
   onDelete?: () => void;
-  onSubmit: (data: T) => void;
+  onSubmit: (data: T) => void | boolean | Promise<void | boolean>;
+  itemKey?: string;
   schema: yup.ObjectSchema<T>;
   defaultValues: DefaultValues<T>;
   title: string;

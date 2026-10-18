@@ -14,7 +14,7 @@ import {
   BoardContainer,
   BoardHeader as BoardHeaderStyled,
   TabButton,
-  TabsWrapper,
+  TabsWrapper
 } from "./Board.styles";
 import { backlogColumns, TabPanels } from "../../constants";
 import BoardHeader from "./components/backlogBoard/boardHeader/BoardHeader";
@@ -33,7 +33,7 @@ const Board = () => {
     handleChangeTabValue,
     selectedTasksStatuses,
     setSelectedTasksStatuses,
-    setOpenCreateSprintGoalDialog,
+    setOpenCreateSprintGoalDialog
   } = useOutletContext<LayoutContextProps>();
 
   const isDisabled = !listOfSprints?.length;
@@ -46,6 +46,8 @@ const Board = () => {
             <TabButton
               key={tab.label}
               active={tabValue === index}
+              type="button"
+              aria-pressed={tabValue === index}
               onClick={() => handleChangeTabValue(index)}
             >
               {React.cloneElement(tab.icon, { fontSize: "small" })}
@@ -119,7 +121,7 @@ const Board = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              width: "100%",
+              width: "100%"
             }}
           >
             <SprintSelector />

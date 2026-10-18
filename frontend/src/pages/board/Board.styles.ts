@@ -8,7 +8,7 @@ export const ActionContainer = styled("div")(({ theme }) => ({
   padding: theme.spacing(1, 2),
   width: "fit-content",
   position: "relative",
-  zIndex: 1,
+  zIndex: 1
 }));
 
 export const AddButton = styled(IconButton)(({ theme }) => ({
@@ -30,28 +30,28 @@ export const AddButton = styled(IconButton)(({ theme }) => ({
 
     "&:hover": {
       backgroundColor: theme.palette.primary.main + "0A",
-      borderColor: theme.palette.primary.dark,
+      borderColor: theme.palette.primary.dark
     },
 
     "&:active": {
-      backgroundColor: theme.palette.primary.main + "14",
+      backgroundColor: theme.palette.primary.main + "14"
     },
 
     "&.Mui-disabled": {
       borderColor: theme.palette.action.disabled,
       color: theme.palette.action.disabled,
-      backgroundColor: theme.palette.action.disabledBackground,
+      backgroundColor: theme.palette.action.disabledBackground
     },
 
     "& .MuiSvgIcon-root": {
-      fontSize: "1.25rem",
-    },
-  },
+      fontSize: "1.25rem"
+    }
+  }
 }));
 
 export const AddButtonWrapper = styled("div")(() => ({
   display: "flex",
-  alignItems: "center",
+  alignItems: "center"
 }));
 
 export const BoardContainer = styled(Box)(({ theme }) => ({
@@ -60,23 +60,27 @@ export const BoardContainer = styled(Box)(({ theme }) => ({
   boxShadow: theme.shadows[1],
   height: "100%",
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "column"
 }));
 
 export const BoardHeader = styled(Box)(({ theme }) => ({
-  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderBottom: `1px solid ${theme.palette.divider}`
 }));
 
 export const TabsWrapper = styled(Box)(({ theme }) => ({
   display: "flex",
+  flexWrap: "wrap",
   alignItems: "center",
   padding: theme.spacing(1, 2),
-  gap: theme.spacing(2),
+  gap: theme.spacing(2)
 }));
 
-export const TabButton = styled(Box, {
-  shouldForwardProp: (prop) => prop !== "active",
+export const TabButton = styled("button", {
+  shouldForwardProp: (prop) => prop !== "active"
 })<{ active?: boolean }>(({ theme, active }) => ({
+  border: 0,
+  fontFamily: "inherit",
+  whiteSpace: "nowrap",
   padding: theme.spacing(1, 2),
   borderRadius: theme.shape.borderRadius,
   fontSize: "0.875rem",
@@ -90,8 +94,8 @@ export const TabButton = styled(Box, {
   transition: theme.transitions.create(["background-color", "color"]),
   "&:hover": {
     backgroundColor: theme.palette.action.hover,
-    color: active ? theme.palette.primary.main : theme.palette.text.primary,
-  },
+    color: active ? theme.palette.primary.main : theme.palette.text.primary
+  }
 }));
 
 export const ActionContainerStyled = styled(Box)(({ theme }) => ({
@@ -100,7 +104,7 @@ export const ActionContainerStyled = styled(Box)(({ theme }) => ({
   justifyContent: "space-between",
   padding: theme.spacing(1, 2),
   borderBottom: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.paper
 }));
 
 export const AddButtonStyled = styled(IconButton)(({ theme }) => ({
@@ -110,10 +114,10 @@ export const AddButtonStyled = styled(IconButton)(({ theme }) => ({
   color: theme.palette.primary.main,
   gap: theme.spacing(1),
   "&:hover": {
-    backgroundColor: theme.palette.primary.main + "0A",
+    backgroundColor: theme.palette.primary.main + "0A"
   },
   "&.Mui-disabled": {
     borderColor: theme.palette.action.disabled,
-    color: theme.palette.action.disabled,
-  },
+    color: theme.palette.action.disabled
+  }
 }));

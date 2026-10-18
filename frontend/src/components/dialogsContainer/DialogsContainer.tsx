@@ -74,11 +74,13 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
   openEditSprintGoalDialog,
   handleEditSprintGoal,
   loadingUpdateSprintGoal,
+  loadingDeleteSprintGoal,
   openCreateTaskToSprintGoalDialog,
   setOpenCreateGoalTaskDialog,
   handleCreateGoalTask,
   loadingCreateGoalTask,
   loadingUpdateGoalTask,
+  loadingDeleteGoalTask,
   openEditGoalTaskDialog,
   selectedGoalTask,
   handleEditGoalTask,
@@ -148,6 +150,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm<Partial<CreateSprintFormData>>
           open={openCreateSprintDialog}
           title="Create Sprint"
+          key={projectId}
           onClose={() => setOpenCreateSprintDialog(false)}
           onSubmit={handleCreateSprint}
           schema={createSprintSchema}
@@ -174,6 +177,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openCreateSprintGoalDialog}
           title="Add Goal"
+          key={sprint?.id}
           onClose={() => setOpenCreateSprintGoalDialog(false)}
           onSubmit={handleCreateSprintGoal}
           schema={createSprintGoalSchema}
@@ -189,6 +193,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openCreateTaskToSprintGoalDialog}
           title={`Add task for ${selectedSprintGoal?.title}`}
+          key={selectedSprintGoal.id}
           onClose={() => setOpenCreateGoalTaskDialog(false)}
           onSubmit={handleCreateGoalTask}
           schema={createGoalTaskSchema}
@@ -240,6 +245,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openEditSprintGoalDialog}
           title="Edit Goal"
+          key={selectedSprintGoal.id}
           onClose={() => {
             setOpenEditSprintGoalDialog(false);
             setSelectedSprintGoal(null);
@@ -279,6 +285,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openEditGoalTaskDialog}
           title={`Edit task ${selectedGoalTask?.title}`}
+          key={selectedGoalTask.id}
           onClose={() => {
             setSelectedGoalTask(null);
             setOpenEditGoalTaskDialog(false);
@@ -322,6 +329,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onClose={() => setOpenDeleteSprintDialog(false)}
           onConfirm={() => handleDeleteSprint(selectedSprint)}
           itemName={selectedSprint.name}
+          itemKey={`sprint:${selectedSprint.id}`}
           disabled={loadingDeleteSprint}
         />
       )}
@@ -335,6 +343,8 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           }}
           onConfirm={() => handleDeleteSprintGoal(selectedSprintGoal)}
           itemName={selectedSprintGoal.title}
+          itemKey={`goal:${selectedSprintGoal.id}`}
+          disabled={loadingDeleteSprintGoal}
         />
       )}
       {selectedGoalTask && openDeleteGoalTaskDialog && (
@@ -346,6 +356,8 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           }}
           onConfirm={() => handleDeleteGoalTask(selectedGoalTask)}
           itemName={selectedGoalTask.title}
+          itemKey={`goalTask:${selectedGoalTask.id}`}
+          disabled={loadingDeleteGoalTask}
         />
       )}
     </Portal>

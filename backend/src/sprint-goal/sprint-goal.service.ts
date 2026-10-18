@@ -7,7 +7,7 @@ import {
   UpdateGoalTaskDto,
   UpdateSprintGoalDto,
 } from 'src/dto';
-import { SprintGoal, GoalTask } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { SPRINT_GOAL_INCLUDE, SPRINT_INCLUDE } from 'src/constants';
 import { EventsGateway } from 'src/webSockets/events.gateway';
 
@@ -18,159 +18,148 @@ export class SprintGoalService {
     private eventsGateway: EventsGateway,
   ) {}
 
-  //  Crear un Sprint Goal
-  public async createGoal(data: CreateSprintGoalDto): Promise<SprintGoal> {
+  private async publishSprint(sprintId: string) {
+    const sprint = await this.prisma.sprint.findUnique({
+      where: { id: sprintId },
+      include: SPRINT_INCLUDE,
+    });
+    if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+  }
+
+  public async createGoal(data: CreateSprintGoalDto) {
     try {
+      if (
+        !(await this.prisma.sprint.findUnique({ where: { id: data.sprintId } }))
+      )
+        throw new NotFoundException('Sprint not found');
       const response = await this.prisma.sprintGoal.create({
         data,
         include: SPRINT_GOAL_INCLUDE,
       });
-
-      const sprint = await this.prisma.sprint.findUnique({
-        where: { id: response.sprintId },
-        include: SPRINT_INCLUDE,
-      });
-
-      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+      await this.publishSprint(response.sprintId);
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  //  Obtener Goals de un Sprint
-  public async getSprintGoals(sprintId: string): Promise<SprintGoal[]> {
+  public async getSprintGoals(sprintId: string) {
     try {
+      if (!(await this.prisma.sprint.findUnique({ where: { id: sprintId } })))
+        throw new NotFoundException('Sprint not found');
       return await this.prisma.sprintGoal.findMany({
         where: { sprintId },
         include: SPRINT_GOAL_INCLUDE,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  //  Actualizar un Sprint Goal
-  public async updateGoal(request: UpdateSprintGoalDto): Promise<SprintGoal> {
+  public async updateGoal(request: UpdateSprintGoalDto) {
     try {
       const { id, ...data } = request;
-      const goal = await this.prisma.sprintGoal.findUnique({
-        where: { id },
-      });
-
-      if (!goal) throw new NotFoundException('Sprint Goal not found');
-
+      if (!(await this.prisma.sprintGoal.findUnique({ where: { id } })))
+        throw new NotFoundException('Sprint Goal not found');
       const response = await this.prisma.sprintGoal.update({
         where: { id },
         data,
         include: SPRINT_GOAL_INCLUDE,
       });
-
-      const sprint = await this.prisma.sprint.findUnique({
-        where: { id: response.sprintId },
-        include: SPRINT_INCLUDE,
-      });
-
-      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+      await this.publishSprint(response.sprintId);
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  //  Eliminar un Sprint Goal
-  public async deleteGoal(goalId: string): Promise<boolean> {
+  public async deleteGoal(id: string) {
     try {
-      const goal = await this.prisma.sprintGoal.findUnique({
-        where: { id: goalId },
-      });
-
-      if (!goal) throw new NotFoundException('Sprint Goal not found');
-
-      const response = await this.prisma.sprintGoal.delete({
-        where: { id: goalId },
-      });
-
-      const sprint = await this.prisma.sprint.findUnique({
-        where: { id: response.sprintId },
-        include: SPRINT_INCLUDE,
-      });
-
-      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
-
+      if (!(await this.prisma.sprintGoal.findUnique({ where: { id } })))
+        throw new NotFoundException('Sprint Goal not found');
+      const response = await this.prisma.sprintGoal.delete({ where: { id } });
+      await this.publishSprint(response.sprintId);
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  //  Crear una nueva Goal Task
-  public async createGoalTask(data: CreateGoalTaskDto): Promise<GoalTask> {
-    try {
-      const response = await this.prisma.goalTask.create({ data });
-
-      const goal = await this.prisma.sprintGoal.findUnique({
-        where: { id: data.goalId },
+  // Serialize changes to one checklist so concurrent clients calculate from the
+  // same committed tasks. The task, aggregate and emitted sprint are one outcome.
+  private async changeChecklist<T>(
+    goalId: string,
+    change: (tx: Prisma.TransactionClient) => Promise<T>,
+  ) {
+    const result = await this.prisma.$transaction(async (tx) => {
+      const locked = await tx.$queryRaw<
+        { id: string }[]
+      >`SELECT id FROM "SprintGoal" WHERE id = ${goalId} FOR UPDATE`;
+      if (!locked.length) throw new NotFoundException('Sprint Goal not found');
+      const value = await change(tx);
+      const goal = await tx.sprintGoal.findUniqueOrThrow({
+        where: { id: goalId },
+        include: SPRINT_GOAL_INCLUDE,
       });
-      const sprint = await this.prisma.sprint.findUnique({
-        where: { id: goal?.sprintId },
+      const total = goal.goalTask.length;
+      const progress = total
+        ? Math.round(
+            (goal.goalTask.filter((task) => task.completed).length / total) *
+              100,
+          )
+        : 0;
+      const goalsStatus =
+        progress === 100
+          ? 'COMPLETED'
+          : goal.goalsStatus === 'COMPLETED'
+            ? 'IN_PROGRESS'
+            : goal.goalsStatus;
+      await tx.sprintGoal.update({
+        where: { id: goalId },
+        data: { progress, goalsStatus },
+      });
+      const sprint = await tx.sprint.findUniqueOrThrow({
+        where: { id: goal.sprintId },
         include: SPRINT_INCLUDE,
       });
+      return { value, sprint };
+    });
+    this.eventsGateway.emitSprintUpdate(result.sprint);
+    return result.value;
+  }
 
-      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
-
-      return response;
-    } catch (error) {
+  public async createGoalTask(data: CreateGoalTaskDto) {
+    try {
+      return await this.changeChecklist(data.goalId, (tx) =>
+        tx.goalTask.create({ data }),
+      );
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  //  Actualizar una Goal Task
-  public async updateGoalTask(request: UpdateGoalTaskDto): Promise<GoalTask> {
+  public async updateGoalTask(request: UpdateGoalTaskDto) {
     try {
       const { id, ...data } = request;
-      const task = await this.prisma.goalTask.findUnique({
-        where: { id },
-      });
-
+      const task = await this.prisma.goalTask.findUnique({ where: { id } });
       if (!task) throw new NotFoundException('Goal Task not found');
-
-      const response = await this.prisma.goalTask.update({
-        where: { id },
-        data,
-      });
-
-      const goal = await this.prisma.sprintGoal.findUnique({
-        where: { id: task.goalId },
-      });
-      const sprint = await this.prisma.sprint.findUnique({
-        where: { id: goal?.sprintId },
-        include: SPRINT_INCLUDE,
-      });
-
-      if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
-
-      return response;
-    } catch (error) {
+      return await this.changeChecklist(task.goalId, (tx) =>
+        tx.goalTask.update({ where: { id }, data }),
+      );
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  //  Eliminar una Goal Task
-  public async deleteGoalTask(goalTaskId: string): Promise<boolean> {
+  public async deleteGoalTask(id: string) {
     try {
-      const task = await this.prisma.goalTask.findUnique({
-        where: { id: goalTaskId },
-      });
-
+      const task = await this.prisma.goalTask.findUnique({ where: { id } });
       if (!task) throw new NotFoundException('Goal Task not found');
-
-      await this.prisma.goalTask.delete({
-        where: { id: goalTaskId },
+      return await this.changeChecklist(task.goalId, async (tx) => {
+        await tx.goalTask.delete({ where: { id } });
+        return true;
       });
-
-      return true;
-    } catch (error) {
+    } catch (error: unknown) {
       handlePrismaError(error);
     }
   }

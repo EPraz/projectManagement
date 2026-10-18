@@ -5,8 +5,6 @@ export * from "./utilityTicketsTasksHelpers";
 export * from "./tickets";
 export * from "./getTypeIcon";
 export * from "./sprints";
-export * from "./sprintGoals";
-export * from "./goalTask";
 export * from "./projectsPage";
 export * from "./getColorsHelper";
 export * from "./isTokenExpired";

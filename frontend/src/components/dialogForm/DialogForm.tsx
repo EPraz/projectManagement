@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useId, useLayoutEffect, useRef } from "react";
 import {
   TextField,
   Button,
@@ -7,8 +7,15 @@ import {
   Tooltip,
   MenuItem,
   Select,
+  Alert
 } from "@mui/material";
-import { useForm, Controller, type Path, type FieldValues, type Resolver } from "react-hook-form";
+import {
+  useForm,
+  Controller,
+  type Path,
+  type FieldValues,
+  type Resolver
+} from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -23,7 +30,7 @@ import {
   StyledDatePicker,
   StyledDialog,
   StyledDialogActions,
-  StyledDialogContent,
+  StyledDialogContent
 } from "./DialogForm.styles";
 
 const DialogForm = <T extends FieldValues>({
@@ -36,23 +43,36 @@ const DialogForm = <T extends FieldValues>({
   title,
   disabled,
   fieldConfig = {},
+  itemKey
 }: DialogFormProps<T>) => {
+  const formId = useId();
+  const generation = useRef(0);
+  const active = useRef(false);
+  const defaults = useRef(defaultValues);
+  defaults.current = defaultValues;
   const {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isDirty },
+    setError,
+    clearErrors,
+    formState: { errors, isDirty, isSubmitting }
   } = useForm<T>({
     // Yup makes generic keys optional in its inferred type; the schema prop
     // already constrains the validated values to this form's T.
     resolver: yupResolver(schema) as unknown as Resolver<T>,
-    defaultValues,
-    disabled,
+    defaultValues
   });
 
-  useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
+  useLayoutEffect(() => {
+    generation.current += 1;
+    active.current = false;
+    reset(defaults.current);
+    return () => {
+      generation.current += 1;
+    };
+  }, [open, itemKey, reset]);
+  const pending = disabled || isSubmitting;
 
   const handleClose = () => {
     onClose();
@@ -63,9 +83,30 @@ const DialogForm = <T extends FieldValues>({
     onDelete?.();
   };
 
-  const internalSubmit = (data: T) => {
-    onSubmit(data);
-    handleClose();
+  const internalSubmit = async (data: T) => {
+    if (active.current) return;
+    active.current = true;
+    const opened = generation.current;
+    clearErrors("root");
+    try {
+      const result = await onSubmit(data);
+      if (opened !== generation.current) return;
+      if (result === false)
+        throw new Error(
+          "Could not save. Your changes are kept. Please try again."
+        );
+      handleClose();
+    } catch (error) {
+      if (opened === generation.current)
+        setError("root", {
+          message:
+            error instanceof Error
+              ? error.message
+              : "Could not save. Please try again."
+        });
+    } finally {
+      if (opened === generation.current) active.current = false;
+    }
   };
 
   // Función para obtener el campo correcto basado en fieldConfig
@@ -76,31 +117,38 @@ const DialogForm = <T extends FieldValues>({
     const isDateField =
       fieldOptions?.label === "startDate" || fieldOptions?.label === "endDate";
     const fieldName = key;
+    const inputId = `${formId}-${key}`;
     const isHidden = fieldOptions?.hidden;
     if (isHidden) return null;
 
     if (isDateField) {
       return (
         <FormFieldContainer key={key}>
-          <FieldLabel>{label}</FieldLabel>
+          <FieldLabel htmlFor={inputId}>{label}</FieldLabel>
           <Controller
             name={fieldName}
             control={control}
             render={({ field }) => (
               <StyledDatePicker
+                disabled={pending || fieldOptions?.disabled}
                 value={field.value ? new Date(field.value) : null}
                 onChange={(newValue) =>
-                  field.onChange(newValue ? newValue.toISOString() : null)
+                  field.onChange(
+                    newValue && !Number.isNaN(newValue.getTime())
+                      ? newValue.toISOString()
+                      : null
+                  )
                 }
                 slotProps={{
                   textField: {
+                    id: inputId,
                     fullWidth: true,
                     error: !!errors[fieldName],
                     size: "small",
                     placeholder: fieldOptions?.placeholder || "",
                     InputLabelProps: { shrink: false },
-                    variant: "outlined",
-                  },
+                    variant: "outlined"
+                  }
                 }}
               />
             )}
@@ -115,22 +163,23 @@ const DialogForm = <T extends FieldValues>({
     if (isSelectField) {
       return (
         <FormFieldContainer key={key}>
-          <FieldLabel>{label}</FieldLabel>
+          <FieldLabel id={`${inputId}-label`}>{label}</FieldLabel>
           <Controller
             name={fieldName}
             control={control}
             render={({ field }) => (
               <Select
                 {...field}
+                labelId={`${inputId}-label`}
                 fullWidth
                 size="small"
                 error={!!errors[fieldName]}
-                disabled={disabled || fieldOptions?.disabled}
+                disabled={pending || fieldOptions?.disabled}
                 displayEmpty={fieldOptions?.placeholder !== undefined}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderRadius: 1,
-                  },
+                    borderRadius: 1
+                  }
                 }}
               >
                 {fieldOptions?.placeholder && (
@@ -155,12 +204,13 @@ const DialogForm = <T extends FieldValues>({
 
     return (
       <FormFieldContainer key={key}>
-        <FieldLabel>{label}</FieldLabel>
+        <FieldLabel htmlFor={inputId}>{label}</FieldLabel>
         <TextField
+          id={inputId}
           {...control.register(fieldName)}
           fullWidth
           error={!!errors[fieldName]}
-          disabled={disabled || fieldOptions?.disabled}
+          disabled={pending || fieldOptions?.disabled}
           size="small"
           placeholder={fieldOptions?.placeholder || ""}
           multiline={fieldOptions?.multiline}
@@ -169,11 +219,11 @@ const DialogForm = <T extends FieldValues>({
           InputLabelProps={{ shrink: false }}
           sx={{
             "& .MuiOutlinedInput-root": {
-              borderRadius: 1,
+              borderRadius: 1
             },
             "& .MuiInputLabel-root": {
-              display: "none",
-            },
+              display: "none"
+            }
           }}
         />
         {errors[fieldName] && (
@@ -188,7 +238,7 @@ const DialogForm = <T extends FieldValues>({
       open={open}
       onClose={(_, reason) => {
         if (reason === "backdropClick") return;
-        onClose();
+        if (!pending) onClose();
       }}
       maxWidth="sm"
       fullWidth
@@ -198,7 +248,12 @@ const DialogForm = <T extends FieldValues>({
           {title}
         </Typography>
         <Tooltip title="Close" arrow>
-          <CloseButton onClick={handleClose} size="small">
+          <CloseButton
+            onClick={handleClose}
+            size="small"
+            disabled={pending}
+            aria-label="Close"
+          >
             <CloseIcon fontSize="small" />
           </CloseButton>
         </Tooltip>
@@ -207,6 +262,9 @@ const DialogForm = <T extends FieldValues>({
       {/* Envolvemos todo en un <form> para que el submit funcione correctamente */}
       <form onSubmit={handleSubmit(internalSubmit)}>
         <StyledDialogContent>
+          {errors.root?.message && (
+            <Alert severity="error">{errors.root.message}</Alert>
+          )}
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {Object.keys(defaultValues).map((key) =>
               getFieldComponent(key as Path<T>)
@@ -220,7 +278,7 @@ const DialogForm = <T extends FieldValues>({
               display: "flex",
               gap: 1,
               width: "100%",
-              justifyContent: "space-between",
+              justifyContent: "space-between"
             }}
           >
             {onDelete && (
@@ -233,7 +291,7 @@ const DialogForm = <T extends FieldValues>({
                     variant="outlined"
                     startIcon={<DeleteOutlineIcon />}
                     onClick={handleDelete}
-                    disabled={disabled}
+                    disabled={pending}
                   >
                     Delete
                   </DeleteButton>
@@ -244,7 +302,7 @@ const DialogForm = <T extends FieldValues>({
               <Button
                 variant="outlined"
                 onClick={handleClose}
-                disabled={disabled}
+                disabled={pending}
               >
                 Cancel
               </Button>
@@ -253,7 +311,7 @@ const DialogForm = <T extends FieldValues>({
                   <Button
                     variant="contained"
                     type="submit"
-                    disabled={disabled || !isDirty}
+                    disabled={pending || !isDirty}
                     sx={{ minWidth: 100 }}
                   >
                     Save
