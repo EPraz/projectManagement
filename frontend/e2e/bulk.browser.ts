@@ -34,7 +34,7 @@ test("confirmed bulk events update the selected board while unavailable ordering
       name: "Move ticket up (unavailable)",
       exact: true
     });
-    expect(await arrows.count()).toBeGreaterThan(0);
+    await expect(arrows.first()).toBeVisible();
     for (const arrow of await arrows.all()) await expect(arrow).toBeDisabled();
     const confirmed = await request.patch("/api/tickets/bulk-update", {
       headers,
