@@ -1,6 +1,6 @@
 # Portfolio presentation: README and walkthrough
 
-Status: spec-ready-for-agent
+Status: to-tickets-breakdown-confirmation
 
 ## Current presentation handoff — 2026-10-18
 
@@ -115,3 +115,9 @@ The consolidated test boundaries are real browser product/viewing journeys, expo
 ### To-spec validation confirmed
 
 The owner replies “Sí, validar así” to the consolidated external verification. The [current spec](spec.md) is now ready-for-agent in the local tracker. It includes the real independent-session WebSocket journey, public viewing without login/with unavailable backend, complete exported-media review, actual delivery links and reproducible README/setup. No additional test seam, scope decision or recording-readiness confirmation remains pending. This closes the explicit to-spec pass; keep the existing six-ticket history for the subsequent to-tickets reconciliation.
+
+## Explicit to-tickets reconciliation — 2026-10-18
+
+Prepared [the reconciled breakdown](tickets.reconciled.proposed.md) against the confirmed spec, preserving six original IDs and two evidence-backed resolutions. Four outcomes remain:03 verified rehearsal,04 README/setup,05 final walkthrough,06 public viewing/publication.03's blockers01/02 are done;04/05 depend only on03;06 needs both finished artifacts. Final poster/video-link integration belongs to06 so04 is not accidentally blocked by05. Added the confirmed unavailable-backend/expired-session, media failure, native-player, chapter/download and deployed byte-range checks to06's proposed acceptance. No parent-spec change or implementation occurred.
+
+Await the to-tickets granularity/dependency/merge-split confirmation, then apply these refinements to the existing individual issues and leave them ready-for-agent. Do not duplicate tickets or reopen01/02.
