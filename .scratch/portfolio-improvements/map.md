@@ -39,6 +39,8 @@ Status: ready-for-agent
 
 - 2026-10-17: [Ticket 09](issues/09-hierarchy-and-backlog.md) resolved: real selected-project hierarchy, validated relationships, confirmed scoped events and recoverable linked backlog. [Evidence](evidence/09-hierarchy.md), [review](evidence/09-review.md); dd61814. Both review axes have zero actionable findings.
 
+- 2026-10-17: [Ticket 10](issues/10-sprint-planning-and-goals.md) resolved: canonical planning, retained drafts and transactional goal/checklist publication. [Evidence](evidence/10-planning.md), [review](evidence/10-review.md);51d882e and a828ae8. Standards cross-goal race P2 reproduced, corrected and re-reviewed; both axes have zero outstanding findings. All60 retained browser journeys pass.
+
 ## Test-boundary confirmation
 
 Confirmed by the owner: primary real-browser product workflows, complemented by HTTP/WebSocket tests with isolated local PostgreSQL and focused progress/task regressions; builds, types and non-mutating lint as CI checks.
@@ -71,7 +73,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [07: Make project loading, selection and recovery coherent](issues/07-project-loading-and-recovery.md) | resolved | 06 |
 | [08: Refactor ticket and task editing as a reliable workflow](issues/08-ticket-and-task-editing.md) | resolved | 07 |
 | [09: Refactor hierarchy and backlog without breaking linked work](issues/09-hierarchy-and-backlog.md) | resolved | 07 |
-| [10: Make sprint planning and goals consistent across views](issues/10-sprint-planning-and-goals.md) | ready-for-agent | 07 |
+| [10: Make sprint planning and goals consistent across views](issues/10-sprint-planning-and-goals.md) | resolved | 07 |
 | [11: Make team and capacity planning reliable](issues/11-team-and-capacity.md) | ready-for-agent | 07 |
 | [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | ready-for-agent | 07 |
 | [13: Reduce unnecessary initial and editor code loading](issues/13-initial-code-loading.md) | ready-for-agent | 08 |
@@ -81,11 +83,12 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 ## Resume implementation
 
-- Tickets 01–09 are resolved. Next numbered frontier: 10, sprint planning and goals, now unblocked. Later blockers remain unchanged.
+- Tickets 01–10 are resolved. Next numbered frontier: 11, team and capacity, now unblocked. Later blockers remain unchanged.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
 - Final presentation remains deferred until ticket 16 verifies the integrated application.
+
 
 
 

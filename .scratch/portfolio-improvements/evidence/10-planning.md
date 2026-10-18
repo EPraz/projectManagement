@@ -29,3 +29,9 @@ The initial Standards review identified a P2: locking a single goal did not seri
 The first integrated browser run passed59 of60 and found a separate accessible-name regression: a newly named delete button altered the enclosing sprint option's name. The option now explicitly retains the sprint name while its delete action keeps its own label. The original selection assertion is unchanged. The full corrected integrated run is pending.
 
 Initial Spec review had no actionable findings. Independent re-review of the corrections is pending. Frontend production build passes at1,628.10kB raw/483.18kB gzip; measured splitting remains ticket13.
+
+## Final closure evidence
+
+The corrected integrated run passes all **60 retained browser journeys in3.2minutes**, against a828ae8 and the rebuilt isolated backend. All36 API/startup tests,77 Jest tests/15suites/12snapshots, types, backend lint/build and frontend lint/build pass. Frontend lint has20 visible warnings, backend zero; no suppressions. Final frontend bundle1,628.12kB raw/483.18kB gzip. Both independent reviewers confirm zero outstanding findings after the P2 correction. No required checks remain pending for this slice.
+
+Ticket09's pushed closure f23bc98 also passed both hostedCI jobs in run39086169812. Ticket10 will be pushed with this closure and its hostedCI result recorded.
