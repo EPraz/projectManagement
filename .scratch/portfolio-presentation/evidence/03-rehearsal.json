@@ -1,0 +1,257 @@
+{
+  "origin": "http://127.0.0.1:56731",
+  "applicationCommit": "2339dbc166d05de4700120d1e19562f18c30334d",
+  "rehearsal": true,
+  "checks": {
+    "database": "project_management_presentation",
+    "loopback": true,
+    "work": {
+      "project": "Orbit \u2014 Product Delivery",
+      "sprint": "Sprint 2 \u2014 Delivery",
+      "ticket": "Build the sprint overview",
+      "task": "Implement the workflow",
+      "ticketId": 7,
+      "taskId": 13
+    },
+    "websocket": {
+      "independentContexts": true,
+      "event": "ticketUpdated",
+      "events": [
+        {
+          "event": "ticketUpdated",
+          "ticketId": 7,
+          "statusId": "5af4ba7d-3400-4e74-9c0d-8dda48ff60d9",
+          "taskStatusId": "87d1c0c2-9e7e-4b16-bf4d-a72847da0642",
+          "at": 5.447906199999999
+        },
+        {
+          "event": "ticketUpdated",
+          "ticketId": 7,
+          "statusId": "5af4ba7d-3400-4e74-9c0d-8dda48ff60d9",
+          "taskStatusId": "df67c0c5-b784-4637-9bd1-7a0bccf21bdf",
+          "at": 7.291428
+        }
+      ],
+      "observerReloads": 0,
+      "canonicalTicketState": "CODE_REVIEW",
+      "canonicalTaskState": "IN_PROGRESS",
+      "persistence": true
+    },
+    "browserErrors": [],
+    "scenes": 17
+  },
+  "scenes": [
+    {
+      "id": "entry",
+      "title": "01 / A workspace for delivery",
+      "start": 1.6738051,
+      "rawSeconds": 0.5877414999999999,
+      "seconds": 14,
+      "captions": [
+        "An original full-stack project for planning, tracking and reviewing team delivery.",
+        "Explore populated fictional projects without creating a personal account."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "overview",
+      "title": "02 / Project context, sprint focus",
+      "start": 2.2615612,
+      "rawSeconds": 0.24620650000000044,
+      "seconds": 8,
+      "captions": [
+        "Project progress covers the whole project. Sprint metrics follow the selected sprint."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "hierarchy",
+      "title": "03 / Connect the bigger picture",
+      "start": 2.5077959,
+      "rawSeconds": 0.3907539,
+      "seconds": 10,
+      "captions": [
+        "Epics and features link project goals to concrete tickets across sprints."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "backlog",
+      "title": "04 / Plan the selected sprint",
+      "start": 2.8985716000000004,
+      "rawSeconds": 0.7543160000000002,
+      "seconds": 8,
+      "captions": [
+        "The Backlog keeps sprint work searchable, with ticket-level filters and configurable columns."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "details",
+      "title": "05 / Requirements, estimates and child tasks",
+      "start": 3.6528982,
+      "rawSeconds": 0.7675922999999996,
+      "seconds": 20,
+      "captions": [
+        "Inspect the ticket requirements, ownership and planning details.",
+        "Story points, time estimates and child tasks stay connected to the same work item."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "taskboard",
+      "title": "06 / Tickets in rows. Tasks by state.",
+      "start": 4.4205189,
+      "rawSeconds": 0.7855317999999993,
+      "seconds": 8,
+      "captions": [
+        "Each row is a ticket. Columns represent the independent states of its tasks."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "ticket-state",
+      "title": "07 / Session A \u00b7 update the ticket",
+      "start": 5.2060615,
+      "rawSeconds": 0.30285980000000023,
+      "seconds": 8,
+      "captions": [
+        "Move the ticket from In Progress to Code Review through the actual API."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "live-ticket",
+      "title": "08 / Session B \u00b7 no refresh",
+      "start": 5.2060615,
+      "rawSeconds": 0.30285980000000023,
+      "seconds": 8,
+      "captions": [
+        "The same change arrives in an independent browser session over WebSockets. No refresh."
+      ],
+      "source": "observer"
+    },
+    {
+      "id": "task-move",
+      "title": "09 / Session A \u00b7 move a child task",
+      "start": 5.5089406,
+      "rawSeconds": 2.0165531999999997,
+      "seconds": 10,
+      "captions": [
+        "Task state is separate from ticket state. Move a child task into In Progress."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "live-task",
+      "title": "10 / Session B \u00b7 work stays in sync",
+      "start": 5.5089406,
+      "rawSeconds": 2.0165531999999997,
+      "seconds": 10,
+      "captions": [
+        "The moved task appears in the second session, while its parent ticket remains in Code Review."
+      ],
+      "source": "observer"
+    },
+    {
+      "id": "team",
+      "title": "11 / People behind the work",
+      "start": 7.5717548,
+      "rawSeconds": 0.26911230000000064,
+      "seconds": 8,
+      "captions": [
+        "The project-wide team connects people to assigned work and sprint planning."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "capacity",
+      "title": "12 / Plan available capacity",
+      "start": 7.841257199999999,
+      "rawSeconds": 0.3098858,
+      "seconds": 10,
+      "captions": [
+        "Sprint capacity shows the team\u2019s available hours and planned workload."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "goals",
+      "title": "13 / Track the sprint outcome",
+      "start": 8.1511963,
+      "rawSeconds": 0.31414149999999985,
+      "seconds": 10,
+      "captions": [
+        "Sprint goals pair a clear outcome with an actionable checklist and progress."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "retrospective",
+      "title": "14 / Make room for feedback",
+      "start": 8.4653597,
+      "rawSeconds": 0.4211435000000012,
+      "seconds": 14,
+      "captions": [
+        "Review what worked, what did not, and what the team can improve next.",
+        "Retrospective cards and reactions belong to the selected sprint."
+      ],
+      "source": "desktop"
+    },
+    {
+      "id": "mobile",
+      "title": "15 / Same workflow. Smaller screen.",
+      "start": 9.8538744,
+      "rawSeconds": 1.3594928999999993,
+      "seconds": 16,
+      "captions": [
+        "A real 390px viewport: responsive navigation, sprint work and contextual editing."
+      ],
+      "source": "mobile"
+    },
+    {
+      "id": "appearance",
+      "title": "16 / Two complete appearances",
+      "start": 11.2133845,
+      "rawSeconds": 0.5484927000000006,
+      "seconds": 8,
+      "captions": [
+        "Switch appearance explicitly. The choice is remembered across visits."
+      ],
+      "source": "mobile"
+    },
+    {
+      "id": "close",
+      "title": "17 / Built across the stack",
+      "start": 11.7618968,
+      "rawSeconds": 0.36084220000000045,
+      "seconds": 12,
+      "captions": [
+        "React + TypeScript \u2192 NestJS REST API \u2192 Prisma + PostgreSQL. Socket.IO keeps sessions synchronized.",
+        "Explore the live demo or inspect the implementation on GitHub."
+      ],
+      "source": "desktop"
+    }
+  ],
+  "sources": {
+    "observer": {
+      "file": null,
+      "width": 1600,
+      "height": 840,
+      "syncWallTime": 1.2964686
+    },
+    "desktop": {
+      "file": null,
+      "width": 1600,
+      "height": 840,
+      "syncWallTime": 1.63585015
+    },
+    "mobile": {
+      "file": null,
+      "width": 390,
+      "height": 844,
+      "syncWallTime": 9.827105750000001
+    }
+  },
+  "durationBeforeEdit": 11.7540789
+}

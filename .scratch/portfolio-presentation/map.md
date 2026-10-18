@@ -1,6 +1,6 @@
 # Portfolio presentation: README and walkthrough
 
-Status: ready-for-implementation
+Status: implementing
 
 ## Current presentation handoff — 2026-10-18
 
@@ -125,3 +125,11 @@ Await the to-tickets granularity/dependency/merge-split confirmation, then apply
 ### To-tickets approved and published
 
 The owner explicitly accepts the proposed granularity and blocking edges (“acepto”). Applied the approved acceptance criteria to the existing individual issues03–06, all ready-for-agent, without duplicating tickets or changing the parent spec.01/02 remain resolved by their existing evidence. [03: verified rehearsal](issues/03-rehearse-verified-journey.md) is the sole currently unblocked work item; after03,04/05 can proceed independently;06 depends on both. The four presentation outcomes are pending implementation, not already recorded/delivered. No new recording-readiness or scope approval is needed for the confirmed work.
+
+## Implementation run — 2026-10-18
+
+Owner explicitly invokes implement for all remaining tickets and additionally requires reviewing/approving the finished video before publication.03 claimed. Continue all local rehearsal, README, recording/rendering, public-viewer implementation and verification autonomously; do not push/deploy/upload the video or its package until the owner reviews the concrete final export and approves publication. Recording readiness remains authorized; this new gate is publication approval. Proposed final code-review base2339dbc is awaiting the owner's confirmation while implementation progresses.
+
+Owner confirms final review base2339dbc. All commits and media stay local until explicit approval of the finished video before publication.
+
+- Implementation03 resolved:17 real local rehearsal scenes pass with independent-context ticket/task WebSocket transitions, zero observer reloads and canonical API confirmation; read-only cloud eight-area navigation passes at390/1440. The recording uses the task-state editor for a readable reliable transition, while the retained actual drag regression passes separately. [Evidence](evidence/03-rehearsal.md).04/05 claimed;06 stays gated by both. All media/package commits remain local until owner publication approval.

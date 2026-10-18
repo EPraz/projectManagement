@@ -1,7 +1,7 @@
 # 04: Deliver the recruiter README and verified setup
 
 Type: task
-Status: ready-for-agent
+Status: claimed
 Blocked by: 03
 
 ## What to build

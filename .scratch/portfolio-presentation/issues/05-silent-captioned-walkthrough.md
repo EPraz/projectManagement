@@ -1,7 +1,7 @@
 # 05: Deliver the polished silent walkthrough
 
 Type: task
-Status: ready-for-agent
+Status: claimed
 Blocked by: 03
 
 ## What to build
