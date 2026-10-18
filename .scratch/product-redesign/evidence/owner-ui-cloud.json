@@ -1,0 +1,34 @@
+{
+  "origin": "https://project-management-murex-pi.vercel.app",
+  "results": [
+    {
+      "width": 390,
+      "initialLight": true,
+      "themeInUserMenu": true,
+      "themePersists": true,
+      "alignedCalendar": true,
+      "inlineColumnOptions": "responsive controls verified",
+      "alignedTable": "compact list verified",
+      "hierarchyEditor": true,
+      "overflow": false,
+      "browserErrors": 0
+    },
+    {
+      "width": 1440,
+      "initialLight": true,
+      "themeInUserMenu": true,
+      "themePersists": true,
+      "alignedCalendar": true,
+      "inlineColumnOptions": "verified",
+      "alignedTable": "verified",
+      "hierarchyEditor": true,
+      "overflow": false,
+      "browserErrors": 0
+    }
+  ],
+  "recording": false,
+  "applicationRevision": "65fa1ef99a4f16ee1fcfcf43b5c87f20b6add753",
+  "vercelDeployment": "dpl_BpGHVNQu7HVf8e5y2vTZiwamXTdA",
+  "qualityRun": "https://github.com/EPraz/projectManagement/actions/runs/39139027327",
+  "qualityConclusion": "success"
+}

@@ -16,4 +16,8 @@ Inspected retained [light entry320](../../../.design/product-redesign/screenshot
 
 ## Publication
 
-Release/deployment and full hosted Quality results are recorded after publication. Existing free Vercel/Render/Neon infrastructure and the explicit owner checkpoint before video remain.
+Application revision `65fa1ef99a4f16ee1fcfcf43b5c87f20b6add753` is READY on the existing [Vercel production alias](https://project-management-murex-pi.vercel.app), deployment `dpl_BpGHVNQu7HVf8e5y2vTZiwamXTdA`. Vercel triggered from the GitHub push; no duplicate deployment was created. Render remains live on `0d32eb3` / `dep-dba9cd3ncjis73cn5h1g` because the backend is unchanged. Existing free infrastructure is preserved.
+
+Public real-Chrome checks at390/1440 pass for initial light on a dark system, appearance inside the user menu and persistence after reload, calendar alignment, desktop inline Column Options/table centering, responsive compact work list, hierarchy editor open/cancel and horizontal reflow. Zero browser exceptions; no public content mutations or recording. [Machine-readable public result](owner-ui-cloud.json). Inspected public Projects, user menu and hierarchy captures; final [loading390 capture](../../../.design/product-redesign/screenshots/owner-ui-refinement/loading-390.png) exercises a real delayed view import locally.
+
+Full hosted [Quality39139027327](https://github.com/EPraz/projectManagement/actions/runs/39139027327) is **SUCCESS** on application65fa1ef: all271 production-browser journeys (7.6min),80 frontend tests/12 snapshots and58 backend tests. Types, lint and production builds pass in CI. This evidence-only closure does not change application source. Owner approval remains required before recording.
