@@ -79,7 +79,11 @@ const SprintSelector = () => {
           }
 
           return (
-            <SprintMenuItem {...props} key={`${option.id}_${option.name}`}>
+            <SprintMenuItem
+              {...props}
+              key={`${option.id}_${option.name}`}
+              aria-label={option.name}
+            >
               <SprintNameContainer>{option.name}</SprintNameContainer>
               {"projectId" in option && (
                 <DeleteButton

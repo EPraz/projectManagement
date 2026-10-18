@@ -355,6 +355,105 @@ describe('Acceso demo HTTP API', () => {
     expect(after.body).toEqual(goals.body);
   });
 
+  it('preserves both different-goal changes in the last confirmed sprint event', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const sprint = await request(app.getHttpServer())
+      .post('/sprints')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: (projects.body as { id: string }[])[0].id,
+        name: 'Concurrent goal sprint',
+        startDate: '2026-10-17T00:00:00Z',
+        endDate: '2026-10-31T00:00:00Z',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      reconnection: false,
+      autoConnect: false,
+      timeout: 5000,
+    });
+    const events: { id: string; sprintGoal: PlanningGoalView[] }[] = [];
+    const removeDelay = async () => {
+      await prisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS quality_delay_goal_commit ON "SprintGoal"',
+      );
+      await prisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS quality_delay_goal_commit()',
+      );
+    };
+    try {
+      const tasks: string[] = [];
+      for (const title of ['Concurrent goal A', 'Concurrent goal B']) {
+        const goal = await request(app.getHttpServer())
+          .post('/sprint-goals')
+          .auth(token, { type: 'bearer' })
+          .send({ sprintId: idOf(sprint), title })
+          .expect(201);
+        const task = await request(app.getHttpServer())
+          .post('/sprint-goals/goalTask')
+          .auth(token, { type: 'bearer' })
+          .send({ goalId: idOf(goal), title: 'Concurrent checkpoint' })
+          .expect(201);
+        tasks.push(idOf(task));
+      }
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      observer.on('sprintUpdated', (event: (typeof events)[number]) => {
+        if (event.id === idOf(sprint)) events.push(event);
+      });
+      // Both snapshots are captured before their independent commit delays finish.
+      // This fault is confined to this guarded local database and these two goals.
+      await prisma.$executeRawUnsafe(
+        `CREATE FUNCTION quality_delay_goal_commit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM pg_sleep(0.4); RETURN NEW; END; $$`,
+      );
+      await prisma.$executeRawUnsafe(
+        `CREATE CONSTRAINT TRIGGER quality_delay_goal_commit AFTER UPDATE ON "SprintGoal" DEFERRABLE INITIALLY DEFERRED FOR EACH ROW WHEN (NEW.title IN ('Concurrent goal A','Concurrent goal B')) EXECUTE FUNCTION quality_delay_goal_commit()`,
+      );
+      await Promise.all(
+        tasks.map((id) =>
+          request(app.getHttpServer())
+            .patch(`/sprint-goals/goalTask/${id}`)
+            .auth(token, { type: 'bearer' })
+            .send({ id, completed: true })
+            .expect(200),
+        ),
+      );
+      const saved = await request(app.getHttpServer())
+        .get(`/sprint-goals/${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(planningGoalsOf(saved).map((goal) => goal.progress)).toEqual([
+        100, 100,
+      ]);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(2);
+      expect(events[1].sprintGoal.map((goal) => goal.progress)).toEqual([
+        100, 100,
+      ]);
+    } finally {
+      observer.disconnect();
+      await removeDelay();
+      await request(app.getHttpServer())
+        .delete(`/sprints/${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
   it('rolls back a failed checklist aggregate and emits only committed results to another client', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

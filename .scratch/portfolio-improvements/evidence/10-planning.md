@@ -21,3 +21,11 @@ Ten retained planning browser journeys pass: failed create/retry, keyboard navig
 Test corrections were explicit: existing controls are named Add New Goal and Proceed, and the ticket editor's Sprint field is on Planning. The selected-sprint helper handles an already selected option. Card title text is visually truncated, so the board assertion uses its full accessible heading name. The delayed-response test uses real SPA/browser Back rather than a full document reload that cancels the request. A concurrent-event assertion now sorts numbers numerically instead of lexically. These corrections did not weaken product expectations.
 
 Free hosting, shared Usuario demo, explicit restoration and preservation across deploys remain. Presentation stays deferred through ticket16 and the owner's pre-recording design checkpoint.
+
+## Independent review correction
+
+The initial Standards review identified a P2: locking a single goal did not serialize full sprint snapshots from different goals. A new real HTTP/WebSocket/PostgreSQL regression delayed two different-goal commits after their snapshots: both persisted at 100%, but the last emitted sprint contained [0,100]. All goal and checklist writers now lock the sprint before child writes, capture the canonical snapshot in that same transaction and publish after commit. The parent-first order also matches sprint deletion. The exact regression now passes at [100,100], together with all 36 API/startup tests and backend lint/build.
+
+The first integrated browser run passed59 of60 and found a separate accessible-name regression: a newly named delete button altered the enclosing sprint option's name. The option now explicitly retains the sprint name while its delete action keeps its own label. The original selection assertion is unchanged. The full corrected integrated run is pending.
+
+Initial Spec review had no actionable findings. Independent re-review of the corrections is pending. Frontend production build passes at1,628.10kB raw/483.18kB gzip; measured splitting remains ticket13.

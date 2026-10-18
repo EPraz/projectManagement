@@ -18,26 +18,40 @@ export class SprintGoalService {
     private eventsGateway: EventsGateway,
   ) {}
 
-  private async publishSprint(sprintId: string) {
-    const sprint = await this.prisma.sprint.findUnique({
-      where: { id: sprintId },
-      include: SPRINT_INCLUDE,
+  // All goal/checklist writers lock their sprint before any child row. The
+  // published full sprint snapshot therefore includes earlier committed changes
+  // to other goals, and shares the parent-first lock order of sprint deletion.
+  private async changeSprint<T>(
+    sprintId: string,
+    change: (tx: Prisma.TransactionClient) => Promise<T>,
+  ) {
+    const result = await this.prisma.$transaction(async (tx) => {
+      const locked = await tx.$queryRaw<
+        { id: string }[]
+      >`SELECT id FROM "Sprint" WHERE id = ${sprintId} FOR UPDATE`;
+      if (!locked.length) throw new NotFoundException('Sprint not found');
+      const value = await change(tx);
+      const sprint = await tx.sprint.findUniqueOrThrow({
+        where: { id: sprintId },
+        include: SPRINT_INCLUDE,
+      });
+      return { value, sprint };
     });
-    if (sprint) this.eventsGateway.emitSprintUpdate(sprint);
+    this.eventsGateway.emitSprintUpdate(result.sprint);
+    return result.value;
+  }
+
+  private async requireGoal(id: string) {
+    const goal = await this.prisma.sprintGoal.findUnique({ where: { id } });
+    if (!goal) throw new NotFoundException('Sprint Goal not found');
+    return goal;
   }
 
   public async createGoal(data: CreateSprintGoalDto) {
     try {
-      if (
-        !(await this.prisma.sprint.findUnique({ where: { id: data.sprintId } }))
-      )
-        throw new NotFoundException('Sprint not found');
-      const response = await this.prisma.sprintGoal.create({
-        data,
-        include: SPRINT_GOAL_INCLUDE,
-      });
-      await this.publishSprint(response.sprintId);
-      return response;
+      return await this.changeSprint(data.sprintId, (tx) =>
+        tx.sprintGoal.create({ data, include: SPRINT_GOAL_INCLUDE }),
+      );
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -59,15 +73,14 @@ export class SprintGoalService {
   public async updateGoal(request: UpdateSprintGoalDto) {
     try {
       const { id, ...data } = request;
-      if (!(await this.prisma.sprintGoal.findUnique({ where: { id } })))
-        throw new NotFoundException('Sprint Goal not found');
-      const response = await this.prisma.sprintGoal.update({
-        where: { id },
-        data,
-        include: SPRINT_GOAL_INCLUDE,
-      });
-      await this.publishSprint(response.sprintId);
-      return response;
+      const goal = await this.requireGoal(id);
+      return await this.changeSprint(goal.sprintId, (tx) =>
+        tx.sprintGoal.update({
+          where: { id },
+          data,
+          include: SPRINT_GOAL_INCLUDE,
+        }),
+      );
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -75,27 +88,23 @@ export class SprintGoalService {
 
   public async deleteGoal(id: string) {
     try {
-      if (!(await this.prisma.sprintGoal.findUnique({ where: { id } })))
-        throw new NotFoundException('Sprint Goal not found');
-      const response = await this.prisma.sprintGoal.delete({ where: { id } });
-      await this.publishSprint(response.sprintId);
-      return true;
+      const goal = await this.requireGoal(id);
+      return await this.changeSprint(goal.sprintId, async (tx) => {
+        await tx.sprintGoal.delete({ where: { id } });
+        return true;
+      });
     } catch (error: unknown) {
       handlePrismaError(error);
     }
   }
 
-  // Serialize changes to one checklist so concurrent clients calculate from the
-  // same committed tasks. The task, aggregate and emitted sprint are one outcome.
+  // Task and aggregate changes form one transaction and one confirmed event.
   private async changeChecklist<T>(
     goalId: string,
     change: (tx: Prisma.TransactionClient) => Promise<T>,
   ) {
-    const result = await this.prisma.$transaction(async (tx) => {
-      const locked = await tx.$queryRaw<
-        { id: string }[]
-      >`SELECT id FROM "SprintGoal" WHERE id = ${goalId} FOR UPDATE`;
-      if (!locked.length) throw new NotFoundException('Sprint Goal not found');
+    const parent = await this.requireGoal(goalId);
+    return await this.changeSprint(parent.sprintId, async (tx) => {
       const value = await change(tx);
       const goal = await tx.sprintGoal.findUniqueOrThrow({
         where: { id: goalId },
@@ -118,14 +127,8 @@ export class SprintGoalService {
         where: { id: goalId },
         data: { progress, goalsStatus },
       });
-      const sprint = await tx.sprint.findUniqueOrThrow({
-        where: { id: goal.sprintId },
-        include: SPRINT_INCLUDE,
-      });
-      return { value, sprint };
+      return value;
     });
-    this.eventsGateway.emitSprintUpdate(result.sprint);
-    return result.value;
   }
 
   public async createGoalTask(data: CreateGoalTaskDto) {
