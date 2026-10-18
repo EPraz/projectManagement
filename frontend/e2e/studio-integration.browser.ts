@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mkdir } from "node:fs/promises";
-import { enterDemo, navigateSection } from "./support/demo";
+import { enterDemo, navigateSection, setAppearance } from "./support/demo";
 
 test.use({ actionTimeout: 5000 });
 for (const theme of ["light", "dark"] as const) {
@@ -14,6 +14,7 @@ for (const theme of ["light", "dark"] as const) {
       const errors: string[] = [];
       page.on("pageerror", (e) => errors.push(e.message));
       await page.setViewportSize({ width, height: 900 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await enterDemo(page);
       await page.getByText("Orbit — Product Delivery", { exact: true }).click();
@@ -196,6 +197,7 @@ for (const theme of ["light", "dark"] as const) {
     page,
   }) => {
     await page.setViewportSize({ width: 640, height: 900 });
+    await setAppearance(page, theme);
     await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
     await enterDemo(page);
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();

@@ -1,11 +1,12 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, setAppearance } from "./support/demo";
 for (const theme of ["light", "dark"] as const) {
   for (const width of [320, 390, 768, 1024, 1440]) {
     test(`C Overview modules are readable at ${width}px in ${theme}`, async ({
       page,
     }, info) => {
       await page.setViewportSize({ width, height: 1000 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await enterDemo(page);
       await page

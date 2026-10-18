@@ -5,7 +5,7 @@ import {
   type Page,
 } from "@playwright/test";
 test.use({ actionTimeout: 5000 });
-import { enterDemo } from "./support/demo";
+import { enterDemo, setAppearance } from "./support/demo";
 async function openTask(page: Page, request: APIRequestContext) {
   const { accessToken } = await (
     await request.post("/api/auth/instant-login", { data: {} })
@@ -250,6 +250,7 @@ for (const theme of ["light", "dark"] as const) {
       request,
     }, info) => {
       await page.setViewportSize({ width, height: 900 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await openTask(page, request);
       const editor = page.getByRole("dialog", {

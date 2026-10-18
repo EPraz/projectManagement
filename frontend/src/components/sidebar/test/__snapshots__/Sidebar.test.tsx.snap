@@ -4,45 +4,49 @@ exports[`Sidebar Component match snapshot 1`] = `
 <DocumentFragment>
   <aside
     aria-label="Test Project navigation"
-    class="MuiBox-root css-1agyvpf"
+    class="MuiBox-root css-14rmxts"
   >
-    <svg
-      aria-hidden="true"
-      fill="none"
-      height="32"
-      stroke="currentColor"
-      viewBox="0 0 40 40"
-      width="32"
-    >
-      <ellipse
-        cx="20"
-        cy="20"
-        rx="18"
-        ry="7"
-        transform="rotate(45 20 20)"
-      />
-      <ellipse
-        cx="20"
-        cy="20"
-        rx="18"
-        ry="7"
-        transform="rotate(-45 20 20)"
-      />
-      <circle
-        cx="20"
-        cy="20"
-        fill="currentColor"
-        r="3"
-      />
-      <circle
-        cx="8"
-        cy="8"
-        fill="currentColor"
-        r="2"
-      />
-    </svg>
     <div
-      class="MuiBox-root css-er6if3"
+      class="MuiBox-root css-ainujx"
+    >
+      <svg
+        aria-hidden="true"
+        fill="none"
+        height="32"
+        stroke="currentColor"
+        viewBox="0 0 40 40"
+        width="32"
+      >
+        <ellipse
+          cx="20"
+          cy="20"
+          rx="18"
+          ry="7"
+          transform="rotate(45 20 20)"
+        />
+        <ellipse
+          cx="20"
+          cy="20"
+          rx="18"
+          ry="7"
+          transform="rotate(-45 20 20)"
+        />
+        <circle
+          cx="20"
+          cy="20"
+          fill="currentColor"
+          r="3"
+        />
+        <circle
+          cx="8"
+          cy="8"
+          fill="currentColor"
+          r="2"
+        />
+      </svg>
+    </div>
+    <div
+      class="MuiBox-root css-pnovlh"
     >
       <nav
         aria-label="Project sections"
@@ -265,6 +269,50 @@ exports[`Sidebar Component match snapshot 1`] = `
           </button>
         </div>
       </nav>
+    </div>
+    <div
+      class="MuiBox-root css-1udtv75"
+    >
+      <div
+        aria-label="Workspace controls"
+        class="MuiBox-root css-1ijworp"
+        role="group"
+      >
+        <button
+          aria-label="Switch to dark theme"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-9l1xnb-MuiButtonBase-root-MuiIconButton-root"
+          data-mui-internal-clone-element="true"
+          id=":rj:"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-120dh41-MuiSvgIcon-root"
+            data-testid="DarkModeOutlinedIcon"
+            focusable="false"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M9.37 5.51c-.18.64-.27 1.31-.27 1.99 0 4.08 3.32 7.4 7.4 7.4.68 0 1.35-.09 1.99-.27C17.45 17.19 14.93 19 12 19c-3.86 0-7-3.14-7-7 0-2.93 1.81-5.45 4.37-6.49M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1"
+            />
+          </svg>
+        </button>
+        <button
+          aria-haspopup="true"
+          aria-label="Open user menu"
+          class="MuiButtonBase-root MuiIconButton-root MuiIconButton-sizeMedium css-9l1xnb-MuiButtonBase-root-MuiIconButton-root"
+          id=":rk:"
+          tabindex="0"
+          type="button"
+        >
+          <div
+            class="MuiAvatar-root MuiAvatar-circular MuiAvatar-colorDefault css-18idqbp-MuiAvatar-root"
+          >
+            DV
+          </div>
+        </button>
+      </div>
     </div>
   </aside>
 </DocumentFragment>

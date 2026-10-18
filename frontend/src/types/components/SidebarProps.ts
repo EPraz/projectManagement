@@ -6,6 +6,8 @@ export interface StyledDrawerProps {
 
 export interface SidebarProps {
   project: Project;
+  onRefresh?: () => void;
+  refreshing?: boolean;
   sidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }

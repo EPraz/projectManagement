@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo, navigateSection } from "./support/demo";
+import { enterDemo, navigateSection, setAppearance } from "./support/demo";
 test.use({ actionTimeout: 5000 });
 test("compact capacity shows member details without inventing a Development activity", async ({
   page,
@@ -111,6 +111,7 @@ for (const theme of ["light", "dark"] as const) {
       page,
     }, info) => {
       await page.setViewportSize({ width, height: 900 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await enterDemo(page);
       await page.getByText("Orbit — Product Delivery", { exact: true }).click();

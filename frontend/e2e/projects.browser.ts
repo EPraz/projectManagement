@@ -253,9 +253,9 @@ test("another project's confirmed socket update never replaces the selected proj
         ),
     );
     await expect(page).toHaveURL(selected);
-    await expect(
-      page.getByText("Orbit — Product Delivery", { exact: true }).first(),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Orbit — Product Delivery.",
+    );
     await expect(page.getByText(marker, { exact: true })).toHaveCount(0);
   } finally {
     await request.patch(`/api/projects/${other.id}`, {
@@ -318,14 +318,14 @@ test("sprint selections are retained separately for each project", async ({
     .getByRole("option", { name: "Sprint 1 — Foundation", exact: true })
     .click();
   await expect(page.getByRole("combobox")).toHaveValue("Sprint 1 — Foundation");
-  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "All projects" }).click();
   await page.getByText("Launchpad — Customer Portal", { exact: true }).click();
   await page.getByRole("combobox").click();
   await page
     .getByRole("option", { name: "Sprint 3 — Launch", exact: true })
     .click();
   await expect(page.getByRole("combobox")).toHaveValue("Sprint 3 — Launch");
-  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "All projects" }).click();
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
   await expect(page.getByRole("combobox")).toHaveValue("Sprint 1 — Foundation");
   await expect(

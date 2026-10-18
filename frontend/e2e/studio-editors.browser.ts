@@ -4,7 +4,7 @@ import {
   type APIRequestContext,
   type Page,
 } from "@playwright/test";
-import { enterDemo, navigateSection } from "./support/demo";
+import { enterDemo, navigateSection, setAppearance } from "./support/demo";
 test.use({ actionTimeout: 5000 });
 async function openTicket(page: Page, request: APIRequestContext) {
   const { accessToken } = await (
@@ -291,6 +291,7 @@ for (const theme of ["light", "dark"] as const) {
       request,
     }, info) => {
       await page.setViewportSize({ width, height: 900 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await openTicket(page, request);
       const editor = page.getByRole("dialog", {
@@ -552,9 +553,7 @@ test("a late deletion response cannot clear another project's editor link or dra
       .click();
     await received;
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await page
-      .getByRole("button", { name: "Back to projects", exact: true })
-      .click();
+    await navigateSection(page, "All projects");
     await page
       .getByRole("link", {
         name: "Launchpad \u2014 Customer Portal",

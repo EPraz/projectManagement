@@ -17,7 +17,7 @@ import {
 import { useAuth } from "../../../context/authContext";
 import { useTheme } from "../../../context/themeContext";
 import { getInitials } from "../../../helpers";
-export default function UserMenu() {
+export default function UserMenu({ rail = false }: { rail?: boolean }) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const [error, setError] = useState("");
   const { user, logout, closing } = useAuth();
@@ -65,7 +65,11 @@ export default function UserMenu() {
         open={Boolean(anchor)}
         onClose={close}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        transformOrigin={
+          rail
+            ? { vertical: "bottom", horizontal: "left" }
+            : { vertical: "top", horizontal: "right" }
+        }
         slotProps={{
           paper: {
             sx: {

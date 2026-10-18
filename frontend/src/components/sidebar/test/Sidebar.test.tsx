@@ -19,6 +19,14 @@ jest.mock("react-router-dom", () => {
   };
 });
 
+jest.mock("../../../context/authContext", () => ({
+  useAuth: () => ({
+    user: { name: "Demo Visitor" },
+    logout: jest.fn(),
+    closing: false,
+  }),
+}));
+
 describe("Sidebar Component", () => {
   const project: Project = {
     id: "123",

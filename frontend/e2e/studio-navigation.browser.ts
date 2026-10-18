@@ -1,10 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, setAppearance } from "./support/demo";
 for (const theme of ["light", "dark"] as const) {
   for (const width of [390, 1440]) {
     test(`C navigation retains the selected sprint and exposes all sections at ${width}px in ${theme}`, async ({
       page,
     }, testInfo) => {
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme });
       await page.setViewportSize({ width, height: 1000 });
       await enterDemo(page);

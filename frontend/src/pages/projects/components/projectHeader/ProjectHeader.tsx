@@ -2,7 +2,6 @@ import { Header, SearchBar } from "../../ProjectsPage.styles";
 import {
   Box,
   Button,
-  Chip,
   IconButton,
   InputAdornment,
   TextField,
@@ -18,10 +17,9 @@ import {
   GridView,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { UserMenu } from "../../../../components";
 import type { ProjectHeaderProps } from "../../../../types";
-import AppearanceControl from "../../../../components/appearanceControl/AppearanceControl";
-import StudioMark from "../../../../components/studio/StudioMark";
+import MobileHeader from "../../../../components/header/Header";
+import StudioRail from "../../../../components/studio/StudioRail";
 export default function ProjectHeader({
   refreshing,
   onRefresh,
@@ -36,26 +34,7 @@ export default function ProjectHeader({
     view === "grid" ? "Switch to list view" : "Switch to grid view";
   return (
     <Header>
-      <Box
-        component="nav"
-        aria-label="Workspace"
-        sx={{
-          display: { xs: "none", md: "flex" },
-          position: "fixed",
-          top: 22,
-          left: 22,
-          bottom: 22,
-          width: 74,
-          bgcolor: "sidebar.background",
-          color: "#91b8ff",
-          borderRadius: "19px",
-          alignItems: "center",
-          flexDirection: "column",
-          pt: 3,
-          gap: 4,
-        }}
-      >
-        <StudioMark />
+      <StudioRail label="Workspace navigation">
         <Tooltip title="All projects" placement="right">
           <IconButton
             component={Link}
@@ -63,6 +42,8 @@ export default function ProjectHeader({
             aria-label="All projects"
             aria-current="page"
             sx={{
+              display: "flex",
+              mx: "auto",
               color: "inherit",
               bgcolor: "sidebar.active",
               borderRadius: "8px",
@@ -71,20 +52,8 @@ export default function ProjectHeader({
             <GridView />
           </IconButton>
         </Tooltip>
-      </Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
-          Projects
-        </Typography>
-        <Chip
-          variant="outlined"
-          size="small"
-          label="Demo workspace"
-          sx={{ display: { xs: "none", sm: "flex" } }}
-        />
-        <AppearanceControl />
-        <UserMenu />
-      </Box>
+      </StudioRail>
+      <MobileHeader />
       <Box
         sx={{
           display: "flex",
@@ -92,7 +61,6 @@ export default function ProjectHeader({
           justifyContent: "space-between",
           flexWrap: "wrap",
           gap: 2,
-          mt: { xs: 1, md: 2 },
         }}
       >
         <Box>

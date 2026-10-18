@@ -15,13 +15,13 @@ const systemMode = (): PaletteMode =>
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 const readPreference = () => {
   const savedMode = localStorage.getItem("theme-mode");
-  const manual =
-    localStorage.getItem("theme-system-preference") !== "true" &&
-    (savedMode === "dark" || savedMode === "light");
-  return { mode: manual ? savedMode : systemMode(), system: !manual } as {
-    mode: PaletteMode;
-    system: boolean;
-  };
+  const system = localStorage.getItem("theme-system-preference") === "true";
+  const mode: PaletteMode = system
+    ? systemMode()
+    : savedMode === "dark" || savedMode === "light"
+      ? savedMode
+      : "light";
+  return { mode, system };
 };
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [initial] = useState(readPreference);

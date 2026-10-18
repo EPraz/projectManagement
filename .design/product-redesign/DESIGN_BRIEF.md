@@ -23,7 +23,7 @@ A complete, mobile-first Industrial Carbon & Azure interface with readable task 
 ## Aesthetic direction
 
 - Selected direction: C / Project studio, evolving the original personal identity with a floating rounded rail, distinct project/sprint modules, circular progress, fine borders, differentiated depth and intentional azure accents. Use 6–8px base controls and the selected C's softer 12px main panels / floating rail treatment.
-- Both light and dark use the same identity with separate readable color values. System preference initially, remembered manual selection in the eventual application.
+- Both light and dark use the same identity with separate readable color values. Owner refinement after publication: light is the initial appearance, manual choices are remembered and following the system is opt-in.
 - Light baseline: #f3f5f8 background, white surfaces, #205bc8 primary accent, #182432 primary text, #536276 secondary text. Selected C dark: #171717 background, #242424 panels, #2d2d2d raised surfaces and #91b8ff accent; avoid tinting all neutral surfaces blue-gray.
 - IBM Plex Sans actually loaded, primary mobile text 16px and secondary 14px. Follow the selected C's heading hierarchy, distinguishing large project/page identity from section/editor headings; the initial pre-prototype 24px / 28–32px heading suggestion is superseded where the owner-approved C reference uses larger identity titles. Wide layouts may use compact readable controls.
 - Azure DevOps sprint Taskboard is the relationship reference: ticket rows and task-state columns, with independent ticket state.
@@ -93,3 +93,7 @@ Shared understanding → representative visual proposals → owner visual review
 ## Out of scope
 
 Backend/schema rewrite, personal accounts, audit history, task reparenting/order, ticket ordering, automatic data resets, paid services and recording before owner approval. Prototype interactions illustrate presentation only and do not validate the existing live API.
+
+## Owner refinement after publication — 2026-10-18
+
+Remove the desktop workspace header/breadcrumb/demo badge row so Projects and each project section start with their real page content. Place appearance and user controls at the bottom of the floating sidebar; retain refresh there. Mobile keeps a compact navigation entry and places these controls at the bottom of its drawer. The owner explicitly accepts losing breadcrumbs and requests light as the default, while remembered manual choices and an explicit system-follow option remain available.

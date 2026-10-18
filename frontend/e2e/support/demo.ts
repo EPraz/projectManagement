@@ -9,11 +9,15 @@ export const enterDemo = async (page: Page) => {
 };
 
 export const showProjectNavigation = async (page: Page) => {
-  await page.getByRole("banner").waitFor({ state: "visible" });
   const menu = page.getByRole("button", {
     name: "Open project navigation",
     exact: true,
   });
+  await menu
+    .or(page.getByRole("navigation", { name: "Project sections", exact: true }))
+    .filter({ visible: true })
+    .first()
+    .waitFor({ state: "visible" });
   if (await menu.isVisible()) await menu.click();
 };
 export const navigateSection = async (page: Page, name: string) => {
@@ -31,4 +35,28 @@ export const discardUnsavedChanges = async (page: Page) => {
     await warning
       .getByRole("button", { name: "Discard changes", exact: true })
       .click();
+};
+
+export const showWorkspaceControls = async (page: Page) => {
+  const user = page.getByRole("button", {
+    name: "Open user menu",
+    exact: true,
+  });
+  const menu = page.getByRole("button", {
+    name: /^Open (project|workspace) navigation$/,
+  });
+  await user
+    .or(menu)
+    .filter({ visible: true })
+    .first()
+    .waitFor({ state: "visible" });
+  if (!(await user.isVisible())) await menu.click();
+};
+
+// Appearance is an explicit preference in visual checks; a new visitor defaults to light.
+export const setAppearance = async (page: Page, mode: "light" | "dark") => {
+  await page.addInitScript((value) => {
+    localStorage.setItem("theme-mode", value);
+    localStorage.setItem("theme-system-preference", "false");
+  }, mode);
 };

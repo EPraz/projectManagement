@@ -4,7 +4,7 @@ import {
   type APIRequestContext,
   type Page,
 } from "@playwright/test";
-import { enterDemo, navigateSection } from "./support/demo";
+import { enterDemo, navigateSection, setAppearance } from "./support/demo";
 test.use({ actionTimeout: 5000 });
 async function hierarchyFixture(page: Page, request: APIRequestContext) {
   const { accessToken } = await (
@@ -130,6 +130,7 @@ for (const theme of ["light", "dark"] as const) {
       request,
     }, info) => {
       await page.setViewportSize({ width, height: 900 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       const { project } = await hierarchyFixture(page, request);
       const epic = project.epics.find(

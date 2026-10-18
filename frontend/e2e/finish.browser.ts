@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, showWorkspaceControls } from "./support/demo";
 
 for (const failure of ["unavailable", "malformed", "incomplete"]) {
   test(`project creation retains its draft after a ${failure} response and confirms retry`, async ({
@@ -112,6 +112,7 @@ for (const width of [390, 1280])
     await page
       .getByRole("link", { name: "Orbit \u2014 Product Delivery", exact: true })
       .click();
+    await showWorkspaceControls(page);
     await page
       .getByRole("button", { name: "Open user menu", exact: true })
       .click();

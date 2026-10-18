@@ -365,6 +365,10 @@ const Layout = () => {
           project={project!}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
+          refreshing={refreshing}
+          onRefresh={() => {
+            void reloadProject();
+          }}
         />
         <MainContent sidebarOpen={sidebarOpen}>
           <Header

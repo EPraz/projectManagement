@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext } from "@playwright/test";
-import { enterDemo, navigateSection } from "./support/demo";
+import { enterDemo, navigateSection, setAppearance } from "./support/demo";
 test.use({ actionTimeout: 5000 });
 async function memberFixture(request: APIRequestContext) {
   const { accessToken } = await (
@@ -191,6 +191,7 @@ for (const theme of ["light", "dark"] as const) {
       page,
     }, info) => {
       await page.setViewportSize({ width, height: 900 });
+      await setAppearance(page, theme);
       await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
       await enterDemo(page);
       await page.getByText("Orbit — Product Delivery", { exact: true }).click();
@@ -295,9 +296,7 @@ test("confirmed membership while HTTP is pending keeps the selected person and c
       `${candidate.email} (${candidate.name})`,
     );
     await page.goBack();
-    await page
-      .getByRole("button", { name: "Back to projects", exact: true })
-      .click();
+    await navigateSection(page, "All projects");
     await page.getByText(second.project.title, { exact: true }).click();
     await navigateSection(page, "Team");
     await page.getByRole("button", { name: "Add Member", exact: true }).click();
