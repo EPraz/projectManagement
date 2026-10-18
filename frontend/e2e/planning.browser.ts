@@ -3,6 +3,7 @@ import {
   enterDemo,
   navigateSection,
   showProjectNavigation,
+  discardUnsavedChanges,
 } from "./support/demo";
 
 test.use({ actionTimeout: 5000 });
@@ -18,7 +19,7 @@ test("a failed goal save retains the draft and retry creates one goal", async ({
   await page.getByRole("button", { name: /Add New Goal/i }).click();
   const dialog = page.getByRole("dialog");
   const title = `Recoverable planning goal ${Date.now()}`;
-  await dialog.getByLabel("title", { exact: true }).fill(title);
+  await dialog.getByLabel(/^title$/i).fill(title);
   await page.route("**/api/sprint-goals", (route) =>
     route.fulfill({
       status: 503,
@@ -26,16 +27,16 @@ test("a failed goal save retains the draft and retry creates one goal", async ({
       body: JSON.stringify({ message: "Temporary planning outage" }),
     }),
   );
-  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(title);
+  await expect(dialog.getByLabel(/^title$/i)).toHaveValue(title);
   await expect(dialog.getByRole("alert")).toBeVisible();
   await page.unroute("**/api/sprint-goals");
   const saved = page.waitForResponse(
     (r) =>
       r.request().method() === "POST" && /\/api\/sprint-goals$/.test(r.url()),
   );
-  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
   const response = await saved;
   expect(response.status()).toBe(201);
   const goal = await response.json();
@@ -249,7 +250,7 @@ test("a late goal response cannot replace another selected sprint or its new dra
     await page.getByRole("button", { name: "Edit goal", exact: true }).click();
     await page
       .getByRole("dialog")
-      .getByLabel("title", { exact: true })
+      .getByLabel(/^title$/i)
       .fill("Saved only in planning A");
     await page.route(path, async (route) => {
       const response = await route.fetch();
@@ -259,7 +260,7 @@ test("a late goal response cannot replace another selected sprint or its new dra
     });
     await page
       .getByRole("dialog")
-      .getByRole("button", { name: "Save", exact: true })
+      .getByRole("button", { name: /^Sav(e|ing…)/ })
       .click();
     await received;
     // Browser navigation remains available while the old form is pending.
@@ -270,16 +271,15 @@ test("a late goal response cannot replace another selected sprint or its new dra
     await selectSprint(page, "Planning B");
     await page.getByRole("button", { name: "Edit goal", exact: true }).click();
     const dialog = page.getByRole("dialog");
-    await dialog
-      .getByLabel("title", { exact: true })
-      .fill("Unsaved planning B draft");
+    await dialog.getByLabel(/^title$/i).fill("Unsaved planning B draft");
     release();
     await page.unrouteAll({ behavior: "wait" });
     await expect(dialog).toBeVisible();
-    await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
+    await expect(dialog.getByLabel(/^title$/i)).toHaveValue(
       "Unsaved planning B draft",
     );
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
     await expect(
       page.getByText("Planning B goal", { exact: true }),
     ).toBeVisible();
@@ -309,10 +309,10 @@ for (const width of [390, 1280]) {
     expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width);
     await add.click();
     const dialog = page.getByRole("dialog");
-    const input = dialog.getByLabel("title", { exact: true });
+    const input = dialog.getByLabel(/^title$/i);
     await input.fill("Narrow keyboard draft");
     await expect(input).toHaveValue("Narrow keyboard draft");
-    const save = dialog.getByRole("button", { name: "Save", exact: true });
+    const save = dialog.getByRole("button", { name: /^Sav(e|ing…)/ });
     const saveBounds = await save.boundingBox();
     expect(saveBounds!.x + saveBounds!.width).toBeLessThanOrEqual(width);
     await page.screenshot({
@@ -320,6 +320,7 @@ for (const width of [390, 1280]) {
       animations: "disabled",
     });
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
   });
 }
 
@@ -352,9 +353,7 @@ test("confirmed independent goal changes preserve the current draft and failed t
     await expect.poll(() => connected).toBe(true);
     await page.getByRole("button", { name: "Edit goal", exact: true }).click();
     const dialog = page.getByRole("dialog");
-    await dialog
-      .getByLabel("title", { exact: true })
-      .fill("Keep this unsaved goal draft");
+    await dialog.getByLabel(/^title$/i).fill("Keep this unsaved goal draft");
     const edited = await request.patch(
       `/api/sprint-goals/${fixture.goals[0].id}`,
       {
@@ -364,10 +363,11 @@ test("confirmed independent goal changes preserve the current draft and failed t
     );
     expect(edited.ok()).toBe(true);
     await changed;
-    await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
+    await expect(dialog.getByLabel(/^title$/i)).toHaveValue(
       "Keep this unsaved goal draft",
     );
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
     await expect(
       page.getByText("Independent confirmed goal", { exact: true }),
     ).toBeVisible();
@@ -376,29 +376,25 @@ test("confirmed independent goal changes preserve the current draft and failed t
       .filter({ hasText: fixture.tasks[0].title })
       .getByRole("button", { name: "Edit task", exact: true })
       .click();
-    await dialog
-      .getByLabel("title", { exact: true })
-      .fill("Recoverable checklist title");
+    await dialog.getByLabel(/^title$/i).fill("Recoverable checklist title");
     const path = `**/api/sprint-goals/goalTask/${fixture.tasks[0].id}`;
     await page.route(path, (route) =>
       route.fulfill({ status: 503, body: "unavailable" }),
     );
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
-    await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
+    await expect(dialog.getByLabel(/^title$/i)).toHaveValue(
       "Recoverable checklist title",
     );
     await page.unroute(path);
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await expect(dialog).toHaveCount(0);
     await expect(
       page.getByText("Recoverable checklist title", { exact: true }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Add Task", exact: true }).click();
-    await dialog
-      .getByLabel("title", { exact: true })
-      .fill("New confirmed checklist task");
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByLabel(/^title$/i).fill("New confirmed checklist task");
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await expect(dialog).toHaveCount(0);
     await expect(
       page.getByText("New confirmed checklist task", { exact: true }),
@@ -447,7 +443,7 @@ test("assigning backlog work to another sprint updates its board and survives re
     await dialog.getByRole("tab", { name: "Planning", exact: true }).click();
     await dialog.getByRole("combobox", { name: /^Sprint/ }).click();
     await page.getByRole("option", { name: "Planning B", exact: true }).click();
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await expect(dialog).toHaveCount(0);
     await page
       .getByRole("button", { name: "Taskboard", exact: true })
@@ -509,13 +505,13 @@ test("new sprint creation preserves failed input and its empty goals remain sele
         ? route.fulfill({ status: 503, body: "unavailable" })
         : route.continue(),
     );
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(dialog.getByLabel("name", { exact: true })).toHaveValue(
       "New planned sprint",
     );
     await page.unroute("**/api/sprints");
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await expect(dialog).toHaveCount(0);
     await selectSprint(page, "New planned sprint");
     await expect(
@@ -558,30 +554,29 @@ test("a pending goal submission keeps input and blocks duplicate saves", async (
       .getByRole("button", { name: "Add New Goal", exact: true })
       .click();
     const dialog = page.getByRole("dialog");
-    await dialog
-      .getByLabel("title", { exact: true })
-      .fill("Pending retained goal");
+    await dialog.getByLabel(/^title$/i).fill("Pending retained goal");
     await page.route("**/api/sprint-goals", async (route) => {
       submissions++;
       reached();
       await delay;
       await route.fulfill({ status: 503, body: "unavailable" });
     });
-    await dialog.getByRole("button", { name: "Save", exact: true }).click();
+    await dialog.getByRole("button", { name: /^Sav(e|ing…)/ }).click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: "Save", exact: true }),
+      dialog.getByRole("button", { name: /^Sav(e|ing…)/ }),
     ).toBeDisabled();
-    await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
+    await expect(dialog.getByLabel(/^title$/i)).toHaveValue(
       "Pending retained goal",
     );
     expect(submissions).toBe(1);
     release();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(
-      dialog.getByRole("button", { name: "Save", exact: true }),
+      dialog.getByRole("button", { name: /^Sav(e|ing…)/ }),
     ).toBeEnabled();
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
   } finally {
     release();
     await page.unrouteAll({ behavior: "wait" });

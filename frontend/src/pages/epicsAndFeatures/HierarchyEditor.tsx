@@ -73,6 +73,7 @@ export const HierarchyEditor = ({
       <EditorShell
         open
         title={title}
+        panelWidth={800}
         context={`${target.kind.toUpperCase()} / Project hierarchy`}
         closeLabel="Close hierarchy editor"
         pending={isSubmitting}

@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo, navigateSection } from "./support/demo";
+import {
+  enterDemo,
+  navigateSection,
+  discardUnsavedChanges,
+} from "./support/demo";
 
 test.use({ actionTimeout: 5000 });
 
@@ -31,6 +35,7 @@ test("a failed capacity edit retains the draft and saved summary", async ({
     dialog.getByLabel("Capacity (hours)", { exact: true }),
   ).toHaveValue("99");
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+  await discardUnsavedChanges(page);
   await expect(row).not.toContainText("99h");
 });
 
@@ -327,6 +332,7 @@ test("a late capacity response preserves the next sprint's draft", async ({
       dialog.getByLabel("Capacity (hours)", { exact: true }),
     ).toHaveValue("90");
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
     await expect(
       page.getByRole("row").filter({ hasText: fixture.demo.email }),
     ).toContainText("80h");
@@ -352,6 +358,7 @@ for (const width of [390, 1280]) {
     await page.keyboard.press("Enter");
     await expect(page.getByRole("dialog")).toContainText("Add Team Member");
     await page.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
     await navigateSection(page, "Taskboard");
     await navigateSection(page, "Capacity");
     const create = page.getByRole("button", {
@@ -371,6 +378,7 @@ for (const width of [390, 1280]) {
       animations: "disabled",
     });
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
   });
 }
 
@@ -546,6 +554,7 @@ test("pending membership saves keep the selected user and block duplicate action
       dialog.getByRole("button", { name: "Add Member", exact: true }),
     ).toBeEnabled();
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
+    await discardUnsavedChanges(page);
   } finally {
     release();
     await page.unrouteAll({ behavior: "wait" });

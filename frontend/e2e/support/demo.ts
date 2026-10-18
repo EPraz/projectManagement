@@ -20,3 +20,15 @@ export const navigateSection = async (page: Page, name: string) => {
   await showProjectNavigation(page);
   await page.getByRole("button", { name, exact: true }).click();
 };
+
+// Use after an intentional Cancel in a journey that now protects a dirty form.
+export const discardUnsavedChanges = async (page: Page) => {
+  const warning = page.getByRole("alertdialog", {
+    name: "Unsaved changes",
+    exact: true,
+  });
+  if (await warning.isVisible())
+    await warning
+      .getByRole("button", { name: "Discard changes", exact: true })
+      .click();
+};

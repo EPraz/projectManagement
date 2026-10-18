@@ -15,6 +15,7 @@ export default function EditorShell({
   open,
   title,
   context,
+  panelWidth = 1040,
   closeLabel,
   pending,
   onClose,
@@ -24,6 +25,7 @@ export default function EditorShell({
   open: boolean;
   title: string;
   context?: ReactNode;
+  panelWidth?: number;
   closeLabel: string;
   pending: boolean;
   onClose: () => void;
@@ -49,7 +51,7 @@ export default function EditorShell({
         },
         "& .MuiDialog-paper": {
           m: 0,
-          width: { xs: "100%", sm: "min(1040px, calc(100vw - 32px))" },
+          width: { xs: "100%", sm: `min(${panelWidth}px, calc(100vw - 32px))` },
           height: {
             xs: "100dvh",
             sm: "calc(100dvh - 32px)",

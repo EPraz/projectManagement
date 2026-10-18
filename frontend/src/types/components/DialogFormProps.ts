@@ -10,6 +10,7 @@ export interface DialogFormProps<T extends FieldValues> {
   schema: yup.ObjectSchema<T>;
   defaultValues: DefaultValues<T>;
   title: string;
+  context?: string;
   disabled: boolean;
   fieldConfig?: Record<string, FieldConfig>;
 }

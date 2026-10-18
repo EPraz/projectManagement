@@ -3,35 +3,31 @@ import {
   TextField,
   Button,
   Box,
-  Typography,
   Tooltip,
   MenuItem,
   Select,
-  Alert
+  Alert,
 } from "@mui/material";
 import {
   useForm,
   Controller,
   type Path,
   type FieldValues,
-  type Resolver
+  type Resolver,
 } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import type { DialogFormProps } from "../../types";
 import {
-  CloseButton,
-  DeleteButton,
-  DialogHeader,
   FieldError,
   FieldLabel,
   FormFieldContainer,
   StyledDatePicker,
-  StyledDialog,
-  StyledDialogActions,
-  StyledDialogContent
 } from "./DialogForm.styles";
+import EditorShell from "../workItemEditor/EditorShell";
+import EditorNavigationGuard from "../workItemEditor/EditorNavigationGuard";
+import UnsavedChangesDialog from "../workItemEditor/UnsavedChangesDialog";
+import { useEditorExit } from "../workItemEditor/useEditorExit";
 
 const DialogForm = <T extends FieldValues>({
   open,
@@ -41,9 +37,10 @@ const DialogForm = <T extends FieldValues>({
   schema,
   defaultValues,
   title,
+  context,
   disabled,
   fieldConfig = {},
-  itemKey
+  itemKey,
 }: DialogFormProps<T>) => {
   const formId = useId();
   const generation = useRef(0);
@@ -56,12 +53,12 @@ const DialogForm = <T extends FieldValues>({
     reset,
     setError,
     clearErrors,
-    formState: { errors, isDirty, isSubmitting }
+    formState: { errors, isDirty, isSubmitting },
   } = useForm<T>({
     // Yup makes generic keys optional in its inferred type; the schema prop
     // already constrains the validated values to this form's T.
     resolver: yupResolver(schema) as unknown as Resolver<T>,
-    defaultValues
+    defaultValues,
   });
 
   useLayoutEffect(() => {
@@ -73,10 +70,6 @@ const DialogForm = <T extends FieldValues>({
     };
   }, [open, itemKey, reset]);
   const pending = disabled || isSubmitting;
-
-  const handleClose = () => {
-    onClose();
-  };
 
   const handleDelete = () => {
     reset();
@@ -93,21 +86,33 @@ const DialogForm = <T extends FieldValues>({
       if (opened !== generation.current) return;
       if (result === false)
         throw new Error(
-          "Could not save. Your changes are kept. Please try again."
+          "Could not save. Your changes are kept. Please try again.",
         );
-      handleClose();
+      exit.finish();
     } catch (error) {
       if (opened === generation.current)
         setError("root", {
           message:
             error instanceof Error
               ? error.message
-              : "Could not save. Please try again."
+              : "Could not save. Please try again.",
         });
     } finally {
       if (opened === generation.current) active.current = false;
     }
   };
+
+  const submit = handleSubmit(internalSubmit);
+  const exit = useEditorExit({
+    identity: `${open}:${itemKey ?? formId}`,
+    dirty: open && isDirty,
+    pending: Boolean(pending),
+    onClose,
+    onSave: () => {
+      void submit();
+    },
+    failure: errors.root?.message ?? "",
+  });
 
   // Función para obtener el campo correcto basado en fieldConfig
   const getFieldComponent = (key: Path<T>) => {
@@ -136,7 +141,7 @@ const DialogForm = <T extends FieldValues>({
                   field.onChange(
                     newValue && !Number.isNaN(newValue.getTime())
                       ? newValue.toISOString()
-                      : null
+                      : null,
                   )
                 }
                 slotProps={{
@@ -147,8 +152,8 @@ const DialogForm = <T extends FieldValues>({
                     size: "small",
                     placeholder: fieldOptions?.placeholder || "",
                     InputLabelProps: { shrink: false },
-                    variant: "outlined"
-                  }
+                    variant: "outlined",
+                  },
                 }}
               />
             )}
@@ -178,8 +183,8 @@ const DialogForm = <T extends FieldValues>({
                 displayEmpty={fieldOptions?.placeholder !== undefined}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
-                    borderRadius: 1
-                  }
+                    borderRadius: 1,
+                  },
                 }}
               >
                 {fieldOptions?.placeholder && (
@@ -219,11 +224,11 @@ const DialogForm = <T extends FieldValues>({
           InputLabelProps={{ shrink: false }}
           sx={{
             "& .MuiOutlinedInput-root": {
-              borderRadius: 1
+              borderRadius: 1,
             },
             "& .MuiInputLabel-root": {
-              display: "none"
-            }
+              display: "none",
+            },
           }}
         />
         {errors[fieldName] && (
@@ -234,96 +239,67 @@ const DialogForm = <T extends FieldValues>({
   };
 
   return (
-    <StyledDialog
-      open={open}
-      onClose={(_, reason) => {
-        if (reason === "backdropClick") return;
-        if (!pending) onClose();
-      }}
-      maxWidth="sm"
-      fullWidth
-    >
-      <DialogHeader>
-        <Typography fontWeight="600" textTransform="uppercase">
-          {title}
-        </Typography>
-        <Tooltip title="Close" arrow>
-          <CloseButton
-            onClick={handleClose}
-            size="small"
-            disabled={pending}
-            aria-label="Close"
-          >
-            <CloseIcon fontSize="small" />
-          </CloseButton>
-        </Tooltip>
-      </DialogHeader>
-
-      {/* Envolvemos todo en un <form> para que el submit funcione correctamente */}
-      <form onSubmit={handleSubmit(internalSubmit)}>
-        <StyledDialogContent>
+    <>
+      <EditorNavigationGuard {...exit.guardProps} />
+      <EditorShell
+        open={open}
+        title={title}
+        context={context}
+        panelWidth={760}
+        closeLabel="Close"
+        pending={Boolean(pending)}
+        onClose={exit.requestClose}
+        actions={
+          <>
+            {onDelete && (
+              <Button
+                color="error"
+                startIcon={<DeleteOutlineIcon />}
+                onClick={handleDelete}
+                disabled={pending}
+              >
+                Delete
+              </Button>
+            )}
+            <Box sx={{ flex: 1 }} />
+            <Button
+              variant="outlined"
+              onClick={exit.requestClose}
+              disabled={pending}
+            >
+              Cancel
+            </Button>
+            <Tooltip title={!isDirty ? "No changes to save" : ""}>
+              <span>
+                <Button
+                  variant="contained"
+                  type="submit"
+                  form={formId}
+                  disabled={pending || !isDirty}
+                >
+                  {isSubmitting ? "Saving…" : "Save"}
+                </Button>
+              </span>
+            </Tooltip>
+          </>
+        }
+      >
+        <Box
+          component="form"
+          id={formId}
+          onSubmit={submit}
+          sx={{ display: "grid", gap: 3, pt: 1, maxWidth: 720 }}
+        >
           {errors.root?.message && (
             <Alert severity="error">{errors.root.message}</Alert>
           )}
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {Object.keys(defaultValues).map((key) =>
-              getFieldComponent(key as Path<T>)
-            )}
-          </Box>
-        </StyledDialogContent>
-
-        <StyledDialogActions>
-          <Box
-            sx={{
-              display: "flex",
-              gap: 1,
-              width: "100%",
-              justifyContent: "space-between"
-            }}
-          >
-            {onDelete && (
-              <Tooltip
-                title={disabled ? "Cannot delete at this moment" : "Delete"}
-                arrow
-              >
-                <Box>
-                  <DeleteButton
-                    variant="outlined"
-                    startIcon={<DeleteOutlineIcon />}
-                    onClick={handleDelete}
-                    disabled={pending}
-                  >
-                    Delete
-                  </DeleteButton>
-                </Box>
-              </Tooltip>
-            )}
-            <Box sx={{ display: "flex", gap: 1 }}>
-              <Button
-                variant="outlined"
-                onClick={handleClose}
-                disabled={pending}
-              >
-                Cancel
-              </Button>
-              <Tooltip title={!isDirty ? "No changes to save" : ""} arrow>
-                <span>
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    disabled={pending || !isDirty}
-                    sx={{ minWidth: 100 }}
-                  >
-                    Save
-                  </Button>
-                </span>
-              </Tooltip>
-            </Box>
-          </Box>
-        </StyledDialogActions>
-      </form>
-    </StyledDialog>
+          {Object.keys(defaultValues).map((key) =>
+            getFieldComponent(key as Path<T>),
+          )}
+        </Box>
+      </EditorShell>
+      <UnsavedChangesDialog {...exit.warningProps} />
+    </>
   );
 };
-
 export default DialogForm;

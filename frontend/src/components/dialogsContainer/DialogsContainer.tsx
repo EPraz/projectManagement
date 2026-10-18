@@ -157,6 +157,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm<Partial<CreateSprintFormData>>
           open={openCreateSprintDialog}
           title="Create Sprint"
+          context={project?.title}
           key={projectId}
           onClose={() => setOpenCreateSprintDialog(false)}
           onSubmit={handleCreateSprint}
@@ -184,10 +185,15 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openCreateSprintGoalDialog}
           title="Add Goal"
+          context={sprint?.name}
           key={sprint?.id}
           onClose={() => setOpenCreateSprintGoalDialog(false)}
           onSubmit={handleCreateSprintGoal}
           schema={createSprintGoalSchema}
+          fieldConfig={{
+            title: { label: "Title" },
+            description: { label: "Description", multiline: true, rows: 4 },
+          }}
           disabled={loadingCreateSprintGoal}
           defaultValues={{
             title: "",
@@ -200,10 +206,12 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openCreateTaskToSprintGoalDialog}
           title={`Add task for ${selectedSprintGoal?.title}`}
+          context={sprint?.name}
           key={selectedSprintGoal.id}
           onClose={() => setOpenCreateGoalTaskDialog(false)}
           onSubmit={handleCreateGoalTask}
           schema={createGoalTaskSchema}
+          fieldConfig={{ title: { label: "Title" } }}
           disabled={loadingCreateGoalTask}
           defaultValues={{
             title: "",
@@ -285,6 +293,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openEditSprintGoalDialog}
           title="Edit Goal"
+          context={sprint?.name}
           key={selectedSprintGoal.id}
           onClose={() => {
             setOpenEditSprintGoalDialog(false);
@@ -300,7 +309,10 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
             goalsStatus: selectedSprintGoal.goalsStatus,
           }}
           fieldConfig={{
+            title: { label: "Title" },
+            description: { label: "Description", multiline: true, rows: 4 },
             goalsStatus: {
+              label: "Goal state",
               type: "select",
               options: [
                 {
@@ -325,6 +337,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         <DialogForm
           open={openEditGoalTaskDialog}
           title={`Edit task ${selectedGoalTask?.title}`}
+          context={sprint?.name}
           key={selectedGoalTask.id}
           onClose={() => {
             setSelectedGoalTask(null);
@@ -332,6 +345,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           }}
           onSubmit={handleEditGoalTask}
           schema={editGoalTaskSchema}
+          fieldConfig={{ title: { label: "Title" } }}
           disabled={loadingUpdateGoalTask}
           defaultValues={{
             title: selectedGoalTask.title,

@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 — Navigate a project with shared sprint context.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -24,3 +24,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after 09. Preserve capacity/day-off/remaining-work semantics and canonical membership ownership; replace the fixed Development claim and use a C wide comparison/compact member detail view with the verified protected forms.
