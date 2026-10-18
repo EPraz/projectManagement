@@ -133,6 +133,7 @@ try {
   console.log(
     "Preparing disposable local browser fixtures and production applications."
   );
+  await run(frontend, ["--test", "scripts/check-browser-env.mjs"], env);
   await run(backend, ["node_modules/prisma/build/index.js", "generate"], env);
   await run(
     backend,

@@ -38,6 +38,8 @@ jobs:
         run: npm run lint
       - name: Run retained frontend tests
         run: npm test -- --runInBand
+      - name: Verify browser build environment isolation
+        run: npm run test:browser:config
       - name: Build production assets
         run: npm run build
 

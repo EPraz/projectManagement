@@ -13,6 +13,7 @@
     "test:ci": "jest --coverage",
     "typecheck": "tsc -b --pretty false && tsc --project tsconfig.browser.json --pretty false",
     "test:browser": "playwright test",
+    "test:browser:config": "node --test scripts/check-browser-env.mjs",
     "test:browser:isolated": "node scripts/test-browser.mjs"
   },
   "dependencies": {
