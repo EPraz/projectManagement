@@ -21,3 +21,7 @@ All39 API/startup tests pass, including real membership/association/numeric/dupl
 Test corrections did not weaken expectations: MUI select accessible names contain label plus current value; the form assertion uses the existing label prefix. Modal background rows are aria-hidden, so a failed deletion verifies saved capacity through public HTTP while its dialog remains visible. Windows npm.ps1 consumed extra filter flags; npm.cmd now preserves them. A missing Max import and line-ending check were caught and corrected before passing final API checks. An ignored clean test file was explicitly synchronized before its corrected run.
 
 Stored data, demo identity protections, project-versus-sprint metric scopes, free providers and explicit restoration remain. Presentation waits through ticket16 and the owner's design/readiness checkpoint.
+
+## Final closure evidence
+
+The exact rebuilt 84ef59c passes all **69 retained browser journeys in 3.4 minutes**. All **39 API/startup tests**, **77 Jest tests / 15 suites / 12 snapshots**, frontend types/build/lint and backend types/build/lint pass. Frontend lint retains **17 visible warnings**, backend zero; no suppressions or regenerated snapshots. Final frontend bundle: **1,626.74 kB raw / 483.16 kB gzip**. Both independent review axes have zero actionable findings. The rebuilt application's repeated-query HTTP probe also returns 400. No required verification remains pending for this slice.

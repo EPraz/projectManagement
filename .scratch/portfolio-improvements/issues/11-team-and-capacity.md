@@ -4,16 +4,16 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** claimed
+**Status:** resolved
 
 Type: task
 
-- [ ] Characterize the supported team/capacity operations and preserve restrictions on fictitious demo identities.
-- [ ] Verify the touched membership/user/sprint associations, invalid requests and real persisted outcomes through the API boundary.
-- [ ] Clarify UI/form/request responsibilities and reuse the established client behavior instead of duplicating error/pending logic.
-- [ ] Sprint/project changes do not display or overwrite stale capacity; relevant confirmed changes reach current views/clients.
-- [ ] Cover loading/empty/error/retry, keyboard labels/focus and representative responsive layouts for the affected controls.
-- [ ] No personal-account creation, role switching, tenant isolation or new RBAC claim is introduced.
+- [x] Characterize the supported team/capacity operations and preserve restrictions on fictitious demo identities.
+- [x] Verify the touched membership/user/sprint associations, invalid requests and real persisted outcomes through the API boundary.
+- [x] Clarify UI/form/request responsibilities and reuse the established client behavior instead of duplicating error/pending logic.
+- [x] Sprint/project changes do not display or overwrite stale capacity; relevant confirmed changes reach current views/clients.
+- [x] Cover loading/empty/error/retry, keyboard labels/focus and representative responsive layouts for the affected controls.
+- [x] No personal-account creation, role switching, tenant isolation or new RBAC claim is introduced.
 
 ## Comments
 
@@ -23,3 +23,8 @@ Type: task
 
 
 Bounded correction: capacity progress now reflects completed work; the existing table's invalid Per Day division by days off is replaced with Completed work from stored hours, retaining all writable capacity fields and adding no calendar/domain feature. Evidence includes a red25% versus expected75% browser regression.
+
+## Answer
+
+Resolved in 84ef59c. Membership and capacity now use canonical scoped data and the shared request boundary, preserve failed input, guard pending writes and synchronize confirmed changes. API validation covers relationships, numeric bounds, duplicates and missing scope; progress and completed-hour reporting are truthful. All 69 retained browser journeys, 39 API/startup tests, 77 frontend tests, types, lint and builds pass. Both review axes have zero actionable findings. [Evidence](../evidence/11-team-capacity.md), [review](../evidence/11-review.md).
+
