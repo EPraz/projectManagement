@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import {
   FavoriteButton,
@@ -41,6 +42,8 @@ const ProjectListView = ({
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
             <FavoriteButton
+              aria-label={`Favorite ${project.title}`}
+              aria-pressed={favoriteId === project.id}
               isListView
               size="small"
               onClick={(e) => {
@@ -58,7 +61,13 @@ const ProjectListView = ({
             <Box sx={{ display: "flex", alignItems: "center", flex: 1, p: 2 }}>
               <Box sx={{ width: "30%", mr: 2 }}>
                 <Typography variant="h6" fontWeight="bold">
-                  {project.title}
+                  <Link
+                    to={`/projects/${project.id}/overview`}
+                    onClick={(event) => event.stopPropagation()}
+                    style={{ color: "inherit", textDecoration: "none" }}
+                  >
+                    {project.title}
+                  </Link>
                 </Typography>
                 <Typography variant="body2" color="text.secondary" noWrap>
                   {project.description || "No description available"}
@@ -134,6 +143,7 @@ const ProjectListView = ({
                 </Typography>
 
                 <IconButton
+                  aria-label={`Project actions for ${project.title}`}
                   size="small"
                   onClick={(e) => handleMenuClick(e, project.id)}
                 >

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Box, IconButton, LinearProgress, Typography } from "@mui/material";
 import {
   MoreVert as MoreVertIcon,
@@ -19,7 +20,13 @@ const ProjectCardView = ({
     <>
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
-          {project.title}
+          <Link
+            to={`/projects/${project.id}/overview`}
+            onClick={(event) => event.stopPropagation()}
+            style={{ color: "inherit", textDecoration: "none" }}
+          >
+            {project.title}
+          </Link>
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
           {project.description || "No description available"}
@@ -89,6 +96,7 @@ const ProjectCardView = ({
       >
         <AvatarGroupsComponent max={4} projectUsers={project.users} />
         <IconButton
+          aria-label={`Project actions for ${project.title}`}
           size="small"
           onClick={(e) => handleMenuClick(e, project.id)}
         >

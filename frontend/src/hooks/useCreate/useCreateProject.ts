@@ -1,38 +1,27 @@
 import { useState } from "react";
-import { useApi } from "../../context/apiContext";
-import { useAuth, useSnackbar } from "../../context";
-import { Project } from "../../types";
+import { useAuth } from "../../context/authContext";
+import { useSnackbar } from "../../context/snackbarContext";
+import type { Project } from "../../types/models/Project";
+import { readProject } from "../../services/projectResponse";
 
 export const useCreateProject = () => {
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
+  const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
 
-  const createProject = async (
-    data: Partial<Project>
-  ): Promise<Project | null> => {
+  const createProject = async (data: Partial<Project>): Promise<Project> => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await fetch(`${apiUrl}/projects`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          ...data,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create project");
-
-      const newProject: Project = await response.json();
+      const project = readProject(
+        await request<unknown>("/projects", {
+          method: "POST",
+          body: data,
+          errorMessage:
+            "Could not create the project. Your draft is kept. Please try again."
+        })
+      );
       showSnackbarMessage("Project created successfully!", "success");
-      return newProject;
-    } catch {
-      showSnackbarMessage("Error creating project", "error");
-      return null;
+      return project;
     } finally {
       setLoading(false);
     }

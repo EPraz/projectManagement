@@ -5,6 +5,50 @@ import { AddressInfo, createServer } from 'node:net';
 const cwd = join(__dirname, '..');
 
 describe('Safe contributor commands', () => {
+  it.each([
+    ['production', 'postgresql://quality@127.0.0.1/fixture_browser_test'],
+    ['test', undefined],
+    [
+      'test',
+      'postgresql://quality:private-password@shared.example/fixture_browser_test',
+    ],
+    ['test', 'postgresql://quality@127.0.0.1/fixture_test'],
+    [
+      'test',
+      'postgresql://quality@127.0.0.1/fixture_browser_test?schema=visitor_data',
+    ],
+    [
+      'test',
+      'postgresql://quality@127.0.0.1/fixture_browser_test?host=shared.example',
+    ],
+    ['test', 'invalid-private-value'],
+  ])(
+    'rejects unsafe browser fixture configuration before starting tools',
+    (mode, database) => {
+      const result = spawnSync(process.execPath, ['scripts/test-browser.mjs'], {
+        cwd: join(cwd, '..', 'frontend'),
+        env: {
+          ...process.env,
+          NODE_ENV: mode,
+          BROWSER_DATABASE_URL: database,
+          DATABASE_URL:
+            'postgresql://quality:private-password@shared.example/owner_data',
+        },
+        encoding: 'utf8',
+        timeout: 5000,
+      });
+      expect(result.error).toBeUndefined();
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain(
+        'Set NODE_ENV=test and BROWSER_DATABASE_URL',
+      );
+      expect(result.stdout).toBe('');
+      expect(result.stderr).not.toMatch(
+        /private-password|invalid-private-value|shared\.example/,
+      );
+    },
+  );
+
   it('explains an occupied backend port and exits instead of hanging', async () => {
     const listener = createServer();
     await new Promise<void>((resolve) =>

@@ -61,10 +61,8 @@ const ProjectsPageContainer = () => {
 
   const handleCreateProject = async (data: Partial<Project>) => {
     const newProject = await createProject({ ...data, createdBy: user?.email });
-    if (newProject) {
-      setOpenDialog(false);
-      setProjects((current) => [...current, newProject]);
-    }
+    setProjects((current) => [...current, newProject]);
+    return true;
   };
 
   const handleDeleteProject = async (data: Partial<Project>) => {

@@ -4,7 +4,7 @@
 
 **Blocked by:** 02: Address applicable dependency findings without uncontrolled upgrades; 03: Enforce the reliable baseline in CI; 04: Make project progress correct in both project views; 05: Make task movement truthful and recoverable; 09: Refactor hierarchy and backlog without breaking linked work; 10: Make sprint planning and goals consistent across views; 11: Make team and capacity planning reliable; 12: Refactor the retrospective with complete recovery behavior; 13: Reduce unnecessary initial and editor code loading; 14: Reduce unnecessary project read payloads and query work; 15: Make bulk ticket operations and their diagnostics predictable. Tickets 01, 06, 07 and 08 are transitively covered.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -23,3 +23,5 @@ Type: task
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
 
 2026-10-17 candidate from14consumer mapping: the project-create form still uses a legacy void callback and null-returning create hook. During final complete workflow QA, reproduce whether a failed create incorrectly closes its draft; if confirmed, apply a bounded acceptance correction under the existing truthful error/pending requirement. Not yet reproduced or claimed fixed.
+
+2026-10-17: Claimed after 15 resolved at f82e43c. Add a controlled production-browser runner with explicit NODE_ENV=test and isolated loopback *_browser_test database, owning its child applications and fixture lifecycle. Reproduce the recorded project-create failure before a bounded fix; verify remaining active project/settings actions, clean setup, checks and existing provider deployment. Preserve owner design/readiness checkpoint before all walkthrough recording.

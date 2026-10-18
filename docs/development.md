@@ -41,7 +41,7 @@ The retained test runner is Jest 30, with its matching browser environment and a
 
 ## Continuous integration
 
-The [Quality workflow](../.github/workflows/quality.yml) runs on pushes and pull requests to `main`, and can also be started manually. Separate frontend and backend jobs install the committed lockfiles under Node 22, run the checks above, and fail when any command fails. Frontend hook warnings remain visible. The backend job also validates the Prisma schema and runs the canonical guarded tests against a disposable PostgreSQL 17 service. Its example credentials exist only for that job; no repository secrets or production environment file are loaded.
+The [Quality workflow](../.github/workflows/quality.yml) runs on pushes and pull requests to `main`, and can also be started manually. Frontend and backend jobs install the committed lockfiles under Node 22, run the checks above, and fail when any command fails. Frontend hook warnings remain visible. The backend job validates the Prisma schema and runs guarded tests against disposable PostgreSQL 17. A separate browser job uses its own PostgreSQL service, installs Chromium and runs the production applications with the isolated runner below. Its example credentials exist only for that job; no repository secrets or production environment file are loaded.
 
 To reproduce locally, run `npm ci` in each application, then the commands in **Checks**. In `backend`, also run `npx --no-install prisma validate` with a local `DATABASE_URL`, then `npm test` with the separate disposable `TEST_DATABASE_URL` described below. Prisma generation must precede type checking after a fresh install. The test runner applies committed migrations itself. A successful local run does not substitute for checking the hosted workflow result.
 
@@ -69,6 +69,24 @@ For a focused run, use `npm test -- startup.e2e-spec.ts` or `npm test -- demo.e2
 The baseline deliberately retires 24 generated `should be defined` tests that omitted required providers, plus one obsolete `Hello World` test for a removed endpoint. These had no CRUD assertions to preserve. Their construction coverage is replaced by booting the real application for HTTP checks. Auth, health, credential filtering and seed preservation/restoration retain behavioral assertions. Mutation and relationship coverage is extended at the HTTP/WebSocket and browser boundaries in the relevant quality tickets; this baseline does not claim complete CRUD coverage.
 
 ## Repeatable browser journeys
+
+For the complete reproducible check, install both lockfiles and create a **dedicated disposable** local PostgreSQL database ending in `_browser_test`, separate from the API test database and all normal application data. From `frontend`:
+
+```powershell
+$env:NODE_ENV='test'
+$env:BROWSER_DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/project_management_browser_test?schema=public'
+npm.cmd run test:browser:isolated
+```
+
+POSIX shells:
+
+```sh
+NODE_ENV=test BROWSER_DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/project_management_browser_test?schema=public' npm run test:browser:isolated
+```
+
+**This command replaces the selected database's application fixtures on every run.** It refuses remote hosts, other database suffixes, schema/query overrides, or a missing explicit test mode. It never falls back to `DATABASE_URL`. It generates Prisma, applies committed migrations, replaces only this guarded database's fixtures, seeds the demo, builds both applications, chooses free local ports and starts its own API/production preview with matching proxy/socket/CORS settings. It waits for readiness and stops only its own child processes on success, failure or interruption. Fixture data remains available for local diagnosis. Run one suite per database at a time. On Windows, stop any application using the same installation before Prisma generation, or use a separate checkout, because its native engine can be locked by a running process.
+
+Use installed Chrome by default. To use downloaded Chromium locally, run `npx --no-install playwright install chromium` and set `BROWSER_CHANNEL=chromium`. CI installs Chromium with its OS libraries. Optional test arguments follow `--`, for example `npm run test:browser:isolated -- finish.browser.ts`. Video and tracing stay off; failure screenshots are test diagnostics, not presentation assets.
 
 The frontend's `npm run test:browser` runs the retained Playwright journeys against an **already running, populated isolated local application**. It never starts the normal private environment, initializes a database or restores the seed. Use the local setup above with separate fixture data. The default browser target is `http://127.0.0.1:5182`; set `BROWSER_BASE_URL` to your isolated frontend origin if different. The configuration rejects remote/non-HTTP targets. The backend's `CLIENT_URL`, Vite proxy and direct socket URL must match this fixture setup.
 

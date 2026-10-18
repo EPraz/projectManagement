@@ -40,6 +40,8 @@ const ProjectGridView = ({
             transition={{ duration: 0.3, delay: index * 0.1 }}
           >
             <FavoriteButton
+              aria-label={`Favorite ${project.title}`}
+              aria-pressed={favoriteId === project.id}
               size="small"
               onClick={(e) => {
                 e.stopPropagation();
