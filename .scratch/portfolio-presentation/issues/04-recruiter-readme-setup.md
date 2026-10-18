@@ -1,4 +1,4 @@
-# 04: Deliver the English recruiter README and reproducible setup
+# 04: Deliver the recruiter README and verified setup
 
 Type: task
 Status: ready-for-agent
@@ -6,18 +6,20 @@ Blocked by: 03
 
 ## What to build
 
-Recruiters understand the original full-stack product without visiting the demo, while developers can clone and run it from verified instructions.
+an English product/engineering explanation and three current screenshots that stand alone, plus reproducible clone-to-running instructions.
 
 ## Acceptance criteria
 
-- [ ] Lead with the problem, original contribution, real connected workflows and demo/video entry.
-- [ ] Include three complementary current images, concise captions and a compact architecture explanation.
-- [ ] Use the actual stack and verified capabilities; remove unsupported RBAC, Charts.js, desktop-first and unqualified production-ready claims.
-- [ ] Explain shared demo identity, disabled personal accounts and free-hosting wake-up without obsolete defect claims.
-- [ ] Verify Node22/locked installs/example configuration/dedicated PostgreSQL/migrations/demo seed/startup in an isolated clone-equivalent setup.
-- [ ] Link deeper development/deployment guidance and current verification; keep licensing unchanged.
-- [ ] Link a clickable poster to the public walkthrough page, with actual transcript/download alternatives; never publish placeholder artifact URLs.
+- [ ] Explain the problem, original personal full-stack contribution, real connected workflows, architecture and actual stack.
+- [ ] Use complementary desktop overview, Taskboard/work-editing and mobile images with readable context.
+- [ ] Correct old RBAC/Charts.js/desktop-first/production-ready claims; explain current shared-demo and free-hosting limits, with dated verification evidence.
+- [ ] Verify Node22, locked installs, example configuration, dedicated local PostgreSQL, Prisma generation/migrations/demo initialization and both startups in a clone-equivalent setup; keep detailed documentation consistent and licensing unchanged.
+- [ ] Keep the final poster/video/transcript integration for06. Do not publish placeholder media links or make README work wait for a final video export unnecessarily.
 
 ## Comments
 
 2026-10-18: Reconciled with the completed quality/redesign and the owner-confirmed Aster/mobile/WebSocket presentation decisions. Preserve the original approved six-ticket breakdown.
+
+2026-10-18: Owner explicitly accepts the reconciled to-tickets breakdown and dependencies. Acceptance criteria now match the confirmed spec, including the public viewer and complete external verification. The original preparation tickets remain resolved.
+
+Final poster/video/transcript integration belongs to06;05 does not gate this README/setup outcome.

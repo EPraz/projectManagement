@@ -1,6 +1,6 @@
-# Reconciled presentation tickets — to-tickets proposal
+# Approved reconciled presentation breakdown
 
-Status: awaiting-owner-breakdown-confirmation
+Status: approved — published as individual local issues
 
 Source: [confirmed spec](spec.md). Keep the original approved numbering; this pass reconciles the four remaining outcomes with the added public viewer and the final testing confirmation. Do not restart completed preparation or duplicate issues. The spec remains unchanged by this ticket pass.
 
@@ -58,10 +58,10 @@ Source: [confirmed spec](spec.md). Keep the original approved numbering; this pa
 - [ ] Integrate the final poster/primary viewing-page link and transcript/download alternatives into the README. Verify public rendering and real media URLs/content types/byte ranges/playback/download.
 - [ ] Record exact captured-source/publication revisions and artifact verification. Preserve visitor data, existing deployment boundaries and unrelated resources; resolve only actual completed outcomes.
 
-## Proposed blocking graph
+## Approved blocking graph
 
 01 +02 (resolved) →03 →04 and05 →06.
 
 Each remaining ticket is a complete verifiable outcome. Existing product layers already provide the required behavior; these presentation slices do not invent schema/API changes or a prefactor before there is a demonstrated need.
 
-Confirm ticket granularity and blocking edges, and identify any desired merge/split before these refinements are applied to the existing individual issues. The parent's confirmed spec is not modified by this operation.
+The owner accepts this granularity and these blocking edges on2026-10-18 (“acepto”). Refinements are published to the existing individual issues; those files remain the execution tracker. The parent's confirmed spec is unchanged by this operation.

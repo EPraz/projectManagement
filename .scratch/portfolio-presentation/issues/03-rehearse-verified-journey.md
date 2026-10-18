@@ -1,4 +1,4 @@
-# 03: Verify and rehearse the connected presentation journey
+# 03: Rehearse the verified full-stack story
 
 Type: task
 Status: ready-for-agent
@@ -6,18 +6,18 @@ Blocked by: 01, 02
 
 ## What to build
 
-A verified Orbit/Sprint2 journey is ready for final images and recording, including genuine two-session WebSocket collaboration.
+a repeatable populated Orbit/Sprint2 story ready for final screenshots and recording, with actual independent-session WebSocket updates.
 
 ## Acceptance criteria
 
-- [ ] Verify an explicitly isolated local API/database with representative populated demo data and the intended application revision.
-- [ ] Rehearse entry/overview, hierarchy/backlog, ticket inspection/state, a real task move, team/capacity/goals, retrospective and mobile/dark.
-- [ ] Use independent authenticated writer/observer contexts; the observer visibly receives actual ticket/task updates without reload or a recorder-injected compensating fetch.
-- [ ] Confirm persistence through the canonical API and preserve distinct ticket/task/metric semantics.
-- [ ] Verify corresponding public navigation without staging changes to visitor data.
-- [ ] Save chapter/caption timing, repeatable steps, meaningful assertions and evidence; preserve local recording edits if useful.
-- [ ] Record bounded blockers separately; do not restart completed refactoring or reset public data.
+- [ ] Verify the explicit loopback API/database and application revision; use populated local demo data without inheriting private Neon configuration.
+- [ ] Rehearse entry/overview, epics/features/backlog, ticket inspection/state, a real task move, team/capacity/goals, retrospective and actual mobile/dark behavior.
+- [ ] The independently authenticated observer receives the writer's actual ticket/task updates without refresh or recorder-injected reads/results. Confirm persistence through the canonical API; preserve distinct ticket/task states and metric scopes.
+- [ ] Check corresponding public navigation read-only and document any real wake-up limitation.
+- [ ] Save the timed story/caption outline and meaningful external assertions/evidence. Preserve local recording edits if useful; do not reset visitor data.
 
 ## Comments
 
 2026-10-18: Reconciled with the completed quality/redesign and the owner-confirmed Aster/mobile/WebSocket presentation decisions. Preserve the original approved six-ticket breakdown.
+
+2026-10-18: Owner explicitly accepts the reconciled to-tickets breakdown and dependencies. Acceptance criteria now match the confirmed spec, including the public viewer and complete external verification. The original preparation tickets remain resolved.

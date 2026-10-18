@@ -1,4 +1,4 @@
-# 05: Deliver the polished silent product walkthrough
+# 05: Deliver the polished silent walkthrough
 
 Type: task
 Status: ready-for-agent
@@ -6,19 +6,21 @@ Blocked by: 03
 
 ## What to build
 
-A recruiter can follow the real full-stack workflow in a legible3:00–3:30 English-captioned1080p video, with WebSocket collaboration as its centerpiece.
+a reviewed3:00–3:30 silent1080p H.264 MP4 with English captions, poster and transcript/chapters, using Aster's restrained polish and this project's identity.
 
 ## Acceptance criteria
 
-- [ ] Respect the owner-confirmed design/readiness approval already given; no duplicate pre-recording permission request.
-- [ ] Capture the actual isolated local application and preserve raw takes/timing metadata.
-- [ ] Demonstrate a ticket state change and task movement with a genuine independent-session live update; do not fabricate results or conflate ticket/task states.
-- [ ] Cover the agreed hierarchy/backlog, team/capacity/goals and retrospective areas concisely.
-- [ ] Reserve20–25s within the duration ceiling for actual mobile interaction and a brief dark-theme view; light remains primary.
-- [ ] Adapt Aster-style chapters, smooth pointer/click emphasis and restrained zooms to the project identity; captions remain legible and clear of playback controls.
-- [ ] Export web-compatible silent H.264 MP4, poster, English captions and matching transcript/chapters.
-- [ ] Decode the complete output and inspect chronological frames/key moments, transitions, pacing, privacy and caption timing; keep tooling outside runtime dependencies.
+- [ ] Use the owner's already-confirmed design/readiness approval; record the actual isolated local application and preserve raw takes/timing metadata.
+- [ ] Show ticket-state change, real task movement and independent-session synchronization as the centerpiece; editing must not fabricate successful results or WebSocket delivery.
+- [ ] Cover hierarchy/backlog, team/capacity/goals and retrospective, reserving20–25s for actual mobile and brief dark appearance within the existing3:30 ceiling.
+- [ ] Keep chapter labels, cursor/click cues, selective zooms and up to two caption lines readable and clear of native controls; light is principal.
+- [ ] Export web-compatible MP4, poster, captions and matching transcript/chapters; preserve actual source revision and keep tools/raw clips out of runtime dependencies.
+- [ ] Fully decode and inspect chronology/key frames, mobile/dark/theme transitions, privacy, caption timing, playback and pacing before publication.
 
 ## Comments
 
 2026-10-18: Reconciled with the completed quality/redesign and the owner-confirmed Aster/mobile/WebSocket presentation decisions. Preserve the original approved six-ticket breakdown.
+
+2026-10-18: Owner explicitly accepts the reconciled to-tickets breakdown and dependencies. Acceptance criteria now match the confirmed spec, including the public viewer and complete external verification. The original preparation tickets remain resolved.
+
+04 does not gate recording. The owner’s pre-recording design/readiness confirmation is already satisfied.

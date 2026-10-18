@@ -1,6 +1,6 @@
 # Portfolio presentation: README and walkthrough
 
-Status: to-tickets-breakdown-confirmation
+Status: ready-for-implementation
 
 ## Current presentation handoff — 2026-10-18
 
@@ -121,3 +121,7 @@ The owner replies “Sí, validar así” to the consolidated external verificat
 Prepared [the reconciled breakdown](tickets.reconciled.proposed.md) against the confirmed spec, preserving six original IDs and two evidence-backed resolutions. Four outcomes remain:03 verified rehearsal,04 README/setup,05 final walkthrough,06 public viewing/publication.03's blockers01/02 are done;04/05 depend only on03;06 needs both finished artifacts. Final poster/video-link integration belongs to06 so04 is not accidentally blocked by05. Added the confirmed unavailable-backend/expired-session, media failure, native-player, chapter/download and deployed byte-range checks to06's proposed acceptance. No parent-spec change or implementation occurred.
 
 Await the to-tickets granularity/dependency/merge-split confirmation, then apply these refinements to the existing individual issues and leave them ready-for-agent. Do not duplicate tickets or reopen01/02.
+
+### To-tickets approved and published
+
+The owner explicitly accepts the proposed granularity and blocking edges (“acepto”). Applied the approved acceptance criteria to the existing individual issues03–06, all ready-for-agent, without duplicating tickets or changing the parent spec.01/02 remain resolved by their existing evidence. [03: verified rehearsal](issues/03-rehearse-verified-journey.md) is the sole currently unblocked work item; after03,04/05 can proceed independently;06 depends on both. The four presentation outcomes are pending implementation, not already recorded/delivered. No new recording-readiness or scope approval is needed for the confirmed work.
