@@ -13,21 +13,22 @@ import {
   BodyCell,
   OrderButtons,
   BoardContainer,
-  TableWrapper,
+  TableWrapper
 } from "./TaskBoard.styles";
 import TicketCard from "./ticketCard/TicketCard";
+import { useTicket } from "../../../../context/ticketContext";
 
 const TaskBoard = () => {
+  const { tickets } = useTicket();
   const {
     project,
     // loadingBulkUpdateTickets,
-    localTickets,
     setSelectedTicketId,
     selectedTasksStatuses,
     setOpenTaskDialog,
     handleUpdateTicketOrder,
     handleUpdateTicketStatus,
-    handleOnDragEndTask,
+    handleOnDragEndTask
   } = useOutletContext<LayoutContextProps>();
 
   return (
@@ -49,13 +50,12 @@ const TaskBoard = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {localTickets
+              {tickets
                 .slice()
                 .sort((a, b) => a.order - b.order)
                 // .map((ticket, index) => {
                 .map((ticket) => {
                   // const isFirst = index === 0;
-                  // const isLast = index === localTickets.length - 1;
 
                   return (
                     <TableRow key={ticket.id}>

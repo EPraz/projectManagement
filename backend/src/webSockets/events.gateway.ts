@@ -19,6 +19,10 @@ export class EventsGateway {
   @WebSocketServer()
   server: Server;
 
+  emitHierarchyChange(projectId: string) {
+    this.server.emit('hierarchyChanged', { projectId });
+  }
+
   // Método para emitir actualizaciones de tickets a todos los clientes conectados
   // Events for Tickets
   emitTicketUpdate(data: Ticket) {

@@ -4,7 +4,7 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,8 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after 08 resolved. Characterize the actual backlog and hierarchy route. Initial inspection finds a disabled mock-data hierarchy screen alongside existing real Epic/Feature CRUD APIs; distinguish unsupported mock fields from the existing domain contracts before choosing a bounded correction.
+
+Scope reconciliation: the approved hierarchy slice connects the existing `/epics` route and Epic/Feature CRUD to selected-project data and enables its existing navigation entry. Retain the card layout and real title/description/criteria/status/parent contracts. Remove simulated dates, assignees, priorities, drag handles and inert menu/filter actions that have no corresponding hierarchy capability. This is completion of the approved hierarchy workflow, with no new domain feature, schema or access policy. Linked tickets continue through the existing backlog editor.
+

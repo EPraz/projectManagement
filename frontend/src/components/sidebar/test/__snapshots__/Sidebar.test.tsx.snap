@@ -147,10 +147,9 @@ exports[`Sidebar Component match snapshot 1`] = `
           </div>
         </div>
         <div
-          aria-disabled="true"
-          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters Mui-disabled Mui-disabled MuiListItemButton-root MuiListItemButton-gutters Mui-disabled css-wwerzn-MuiButtonBase-root-MuiListItemButton-root"
+          class="MuiButtonBase-root MuiListItemButton-root MuiListItemButton-gutters MuiListItemButton-root MuiListItemButton-gutters css-wwerzn-MuiButtonBase-root-MuiListItemButton-root"
           role="button"
-          tabindex="-1"
+          tabindex="0"
         >
           <div
             class="MuiListItemIcon-root css-13iiu07-MuiListItemIcon-root"

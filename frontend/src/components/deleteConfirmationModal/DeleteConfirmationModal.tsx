@@ -1,29 +1,64 @@
 import {
+  Alert,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Button,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DeleteConfirmationModalProps } from "../../types";
+import { useLayoutEffect, useRef, useState } from "react";
 
 const DeleteConfirmationModal = ({
   open,
   onClose,
   onConfirm,
   itemName,
-  disabled = false,
+  itemKey,
+  disabled = false
 }: DeleteConfirmationModalProps) => {
-  const handleSubmit = () => {
-    onConfirm();
-    onClose();
+  const [pending, setPending] = useState(false);
+  const [failure, setFailure] = useState("");
+  const active = useRef(false);
+  const generation = useRef(0);
+  const identity = itemKey ?? itemName;
+  useLayoutEffect(() => {
+    generation.current++;
+    active.current = false;
+    setPending(false);
+    setFailure("");
+    return () => {
+      generation.current++;
+    };
+  }, [open, identity]);
+  const handleSubmit = async () => {
+    if (active.current || disabled) return;
+    active.current = true;
+    const started = generation.current;
+    setPending(true);
+    setFailure("");
+    try {
+      const confirmed = await onConfirm();
+      if (started !== generation.current) return;
+      if (confirmed === false)
+        setFailure("Could not delete. Please try again.");
+      else onClose();
+    } catch {
+      if (started === generation.current)
+        setFailure("Could not delete. Please try again.");
+    } finally {
+      if (started === generation.current) {
+        active.current = false;
+        setPending(false);
+      }
+    }
   };
   return (
     <Dialog
       open={open}
       onClose={(_, reason) => {
-        if (reason === "backdropClick") return;
+        if (reason === "backdropClick" || pending) return;
         onClose();
       }}
       maxWidth="xs"
@@ -31,6 +66,11 @@ const DeleteConfirmationModal = ({
     >
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
+        {failure && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {failure}
+          </Alert>
+        )}
         <Typography>
           Are you sure you want to delete <strong>{itemName}</strong>?
           <br />
@@ -43,7 +83,7 @@ const DeleteConfirmationModal = ({
           onClick={onClose}
           color="primary"
           variant="outlined"
-          disabled={disabled}
+          disabled={disabled || pending}
         >
           Cancel
         </Button>
@@ -54,11 +94,11 @@ const DeleteConfirmationModal = ({
           sx={{
             backgroundColor: "green",
             color: "white",
-            ":hover": { backgroundColor: "white", color: "green" },
+            ":hover": { backgroundColor: "white", color: "green" }
           }}
-          disabled={disabled}
+          disabled={disabled || pending}
         >
-          Proceed
+          {pending ? "Deleting…" : "Proceed"}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,12 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Epic } from '@prisma/client';
 import { CreateEpicDto, UpdateEpicDto } from 'src/dto';
 import { checkDuplicateTitle, handlePrismaError } from 'src/helper';
+import { EventsGateway } from '../webSockets/events.gateway';
 
 @Injectable()
 export class EpicService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly events: EventsGateway,
+  ) {}
 
   //Create Epic
   async create(request: CreateEpicDto): Promise<Epic> {
@@ -24,13 +32,15 @@ export class EpicService {
         where: { projectId: request.projectId, name: 'NEW' },
       });
 
-      return await this.prisma.epic.create({
+      const created = await this.prisma.epic.create({
         data: { ...request, statusId: newStatus?.id },
         include: {
           features: true,
           status: true,
         },
       });
+      this.events.emitHierarchyChange(created.projectId);
+      return created;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -98,10 +108,25 @@ export class EpicService {
 
       if (!epic) throw new NotFoundException(`Epic #${request.id} not found`);
 
-      if (request.title)
-        await checkDuplicateTitle(this.prisma, 'epic', request.title);
+      if (epic.projectId !== request.projectId)
+        throw new BadRequestException('Epic must remain in its project');
 
-      return await this.prisma.epic.update({
+      if (request.statusId !== undefined) {
+        const status =
+          request.statusId &&
+          (await this.prisma.epicStatus.findUnique({
+            where: { id: request.statusId },
+          }));
+        if (!status || status.projectId !== epic.projectId)
+          throw new BadRequestException(
+            'Epic status must belong to its project',
+          );
+      }
+
+      if (request.title)
+        await checkDuplicateTitle(this.prisma, 'epic', request.title, epic.id);
+
+      const updated = await this.prisma.epic.update({
         where: { id: request.id },
         data: request,
         include: {
@@ -109,6 +134,8 @@ export class EpicService {
           status: true,
         },
       });
+      this.events.emitHierarchyChange(updated.projectId);
+      return updated;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -124,6 +151,8 @@ export class EpicService {
       if (!epic) throw new NotFoundException(`Epic #${id} not found`);
 
       await this.prisma.epic.delete({ where: { id } });
+
+      this.events.emitHierarchyChange(epic.projectId);
 
       return true;
     } catch (error: unknown) {

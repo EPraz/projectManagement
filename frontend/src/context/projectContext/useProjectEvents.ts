@@ -10,7 +10,7 @@ export const useProjectEvents = (
   projectId: string | undefined,
   change: (update: ProjectChange) => void,
   remove: () => void,
-  reconnect: () => void,
+  reconnect: () => void
 ) => {
   useEffect(() => {
     const projectUpdated = (project: Project) => {
@@ -26,9 +26,9 @@ export const useProjectEvents = (
           project && {
             ...project,
             tickets: project.tickets.map((current) =>
-              current.id === ticket.id ? ticket : current,
-            ),
-          },
+              current.id === ticket.id ? ticket : current
+            )
+          }
       );
     };
     const ticketCreated = (ticket: Ticket) => {
@@ -36,7 +36,7 @@ export const useProjectEvents = (
       change((project) =>
         !project || project.tickets.some((current) => current.id === ticket.id)
           ? project
-          : { ...project, tickets: [...project.tickets, ticket] },
+          : { ...project, tickets: [...project.tickets, ticket] }
       );
     };
     const ticketDeleted = (ticket: Ticket) => {
@@ -46,9 +46,9 @@ export const useProjectEvents = (
           project && {
             ...project,
             tickets: project.tickets.filter(
-              (current) => current.id !== ticket.id,
-            ),
-          },
+              (current) => current.id !== ticket.id
+            )
+          }
       );
     };
     const sprintUpdated = (sprint: Sprint) => {
@@ -58,9 +58,9 @@ export const useProjectEvents = (
           project && {
             ...project,
             sprints: project.sprints.map((current) =>
-              current.id === sprint.id ? sprint : current,
-            ),
-          },
+              current.id === sprint.id ? sprint : current
+            )
+          }
       );
     };
     const sprintCreated = (sprint: Sprint) => {
@@ -68,7 +68,7 @@ export const useProjectEvents = (
       change((project) =>
         !project || project.sprints.some((current) => current.id === sprint.id)
           ? project
-          : { ...project, sprints: [...project.sprints, sprint] },
+          : { ...project, sprints: [...project.sprints, sprint] }
       );
     };
     const sprintDeleted = (sprint: Sprint) => {
@@ -78,12 +78,15 @@ export const useProjectEvents = (
           project && {
             ...project,
             sprints: project.sprints.filter(
-              (current) => current.id !== sprint.id,
-            ),
-          },
+              (current) => current.id !== sprint.id
+            )
+          }
       );
     };
     const onConnect = () => reconnect();
+    const hierarchyChanged = (event: { projectId: string }) => {
+      if (event.projectId === projectId) reconnect();
+    };
     socket.on("projectUpdated", projectUpdated);
     socket.on("projectDeleted", projectDeleted);
     socket.on("ticketUpdated", ticketUpdated);
@@ -93,6 +96,7 @@ export const useProjectEvents = (
     socket.on("sprintCreated", sprintCreated);
     socket.on("sprintDeleted", sprintDeleted);
     socket.on("connect", onConnect);
+    socket.on("hierarchyChanged", hierarchyChanged);
     return () => {
       socket.off("projectUpdated", projectUpdated);
       socket.off("projectDeleted", projectDeleted);
@@ -103,6 +107,7 @@ export const useProjectEvents = (
       socket.off("sprintCreated", sprintCreated);
       socket.off("sprintDeleted", sprintDeleted);
       socket.off("connect", onConnect);
+      socket.off("hierarchyChanged", hierarchyChanged);
     };
   }, [projectId, change, remove, reconnect]);
 };

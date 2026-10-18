@@ -1,12 +1,20 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateFeatureDto, UpdateFeatureDto } from 'src/dto';
 import { Feature } from '@prisma/client';
 import { checkDuplicateTitle, handlePrismaError } from 'src/helper';
+import { EventsGateway } from '../webSockets/events.gateway';
 
 @Injectable()
 export class FeatureService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly events: EventsGateway,
+  ) {}
 
   async create(request: CreateFeatureDto): Promise<Feature> {
     try {
@@ -23,13 +31,15 @@ export class FeatureService {
         where: { projectId: epic.projectId, name: 'NEW' },
       });
 
-      return await this.prisma.feature.create({
+      const created = await this.prisma.feature.create({
         data: { ...request, statusId: newStatus?.id },
         include: {
           status: true,
           tickets: true,
         },
       });
+      this.events.emitHierarchyChange(epic.projectId);
+      return created;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -88,15 +98,38 @@ export class FeatureService {
 
       const feature = await this.prisma.feature.findUnique({
         where: { id: request.id },
+        include: { epic: { select: { projectId: true } } },
       });
 
       if (!feature)
         throw new NotFoundException(`Feature #${request.id} not found`);
 
-      if (request.title)
-        await checkDuplicateTitle(this.prisma, 'feature', request.title);
+      if (feature.epic.projectId !== epic.projectId)
+        throw new BadRequestException(
+          'Feature parent must belong to its current project',
+        );
 
-      return await this.prisma.feature.update({
+      if (request.statusId !== undefined) {
+        const status =
+          request.statusId &&
+          (await this.prisma.featureStatus.findUnique({
+            where: { id: request.statusId },
+          }));
+        if (!status || status.projectId !== epic.projectId)
+          throw new BadRequestException(
+            'Feature status must belong to its project',
+          );
+      }
+
+      if (request.title)
+        await checkDuplicateTitle(
+          this.prisma,
+          'feature',
+          request.title,
+          feature.id,
+        );
+
+      const updated = await this.prisma.feature.update({
         where: { id: request.id },
         data: { ...request },
         include: {
@@ -105,6 +138,8 @@ export class FeatureService {
           tickets: true,
         },
       });
+      this.events.emitHierarchyChange(epic.projectId);
+      return updated;
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -114,6 +149,7 @@ export class FeatureService {
     try {
       const feature = await this.prisma.feature.findUnique({
         where: { id },
+        include: { epic: { select: { projectId: true } } },
       });
 
       if (!feature) throw new NotFoundException(`Feature #${id} not found`);
@@ -121,6 +157,8 @@ export class FeatureService {
       await this.prisma.feature.delete({
         where: { id },
       });
+
+      this.events.emitHierarchyChange(feature.epic.projectId);
 
       return true;
     } catch (error: unknown) {

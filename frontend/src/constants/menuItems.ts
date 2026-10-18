@@ -16,35 +16,34 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     text: "Overview",
     icon: DashboardIcon,
-    path: "overview",
+    path: "overview"
   },
   {
     text: "Board",
     icon: ViewKanbanIcon,
-    path: "board",
+    path: "board"
   },
   {
     text: "Retrospective",
     icon: AssessmentIcon,
-    path: "retrospective",
+    path: "retrospective"
   },
   {
     text: "Epics & Features",
     icon: CategoryIcon,
-    path: "epics",
-    disabled: true,
+    path: "epics"
   },
 
   {
     text: "Team Members",
     icon: PeopleIcon,
-    path: "teammembers",
+    path: "teammembers"
   },
   {
     text: "Settings",
     icon: SettingsIcon,
-    path: "settings",
-  },
+    path: "settings"
+  }
 ];
 
 export interface MainTab {
@@ -55,28 +54,28 @@ export interface MainTab {
 export const MAIN_TABS: MainTab[] = [
   {
     text: "Overview",
-    path: "overview",
+    path: "overview"
   },
   {
     text: "Board",
-    path: "board",
+    path: "board"
   },
   {
     text: "Members",
-    path: "members",
+    path: "members"
   },
   {
     text: "Files",
-    path: "files",
+    path: "files"
   },
   {
     text: "Timeline",
-    path: "timeline",
+    path: "timeline"
   },
   {
     text: "Reports",
-    path: "reports",
-  },
+    path: "reports"
+  }
 ];
 
 export interface Project {
@@ -88,10 +87,10 @@ export interface Project {
 export const PROJECTS: Project[] = [
   { name: "ShieldSafe", count: 5, color: "#1E8E3E" },
   { name: "Quantum", count: 2, color: "#1A73E8" },
-  { name: "AeroSquare", count: 7, color: "#F9AB00" },
+  { name: "AeroSquare", count: 7, color: "#F9AB00" }
 ];
 
 export const cardVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
+  visible: { opacity: 1, y: 0 }
 };

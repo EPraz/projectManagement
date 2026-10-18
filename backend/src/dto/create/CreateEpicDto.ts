@@ -1,4 +1,5 @@
 import { IsString, IsOptional, IsNotEmpty, IsEmail } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateEpicDto {
   @IsString({ message: 'projectId must be a string' })
@@ -6,6 +7,9 @@ export class CreateEpicDto {
   projectId: string;
 
   @IsString({ message: 'title must be a string' })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   @IsNotEmpty({ message: 'title is required' })
   title: string;
 

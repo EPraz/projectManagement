@@ -59,8 +59,6 @@ export interface LayoutContextProps {
 
   // Local State Variables
   // Local States -> Tickets
-  localTickets: ReturnType<typeof useTicket>["tickets"];
-  setLocalTickets: React.Dispatch<React.SetStateAction<Ticket[]>>;
   openCreateTicketDialog: boolean;
   setOpenCreateTicketDialog: React.Dispatch<React.SetStateAction<boolean>>;
   selectedTicketId: number;
@@ -111,7 +109,6 @@ export interface LayoutContextProps {
 
   //Local States -> Board
   tabValue: number;
-  setTabValue: React.Dispatch<React.SetStateAction<number>>;
   handleChangeTabValue: (newValue: number) => void;
 
   //Local States -> Sidebar

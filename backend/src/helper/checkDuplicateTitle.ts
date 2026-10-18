@@ -8,23 +8,33 @@ export async function checkDuplicateTitle(
   prisma: PrismaService,
   model: ModelKeys,
   title: string,
+  excludeId?: string,
 ) {
-  let existingRecord: any;
+  let existingRecord: { id: string } | null = null;
 
   switch (model) {
     case 'project':
       existingRecord = await prisma.project.findFirst({
-        where: { title: { equals: title.trim(), mode: 'insensitive' } },
+        where: {
+          title: { equals: title.trim(), mode: 'insensitive' },
+          ...(excludeId && { id: { not: excludeId } }),
+        },
       });
       break;
     case 'epic':
       existingRecord = await prisma.epic.findFirst({
-        where: { title: { equals: title.trim(), mode: 'insensitive' } },
+        where: {
+          title: { equals: title.trim(), mode: 'insensitive' },
+          ...(excludeId && { id: { not: excludeId } }),
+        },
       });
       break;
     case 'feature':
       existingRecord = await prisma.feature.findFirst({
-        where: { title: { equals: title.trim(), mode: 'insensitive' } },
+        where: {
+          title: { equals: title.trim(), mode: 'insensitive' },
+          ...(excludeId && { id: { not: excludeId } }),
+        },
       });
       break;
   }

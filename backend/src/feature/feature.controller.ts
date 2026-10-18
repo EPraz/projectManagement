@@ -7,6 +7,7 @@ import {
   Delete,
   Patch,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { FeatureService } from './feature.service';
 import { CreateFeatureDto, GetAllFeaturesDto, UpdateFeatureDto } from 'src/dto';
@@ -24,7 +25,7 @@ export class FeatureController {
   }
 
   @Get()
-  async findAll(@Body() request: GetAllFeaturesDto): Promise<Feature[]> {
+  async findAll(@Query() request: GetAllFeaturesDto): Promise<Feature[]> {
     return await this.featureService.findAllByEpic(request.epicId);
   }
 

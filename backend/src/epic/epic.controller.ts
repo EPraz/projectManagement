@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { EpicService } from './epic.service';
 import { CreateEpicDto, GetAllEpicsDto, UpdateEpicDto } from 'src/dto';
@@ -24,7 +25,7 @@ export class EpicController {
   }
 
   @Get()
-  async findAll(@Body() request: GetAllEpicsDto): Promise<Epic[]> {
+  async findAll(@Query() request: GetAllEpicsDto): Promise<Epic[]> {
     return await this.epicService.findAll(request.projectId);
   }
 

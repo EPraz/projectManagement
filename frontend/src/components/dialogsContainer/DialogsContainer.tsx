@@ -300,6 +300,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onClose={() => setOpenDeleteTicketDialog(false)}
           onConfirm={() => handleDeleteTicket(selectedTicket)}
           itemName={selectedTicket.title}
+          itemKey={`ticket:${selectedTicket.id}`}
           disabled={loadingDeleteTicket}
         />
       )}
@@ -310,6 +311,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
           onClose={() => setOpenDeleteTaskDialog(false)}
           onConfirm={() => handleDeleteTask(selectedTask)}
           itemName={selectedTask.title}
+          itemKey={`task:${selectedTask.id}`}
           disabled={loadingDeleteTask}
         />
       )}

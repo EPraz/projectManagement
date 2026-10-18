@@ -145,7 +145,6 @@ const Layout = () => {
   });
 
   // Local States -> Tickets
-  const [localTickets, setLocalTickets] = useState<Ticket[]>(tickets);
   const [openCreateTicketDialog, setOpenCreateTicketDialog] =
     useState<boolean>(false);
   const [selectedTicketId, setSelectedTicketId] = useState<number>(0);
@@ -154,10 +153,6 @@ const Layout = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
   const [openDeleteTicketDialog, setOpenDeleteTicketDialog] =
     useState<boolean>(false);
-
-  useEffect(() => {
-    setLocalTickets(tickets);
-  }, [tickets]);
 
   // Local States -> Tasks
   const [selectedTasksStatuses, setSelectedTasksStatuses] = useState<
@@ -181,13 +176,17 @@ const Layout = () => {
   };
 
   // Local States -> Board
-  const initialTab = searchParams.get("tab") || "board";
-  const initialIndex =
-    TabPanels.findIndex((tab) => tab.label.toLowerCase() === initialTab) || 0;
-  const [tabValue, setTabValue] = useState<number>(initialIndex);
+  const requestedTab = searchParams.get("tab") || "board";
+  const tabValue = Math.max(
+    0,
+    TabPanels.findIndex((tab) => tab.label.toLowerCase() === requestedTab)
+  );
 
   const handleChangeTabValue = (newValue: number) => {
-    setTabValue(newValue);
+    setSearchParams(
+      { tab: TabPanels[newValue].label.toLowerCase() },
+      { replace: true }
+    );
   };
 
   useEffect(() => {
@@ -197,7 +196,9 @@ const Layout = () => {
 
     if (isBoardRoute) {
       if (currentTab !== newTab) {
-        setSearchParams({ tab: newTab }, { replace: true });
+        const params = new URLSearchParams(searchParams);
+        params.set("tab", newTab);
+        setSearchParams(params, { replace: true });
       }
     } else if (searchParams.toString()) {
       setSearchParams({}, { replace: true });
@@ -548,8 +549,6 @@ const Layout = () => {
                 loadingDeleteTicket,
                 // Local Variables
                 // Local States -> Tickets
-                localTickets,
-                setLocalTickets,
                 openCreateTicketDialog,
                 setOpenCreateTicketDialog,
                 selectedTicketId,
@@ -579,7 +578,6 @@ const Layout = () => {
                 handleApplyFilter,
                 //Local States -> Board
                 tabValue,
-                setTabValue,
                 handleChangeTabValue,
                 //Local States -> Sprint
                 openCreateSprintDialog,

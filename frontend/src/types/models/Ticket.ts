@@ -41,7 +41,7 @@ export type Ticket = {
   isBlocked?: boolean;
   blockedBy?: number | null;
   blockingTicket?: Ticket;
-  tags?: string[];
+  tags?: { id: number; name: string; color: string }[];
   blockedTickets?: Ticket[];
   _count: Record<string, number> | null;
   pairProgrammingUsers: User[];

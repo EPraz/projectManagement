@@ -1,5 +1,5 @@
 // DeleteConfirmationModal.test.tsx
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import "@testing-library/jest-dom";
 
@@ -54,7 +54,7 @@ describe("DeleteConfirmationModal", () => {
     expect(mockOnClose).toHaveBeenCalled();
   });
 
-  it("calls onConfirm and then onClose when Proceed is clicked", () => {
+  it("calls onConfirm and then onClose when Proceed is clicked", async () => {
     render(
       <DeleteConfirmationModal
         open={true}
@@ -64,7 +64,9 @@ describe("DeleteConfirmationModal", () => {
       />
     );
     fireEvent.click(screen.getByText(/proceed/i));
-    expect(mockOnConfirm).toHaveBeenCalled();
-    expect(mockOnClose).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(mockOnConfirm).toHaveBeenCalled();
+      expect(mockOnClose).toHaveBeenCalled();
+    });
   });
 });

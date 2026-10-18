@@ -264,6 +264,261 @@ describe('Acceso demo HTTP API', () => {
     );
   }, 30000);
 
+  it('reads and edits the real project hierarchy without breaking parent-child associations', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const [project, other] = projects.body as {
+      id: string;
+      epics: { id: string; features: { id: string }[] }[];
+      featureStatuses: { id: string }[];
+    }[];
+    const epics = await request(app.getHttpServer())
+      .get('/epics')
+      .query({ projectId: project.id })
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    expect(epics.body).toHaveLength(project.epics.length);
+    await request(app.getHttpServer())
+      .post('/epics')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: project.id,
+        title: '   ',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(400);
+    await request(app.getHttpServer())
+      .get('/epics')
+      .auth(token, { type: 'bearer' })
+      .expect(400);
+    await request(app.getHttpServer())
+      .get('/epics')
+      .query({ projectId: 'missing' })
+      .auth(token, { type: 'bearer' })
+      .expect(404);
+    await request(app.getHttpServer())
+      .get('/features')
+      .auth(token, { type: 'bearer' })
+      .expect(400);
+    await request(app.getHttpServer())
+      .get('/features')
+      .query({ epicId: 'missing' })
+      .auth(token, { type: 'bearer' })
+      .expect(404);
+    await request(app.getHttpServer())
+      .post('/features')
+      .auth(token, { type: 'bearer' })
+      .send({
+        epicId: 'missing',
+        title: 'Missing parent fixture',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(404);
+    const created = await request(app.getHttpServer())
+      .post('/epics')
+      .auth(token, { type: 'bearer' })
+      .send({
+        projectId: project.id,
+        title: `Isolated hierarchy ${Date.now()}`,
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    const epic = created.body as { id: string; title: string };
+    try {
+      const changed = await request(app.getHttpServer())
+        .patch(`/epics/${epic.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          projectId: project.id,
+          title: epic.title,
+          description: 'Description changed without renaming',
+          updatedBy: 'visitor@demo.example',
+        })
+        .expect(200);
+      expect(changed.body).toMatchObject({
+        id: epic.id,
+        description: 'Description changed without renaming',
+      });
+      await request(app.getHttpServer())
+        .patch(`/epics/${epic.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({ projectId: other.id, updatedBy: 'visitor@demo.example' })
+        .expect(400);
+      const featureResponse = await request(app.getHttpServer())
+        .post('/features')
+        .auth(token, { type: 'bearer' })
+        .send({
+          epicId: epic.id,
+          title: `Isolated feature ${Date.now()}`,
+          createdBy: 'visitor@demo.example',
+        })
+        .expect(201);
+      const feature = featureResponse.body as { id: string; title: string };
+      const features = await request(app.getHttpServer())
+        .get('/features')
+        .query({ epicId: epic.id })
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(features.body).toEqual(
+        expect.arrayContaining([expect.objectContaining({ id: feature.id })]),
+      );
+      await request(app.getHttpServer())
+        .patch(`/features/${feature.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          epicId: epic.id,
+          title: feature.title,
+          updatedBy: 'visitor@demo.example',
+        })
+        .expect(200);
+      await request(app.getHttpServer())
+        .patch(`/features/${feature.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({ epicId: other.epics[0].id, updatedBy: 'visitor@demo.example' })
+        .expect(400);
+      await request(app.getHttpServer())
+        .patch(`/features/${feature.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({
+          epicId: epic.id,
+          statusId: other.featureStatuses[0].id,
+          updatedBy: 'visitor@demo.example',
+        })
+        .expect(400);
+      const ticketResponse = await request(app.getHttpServer())
+        .post('/tickets')
+        .auth(token, { type: 'bearer' })
+        .send({
+          featureId: feature.id,
+          title: 'Linked isolated hierarchy ticket',
+          createdBy: 'visitor@demo.example',
+        })
+        .expect(201);
+      const ticket = ticketResponse.body as { id: number; projectId: string };
+      expect(ticket.projectId).toBe(project.id);
+      const linked = await request(app.getHttpServer())
+        .get(`/projects/${project.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect((linked.body as TaskProjectView).tickets).toEqual(
+        expect.arrayContaining([expect.objectContaining({ id: ticket.id })]),
+      );
+      await request(app.getHttpServer())
+        .delete(`/features/${feature.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      await request(app.getHttpServer())
+        .get(`/tickets/${ticket.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(404);
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/epics/${epic.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
+  it('announces confirmed hierarchy changes to an independent client without publishing rejected edits', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const [project, other] = projects.body as { id: string }[];
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      reconnection: false,
+      autoConnect: false,
+      timeout: 5000,
+    });
+    const events: { projectId: string }[] = [];
+    let timer: NodeJS.Timeout | undefined;
+    let createdId: string | undefined;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      const changed = new Promise<void>((resolve, reject) => {
+        timer = setTimeout(
+          () => reject(new Error('Confirmed hierarchy event missing')),
+          2000,
+        );
+        observer.on('hierarchyChanged', (event: { projectId: string }) => {
+          events.push(event);
+          resolve();
+        });
+      });
+      void changed.catch(() => undefined);
+      const created = await request(app.getHttpServer())
+        .post('/epics')
+        .auth(token, { type: 'bearer' })
+        .send({
+          projectId: project.id,
+          title: `Independent hierarchy ${Date.now()}`,
+          createdBy: 'visitor@demo.example',
+        })
+        .expect(201);
+      createdId = (created.body as { id: string }).id;
+      await changed;
+      expect(events).toEqual([{ projectId: project.id }]);
+      await request(app.getHttpServer())
+        .get(`/epics/${createdId}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      await request(app.getHttpServer())
+        .patch(`/epics/${createdId}`)
+        .auth(token, { type: 'bearer' })
+        .send({ projectId: other.id, updatedBy: 'visitor@demo.example' })
+        .expect(400);
+      clearTimeout(timer);
+      const deleted = new Promise<void>((resolve, reject) => {
+        timer = setTimeout(
+          () => reject(new Error('Confirmed hierarchy deletion event missing')),
+          2000,
+        );
+        observer.once('hierarchyChanged', resolve);
+      });
+      void deleted.catch(() => undefined);
+      await request(app.getHttpServer())
+        .delete(`/epics/${createdId}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      await deleted;
+      expect(events).toEqual([
+        { projectId: project.id },
+        { projectId: project.id },
+      ]);
+      await request(app.getHttpServer())
+        .get(`/epics/${createdId}`)
+        .auth(token, { type: 'bearer' })
+        .expect(404);
+      createdId = undefined;
+    } finally {
+      clearTimeout(timer);
+      observer.disconnect();
+      if (createdId)
+        await request(app.getHttpServer())
+          .delete(`/epics/${createdId}`)
+          .auth(token, { type: 'bearer' })
+          .expect(200);
+    }
+  });
+
   it('validates editor values and persists cleared planning fields without nested response data', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

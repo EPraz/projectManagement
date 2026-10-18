@@ -7,7 +7,7 @@ import {
   Menu,
   MenuItem,
   Typography,
-  Switch,
+  Switch
 } from "@mui/material";
 import { useState } from "react";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -15,7 +15,7 @@ import ViewColumnIcon from "@mui/icons-material/ViewColumn";
 import {
   initialBacklogColumns,
   TicketPriority,
-  TicketType,
+  TicketType
 } from "../../../../../constants";
 import { BoardHeaderProps } from "../../../../../types";
 import {
@@ -25,7 +25,7 @@ import {
   FilterContainer,
   FilterLabel,
   HeaderContainer,
-  StyledSelect,
+  StyledSelect
 } from "../BacklogBoard.styles";
 
 const BoardHeader: React.FC<BoardHeaderProps> = ({
@@ -33,7 +33,7 @@ const BoardHeader: React.FC<BoardHeaderProps> = ({
   visibleColumns,
   setVisibleColumns,
   filters,
-  setFilters,
+  setFilters
 }) => {
   const [filterAnchor, setFilterAnchor] = useState<null | HTMLElement>(null);
   const [columnAnchor, setColumnAnchor] = useState<null | HTMLElement>(null);
@@ -79,13 +79,14 @@ const BoardHeader: React.FC<BoardHeaderProps> = ({
         >
           <FilterContainer>
             <Box>
-              <FilterLabel>Priority:</FilterLabel>
+              <FilterLabel id="backlog-priority-filter">Priority:</FilterLabel>
               <StyledSelect
+                labelId="backlog-priority-filter"
                 value={filters.priority || ""}
                 onChange={(e) =>
                   setFilters({
                     ...filters,
-                    priority: e.target.value as TicketPriority,
+                    priority: e.target.value as TicketPriority
                   })
                 }
                 size="small"
@@ -120,8 +121,9 @@ const BoardHeader: React.FC<BoardHeaderProps> = ({
             </Box> */}
 
             <Box>
-              <FilterLabel>Type:</FilterLabel>
+              <FilterLabel id="backlog-type-filter">Type:</FilterLabel>
               <StyledSelect
+                labelId="backlog-type-filter"
                 value={filters.type || ""}
                 onChange={(e) =>
                   setFilters({ ...filters, type: e.target.value as TicketType })
@@ -161,13 +163,17 @@ const BoardHeader: React.FC<BoardHeaderProps> = ({
             </Box> */}
 
             <Box>
-              <FilterLabel>Blocked:</FilterLabel>
+              <FilterLabel id="backlog-blocked-filter">Blocked:</FilterLabel>
               <StyledSelect
+                labelId="backlog-blocked-filter"
                 value={filters.isBlocked?.toString() || ""}
                 onChange={(e) =>
                   setFilters({
                     ...filters,
-                    isBlocked: e.target.value === "true",
+                    isBlocked:
+                      e.target.value === ""
+                        ? undefined
+                        : e.target.value === "true"
                   })
                 }
                 size="small"
@@ -213,6 +219,7 @@ const BoardHeader: React.FC<BoardHeaderProps> = ({
               <ColumnToggleItem key={col.key}>
                 <Typography variant="body2">{col.label}</Typography>
                 <Switch
+                  inputProps={{ "aria-label": `Show ${col.label} column` }}
                   size="small"
                   checked={visibleColumns.includes(col.key)}
                   onChange={() => {

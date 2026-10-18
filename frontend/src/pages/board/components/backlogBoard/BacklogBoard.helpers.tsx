@@ -4,7 +4,7 @@ import { StateIndicator, TagChip } from "./BacklogBoard.styles";
 import {
   formatStatusName,
   getTypeIcon,
-  truncatedTitle,
+  truncatedTitle
 } from "../../../../helpers";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -40,8 +40,8 @@ export const renderCellContent = (
     case "state":
       return (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <StateIndicator statusColor={ticket.status.color} />
-          {ticket.status.name}
+          <StateIndicator statusColor={ticket.status?.color} />
+          {ticket.status?.name ?? "Unspecified"}
         </Box>
       );
     case "title":
@@ -50,12 +50,13 @@ export const renderCellContent = (
           {getTypeIcon(ticket.type)}
           <Button
             variant="text"
+            aria-label={ticket.title}
             sx={{
               color: "black",
               ":hover": {
                 background: "none",
-                textDecoration: "underline",
-              },
+                textDecoration: "underline"
+              }
             }}
             onClick={() => handleOpenEditTicket(ticket)}
           >
@@ -73,15 +74,20 @@ export const renderCellContent = (
     case "tags":
       return (
         ticket.tags &&
-        ticket.tags.map((tag) => <TagChip key={tag}>{tag}</TagChip>)
+        ticket.tags.map((tag) => <TagChip key={tag.id}>{tag.name}</TagChip>)
       );
     case "actions":
       return (
         <>
-          <IconButton onClick={() => handleOpenEditTicket(ticket)} size="small">
+          <IconButton
+            aria-label={`Edit ticket ${ticket.id}`}
+            onClick={() => handleOpenEditTicket(ticket)}
+            size="small"
+          >
             <EditIcon />
           </IconButton>
           <IconButton
+            aria-label={`Delete ticket ${ticket.id}`}
             onClick={() => handleOpenDeleteTicket(ticket)}
             size="small"
           >
@@ -100,9 +106,9 @@ export const renderCellContent = (
         ? new Date(ticket.dueDate).toLocaleDateString()
         : "No Date";
     case "estimatedHours":
-      return ticket.estimatedHours || "-";
+      return ticket.estimatedHours ?? "-";
     case "remainingHours":
-      return ticket.remainingHours || "-";
+      return ticket.remainingHours ?? "-";
     case "isBlocked":
       return ticket.isBlocked ? (
         <Chip size="small" color="error" label="Blocked" />
@@ -140,12 +146,13 @@ export const renderTaskCellContent = (
           {getTypeIcon(TicketType.TASK)}
           <Button
             variant="text"
+            aria-label={task.title}
             sx={{
               color: "black",
               ":hover": {
                 background: "none",
-                textDecoration: "underline",
-              },
+                textDecoration: "underline"
+              }
             }}
             onClick={() => handleOpenEditTask(task)}
           >
@@ -156,10 +163,18 @@ export const renderTaskCellContent = (
     case "actions":
       return (
         <>
-          <IconButton onClick={() => handleOpenEditTask(task)} size="small">
+          <IconButton
+            aria-label={`Edit task ${task.id}`}
+            onClick={() => handleOpenEditTask(task)}
+            size="small"
+          >
             <EditIcon />
           </IconButton>
-          <IconButton onClick={() => handleOpenDeleteTask(task)} size="small">
+          <IconButton
+            aria-label={`Delete task ${task.id}`}
+            onClick={() => handleOpenDeleteTask(task)}
+            size="small"
+          >
             <DeleteIcon color="error" />
           </IconButton>
         </>

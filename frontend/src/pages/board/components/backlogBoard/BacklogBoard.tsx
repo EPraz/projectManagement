@@ -6,6 +6,8 @@ import {
   TableHead,
   TableRow,
   IconButton,
+  TableCell,
+  Typography
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
@@ -15,20 +17,20 @@ import { LayoutContextProps, Task, Ticket } from "../../../../types";
 import {
   BoardContainer,
   StyledTableCell,
-  StyledTableRow,
+  StyledTableRow
 } from "./BacklogBoard.styles";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import { backlogColumns, initialBacklogColumns } from "../../../../constants";
 import {
   getColumnWidth,
   renderCellContent,
-  renderTaskCellContent,
+  renderTaskCellContent
 } from "./BacklogBoard.helpers";
+import { useTicket } from "../../../../context/ticketContext";
 
 const BacklogBoard = () => {
-  const outletContext = useOutletContext<LayoutContextProps>();
+  const { tickets } = useTicket();
   const {
-    localTickets,
     setSelectedTicket,
     // setOpenEditTicketDialog,
     // handleDeleteTicket,
@@ -37,8 +39,8 @@ const BacklogBoard = () => {
     // setOpenEditTaskDialog,
     setOpenDeleteTaskDialog,
     visibleColumns,
-    filters,
-  } = useMemo(() => outletContext, [outletContext]);
+    filters
+  } = useOutletContext<LayoutContextProps>();
   const [expandedTicketId, setExpandedTicketId] = useState<number | null>(null);
   const [, setSearchParams] = useSearchParams();
 
@@ -86,18 +88,18 @@ const BacklogBoard = () => {
 
       return indexA - indexB;
     });
-  }, [backlogColumns]);
+  }, []);
 
   const filteredTickets = useMemo(() => {
-    return localTickets
+    return tickets
       .filter((ticket) => {
         if (filters.priority && ticket.priority !== filters.priority)
           return false;
-        if (filters.status && ticket.status.name !== filters.status)
+        if (filters.status && ticket.status?.name !== filters.status)
           return false;
         if (
           filters.assignedUser &&
-          ticket.assignedUser !== filters.assignedUser
+          ticket.assignedTo !== filters.assignedUser.id
         )
           return false;
         if (filters.type && ticket.type !== filters.type) return false;
@@ -110,10 +112,15 @@ const BacklogBoard = () => {
         return true;
       })
       .sort((a, b) => a.order - b.order);
-  }, [localTickets]);
+  }, [tickets, filters]);
 
   return (
     <BoardContainer>
+      {!visibleColumns.length && (
+        <Typography sx={{ p: 2 }}>
+          Select a column from Column Options to view the backlog.
+        </Typography>
+      )}
       <TableContainer>
         <Table stickyHeader>
           <TableHead>
@@ -135,7 +142,7 @@ const BacklogBoard = () => {
                     className="header"
                     sx={{
                       flexGrow: column.key === "title" ? 2 : 1,
-                      width: getColumnWidth(column.key),
+                      width: getColumnWidth(column.key)
                     }}
                   >
                     {column.label}
@@ -144,6 +151,13 @@ const BacklogBoard = () => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {!filteredTickets.length && visibleColumns.length > 0 && (
+              <TableRow>
+                <TableCell colSpan={visibleColumns.length + 1}>
+                  No tickets match this sprint and its filters.
+                </TableCell>
+              </TableRow>
+            )}
             {filteredTickets.map((ticket) => (
               <React.Fragment key={ticket.id}>
                 {/* Ticket Row */}
@@ -153,6 +167,8 @@ const BacklogBoard = () => {
                     <StyledTableCell>
                       {ticket.tasks.length > 0 && (
                         <IconButton
+                          aria-label={`${expandedTicketId === ticket.id ? "Collapse" : "Expand"} tasks for ${ticket.title}`}
+                          aria-expanded={expandedTicketId === ticket.id}
                           onClick={() => toggleExpand(ticket.id)}
                           size="small"
                         >
@@ -189,7 +205,7 @@ const BacklogBoard = () => {
                       key={task.id}
                       sx={{
                         background: "#f9f9f9",
-                        "&:last-child td, &:last-child th": { border: 0 },
+                        "&:last-child td, &:last-child th": { border: 0 }
                       }}
                     >
                       {/* Columna de expansión */}

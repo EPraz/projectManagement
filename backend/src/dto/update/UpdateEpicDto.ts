@@ -1,4 +1,11 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class UpdateEpicDto {
   @IsString({ message: 'projectId must be a string' })
@@ -13,7 +20,11 @@ export class UpdateEpicDto {
   updatedBy: string;
 
   @IsString({ message: 'title must be a string' })
-  @IsOptional()
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  @ValidateIf((_object, value: unknown) => value !== undefined)
+  @IsNotEmpty()
   title?: string;
 
   @IsOptional()
@@ -23,4 +34,8 @@ export class UpdateEpicDto {
   @IsOptional()
   @IsString({ message: 'acceptanceCriteria must be a string' })
   acceptanceCriteria?: string;
+
+  @IsOptional()
+  @IsString()
+  statusId?: string;
 }
