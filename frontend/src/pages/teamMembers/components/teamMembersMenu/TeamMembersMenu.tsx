@@ -1,10 +1,10 @@
-import { Menu, MenuItem, Typography } from "@mui/material";
+import { Alert, Menu, MenuItem, Typography } from "@mui/material";
 import {
   Edit as EditIcon,
   PersonAdd as PersonAddIcon,
   Work as WorkIcon,
   PowerSettingsNew as PowerIcon,
-  Delete as DeleteIcon,
+  Delete as DeleteIcon
 } from "@mui/icons-material";
 import { TeamMembersMenuProps } from "../../../../types";
 
@@ -14,22 +14,26 @@ const TeamMembersMenu = ({
   selectedMember,
   handleRemoveFromProject,
   loading = false,
+  error
 }: TeamMembersMenuProps) => {
   return (
     <Menu
       anchorEl={anchorEl}
       open={Boolean(anchorEl)}
-      onClose={handleMenuClose}
+      onClose={() => {
+        if (!loading) handleMenuClose();
+      }}
       elevation={3}
       anchorOrigin={{
         vertical: "bottom",
-        horizontal: "right",
+        horizontal: "right"
       }}
       transformOrigin={{
         vertical: "top",
-        horizontal: "right",
+        horizontal: "right"
       }}
     >
+      {error && <Alert severity="error">{error}</Alert>}
       <MenuItem onClick={handleMenuClose} disabled>
         <EditIcon fontSize="small" sx={{ mr: 1 }} />
         <Typography>Edit Member</Typography>
@@ -45,7 +49,7 @@ const TeamMembersMenu = ({
       <MenuItem
         onClick={handleMenuClose}
         sx={{
-          color: selectedMember && "success.main",
+          color: selectedMember && "success.main"
         }}
         disabled
       >

@@ -11,7 +11,7 @@ const TeamMembersHeader = ({ setOpenDialog }: TeamMembersHeaderProps) => {
           Team Members
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Manage your team members and their roles <br />
+          Inspect your demo team and manage project membership.
         </Typography>
       </Box>
       <Button

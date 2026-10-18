@@ -1,7 +1,7 @@
 import {
   Edit as EditIcon,
   Delete as DeleteIcon,
-  InfoOutlined as InfoOutlinedIcon,
+  InfoOutlined as InfoOutlinedIcon
 } from "@mui/icons-material";
 import {
   ActionButton,
@@ -12,7 +12,7 @@ import {
   StyledTable,
   StyledTableContainer,
   TableBodyCell,
-  TableHeaderCell,
+  TableHeaderCell
 } from "../CapacityBoard.styles";
 import {
   Avatar,
@@ -24,10 +24,13 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography,
+  Typography
 } from "@mui/material";
 import { TeamMemberCapacity } from "../../../../../types";
-import { computePerDay, computeProgress } from "../CapacityBoard.helpers";
+import {
+  computeCompletedWork,
+  computeProgress
+} from "../CapacityBoard.helpers";
 import { getInitials } from "../../../../../helpers";
 
 type CapacityBoardTableProps = {
@@ -39,7 +42,7 @@ type CapacityBoardTableProps = {
 const CapacityBoardTable = ({
   teamMembers,
   handleOpenEditDialog,
-  handleOpenDeleteModal,
+  handleOpenDeleteModal
 }: CapacityBoardTableProps) => {
   return (
     <StyledTableContainer>
@@ -55,7 +58,7 @@ const CapacityBoardTable = ({
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "flex-end",
-                    gap: 0.5,
+                    gap: 0.5
                   }}
                 >
                   Capacity (hours)
@@ -68,14 +71,14 @@ const CapacityBoardTable = ({
                       sx={{
                         fontSize: 16,
                         color: "text.secondary",
-                        ml: 0.5,
+                        ml: 0.5
                       }}
                     />
                   </Tooltip>
                 </Box>
               </TableHeaderCell>
               <TableHeaderCell align="right">Days Off</TableHeaderCell>
-              <TableHeaderCell>Per Day</TableHeaderCell>
+              <TableHeaderCell>Completed work</TableHeaderCell>
               <TableHeaderCell>Progress</TableHeaderCell>
               <TableHeaderCell align="right">Actions</TableHeaderCell>
             </TableRow>
@@ -83,7 +86,7 @@ const CapacityBoardTable = ({
           <TableBody>
             {teamMembers.map((member) => {
               const progress = computeProgress(member);
-              const perDay = computePerDay(member);
+              const completedWork = computeCompletedWork(member);
               return (
                 <TableRow key={member.id} hover>
                   <TableBodyCell>
@@ -98,7 +101,7 @@ const CapacityBoardTable = ({
                           height: 36,
                           bgcolor: "secondary.main",
                           color: "white",
-                          fontWeight: "bold",
+                          fontWeight: "bold"
                         }}
                       >
                         {member.user ? getInitials(member.user.name) : ""}
@@ -120,7 +123,7 @@ const CapacityBoardTable = ({
                       sx={{
                         bgcolor: "primary.light",
                         color: "white",
-                        fontWeight: 500,
+                        fontWeight: 500
                       }}
                     />
                   </TableBodyCell>
@@ -139,7 +142,7 @@ const CapacityBoardTable = ({
                       size="small"
                       sx={{
                         minWidth: 30,
-                        bgcolor: "background.default",
+                        bgcolor: "background.default"
                       }}
                     />
                   </TableBodyCell>
@@ -149,7 +152,7 @@ const CapacityBoardTable = ({
                       fontWeight="medium"
                       sx={{ color: "secondary.main" }}
                     >
-                      {perDay.toFixed(1)}h
+                      {completedWork.toFixed(1)}h
                     </Typography>
                   </TableBodyCell>
                   <TableBodyCell>
@@ -159,7 +162,7 @@ const CapacityBoardTable = ({
                         value={progress}
                       />
                       <Typography variant="body2" color="text.secondary">
-                        {member.remainingWork}h
+                        {member.remainingWork}h remaining
                       </Typography>
                     </ProgressCell>
                   </TableBodyCell>

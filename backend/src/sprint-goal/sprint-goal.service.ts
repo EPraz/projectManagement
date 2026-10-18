@@ -8,7 +8,8 @@ import {
   UpdateSprintGoalDto,
 } from 'src/dto';
 import { Prisma } from '@prisma/client';
-import { SPRINT_GOAL_INCLUDE, SPRINT_INCLUDE } from 'src/constants';
+import { SPRINT_GOAL_INCLUDE } from 'src/constants';
+import { commitSprintChange } from '../helper/commitSprintChange';
 import { EventsGateway } from 'src/webSockets/events.gateway';
 
 @Injectable()
@@ -18,29 +19,6 @@ export class SprintGoalService {
     private eventsGateway: EventsGateway,
   ) {}
 
-  // All goal/checklist writers lock their sprint before any child row. The
-  // published full sprint snapshot therefore includes earlier committed changes
-  // to other goals, and shares the parent-first lock order of sprint deletion.
-  private async changeSprint<T>(
-    sprintId: string,
-    change: (tx: Prisma.TransactionClient) => Promise<T>,
-  ) {
-    const result = await this.prisma.$transaction(async (tx) => {
-      const locked = await tx.$queryRaw<
-        { id: string }[]
-      >`SELECT id FROM "Sprint" WHERE id = ${sprintId} FOR UPDATE`;
-      if (!locked.length) throw new NotFoundException('Sprint not found');
-      const value = await change(tx);
-      const sprint = await tx.sprint.findUniqueOrThrow({
-        where: { id: sprintId },
-        include: SPRINT_INCLUDE,
-      });
-      return { value, sprint };
-    });
-    this.eventsGateway.emitSprintUpdate(result.sprint);
-    return result.value;
-  }
-
   private async requireGoal(id: string) {
     const goal = await this.prisma.sprintGoal.findUnique({ where: { id } });
     if (!goal) throw new NotFoundException('Sprint Goal not found');
@@ -49,8 +27,11 @@ export class SprintGoalService {
 
   public async createGoal(data: CreateSprintGoalDto) {
     try {
-      return await this.changeSprint(data.sprintId, (tx) =>
-        tx.sprintGoal.create({ data, include: SPRINT_GOAL_INCLUDE }),
+      return await commitSprintChange(
+        this.prisma,
+        this.eventsGateway,
+        data.sprintId,
+        (tx) => tx.sprintGoal.create({ data, include: SPRINT_GOAL_INCLUDE }),
       );
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -74,12 +55,16 @@ export class SprintGoalService {
     try {
       const { id, ...data } = request;
       const goal = await this.requireGoal(id);
-      return await this.changeSprint(goal.sprintId, (tx) =>
-        tx.sprintGoal.update({
-          where: { id },
-          data,
-          include: SPRINT_GOAL_INCLUDE,
-        }),
+      return await commitSprintChange(
+        this.prisma,
+        this.eventsGateway,
+        goal.sprintId,
+        (tx) =>
+          tx.sprintGoal.update({
+            where: { id },
+            data,
+            include: SPRINT_GOAL_INCLUDE,
+          }),
       );
     } catch (error: unknown) {
       handlePrismaError(error);
@@ -89,10 +74,15 @@ export class SprintGoalService {
   public async deleteGoal(id: string) {
     try {
       const goal = await this.requireGoal(id);
-      return await this.changeSprint(goal.sprintId, async (tx) => {
-        await tx.sprintGoal.delete({ where: { id } });
-        return true;
-      });
+      return await commitSprintChange(
+        this.prisma,
+        this.eventsGateway,
+        goal.sprintId,
+        async (tx) => {
+          await tx.sprintGoal.delete({ where: { id } });
+          return true;
+        },
+      );
     } catch (error: unknown) {
       handlePrismaError(error);
     }
@@ -104,31 +94,36 @@ export class SprintGoalService {
     change: (tx: Prisma.TransactionClient) => Promise<T>,
   ) {
     const parent = await this.requireGoal(goalId);
-    return await this.changeSprint(parent.sprintId, async (tx) => {
-      const value = await change(tx);
-      const goal = await tx.sprintGoal.findUniqueOrThrow({
-        where: { id: goalId },
-        include: SPRINT_GOAL_INCLUDE,
-      });
-      const total = goal.goalTask.length;
-      const progress = total
-        ? Math.round(
-            (goal.goalTask.filter((task) => task.completed).length / total) *
-              100,
-          )
-        : 0;
-      const goalsStatus =
-        progress === 100
-          ? 'COMPLETED'
-          : goal.goalsStatus === 'COMPLETED'
-            ? 'IN_PROGRESS'
-            : goal.goalsStatus;
-      await tx.sprintGoal.update({
-        where: { id: goalId },
-        data: { progress, goalsStatus },
-      });
-      return value;
-    });
+    return await commitSprintChange(
+      this.prisma,
+      this.eventsGateway,
+      parent.sprintId,
+      async (tx) => {
+        const value = await change(tx);
+        const goal = await tx.sprintGoal.findUniqueOrThrow({
+          where: { id: goalId },
+          include: SPRINT_GOAL_INCLUDE,
+        });
+        const total = goal.goalTask.length;
+        const progress = total
+          ? Math.round(
+              (goal.goalTask.filter((task) => task.completed).length / total) *
+                100,
+            )
+          : 0;
+        const goalsStatus =
+          progress === 100
+            ? 'COMPLETED'
+            : goal.goalsStatus === 'COMPLETED'
+              ? 'IN_PROGRESS'
+              : goal.goalsStatus;
+        await tx.sprintGoal.update({
+          where: { id: goalId },
+          data: { progress, goalsStatus },
+        });
+        return value;
+      },
+    );
   }
 
   public async createGoalTask(data: CreateGoalTaskDto) {

@@ -2,14 +2,14 @@ import {
   CapacityMetric,
   Header,
   MetricLabel,
-  MetricValue,
+  MetricValue
 } from "../CapacityBoard.styles";
 import { Box, Button, Chip, Typography } from "@mui/material";
 import {
   Add as AddIcon,
   AccessTime as AccessTimeIcon,
   CalendarToday as CalendarTodayIcon,
-  WorkOutline as WorkOutlineIcon,
+  WorkOutline as WorkOutlineIcon
 } from "@mui/icons-material";
 import { Sprint, TeamMemberCapacity } from "../../../../../types";
 
@@ -26,7 +26,7 @@ const CapacityBoardHeader = ({
   totalCapacity,
   totalRemaining,
   teamMembers,
-  handleOpenAddDialog,
+  handleOpenAddDialog
 }: CapacityBoardHeaderProps) => {
   return (
     <Header>
@@ -45,7 +45,7 @@ const CapacityBoardHeader = ({
                   ml: 1,
                   bgcolor: "primary.main",
                   color: "white",
-                  fontWeight: 500,
+                  fontWeight: 500
                 }}
               />
             </>
@@ -57,7 +57,14 @@ const CapacityBoardHeader = ({
 
       {/* Summary metrics */}
       {teamMembers.length > 0 && (
-        <Box sx={{ display: "flex", gap: 2, mr: 4 }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 2,
+            mr: { xs: 0, md: 4 }
+          }}
+        >
           <CapacityMetric>
             <AccessTimeIcon color="secondary" />
             <Box>
@@ -95,8 +102,8 @@ const CapacityBoardHeader = ({
           fontWeight: 500,
           bgcolor: "primary.main",
           "&:hover": {
-            bgcolor: "primary.dark",
-          },
+            bgcolor: "primary.dark"
+          }
         }}
         onClick={handleOpenAddDialog}
         disabled={!sprint?.id}

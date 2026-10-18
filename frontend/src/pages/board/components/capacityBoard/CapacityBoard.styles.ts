@@ -5,7 +5,7 @@ import {
   Table,
   TableCell,
   Typography,
-  styled,
+  styled
 } from "@mui/material";
 
 // Primary color (60%) - Main UI elements
@@ -18,11 +18,13 @@ export const BoardContainer = styled(Box)(({ theme }) => ({
   gap: theme.spacing(3),
   height: "100%",
   padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.default,
+  backgroundColor: theme.palette.background.default
 }));
 
 export const Header = styled(Box)(({ theme }) => ({
   display: "flex",
+  flexWrap: "wrap",
+  gap: theme.spacing(2),
   justifyContent: "space-between",
   alignItems: "center",
   padding: theme.spacing(3),
@@ -30,6 +32,8 @@ export const Header = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   boxShadow: theme.shadows[1],
   borderLeft: `4px solid ${theme.palette.primary.main}`,
+  "& > *": { maxWidth: "100%", minWidth: 0 },
+  [theme.breakpoints.down("sm")]: { padding: theme.spacing(2) }
 }));
 
 export const StyledTableContainer = styled(Box)(({ theme }) => ({
@@ -42,27 +46,27 @@ export const StyledTableContainer = styled(Box)(({ theme }) => ({
   flexDirection: "column",
   "& .MuiTableContainer-root": {
     maxHeight: "calc(100vh - 280px)",
-    overflow: "auto",
+    overflow: "auto"
   },
   "& .MuiTableContainer-root::-webkit-scrollbar": {
     width: 8,
-    height: 8,
+    height: 8
   },
   "& .MuiTableContainer-root::-webkit-scrollbar-track": {
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.default
   },
   "& .MuiTableContainer-root::-webkit-scrollbar-thumb": {
     backgroundColor: theme.palette.grey[300],
     borderRadius: 4,
     "&:hover": {
-      backgroundColor: theme.palette.grey[400],
-    },
-  },
+      backgroundColor: theme.palette.grey[400]
+    }
+  }
 }));
 
 export const StyledTable = styled(Table)(() => ({
   borderCollapse: "separate",
-  borderSpacing: 0,
+  borderSpacing: 0
 }));
 
 export const TableHeaderCell = styled(TableCell)(({ theme }) => ({
@@ -74,31 +78,31 @@ export const TableHeaderCell = styled(TableCell)(({ theme }) => ({
   whiteSpace: "nowrap",
   position: "sticky",
   top: 0,
-  zIndex: 1,
+  zIndex: 1
 }));
 
 export const TableBodyCell = styled(TableCell)(({ theme }) => ({
   padding: theme.spacing(1.5, 2),
   borderBottom: `1px solid ${theme.palette.divider}`,
-  transition: "background-color 0.2s ease",
+  transition: "background-color 0.2s ease"
 }));
 
 export const MemberCell = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-  gap: theme.spacing(1.5),
+  gap: theme.spacing(1.5)
 }));
 
 export const MemberName = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
-  color: theme.palette.text.primary,
+  color: theme.palette.text.primary
 }));
 
 export const ProgressCell = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   gap: theme.spacing(2),
-  width: 180,
+  width: 180
 }));
 
 export const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
@@ -108,8 +112,8 @@ export const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
   backgroundColor: theme.palette.grey[200],
   "& .MuiLinearProgress-bar": {
     borderRadius: theme.shape.borderRadius,
-    backgroundImage: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`,
-  },
+    backgroundImage: `linear-gradient(90deg, ${theme.palette.secondary.main}, ${theme.palette.primary.main})`
+  }
 }));
 
 export const ActionButton = styled(IconButton)(({ theme }) => ({
@@ -118,11 +122,11 @@ export const ActionButton = styled(IconButton)(({ theme }) => ({
   height: 32,
   marginLeft: theme.spacing(0.5),
   "&:hover": {
-    backgroundColor: theme.palette.action.hover,
+    backgroundColor: theme.palette.action.hover
   },
   "& .MuiSvgIcon-root": {
-    fontSize: 18,
-  },
+    fontSize: 18
+  }
 }));
 
 export const EmptyStateContainer = styled(Box)(({ theme }) => ({
@@ -135,7 +139,7 @@ export const EmptyStateContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: theme.shape.borderRadius,
   border: `1px dashed ${theme.palette.divider}`,
-  margin: theme.spacing(2, 0),
+  margin: theme.spacing(2, 0)
 }));
 
 export const CapacityMetric = styled(Box)(({ theme }) => ({
@@ -149,17 +153,17 @@ export const CapacityMetric = styled(Box)(({ theme }) => ({
   transition: "transform 0.2s ease, box-shadow 0.2s ease",
   "&:hover": {
     transform: "translateY(-2px)",
-    boxShadow: theme.shadows[2],
-  },
+    boxShadow: theme.shadows[2]
+  }
 }));
 
 export const MetricValue = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
   fontSize: "1.25rem",
-  color: theme.palette.secondary.main,
+  color: theme.palette.secondary.main
 }));
 
 export const MetricLabel = styled(Typography)(({ theme }) => ({
   fontSize: "0.75rem",
-  color: theme.palette.text.secondary,
+  color: theme.palette.text.secondary
 }));

@@ -4,14 +4,20 @@ export const teamMemberCapacitySchema = yup.object({
   userId: yup.string().required("User is required"),
   capacity: yup
     .number()
+    .integer("Enter a whole number")
+    .max(2147483647, "Enter a smaller number")
     .required("Capacity is required")
     .min(1, "Capacity must be at least 1"),
   daysOff: yup
     .number()
+    .integer("Enter a whole number")
+    .max(2147483647, "Enter a smaller number")
     .required("Days Off is required")
     .min(0, "Days Off must be at least 0"),
   remainingWork: yup
     .number()
+    .integer("Enter a whole number")
+    .max(2147483647, "Enter a smaller number")
     .required("Remaining Work is required")
     .min(0, "Remaining Work must be at least 0")
     .test(
@@ -21,5 +27,5 @@ export const teamMemberCapacitySchema = yup.object({
         const { capacity } = this.parent;
         return value <= capacity;
       }
-    ),
+    )
 });

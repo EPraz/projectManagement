@@ -203,6 +203,9 @@ export class ProjectService {
     if (!project) {
       throw new NotFoundException('Project not found');
     }
+    if (!project.users.some((user) => user.id === userId)) {
+      throw new NotFoundException('User is not assigned to this project');
+    }
 
     const response = await this.prisma.project.update({
       where: { id: projectId },

@@ -1,18 +1,21 @@
-import { IsString, IsInt } from 'class-validator';
-
+import { IsString, IsInt, IsNotEmpty, Min, Max } from 'class-validator';
 export class CreateTeamMemberCapacityDto {
   @IsString()
+  @IsNotEmpty()
   userId: string;
-
   @IsString()
+  @IsNotEmpty()
   sprintId: string;
-
   @IsInt()
-  capacity: number; // Total de horas disponibles para el sprint
-
+  @Max(2147483647)
+  @Min(1)
+  capacity: number;
   @IsInt()
-  daysOff: number; // Número de días libres en el sprint
-
+  @Max(2147483647)
+  @Min(0)
+  daysOff: number;
   @IsInt()
-  remainingWork: number; // Horas de trabajo pendientes
+  @Max(2147483647)
+  @Min(0)
+  remainingWork: number;
 }

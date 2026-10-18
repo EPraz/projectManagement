@@ -2,7 +2,7 @@ import {
   MemberInfo,
   NoResultsContainer,
   StyledTableCell,
-  TableWrapper,
+  TableWrapper
 } from "../../TeamMembersPage.styles";
 import {
   Avatar,
@@ -15,16 +15,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
+  Typography
 } from "@mui/material";
 import {
   formatRoleName,
   getRoleColor,
-  getStatusColor,
+  getStatusColor
 } from "../../../../helpers";
 import {
   MoreVert as MoreVertIcon,
-  Close as CloseIcon,
+  Close as CloseIcon
 } from "@mui/icons-material";
 import { TeamMembersTableProps } from "../../../../types";
 
@@ -34,7 +34,7 @@ const TeamMembersTable = ({
   handleMenuClick,
   hasActiveFilters,
   searchQuery,
-  handleResetFilters,
+  handleResetFilters
 }: TeamMembersTableProps) => {
   return (
     <TableWrapper elevation={0}>
@@ -57,7 +57,7 @@ const TeamMembersTable = ({
                   hover
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
-                    transition: "background-color 0.2s",
+                    transition: "background-color 0.2s"
                   }}
                 >
                   <StyledTableCell>
@@ -74,7 +74,7 @@ const TeamMembersTable = ({
                           boxShadow: theme.shadows[2],
                           bgcolor: member.role
                             ? getRoleColor(member.role, theme)
-                            : undefined,
+                            : undefined
                         }}
                       />
                       <Box>
@@ -95,7 +95,7 @@ const TeamMembersTable = ({
                         sx={{
                           bgcolor: `${getRoleColor(member.role, theme)}14`,
                           color: getRoleColor(member.role, theme),
-                          fontWeight: 500,
+                          fontWeight: 500
                         }}
                       />
                     ) : (
@@ -105,7 +105,7 @@ const TeamMembersTable = ({
                         sx={{
                           bgcolor: theme.palette.grey[100],
                           color: theme.palette.grey[600],
-                          fontWeight: 500,
+                          fontWeight: 500
                         }}
                       />
                     )}
@@ -117,7 +117,7 @@ const TeamMembersTable = ({
                       sx={{
                         bgcolor: `${getStatusColor("Active", theme)}14`,
                         color: getStatusColor("Active", theme),
-                        fontWeight: 500,
+                        fontWeight: 500
                       }}
                     />
                   </StyledTableCell>
@@ -130,7 +130,7 @@ const TeamMembersTable = ({
                         sx={{
                           bgcolor: `${getRoleColor(member.role, theme)}14`,
                           color: getRoleColor(member.role, theme),
-                          fontWeight: 500,
+                          fontWeight: 500
                         }}
                       />
                     ))}
@@ -139,6 +139,7 @@ const TeamMembersTable = ({
                   <StyledTableCell align="right">
                     <IconButton
                       size="small"
+                      aria-label={`Actions for ${member.name}`}
                       onClick={(e) => handleMenuClick(e, member.id)}
                     >
                       <MoreVertIcon />

@@ -11,7 +11,10 @@ export type TeamMembersDialogProps = {
   openDialog: boolean;
   setOpenDialog: setOpenDialogType;
   loadingUsers: boolean;
-  availableUsers: User[];
+  availableUsers: Pick<User, "id" | "name" | "email">[];
+  catalogError: string | null;
+  mutationError: string | null;
+  onRetryUsers: () => Promise<void>;
   setSelectedUser: (value: React.SetStateAction<string | null>) => void;
   handleAddMember: () => Promise<void>;
   loadingCreateProjectUser: boolean;
@@ -36,6 +39,7 @@ export type TeamMembersMenuProps = {
   selectedMember: string | null;
   handleRemoveFromProject: () => Promise<void>;
   loading: boolean;
+  error: string | null;
 };
 export type TeamMembersHeaderProps = {
   setOpenDialog: setOpenDialogType;

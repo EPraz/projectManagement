@@ -1,4 +1,5 @@
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
@@ -10,7 +11,7 @@ import {
   MenuItem,
   Paper,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { TeamMembersDialogProps } from "../../../../types";
 
@@ -23,18 +24,23 @@ const TeamMembersDialog = ({
   handleAddMember,
   loadingCreateProjectUser,
   selectedUser,
+  catalogError,
+  mutationError,
+  onRetryUsers
 }: TeamMembersDialogProps) => {
   return (
     <Dialog
       open={openDialog}
-      onClose={() => setOpenDialog(false)}
+      onClose={() => {
+        if (!loadingCreateProjectUser) setOpenDialog(false);
+      }}
       maxWidth="sm"
       fullWidth
       PaperProps={{
         elevation: 3,
         sx: {
-          borderRadius: 2,
-        },
+          borderRadius: 2
+        }
       }}
     >
       <DialogTitle sx={{ borderBottom: 1, borderColor: "divider", px: 3 }}>
@@ -42,7 +48,24 @@ const TeamMembersDialog = ({
       </DialogTitle>
       <DialogContent sx={{ p: 3 }}>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-          {loadingUsers ? (
+          {mutationError && <Alert severity="error">{mutationError}</Alert>}
+          {catalogError ? (
+            <Alert
+              severity="error"
+              action={
+                <Button
+                  disabled={loadingUsers}
+                  onClick={() => {
+                    void onRetryUsers();
+                  }}
+                >
+                  Retry users
+                </Button>
+              }
+            >
+              {catalogError}
+            </Alert>
+          ) : loadingUsers ? (
             <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
               <CircularProgress />
             </Box>
@@ -51,7 +74,7 @@ const TeamMembersDialog = ({
               sx={{
                 p: 3,
                 textAlign: "center",
-                bgcolor: "background.default",
+                bgcolor: "background.default"
               }}
             >
               <Typography variant="body1" gutterBottom>
@@ -64,6 +87,10 @@ const TeamMembersDialog = ({
           ) : (
             <Autocomplete
               id="user-select"
+              disabled={loadingCreateProjectUser}
+              value={
+                availableUsers.find((user) => user.id === selectedUser) ?? null
+              }
               options={availableUsers}
               getOptionLabel={(option) => `${option.email} (${option.name})`}
               renderOption={(props, option) => (
@@ -93,11 +120,19 @@ const TeamMembersDialog = ({
         </Box>
       </DialogContent>
       <DialogActions sx={{ p: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
-        <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+        <Button
+          disabled={loadingCreateProjectUser}
+          onClick={() => setOpenDialog(false)}
+        >
+          Cancel
+        </Button>
         <Button
           variant="contained"
+          aria-label="Add Member"
+          aria-busy={loadingCreateProjectUser}
           onClick={handleAddMember}
           disabled={
+            Boolean(catalogError) ||
             loadingCreateProjectUser ||
             !selectedUser ||
             loadingUsers ||

@@ -4,7 +4,7 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -18,3 +18,8 @@ Type: task
 ## Comments
 
 2026-10-17: Owner approved the 16-ticket breakdown and blocking edges ("acepto"). Published from the approved quality/refactor proposal. Implementation has not started.
+
+2026-10-17: Claimed after ticket10 passed all60 retained browser journeys and independent re-review. Characterize existing membership and capacity controls, shared-state consumers and API associations. Preserve demo identity restrictions and existing hosted data.
+
+
+Bounded correction: capacity progress now reflects completed work; the existing table's invalid Per Day division by days off is replaced with Completed work from stored hours, retaining all writable capacity fields and adding no calendar/domain feature. Evidence includes a red25% versus expected75% browser regression.

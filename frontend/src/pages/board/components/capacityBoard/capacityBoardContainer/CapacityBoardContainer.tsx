@@ -1,63 +1,35 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 import { BoardContainer } from "../CapacityBoard.styles";
 import CapacityBoardHeader from "../capacityBoardHeader/CapacityBoardHeader";
 import CapacityBoardEmptyState from "../capacityBoardEmptyState/CapacityBoardEmptyState";
 import CapacityBoardTable from "../capacityBoardTable/CapacityBoardTable";
-import { useProject, useSprint } from "../../../../../context";
 import { TeamMemberCapacity, User } from "../../../../../types";
 import {
-  useCreateTeamMemberCapacity,
-  useDeleteTeamMemberCapacity,
-  useGetTeamMemberCapacities,
-  useUpdateTeamMemberCapacity,
-} from "../../../../../hooks";
-import {
-  createFormSubmitHandler,
-  deleteFormSubmitHandler,
-  editFormSubmitHandler,
-} from "../CapacityBoard.helpers";
+  useCapacityPlanning,
+  type CapacityDraft
+} from "../useCapacityPlanning";
 import {
   DeleteConfirmationModal,
   DialogForm,
-  Portal,
+  Portal
 } from "../../../../../components";
 import { teamMemberCapacitySchema } from "../../../../../validations";
 
-export type FormDataProps = {
-  userId: string;
-  capacity: number;
-  daysOff: number;
-  remainingWork: number;
-};
-
 const CapacityBoardContainer = () => {
-  const { project } = useProject();
-  const { sprint, updateListOfSprints } = useSprint();
-
-  const [teamMembers, setTeamMembers] = useState<TeamMemberCapacity[]>(
-    sprint?.teamMemberCapacities || []
-  );
-
-  // Hooks para API
-  const { getTeamMemberCapacities } = useGetTeamMemberCapacities();
-  const { createTeamMemberCapacity, loading: creatingCapacity } =
-    useCreateTeamMemberCapacity();
-  const { updateTeamMemberCapacity, loading: updatingCapacity } =
-    useUpdateTeamMemberCapacity();
-  const { deleteTeamMemberCapacity } = useDeleteTeamMemberCapacity();
-
+  const { project, sprint, teamMembers, save, remove, isSaving, isDeleting } =
+    useCapacityPlanning();
   // Estados para el diálogo (add/edit)
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [editingRecord, setEditingRecord] = useState<TeamMemberCapacity | null>(
     null
   );
 
-  const [formData, setFormData] = useState<FormDataProps>({
+  const [formData, setFormData] = useState<CapacityDraft>({
     userId: "",
     capacity: 0,
     daysOff: 0,
-    remainingWork: 0,
+    remainingWork: 0
   });
 
   // Estado para el modal de delete
@@ -65,16 +37,12 @@ const CapacityBoardContainer = () => {
   const [recordToDelete, setRecordToDelete] =
     useState<TeamMemberCapacity | null>(null);
 
-  // Cargar registros de capacidad para el sprint actual
-  const fetchCapacities = useCallback(async () => {
-    if (!sprint?.id) return;
-    const data = await getTeamMemberCapacities(sprint.id);
-    if (data) setTeamMembers(data);
-  }, [sprint?.id, getTeamMemberCapacities]);
-
   useEffect(() => {
-    fetchCapacities();
-  }, [sprint]);
+    setOpenDialog(false);
+    setEditingRecord(null);
+    setOpenDeleteModal(false);
+    setRecordToDelete(null);
+  }, [sprint?.id]);
 
   // Calcular usuarios disponibles: de los usuarios del proyecto, excluir los que ya tienen capacidad
   const availableUsers = useMemo(() => {
@@ -96,7 +64,7 @@ const CapacityBoardContainer = () => {
       userId: record.userId,
       capacity: record.capacity,
       daysOff: record.daysOff,
-      remainingWork: record.remainingWork,
+      remainingWork: record.remainingWork
     });
     setOpenDialog(true);
   };
@@ -107,29 +75,7 @@ const CapacityBoardContainer = () => {
   };
 
   // Handler para enviar el formulario (create o update)
-  const handleFormSubmit = async (data: typeof formData) => {
-    if (editingRecord) {
-      await editFormSubmitHandler(
-        editingRecord,
-        data,
-        updateTeamMemberCapacity,
-        setTeamMembers,
-        updateListOfSprints,
-        handleCloseDialog,
-        teamMembers,
-        sprint
-      );
-    } else {
-      await createFormSubmitHandler(
-        data,
-        createTeamMemberCapacity,
-        setTeamMembers,
-        updateListOfSprints,
-        handleCloseDialog,
-        sprint
-      );
-    }
-  };
+  const handleFormSubmit = (data: CapacityDraft) => save(editingRecord, data);
 
   // Handler para borrar un registro
   const handleOpenDeleteModal = (record: TeamMemberCapacity) => {
@@ -137,17 +83,7 @@ const CapacityBoardContainer = () => {
     setOpenDeleteModal(true);
   };
 
-  const handleConfirmDelete = async () => {
-    await deleteFormSubmitHandler(
-      deleteTeamMemberCapacity,
-      recordToDelete,
-      setTeamMembers,
-      sprint,
-      updateListOfSprints,
-      setOpenDeleteModal,
-      setRecordToDelete
-    );
-  };
+  const handleConfirmDelete = () => remove(recordToDelete);
 
   // Calculate summary metrics
   const totalCapacity = useMemo(
@@ -187,6 +123,7 @@ const CapacityBoardContainer = () => {
         <Portal>
           <DialogForm
             open={openDialog}
+            key={`${sprint?.id}:${editingRecord?.id ?? "new"}`}
             onClose={handleCloseDialog}
             onSubmit={handleFormSubmit}
             schema={teamMemberCapacitySchema}
@@ -196,7 +133,7 @@ const CapacityBoardContainer = () => {
                 ? "Edit Team Member Capacity"
                 : "Add Team Member Capacity"
             }
-            disabled={creatingCapacity || updatingCapacity}
+            disabled={isSaving(editingRecord?.id)}
             fieldConfig={{
               userId: {
                 label: "User",
@@ -212,20 +149,20 @@ const CapacityBoardContainer = () => {
                         label:
                           project?.users.find(
                             (u: User) => u.id === editingRecord.userId
-                          )?.name || "Unknown",
-                      },
+                          )?.name || "Unknown"
+                      }
                     ]
                   : availableUsers.map((u: User) => ({
                       value: u.id,
-                      label: `${u.name} (${u.email})`,
-                    })),
+                      label: `${u.name} (${u.email})`
+                    }))
               },
               capacity: { label: "Capacity (hours)", type: "number" },
               daysOff: { label: "Days Off", type: "number" },
               remainingWork: {
                 label: "Remaining Work (hours)",
-                type: "number",
-              },
+                type: "number"
+              }
             }}
           />
         </Portal>
@@ -237,6 +174,8 @@ const CapacityBoardContainer = () => {
             onClose={() => setOpenDeleteModal(false)}
             onConfirm={handleConfirmDelete}
             itemName={recordToDelete?.user?.name || "this record"}
+            itemKey={recordToDelete?.id}
+            disabled={isDeleting(recordToDelete?.id)}
           />
         </Portal>
       )}

@@ -275,6 +275,253 @@ describe('Acceso demo HTTP API', () => {
     );
   }, 30000);
 
+  it('validates project membership removals and preserves confirmed user lists', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const users = await request(app.getHttpServer())
+      .get('/users')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const outsider = (users.body as { id: string }[]).find(
+      (user) => user.id !== demoId,
+    )!;
+    const project = await request(app.getHttpServer())
+      .post('/projects')
+      .auth(token, { type: 'bearer' })
+      .send({
+        title: 'Isolated membership removal fixture',
+        description: 'Temporary HTTP fixture',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    try {
+      await request(app.getHttpServer())
+        .delete(`/projects/${idOf(project)}/users/missing`)
+        .auth(token, { type: 'bearer' })
+        .expect(404);
+      await request(app.getHttpServer())
+        .delete(`/projects/${idOf(project)}/users/${outsider.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(404);
+      await request(app.getHttpServer())
+        .post(`/projects/${idOf(project)}/users/missing`)
+        .auth(token, { type: 'bearer' })
+        .expect(404);
+      await request(app.getHttpServer())
+        .post(`/projects/${idOf(project)}/users/${outsider.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(201);
+      await request(app.getHttpServer())
+        .post(`/projects/${idOf(project)}/users/${outsider.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(409);
+      const removed = await request(app.getHttpServer())
+        .delete(`/projects/${idOf(project)}/users/${outsider.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(removed.body).toEqual([expect.objectContaining({ id: demoId })]);
+      const saved = await request(app.getHttpServer())
+        .get(`/projects/${idOf(project)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect((saved.body as { users: { id: string }[] }).users).toEqual([
+        expect.objectContaining({ id: demoId }),
+      ]);
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/projects/${idOf(project)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
+  it('validates capacity numbers, duplicates and missing scope without partial changes', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const project = await request(app.getHttpServer())
+      .post('/projects')
+      .auth(token, { type: 'bearer' })
+      .send({
+        title: 'Isolated numeric capacity fixture',
+        description: 'Temporary HTTP fixture',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    try {
+      const sprint = await request(app.getHttpServer())
+        .post('/sprints')
+        .auth(token, { type: 'bearer' })
+        .send({
+          projectId: idOf(project),
+          name: 'Numeric capacity sprint',
+          startDate: '2026-10-17T00:00:00Z',
+          endDate: '2026-10-31T00:00:00Z',
+          createdBy: 'visitor@demo.example',
+        })
+        .expect(201);
+      const valid = {
+        sprintId: idOf(sprint),
+        userId: demoId,
+        capacity: 40,
+        daysOff: 1,
+        remainingWork: 20,
+      };
+      for (const invalid of [
+        { capacity: 2147483648 },
+        { capacity: 0 },
+        { capacity: -1 },
+        { capacity: 1.5 },
+        { daysOff: -1 },
+        { daysOff: 0.5 },
+        { remainingWork: -1 },
+        { remainingWork: 41 },
+        { daysOff: 2147483648 },
+        { remainingWork: 2147483648 },
+        { capacity: null },
+      ]) {
+        await request(app.getHttpServer())
+          .post('/team-member-capacities')
+          .auth(token, { type: 'bearer' })
+          .send({ ...valid, ...invalid })
+          .expect(400);
+      }
+      await request(app.getHttpServer())
+        .get('/team-member-capacities?sprintId=first&sprintId=second')
+        .auth(token, { type: 'bearer' })
+        .expect(400);
+      await request(app.getHttpServer())
+        .get('/team-member-capacities')
+        .auth(token, { type: 'bearer' })
+        .expect(400);
+      await request(app.getHttpServer())
+        .get('/team-member-capacities?sprintId=missing')
+        .auth(token, { type: 'bearer' })
+        .expect(404);
+      await request(app.getHttpServer())
+        .post('/team-member-capacities')
+        .auth(token, { type: 'bearer' })
+        .send({ ...valid, userId: 'missing' })
+        .expect(404);
+      const parallel = await Promise.all(
+        [1, 2].map(() =>
+          request(app.getHttpServer())
+            .post('/team-member-capacities')
+            .auth(token, { type: 'bearer' })
+            .send(valid),
+        ),
+      );
+      expect(parallel.map((response) => response.status).sort()).toEqual([
+        201, 409,
+      ]);
+      const created = parallel.find((response) => response.status === 201)!;
+      for (const invalid of [
+        { capacity: 2147483648 },
+        { capacity: 10 },
+        { daysOff: -1 },
+        { remainingWork: 41 },
+        { daysOff: 2147483648 },
+        { remainingWork: 2147483648 },
+        { capacity: null },
+        { sprintId: 'missing' },
+        { userId: 'missing' },
+      ]) {
+        await request(app.getHttpServer())
+          .patch(`/team-member-capacities/${idOf(created)}`)
+          .auth(token, { type: 'bearer' })
+          .send(invalid)
+          .expect(400);
+      }
+      const saved = await request(app.getHttpServer())
+        .get(`/team-member-capacities/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(saved.body).toMatchObject(valid);
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/projects/${idOf(project)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
+  it('requires a sprint capacity user to belong to its project before saving', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const users = await request(app.getHttpServer())
+      .get('/users')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const outsider = (users.body as { id: string }[]).find(
+      (user) => user.id !== demoId,
+    )!;
+    const project = await request(app.getHttpServer())
+      .post('/projects')
+      .auth(token, { type: 'bearer' })
+      .send({
+        title: 'Isolated capacity membership fixture',
+        description: 'Temporary HTTP fixture',
+        createdBy: 'visitor@demo.example',
+      })
+      .expect(201);
+    try {
+      const sprint = await request(app.getHttpServer())
+        .post('/sprints')
+        .auth(token, { type: 'bearer' })
+        .send({
+          projectId: idOf(project),
+          name: 'Membership capacity sprint',
+          startDate: '2026-10-17T00:00:00Z',
+          endDate: '2026-10-31T00:00:00Z',
+          createdBy: 'visitor@demo.example',
+        })
+        .expect(201);
+      const data = {
+        sprintId: idOf(sprint),
+        userId: outsider.id,
+        capacity: 40,
+        daysOff: 1,
+        remainingWork: 20,
+      };
+      await request(app.getHttpServer())
+        .post('/team-member-capacities')
+        .auth(token, { type: 'bearer' })
+        .send(data)
+        .expect(400);
+      const empty = await request(app.getHttpServer())
+        .get(`/team-member-capacities?sprintId=${idOf(sprint)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(empty.body).toEqual([]);
+      await request(app.getHttpServer())
+        .post(`/projects/${idOf(project)}/users/${outsider.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(201);
+      const capacity = await request(app.getHttpServer())
+        .post('/team-member-capacities')
+        .auth(token, { type: 'bearer' })
+        .send(data)
+        .expect(201);
+      expect(capacity.body).toMatchObject(data);
+      expect(JSON.stringify(capacity.body)).not.toMatch(
+        /password|refreshToken/,
+      );
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/projects/${idOf(project)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
   it('rejects malformed planning values and missing parents without changing persisted goals', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

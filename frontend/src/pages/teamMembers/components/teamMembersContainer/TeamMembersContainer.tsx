@@ -1,18 +1,11 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Container } from "../../TeamMembersPage.styles";
-import { useProject } from "../../../../context";
-import { User } from "../../../../types";
 import { Role } from "../../../../constants";
-import {
-  useCreateProjectUser,
-  useDebounce,
-  useDeleteProjectUser,
-  useLoadUsers,
-} from "../../../../hooks";
+import { useDebounce } from "../../../../hooks/useDebounce";
+import { useTeamMembers } from "../../useTeamMembers";
 import TeamMembersSearchBar from "../teamMembersSearchBar/TeamMembersSearchBar";
 import TeamMembersTable from "../teamMembersTable/TeamMembersTable";
 import { useTheme } from "@mui/material";
-import { addMembersHandler } from "../../teamMembers.helpers";
 import TeamMembersHeader from "../teamMembersHeader/TeamMembersHeader";
 import { Portal } from "../../../../components";
 import TeamMembersMenu from "../teamMembersMenu/TeamMembersMenu";
@@ -20,19 +13,21 @@ import TeamMembersDialog from "../teamMembersDialog/TeamMembersDialog";
 
 const TeamMembersContainer = () => {
   const theme = useTheme();
-  const { project, setProject } = useProject();
-  const { loadUsers, loading: loadingUsers } = useLoadUsers();
-  const { createProjectUser, loading: loadingCreateProjectUser } =
-    useCreateProjectUser();
-  const { deleteProjectUser, loading: loadingDeleteProjectUser } =
-    useDeleteProjectUser();
-
-  const [members, setMembers] = useState<User[]>(project?.users || []);
+  const {
+    members,
+    allUsers,
+    loadingUsers,
+    catalogError,
+    mutationError,
+    loadUsers,
+    addMember,
+    removeMember,
+    isPending
+  } = useTeamMembers();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [allUsers, setAllUsers] = useState<User[]>([]);
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
@@ -47,7 +42,7 @@ const TeamMembersContainer = () => {
     roles: Object.values(Role).reduce(
       (acc, role) => ({ ...acc, [role]: false }),
       {} as Record<string, boolean>
-    ),
+    )
   });
   const [tempFilters, setTempFilters] = useState({
     name: "",
@@ -55,46 +50,20 @@ const TeamMembersContainer = () => {
     roles: Object.values(Role).reduce(
       (acc, role) => ({ ...acc, [role]: false }),
       {} as Record<string, boolean>
-    ),
+    )
   });
 
-  // Load all available users
-  useEffect(() => {
-    // const fetchUsers = async () => {
-    //   const data = await loadUsers();
-    //   setAllUsers(data);
-    // };
-    // fetchUsers();
-    setMembers(project?.users || []);
-  }, [project]);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const data = await loadUsers();
-      setAllUsers(data);
-    };
-    fetchUsers();
-  }, []);
-
-  // Function to add a member to the project
-  const handleAddMember = useCallback(async () => {
-    await addMembersHandler(
-      selectedUser,
-      allUsers,
-      project,
-      // setProject,
-      createProjectUser,
-      setMembers,
-      setSelectedUser,
-      setOpenDialog
-    );
-  }, [selectedUser, allUsers, createProjectUser, project?.id, setProject]);
-
+  const handleAddMember = async () => {
+    if (await addMember(selectedUser)) {
+      setSelectedUser(null);
+      setOpenDialog(false);
+    }
+  };
   const handleRemoveFromProject = async () => {
-    if (!selectedMember) return;
-    const user = allUsers.find((u) => u.id === selectedMember);
-    if (!user || !project?.id) return;
-    await deleteProjectUser(user.id, project?.id);
+    if (await removeMember(selectedMember)) {
+      setAnchorEl(null);
+      setSelectedMember(null);
+    }
   };
 
   // Get available users (not already in the project)
@@ -184,7 +153,7 @@ const TeamMembersContainer = () => {
       roles: Object.values(Role).reduce(
         (acc, role) => ({ ...acc, [role]: false }),
         {} as Record<string, boolean>
-      ),
+      )
     };
     setTempFilters(resetFilters);
     setFilters(resetFilters);
@@ -196,8 +165,8 @@ const TeamMembersContainer = () => {
       ...prev,
       roles: {
         ...prev.roles,
-        [role]: !prev.roles[role],
-      },
+        [role]: !prev.roles[role]
+      }
     }));
   };
 
@@ -255,7 +224,8 @@ const TeamMembersContainer = () => {
             handleMenuClose={handleMenuClose}
             selectedMember={selectedMember}
             handleRemoveFromProject={handleRemoveFromProject}
-            loading={loadingDeleteProjectUser}
+            loading={isPending(selectedMember)}
+            error={mutationError}
           />
         </Portal>
       )}
@@ -265,7 +235,10 @@ const TeamMembersContainer = () => {
           <TeamMembersDialog
             availableUsers={availableUsers}
             handleAddMember={handleAddMember}
-            loadingCreateProjectUser={loadingCreateProjectUser}
+            loadingCreateProjectUser={isPending(selectedUser)}
+            catalogError={catalogError}
+            mutationError={mutationError}
+            onRetryUsers={loadUsers}
             loadingUsers={loadingUsers}
             openDialog={openDialog}
             selectedUser={selectedUser}

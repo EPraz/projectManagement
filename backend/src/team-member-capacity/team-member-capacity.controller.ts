@@ -13,6 +13,7 @@ import { TeamMemberCapacityService } from './team-member-capacity.service';
 import { TeamMemberCapacity } from '@prisma/client';
 import {
   CreateTeamMemberCapacityDto,
+  GetAllTeamMemberCapacitiesDto,
   UpdateTeamMemberCapacityDto,
 } from 'src/dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -35,13 +36,9 @@ export class TeamMemberCapacityController {
   // Obtener registros según el sprint
   @Get()
   async findAll(
-    @Query('sprintId') sprintId: string,
+    @Query() query: GetAllTeamMemberCapacitiesDto,
   ): Promise<TeamMemberCapacity[]> {
-    if (sprintId) {
-      return await this.teamMemberCapacityService.findAllBySprint(sprintId);
-    }
-    // Si no se proporciona sprintId, se podría devolver un error o todos los registros
-    throw new Error('sprintId query parameter is required');
+    return await this.teamMemberCapacityService.findAllBySprint(query.sprintId);
   }
 
   @Get(':id')
