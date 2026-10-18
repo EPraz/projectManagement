@@ -13,7 +13,7 @@ Evidence date: **2026-10-18**. This is scoped verification of the delivered port
 | Video | 182.56s; 1920×1080; H.264/yuv420p, 25fps, no audio, fast-start. Full decode; chronological review every two seconds; full-resolution collaboration/mobile key frames. 17 chapters and 21 English captions match the transcript. [Media evidence](../.scratch/portfolio-presentation/evidence/05-video.md), [hash/metadata](../.scratch/portfolio-presentation/evidence/05-video.json). |
 | Public viewer implementation | Retained browser journeys cover anonymous entry, unavailable API, expired/existing cookies, preserved session, native playback/seek/fullscreen, keyboard chapters, 390/1440px in both themes, remembered preference, media error/retry and HTTP byte-range/caption/transcript delivery. Full suite completion is recorded below. A separate static production review also covers320/768/1024/1440px in both themes, with no API calls, overflow or browser exceptions. |
 
-The video records application source `fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d`, matching the shipped redesigned workspace. Presentation/routing changes are subsequent local commits reviewed against the owner-confirmed base `2339dbc`. Capture and eventual publication revisions must not be conflated.
+The base footage records application source `fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d`; its Taskboard block was subsequently re-recorded at `2617324` for owner-requested ticket-layout feedback. Eleven other encoded shots are unchanged; Team only has its opening transition held on its own ready frame. See the [partial-retake evidence](../.scratch/portfolio-presentation/evidence/06-taskboard-feedback.md). Presentation/routing changes are subsequent local commits reviewed against the owner-confirmed base `2339dbc`. Capture and eventual publication revisions must not be conflated.
 
 ## Automated checks
 
@@ -36,3 +36,8 @@ After approval and deployment to the existing Vercel hosting, record the exact p
 5. No visitor data was reset or changed for publication.
 
 Do not resolve publication solely because local checks passed. The static video/viewer work independently of Render, while joining the interactive demo can still incur its free-service wake-up delay.
+
+
+## Owner Taskboard feedback — subsequent focused verification
+
+The compact ticket summary and actual partial retake pass typecheck/lint/builds,80frontend tests/12snapshots,16Taskboard/bulk browser journeys and9viewer journeys. Layout captures cover320–1440px and both themes. The composite remains182.56s, with unchanged chapters/captions, full decode and inspected join/paused/fullscreen frames. Its hash matches the locally served build. The280-journey run above predates this small UI adjustment; these subsequent focused checks are not represented as another full run. No backend code, schema or dependencies changed. Publication still awaits owner approval.

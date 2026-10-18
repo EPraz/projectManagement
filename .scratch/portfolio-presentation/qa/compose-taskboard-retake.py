@@ -42,11 +42,16 @@ def compose(base, retake):
         else:
             shot = base / "edit" / f"{index:02}-{scene['id']}.mp4"
             scene["reuseEncoded"] = {"file": os.path.relpath(shot, destination), "sha256": hashlib.sha256(shot.read_bytes()).hexdigest()}
+            if scene["id"] == "team":
+                # The original opening briefly showed the old board. Hold its first
+                # ready Team frame instead; no re-recording or fabricated content.
+                scene["frameHolds"] = [{"first": 0, "last": 44, "replace": 45}]
+
     manifest["sourceRevisions"] = [
         {"commit": original["applicationCommit"], "take": base.name, "scenes": [s["id"] for s in original["scenes"] if s["id"] not in SCENES]},
         {"commit": partial["applicationCommit"], "take": retake.name, "scenes": [s["id"] for s in partial["scenes"]]},
     ]
-    manifest["partialRetake"] = {"start": 60.2, "end": 104.32, "baseTake": base.name, "retake": retake.name, "preservedEncodedShots": 12}
+    manifest["partialRetake"] = {"start": 60.2, "end": 104.32, "baseTake": base.name, "retake": retake.name, "preservedEncodedShots": 11, "transitionCleanup": "Team opening 1.8s held on its actual first ready frame; remaining Team footage preserved"}
     (destination / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     (RECORDING / "latest-edit.json").write_text(json.dumps({"output": str(destination)}, indent=2) + "\n", encoding="utf-8")
     print(destination)

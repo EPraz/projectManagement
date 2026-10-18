@@ -158,6 +158,7 @@ def render(take):
             if hashlib.sha256(source.read_bytes()).hexdigest() != scene["reuseEncoded"]["sha256"]:
                 raise ValueError("Preserved shot differs from the reviewed base edit.")
             shutil.copy2(source, output)
+            apply_frame_holds(output, scene.get("frameHolds", []))
             print(f"Preserving original encoded shot: {scene['id']}", flush=True)
             elapsed += seconds
             continue
@@ -201,7 +202,7 @@ def render(take):
     if manifest.get("sourceRevisions"):
         report["sourceRevisions"] = manifest["sourceRevisions"]
         report["partialRetake"] = manifest["partialRetake"]
-        report["preservedShots"] = [{"id": scene["id"], "sha256": scene["reuseEncoded"]["sha256"]} for scene in manifest["scenes"] if scene.get("reuseEncoded")]
+        report["preservedShots"] = [{"id": scene["id"], "sha256": scene["reuseEncoded"]["sha256"]} for scene in manifest["scenes"] if scene.get("reuseEncoded") and not scene.get("frameHolds")]
     (take / "render-report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     story = []
     for chapter, scene in zip(chapters, manifest["scenes"]):

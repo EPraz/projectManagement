@@ -27,11 +27,19 @@
   "publication": "owner approval pending; not pushed/deployed/uploaded",
   "finalViewer": {
     "passed": 9,
-    "seconds": 11.3,
+    "seconds": 12.1,
     "production": true,
     "strongerCookieFixture": "actual jwt name; expired/untrusted payload",
-    "exportSha256": "ba1ea7fad4dac5a94521630219703a5250aa369af5355c6a8ce8ecfe0bac6ece",
+    "exportSha256": "3cf48b72c5dd56c251f7f7ea1c0764d6e764b76b27cf0c1ffdc1195b0fd31e57",
     "servedBuildMatchesReviewedFile": true,
     "pausedFullscreenVisualReview": "passed"
+  },
+  "ownerTaskboardFeedback": {
+    "applicationCommit": "2617324f1f2f3447148435bc5f436bb55611f270",
+    "taskboardJourneys": 16,
+    "frontendTests": 80,
+    "snapshots": 12,
+    "viewerJourneys": 9,
+    "evidence": "06-taskboard-feedback.json"
   }
 }

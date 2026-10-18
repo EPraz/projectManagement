@@ -35,3 +35,8 @@ All authorized local implementation is ready: README/screenshots, actual final M
 Owner review server: `http://127.0.0.1:64998/walkthrough` (owned production runtime; safe origin/PID stored only in ignored `recording/runtime.json`). Review artifact: `frontend/public/walkthrough/project-management-walkthrough.mp4`,182.56s/1080p/25fps/silent,5,228,724bytes. Raw sources preserved locally. Capture revisionfa754a8; publication revision still absent. All commits remain local.
 
 Status needs-info means **explicit owner approval of the finished video before publication**, as requested in the latest implement instruction. No remaining implementation question. Do not push/deploy/upload until that approval arrives. Then publish this exact reviewed package via existing GitHub/Vercel flow, verify the actual hosted URLs/content types/byte ranges/native playback/downloads and README links, record the publication commit, and resolve the final two acceptance criteria. Do not reset/change Neon visitor data. Existing backend needs no presentation change.
+
+
+### Owner feedback incorporated
+
+The owner requested correcting the ticket cell visible at1:05 and re-recording only that part. Compact ticket design and five real scenes (1:00.20–1:44.32) are complete, with a cleaned join into the original Team footage.80frontend tests/12snapshots,16Taskboard/bulk and9viewer journeys pass; full decode/hash/visual joins pass. README Taskboard screenshot updated. [Evidence](../evidence/06-taskboard-feedback.md). Current review server: `http://127.0.0.1:61758/walkthrough`. Publication remains needs-info solely for explicit owner approval and subsequent hosted delivery.

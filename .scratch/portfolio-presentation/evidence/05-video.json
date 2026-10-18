@@ -1,13 +1,13 @@
 {
-  "applicationCommit": "fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d",
-  "origin": "http://127.0.0.1:56731",
+  "applicationCommit": "2617324f1f2f3447148435bc5f436bb55611f270",
+  "origin": "http://127.0.0.1:61758",
   "duration": 182.56,
   "size": [
     1920,
     1080
   ],
   "fps": 25.0,
-  "bytes": 5228724,
+  "bytes": 5175291,
   "audio": "none; English captions are embedded",
   "checks": {
     "database": "project_management_presentation",
@@ -29,14 +29,14 @@
           "ticketId": 7,
           "statusId": "5af4ba7d-3400-4e74-9c0d-8dda48ff60d9",
           "taskStatusId": "87d1c0c2-9e7e-4b16-bf4d-a72847da0642",
-          "at": 73.94447829999999
+          "at": 16.2432733
         },
         {
           "event": "ticketUpdated",
           "ticketId": 7,
           "statusId": "5af4ba7d-3400-4e74-9c0d-8dda48ff60d9",
           "taskStatusId": "df67c0c5-b784-4637-9bd1-7a0bccf21bdf",
-          "at": 84.6078704
+          "at": 27.4539987
         }
       ],
       "observerReloads": 0,
@@ -157,8 +157,93 @@
     "frontend/public/walkthrough/project-management-walkthrough.vtt",
     "frontend/public/walkthrough/poster.jpg"
   ],
-  "sha256": "ba1ea7fad4dac5a94521630219703a5250aa369af5355c6a8ce8ecfe0bac6ece",
+  "sourceRevisions": [
+    {
+      "commit": "fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d",
+      "take": "take-1792340777018",
+      "scenes": [
+        "entry",
+        "overview",
+        "hierarchy",
+        "backlog",
+        "details",
+        "team",
+        "capacity",
+        "goals",
+        "retrospective",
+        "mobile",
+        "appearance",
+        "close"
+      ]
+    },
+    {
+      "commit": "2617324f1f2f3447148435bc5f436bb55611f270",
+      "take": "taskboard-retake-1792344128638",
+      "scenes": [
+        "taskboard",
+        "ticket-state",
+        "live-ticket",
+        "task-move",
+        "live-task"
+      ]
+    }
+  ],
+  "partialRetake": {
+    "start": 60.2,
+    "end": 104.32,
+    "baseTake": "take-1792340777018",
+    "retake": "taskboard-retake-1792344128638",
+    "preservedEncodedShots": 11,
+    "transitionCleanup": "Team opening 1.8s held on its actual first ready frame; remaining Team footage preserved"
+  },
+  "preservedShots": [
+    {
+      "id": "entry",
+      "sha256": "d83433f7ed8c1e89afa4310acf46ba2838cacb66e0b35ff5edbfd5688ebe6185"
+    },
+    {
+      "id": "overview",
+      "sha256": "6a967312018d7c064addd4c07a1e1efea019600ec47628e2477c286660d3f602"
+    },
+    {
+      "id": "hierarchy",
+      "sha256": "9818d178e1e58ab55a7e305cd7c860a2111832e0592c7754cfc1df003f94719f"
+    },
+    {
+      "id": "backlog",
+      "sha256": "f10166e4caf8f66c4a530dcc283e0f385132dd50b7f57647c24d81f289bd21cb"
+    },
+    {
+      "id": "details",
+      "sha256": "7122d7889b53e6dd3ebe05ab605fce94c880cd69f715a2a29280bc56b1b4c963"
+    },
+    {
+      "id": "capacity",
+      "sha256": "e84d533f09f385ffc084618201e0870e84e1707cc545ac4f0be212c521143e8e"
+    },
+    {
+      "id": "goals",
+      "sha256": "16e1c94aa823dee9b44eb729f646db185edf4900f149a6b7321d6b3c16b9154d"
+    },
+    {
+      "id": "retrospective",
+      "sha256": "741b9d9e4fdcfb7edfce4b301de9e7e86b7470c5c3193e5cb9981876a7e5b33a"
+    },
+    {
+      "id": "mobile",
+      "sha256": "bf52b179c63b4c4b2a853c46250f46cddd575f475868b189526a6ced845c2a62"
+    },
+    {
+      "id": "appearance",
+      "sha256": "43e51f235f2fa4cf401e411e904722bbf3f4319b3c3bb7345d72eec32fb74d36"
+    },
+    {
+      "id": "close",
+      "sha256": "631c27da3234f9eea6b7255c40c65a9f1aafa37cc0f7bb930dbb62251652adab"
+    }
+  ],
+  "sha256": "3cf48b72c5dd56c251f7f7ea1c0764d6e764b76b27cf0c1ffdc1195b0fd31e57",
   "fastStart": "moov precedes mdat",
-  "captionConsistency": "all21 cues match metadata and transcript",
-  "publication": "Not published; owner approval required before push/deploy/upload."
+  "captionConsistency": "All21 cues and17 chapter timings are unchanged and match the transcript.",
+  "publication": "Not published; owner review/approval pending."
 }

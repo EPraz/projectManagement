@@ -12,3 +12,6 @@ All artifacts stay local. The owner's explicit pre-publication review/approval r
 
 
 Final native-player pass: raised the caption band and adjusted the actual footage frame so Chromium's paused controls/gradient do not dim the text. Re-rendered the same raw take/timings, decoded the complete export again, inspected all eight new chronological sheets, then inspected paused and native-fullscreen collaboration/mobile frames at102/169s. The final file is5,228,724bytes; the reviewed production build contains the same SHA-256. All9 viewer journeys pass against this final export, including the actual `jwt` cookie name with an expired/untrusted payload fixture. This strengthens the cookie setup without changing application behavior. The original complete280-journey run already passed; focused9 rechecks cover these final media/fixture changes.
+
+
+Subsequent owner feedback: the Taskboard ticket layout is compacted and only its five scenes are re-recorded at2617324. The current composite/provenance/hash supersedes the single-source export above; duration/captions/chapters stay unchanged. Eleven other encoded shots are identical; Team retains its source with an opening ready-frame hold to remove the old-board flash. [Full partial-retake evidence](06-taskboard-feedback.md).

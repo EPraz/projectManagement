@@ -157,3 +157,6 @@ Final Standards0/Spec0 review is recorded in [06-code-review.md](evidence/06-cod
 ## Owner feedback — Taskboard ticket and partial retake
 
 Owner requests correcting the ticket-cell design visible around1:05 before approval, then re-recording only the affected part. Preserve the ticket-row/task-state matrix, real interactions and genuine independent-session updates. Compact identity/expansion, title, state/priority and metadata; remove unavailable order controls. The same component spans1:00.20–1:44.32, so replace only those five Taskboard/collaboration scenes with a real partial take; preserve all other footage/timing/captions. Publication remains unapproved. This is review feedback under06, not a new broad refactor or full recording request.
+
+
+Owner Taskboard feedback completed locally: compact ticket summary and five-scene partial retake at2617324; unchanged182.56s/chapters/captions;11unaffected encoded shots identical and original Team opening held on its ready frame.80frontend tests/12snapshots,16Taskboard/bulk and9viewer checks pass; full decode and visual joins/paused/fullscreen pass. README screenshot updated. [Evidence](evidence/06-taskboard-feedback.md). Active local review: `http://127.0.0.1:61758/walkthrough`. No publication; owner review/approval remains pending under06.

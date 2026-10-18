@@ -36,7 +36,9 @@ Ticket state and task state remain distinct. Moving work into Code Review does n
 
 ## Source and editing
 
-Recorded locally on 2026-10-18 at application revision `fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d`, using a production build whose workspace source matches the shipped redesign. A dedicated loopback API and PostgreSQL database contain fictional demo data; no public visitor content is changed for filming.
+Recorded locally on 2026-10-18. Base footage uses application revision `fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d`; the Taskboard/collaboration block (1:00.20–1:44.32) was re-recorded at `2617324` after the owner's ticket-layout feedback. Both use production applications and a dedicated loopback API/PostgreSQL database with fictional data; no public visitor content is changed for filming.
+
+Only those five scenes were re-recorded. Eleven other encoded shots remain byte-identical. Team retains its original footage, with its first 1.8 seconds held on its own first ready frame to remove a brief old-Taskboard flash at the join. Duration, chapters and captions are unchanged. Per-source revisions and hashes are recorded with the composite export.
 
 The capture contains real clicks, editors and backend results. Editing adds pointer/click cues, chapter labels, English captions and one gentle close-up. Independent source clips use pre-roll synchronization markers; the markers are outside the final edit. Desktop/observer clips keep a landscape frame; only mobile uses a portrait composition. Raw takes, logs and tools remain in ignored local storage. The [export record](../.scratch/portfolio-presentation/evidence/05-video.json) records timing, source revision, verification and the final file hash.
 
@@ -66,6 +68,16 @@ python .scratch/portfolio-presentation/qa/render-walkthrough.py <take-directory>
 ```
 
 Rendering creates the MP4/poster/VTT/transcript, matching viewer metadata, a full-decode report and chronological review sheets. Review the entire sequence and full-resolution key moments, then run the viewer/browser checks. No recording tool is deployed with the application.
+
+To replace only the Taskboard block after an interface adjustment:
+
+```powershell
+node .scratch/portfolio-presentation/qa/record-walkthrough.cjs --taskboard-only
+python .scratch/portfolio-presentation/qa/compose-taskboard-retake.py <original-take-directory> <partial-take-directory>
+python .scratch/portfolio-presentation/qa/render-walkthrough.py <composite-directory>
+```
+
+The composer requires the five real scenes and verified synchronization, retains the original chapter budgets, and hashes the reused encoded shots. Raw sources remain preserved; inspect the joins and verify the actual new export before publication.
 
 ## Publication status
 
