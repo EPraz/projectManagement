@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { NavigationAttempt } from "./EditorNavigationGuard";
 export function useEditorExit({
   identity,
@@ -15,6 +15,15 @@ export function useEditorExit({
   onSave: () => void;
   failure: string;
 }) {
+  useEffect(() => {
+    if (!dirty) return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
   const [warning, setWarning] = useState(false);
   const navigation = useRef<NavigationAttempt | null>(null);
   const continuation = useRef<(() => void) | null>(null);

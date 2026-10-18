@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { validateWorkItem } from "../../services/workItemUpdates";
 import type { Task, Ticket } from "../../types";
 
@@ -38,16 +38,6 @@ export const useWorkItemEditor = <T extends Partial<Task> | Partial<Ticket>>(
     },
     [],
   );
-
-  useEffect(() => {
-    if (!open || !dirty) return;
-    const warn = (event: BeforeUnloadEvent) => {
-      event.preventDefault();
-      event.returnValue = "";
-    };
-    window.addEventListener("beforeunload", warn);
-    return () => window.removeEventListener("beforeunload", warn);
-  }, [open, dirty]);
 
   const perform = async (
     kind: "save" | "delete",

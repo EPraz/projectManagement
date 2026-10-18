@@ -83,7 +83,7 @@ test("independent hierarchy events refresh only the selected project", async ({
     await enterDemo(page);
     await page.goto(`/projects/${selected.id}/epics`);
     await expect(
-      page.getByRole("heading", { name: "Epics & Features", exact: true }),
+      page.getByRole("heading", { name: "Epics & Features.", exact: true }),
     ).toBeVisible();
     await expect.poll(() => connected).toBe(true);
     for (const item of [
@@ -299,9 +299,7 @@ test("hierarchy shows the selected project's real epics, features and linked tic
     .getByRole("dialog")
     .getByRole("button", { name: "Cancel", exact: true })
     .click();
-  await expect(page).toHaveURL(
-    new RegExp(`/projects/${project.id}/board\\?tab=backlog`),
-  );
+  await expect(page).toHaveURL(new RegExp(`/projects/${project.id}/epics$`));
 });
 
 test("hierarchy feature editing and deletion preserve confirmed parent associations", async ({

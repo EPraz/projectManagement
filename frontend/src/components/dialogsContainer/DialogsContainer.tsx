@@ -247,6 +247,7 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
         !openTaskDialog && (
           <TicketEditDialog
             key={selectedTicket.id}
+            projectName={project?.title}
             initialTab={searchParams.get("ticketTab") === "tasks" ? 2 : 0}
             onCreateTask={() => {
               setSelectedTicketId(selectedTicket.id);
