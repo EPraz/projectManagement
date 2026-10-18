@@ -37,6 +37,8 @@ Status: ready-for-agent
 
 - 2026-10-17: [Ticket 08](issues/08-ticket-and-task-editing.md) resolved: truthful editing, preserved drafts, nullable planning, confirmed responses and item-scoped completion/pending. [Evidence](evidence/08-editors.md), [review](evidence/08-review.md); 99b5574 and d89a537. Both initial P2 findings were fixed and independently rechecked.
 
+- 2026-10-17: [Ticket 09](issues/09-hierarchy-and-backlog.md) resolved: real selected-project hierarchy, validated relationships, confirmed scoped events and recoverable linked backlog. [Evidence](evidence/09-hierarchy.md), [review](evidence/09-review.md); dd61814. Both review axes have zero actionable findings.
+
 ## Test-boundary confirmation
 
 Confirmed by the owner: primary real-browser product workflows, complemented by HTTP/WebSocket tests with isolated local PostgreSQL and focused progress/task regressions; builds, types and non-mutating lint as CI checks.
@@ -68,7 +70,7 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 | [06: Simplify demo sessions and navigation with a compatible request boundary](issues/06-demo-session-and-navigation.md) | resolved | 01 |
 | [07: Make project loading, selection and recovery coherent](issues/07-project-loading-and-recovery.md) | resolved | 06 |
 | [08: Refactor ticket and task editing as a reliable workflow](issues/08-ticket-and-task-editing.md) | resolved | 07 |
-| [09: Refactor hierarchy and backlog without breaking linked work](issues/09-hierarchy-and-backlog.md) | ready-for-agent | 07 |
+| [09: Refactor hierarchy and backlog without breaking linked work](issues/09-hierarchy-and-backlog.md) | resolved | 07 |
 | [10: Make sprint planning and goals consistent across views](issues/10-sprint-planning-and-goals.md) | ready-for-agent | 07 |
 | [11: Make team and capacity planning reliable](issues/11-team-and-capacity.md) | ready-for-agent | 07 |
 | [12: Refactor the retrospective with complete recovery behavior](issues/12-retrospective-recovery.md) | ready-for-agent | 07 |
@@ -79,10 +81,11 @@ Confirmed by the owner: primary real-browser product workflows, complemented by 
 
 ## Resume implementation
 
-- Tickets 01–08 are resolved. Next numbered frontier: 09, hierarchy and backlog, now unblocked. Later blockers remain unchanged.
+- Tickets 01–09 are resolved. Next numbered frontier: 10, sprint planning and goals, now unblocked. Later blockers remain unchanged.
 - Read the source [spec](spec.md), this map and the selected ticket. Claim the first open, unblocked, unclaimed ticket before implementing it, following the local tracker instructions.
 - Preserve the approved test boundaries: use isolated PostgreSQL fixtures, never the owner's current private environment or public Neon database for fixture cleanup.
 - Record verification and remaining findings with each ticket; resolve it and update this map before moving the frontier.
 - Final presentation remains deferred until ticket 16 verifies the integrated application.
+
 
 
