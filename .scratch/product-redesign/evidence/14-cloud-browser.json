@@ -1,0 +1,19 @@
+{
+  "captures": 32,
+  "base": "https://project-management-murex-pi.vercel.app",
+  "source": "public production demo",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "widths": [
+    390,
+    1280
+  ],
+  "sections": 8,
+  "deepReload": true,
+  "ticketTaskLinks": true,
+  "retroEditor": true,
+  "browserErrors": 0,
+  "recording": false
+}

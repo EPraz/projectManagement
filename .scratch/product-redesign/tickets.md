@@ -6,7 +6,7 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 
 ## Current frontier
 
-**14 — Publish and verify the complete C redesign** is the current frontier. Progress: 13/14 resolved; ticket 14 claimed.
+**All14 deliveries are resolved.** The complete C redesign is published and verified. Next checkpoint: owner final visual/readiness feedback before the deferred README/walkthrough phase.
 
 ## Tickets and immediate blockers
 
@@ -25,7 +25,7 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 | 11 | [Manage the project's team membership](issues/11-project-team.md) | 02 | resolved |
 | 12 | [Run a responsive sprint retrospective](issues/12-sprint-retrospective.md) | 02 | resolved |
 | 13 | [Verify coherent C journeys across the complete product](issues/13-integrated-verification.md) | 03, 06, 07, 08, 09, 10, 11, 12 | resolved |
-| 14 | [Publish and verify the complete C redesign](issues/14-publish-verify-cloud.md) | 13 | claimed |
+| 14 | [Publish and verify the complete C redesign](issues/14-publish-verify-cloud.md) | 13 | resolved |
 
 Edges omit transitive dependencies. Once 02 is complete, Overview, ticket editing, goals, capacity, team and retrospective are independently available. Capacity does not require the Team redesign: its existing membership contract remains valid. Ticket 13 requires every complete domain surface; ticket 14 requires verified integration. Use the numbered open/unblocked/unclaimed frontier when proceeding sequentially.
 

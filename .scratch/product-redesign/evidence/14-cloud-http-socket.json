@@ -1,0 +1,16 @@
+{
+  "directHealth": true,
+  "vercelProxy": true,
+  "anonymousFrontend": true,
+  "deepLink": true,
+  "productionSocketOrigin": true,
+  "demoEntry": true,
+  "secureHostOnlyCookie": true,
+  "independentVisitors": true,
+  "sessionRefresh": true,
+  "projects": 2,
+  "personalAccountsDisabled": true,
+  "sensitiveFieldsExcluded": true,
+  "twoWebsocketClientsReceivedUpdate": true,
+  "logoutPreservesOtherVisitor": true
+}
