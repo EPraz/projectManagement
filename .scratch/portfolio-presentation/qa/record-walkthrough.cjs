@@ -26,11 +26,16 @@ if (!runtime.databaseName.endsWith("_presentation") || !runtime.production)
   throw Error(
     "Capture requires an explicit presentation database and production build.",
   );
+const taskboardOnly = process.argv.includes("--taskboard-only");
 const rehearsal = process.argv.includes("--rehearsal"),
   speed = rehearsal ? 0.03 : 1;
 const output = path.join(
   recording,
-  rehearsal ? "rehearsal" : `take-${Date.now()}`,
+  rehearsal
+    ? taskboardOnly
+      ? "rehearsal-taskboard"
+      : "rehearsal"
+    : `${taskboardOnly ? "taskboard-retake" : "take"}-${Date.now()}`,
 );
 fs.mkdirSync(output, { recursive: true });
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms * speed));
@@ -411,111 +416,125 @@ async function run() {
     });
     const page = await context("desktop"),
       c = await controls(page);
-    await page.goto(runtime.ui + "/auth/instantLogin");
-    await sync("desktop");
-    await scene(
-      "entry",
-      "01 / A workspace for delivery",
-      14,
-      [
-        "An original full-stack project for planning, tracking and reviewing team delivery.",
-        "Explore populated fictional projects without creating a personal account.",
-      ],
-      async () => {
-        await pause(1000);
-        await c.click(
-          page.getByRole("button", { name: "Explore demo", exact: true }),
-        );
-        await expect(
-          page.getByRole("heading", { name: "Projects.", exact: true }),
-        ).toBeVisible();
-        await pause(1800);
-        await c.click(
-          page.getByRole("link", { name: project.title, exact: true }),
-        );
-        await expect(
-          page.getByRole("combobox", { name: "Selected sprint", exact: true }),
-        ).toBeVisible();
-      },
-    );
-    await scene(
-      "overview",
-      "02 / Project context, sprint focus",
-      8,
-      [
-        "Project progress covers the whole project. Sprint metrics follow the selected sprint.",
-      ],
-      async () => {
-        await c.highlight(
-          page.getByRole("combobox", { name: "Selected sprint", exact: true }),
-          1600,
-        );
-        await shot(page, "overview-light");
-      },
-    );
-    await scene(
-      "hierarchy",
-      "03 / Connect the bigger picture",
-      10,
-      [
-        "Epics and features link project goals to concrete tickets across sprints.",
-      ],
-      async () => {
-        await c.nav("Epics & Features");
-        await c.click(page.getByRole("button", { name: /^Expand / }).first());
-        await pause(2200);
-      },
-    );
-    await scene(
-      "backlog",
-      "04 / Plan the selected sprint",
-      8,
-      [
-        "The Backlog keeps sprint work searchable, with ticket-level filters and configurable columns.",
-      ],
-      async () => {
-        await c.nav("Backlog");
-        await c.type(
-          page.getByRole("textbox", { name: "Search work", exact: true }),
-          ticket.title,
-        );
-        await expect(
-          page.getByRole("button", { name: ticket.title, exact: true }),
-        ).toBeVisible();
-      },
-    );
-    await scene(
-      "details",
-      "05 / Requirements, estimates and child tasks",
-      20,
-      [
-        "Inspect the ticket requirements, ownership and planning details.",
-        "Story points, time estimates and child tasks stay connected to the same work item.",
-      ],
-      async () => {
-        await c.click(
-          page.getByRole("button", { name: ticket.title, exact: true }),
-        );
-        const editor = page.getByRole("dialog", {
-          name: "Ticket Details",
-          exact: true,
-        });
-        await expect(editor).toBeVisible();
-        await pause(2200);
-        await c.click(
-          editor.getByRole("tab", { name: "Planning", exact: true }),
-        );
-        await pause(2000);
-        await c.click(editor.getByRole("tab", { name: "Tasks", exact: true }));
-        await pause(1800);
-        await c.click(
-          editor.getByRole("button", {
-            name: "Close ticket editor",
+    if (taskboardOnly) {
+      await enter(page);
+      await workspace(page, "board?tab=backlog");
+      await sync("desktop");
+    } else {
+      await page.goto(runtime.ui + "/auth/instantLogin");
+      await sync("desktop");
+      await scene(
+        "entry",
+        "01 / A workspace for delivery",
+        14,
+        [
+          "An original full-stack project for planning, tracking and reviewing team delivery.",
+          "Explore populated fictional projects without creating a personal account.",
+        ],
+        async () => {
+          await pause(1000);
+          await c.click(
+            page.getByRole("button", { name: "Explore demo", exact: true }),
+          );
+          await expect(
+            page.getByRole("heading", { name: "Projects.", exact: true }),
+          ).toBeVisible();
+          await pause(1800);
+          await c.click(
+            page.getByRole("link", { name: project.title, exact: true }),
+          );
+          await expect(
+            page.getByRole("combobox", {
+              name: "Selected sprint",
+              exact: true,
+            }),
+          ).toBeVisible();
+        },
+      );
+      await scene(
+        "overview",
+        "02 / Project context, sprint focus",
+        8,
+        [
+          "Project progress covers the whole project. Sprint metrics follow the selected sprint.",
+        ],
+        async () => {
+          await c.highlight(
+            page.getByRole("combobox", {
+              name: "Selected sprint",
+              exact: true,
+            }),
+            1600,
+          );
+          await shot(page, "overview-light");
+        },
+      );
+      await scene(
+        "hierarchy",
+        "03 / Connect the bigger picture",
+        10,
+        [
+          "Epics and features link project goals to concrete tickets across sprints.",
+        ],
+        async () => {
+          await c.nav("Epics & Features");
+          await c.click(page.getByRole("button", { name: /^Expand / }).first());
+          await pause(2200);
+        },
+      );
+      await scene(
+        "backlog",
+        "04 / Plan the selected sprint",
+        8,
+        [
+          "The Backlog keeps sprint work searchable, with ticket-level filters and configurable columns.",
+        ],
+        async () => {
+          await c.nav("Backlog");
+          await c.type(
+            page.getByRole("textbox", { name: "Search work", exact: true }),
+            ticket.title,
+          );
+          await expect(
+            page.getByRole("button", { name: ticket.title, exact: true }),
+          ).toBeVisible();
+        },
+      );
+      await scene(
+        "details",
+        "05 / Requirements, estimates and child tasks",
+        20,
+        [
+          "Inspect the ticket requirements, ownership and planning details.",
+          "Story points, time estimates and child tasks stay connected to the same work item.",
+        ],
+        async () => {
+          await c.click(
+            page.getByRole("button", { name: ticket.title, exact: true }),
+          );
+          const editor = page.getByRole("dialog", {
+            name: "Ticket Details",
             exact: true,
-          }),
-        );
-      },
-    );
+          });
+          await expect(editor).toBeVisible();
+          await pause(2200);
+          await c.click(
+            editor.getByRole("tab", { name: "Planning", exact: true }),
+          );
+          await pause(2000);
+          await c.click(
+            editor.getByRole("tab", { name: "Tasks", exact: true }),
+          );
+          await pause(1800);
+          await c.click(
+            editor.getByRole("button", {
+              name: "Close ticket editor",
+              exact: true,
+            }),
+          );
+        },
+      );
+    }
     await scene(
       "taskboard",
       "06 / Tickets in rows. Tasks by state.",
@@ -640,136 +659,140 @@ async function run() {
       canonicalTaskState: "IN_PROGRESS",
       persistence: true,
     };
-    await scene(
-      "team",
-      "11 / People behind the work",
-      8,
-      [
-        "The project-wide team connects people to assigned work and sprint planning.",
-      ],
-      async () => {
-        await c.nav("Team");
-        await pause(1600);
-      },
-    );
-    await scene(
-      "capacity",
-      "12 / Plan available capacity",
-      10,
-      [
-        "Sprint capacity shows the team’s available hours and planned workload.",
-      ],
-      async () => {
-        await c.nav("Capacity");
-        await pause(1800);
-      },
-    );
-    await scene(
-      "goals",
-      "13 / Track the sprint outcome",
-      10,
-      [
-        "Sprint goals pair a clear outcome with an actionable checklist and progress.",
-      ],
-      async () => {
-        await c.nav("Goals");
-        await pause(2000);
-      },
-    );
-    await scene(
-      "retrospective",
-      "14 / Make room for feedback",
-      14,
-      [
-        "Review what worked, what did not, and what the team can improve next.",
-        "Retrospective cards and reactions belong to the selected sprint.",
-      ],
-      async () => {
-        await c.nav("Retrospective");
-        await expect(
-          page.getByRole("heading", { name: "Retrospective.", exact: true }),
-        ).toBeVisible();
-        await pause(2600);
-      },
-    );
-    const phone = await context("mobile", 390, 844),
-      m = await controls(phone);
-    await enter(phone);
-    await workspace(phone, "overview");
-    await sync("mobile");
-    await scene(
-      "mobile",
-      "15 / Same workflow. Smaller screen.",
-      16,
-      [
-        "A real 390px viewport: responsive navigation, sprint work and contextual editing.",
-      ],
-      async () => {
-        await m.nav("Backlog");
-        await m.type(
-          phone.getByRole("textbox", { name: "Search work", exact: true }),
-          ticket.title,
-        );
-        await m.click(
-          phone.getByRole("button", { name: ticket.title, exact: true }),
-        );
-        await expect(
-          phone.getByRole("dialog", { name: "Ticket Details", exact: true }),
-        ).toBeVisible();
-        await shot(phone, "work-mobile");
-        await pause(1800);
-        await m.click(
-          phone.getByRole("button", {
-            name: "Close ticket editor",
-            exact: true,
-          }),
-        );
-      },
-      { source: "mobile" },
-    );
-    await scene(
-      "appearance",
-      "16 / Two complete appearances",
-      8,
-      ["Switch appearance explicitly. The choice is remembered across visits."],
-      async () => {
-        await m.click(
-          phone.getByRole("button", {
-            name: "Open project navigation",
-            exact: true,
-          }),
-        );
-        await m.click(
-          phone.getByRole("button", { name: "Open user menu", exact: true }),
-        );
-        await m.click(
-          phone.getByRole("menuitem", {
-            name: "Switch to dark theme",
-            exact: true,
-          }),
-        );
-        await phone.keyboard.press("Escape");
-        await phone.keyboard.press("Escape");
-        await pause(1200);
-      },
-      { source: "mobile" },
-    );
-    await scene(
-      "close",
-      "17 / Built across the stack",
-      12,
-      [
-        "React + TypeScript → NestJS REST API → Prisma + PostgreSQL. Socket.IO keeps sessions synchronized.",
-        "Explore the live demo or inspect the implementation on GitHub.",
-      ],
-      async () => {
-        await c.nav("Overview");
-        await pause(1500);
-      },
-    );
+    if (!taskboardOnly) {
+      await scene(
+        "team",
+        "11 / People behind the work",
+        8,
+        [
+          "The project-wide team connects people to assigned work and sprint planning.",
+        ],
+        async () => {
+          await c.nav("Team");
+          await pause(1600);
+        },
+      );
+      await scene(
+        "capacity",
+        "12 / Plan available capacity",
+        10,
+        [
+          "Sprint capacity shows the team’s available hours and planned workload.",
+        ],
+        async () => {
+          await c.nav("Capacity");
+          await pause(1800);
+        },
+      );
+      await scene(
+        "goals",
+        "13 / Track the sprint outcome",
+        10,
+        [
+          "Sprint goals pair a clear outcome with an actionable checklist and progress.",
+        ],
+        async () => {
+          await c.nav("Goals");
+          await pause(2000);
+        },
+      );
+      await scene(
+        "retrospective",
+        "14 / Make room for feedback",
+        14,
+        [
+          "Review what worked, what did not, and what the team can improve next.",
+          "Retrospective cards and reactions belong to the selected sprint.",
+        ],
+        async () => {
+          await c.nav("Retrospective");
+          await expect(
+            page.getByRole("heading", { name: "Retrospective.", exact: true }),
+          ).toBeVisible();
+          await pause(2600);
+        },
+      );
+      const phone = await context("mobile", 390, 844),
+        m = await controls(phone);
+      await enter(phone);
+      await workspace(phone, "overview");
+      await sync("mobile");
+      await scene(
+        "mobile",
+        "15 / Same workflow. Smaller screen.",
+        16,
+        [
+          "A real 390px viewport: responsive navigation, sprint work and contextual editing.",
+        ],
+        async () => {
+          await m.nav("Backlog");
+          await m.type(
+            phone.getByRole("textbox", { name: "Search work", exact: true }),
+            ticket.title,
+          );
+          await m.click(
+            phone.getByRole("button", { name: ticket.title, exact: true }),
+          );
+          await expect(
+            phone.getByRole("dialog", { name: "Ticket Details", exact: true }),
+          ).toBeVisible();
+          await shot(phone, "work-mobile");
+          await pause(1800);
+          await m.click(
+            phone.getByRole("button", {
+              name: "Close ticket editor",
+              exact: true,
+            }),
+          );
+        },
+        { source: "mobile" },
+      );
+      await scene(
+        "appearance",
+        "16 / Two complete appearances",
+        8,
+        [
+          "Switch appearance explicitly. The choice is remembered across visits.",
+        ],
+        async () => {
+          await m.click(
+            phone.getByRole("button", {
+              name: "Open project navigation",
+              exact: true,
+            }),
+          );
+          await m.click(
+            phone.getByRole("button", { name: "Open user menu", exact: true }),
+          );
+          await m.click(
+            phone.getByRole("menuitem", {
+              name: "Switch to dark theme",
+              exact: true,
+            }),
+          );
+          await phone.keyboard.press("Escape");
+          await phone.keyboard.press("Escape");
+          await pause(1200);
+        },
+        { source: "mobile" },
+      );
+      await scene(
+        "close",
+        "17 / Built across the stack",
+        12,
+        [
+          "React + TypeScript → NestJS REST API → Prisma + PostgreSQL. Socket.IO keeps sessions synchronized.",
+          "Explore the live demo or inspect the implementation on GitHub.",
+        ],
+        async () => {
+          await c.nav("Overview");
+          await pause(1500);
+        },
+      );
+    }
     expect(errors).toEqual([]);
     evidence.checks.browserErrors = errors;
-    evidence.checks.scenes = 17;
+    evidence.checks.scenes = scenes.length;
     for (const [name, source] of Object.entries(sources)) {
       const file = rehearsal ? null : await source.page.video().path();
       await source.context.close();
@@ -789,7 +812,10 @@ async function run() {
     fs.writeFileSync(
       path.join(
         recording,
-        "latest-" + (rehearsal ? "rehearsal" : "take") + ".json",
+        "latest-" +
+          (taskboardOnly ? "taskboard-" : "") +
+          (rehearsal ? "rehearsal" : "take") +
+          ".json",
       ),
       JSON.stringify({ output }, null, 2),
     );

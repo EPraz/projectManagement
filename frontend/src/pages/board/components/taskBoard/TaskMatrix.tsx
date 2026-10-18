@@ -94,17 +94,19 @@ export default function TaskMatrix({
               return (
                 <TableRow key={ticket.id}>
                   <BodyCell>
-                    <IconButton
-                      size="small"
-                      aria-label={`${expanded ? "Collapse" : "Expand"} ticket #${ticket.id}`}
-                      aria-expanded={expanded}
-                      onClick={() => toggle(ticket.id)}
-                      sx={{ mb: 1 }}
-                    >
-                      {expanded ? <ExpandMore /> : <ChevronRight />}
-                    </IconButton>
                     <TicketCard
                       ticket={ticket}
+                      leadingAction={
+                        <IconButton
+                          size="small"
+                          aria-label={`${expanded ? "Collapse" : "Expand"} ticket #${ticket.id}`}
+                          aria-expanded={expanded}
+                          onClick={() => toggle(ticket.id)}
+                          sx={{ ml: -1 }}
+                        >
+                          {expanded ? <ExpandMore /> : <ChevronRight />}
+                        </IconButton>
+                      }
                       ticketStatuses={ticketStatuses}
                       onChange={changeTicket}
                       disabled={pending || isTicketPending(ticket.id)}

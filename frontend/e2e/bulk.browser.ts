@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 import { enterDemo, navigateSection } from "./support/demo";
 
-test("confirmed bulk events update the selected board while unavailable ordering stays disabled", async ({
+test("confirmed bulk events update the selected board without presenting unavailable ordering", async ({
   page,
   request,
 }) => {
@@ -34,8 +34,13 @@ test("confirmed bulk events update the selected board while unavailable ordering
       name: "Move ticket up (unavailable)",
       exact: true,
     });
-    await expect(arrows.first()).toBeVisible();
-    for (const arrow of await arrows.all()) await expect(arrow).toBeDisabled();
+    await expect(arrows).toHaveCount(0);
+    await expect(
+      page.getByRole("button", {
+        name: "Move ticket down (unavailable)",
+        exact: true,
+      }),
+    ).toHaveCount(0);
     const confirmed = await request.patch("/api/tickets/bulk-update", {
       headers,
       data: [

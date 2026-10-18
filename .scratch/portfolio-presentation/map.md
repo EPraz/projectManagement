@@ -152,3 +152,8 @@ Standards and Spec reviews against2339dbc have no material findings; final small
 
 
 Final Standards0/Spec0 review is recorded in [06-code-review.md](evidence/06-code-review.md). Final reviewed media is served by the owned production runtime with matching SHA-256 and real206byte ranges. No publication has occurred.
+
+
+## Owner feedback — Taskboard ticket and partial retake
+
+Owner requests correcting the ticket-cell design visible around1:05 before approval, then re-recording only the affected part. Preserve the ticket-row/task-state matrix, real interactions and genuine independent-session updates. Compact identity/expansion, title, state/priority and metadata; remove unavailable order controls. The same component spans1:00.20–1:44.32, so replace only those five Taskboard/collaboration scenes with a real partial take; preserve all other footage/timing/captions. Publication remains unapproved. This is review feedback under06, not a new broad refactor or full recording request.

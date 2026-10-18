@@ -3,6 +3,8 @@
 Tools are local to the ignored recording directory; no runtime dependency changes.
 """
 import json
+import hashlib
+import shutil
 import os
 import math
 import subprocess
@@ -149,6 +151,16 @@ def render(take):
             vtt.extend([f"{timestamp(a)} --> {timestamp(b)}", caption, ""])
         output = working / f"{index:02}-{scene['id']}.mp4"
         files.append(output)
+        if scene.get("reuseEncoded"):
+            source = (take / scene["reuseEncoded"]["file"]).resolve()
+            if not source.is_relative_to(ROOT / ".scratch/portfolio-presentation/recording"):
+                raise ValueError("Reused footage must stay in local recording storage.")
+            if hashlib.sha256(source.read_bytes()).hexdigest() != scene["reuseEncoded"]["sha256"]:
+                raise ValueError("Preserved shot differs from the reviewed base edit.")
+            shutil.copy2(source, output)
+            print(f"Preserving original encoded shot: {scene['id']}", flush=True)
+            elapsed += seconds
+            continue
         arguments = ["-ss", f"{start:.3f}", "-i", take / manifest["sources"][scene["source"]]["file"]]
         for image in overlays:
             arguments += ["-loop", "1", "-framerate", FPS, "-i", image]
@@ -186,6 +198,10 @@ def render(take):
     run(["-i", final, "-f", "null", "-"])
     info = metadata(final)
     report = {"applicationCommit": manifest["applicationCommit"], "origin": manifest["origin"], "duration": info["duration"], "size": info["size"], "fps": info["fps"], "bytes": final.stat().st_size, "audio": "none; English captions are embedded", "checks": manifest["checks"], "chapters": chapters, "fullDecode": "passed", "files": ["frontend/public/walkthrough/project-management-walkthrough.mp4", "frontend/public/walkthrough/project-management-walkthrough.vtt", "frontend/public/walkthrough/poster.jpg"]}
+    if manifest.get("sourceRevisions"):
+        report["sourceRevisions"] = manifest["sourceRevisions"]
+        report["partialRetake"] = manifest["partialRetake"]
+        report["preservedShots"] = [{"id": scene["id"], "sha256": scene["reuseEncoded"]["sha256"]} for scene in manifest["scenes"] if scene.get("reuseEncoded")]
     (take / "render-report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     story = []
     for chapter, scene in zip(chapters, manifest["scenes"]):
