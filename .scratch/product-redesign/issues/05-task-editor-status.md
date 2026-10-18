@@ -4,16 +4,16 @@
 
 **Blocked by:** 04 — Create and edit tickets without losing context.
 
-**Status:** claimed
+**Status:** resolved
 
 Type: task
 
-- [ ] Preserve task creation, all existing fields/estimates/assignment, editing and confirmed deletion, using the C contextual/full-screen editor and real server outcomes.
-- [ ] Offer explicit Change status for touch/keyboard using the project's complete task-state catalog and existing mutation contract. Preserve creation defaults/domain rules and the task's parent ticket.
-- [ ] Task → parent returns to the ticket's Tasks context; preserve appropriate draft, focus, selection and navigation state with only one editor visible.
-- [ ] Completed/non-completed transitions and estimate changes use existing canonical progress semantics, including valid zero values; do not equate task state with ticket state or invent automatic ticket transitions.
-- [ ] Pending/error/retry, double submissions, late responses and live reconciliation keep task identity/data correct. No reparenting, reordering or ticket ordering is introduced.
-- [ ] Verify task CRUD, status changes, parent return, progress/effort results and failed-save recovery through real browser/API behavior as appropriate.
+- [x] Preserve task creation, all existing fields/estimates/assignment, editing and confirmed deletion, using the C contextual/full-screen editor and real server outcomes.
+- [x] Offer explicit Change status for touch/keyboard using the project's complete task-state catalog and existing mutation contract. Preserve creation defaults/domain rules and the task's parent ticket.
+- [x] Task → parent returns to the ticket's Tasks context; preserve appropriate draft, focus, selection and navigation state with only one editor visible.
+- [x] Completed/non-completed transitions and estimate changes use existing canonical progress semantics, including valid zero values; do not equate task state with ticket state or invent automatic ticket transitions.
+- [x] Pending/error/retry, double submissions, late responses and live reconciliation keep task identity/data correct. No reparenting, reordering or ticket ordering is introduced.
+- [x] Verify task CRUD, status changes, parent return, progress/effort results and failed-save recovery through real browser/API behavior as appropriate.
 
 ## Shared completion requirements
 
@@ -27,3 +27,9 @@ Type: task
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
 
 - 2026-10-18: Claimed after 04. Reuse the real C editor/exit surface, preserve task creation TODO/default fields, full status catalog and independent ticket state; verify canonical CRUD/status/parent return and pending/failure races.
+
+## Answer
+
+- Implemented the C task create/edit panel with server-confirmed saves, all existing assignment/discussion/estimate fields, complete six-state catalog, valid zero hours, protected drafts and confirmed deletion. Creation retains the existing TODO contract; task state never changes ticket state automatically.
+- Parent navigation derives the actual ticket and returns to its Tasks context, including keep/discard/save. Shared generation/navigation safeguards retain failed drafts and isolate late responses. Task/ticket creation now refreshes canonical project data instead of adding a potentially stale creation response; task POST returns its nullable assignee projection for response validation.
+- Validation: meaningful missing-status browser red → green; 35 editor browser regressions pass, followed by 13 isolated production-browser checks (CRUD, failed creation/retry, parent draft/save and both themes at 320/390/768/1024/1440). Sixteen task editor/move checks pass; frontend/backend types/lint and production builds pass (frontend retains 12 existing warnings, no errors). Desktop light and mobile carbon captures inspected under `frontend/.tmp/studio/task-production/`. Public data/deployment preserved, no recording.

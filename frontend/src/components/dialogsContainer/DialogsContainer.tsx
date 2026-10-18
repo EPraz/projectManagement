@@ -2,7 +2,6 @@ import React from "react";
 import { DeleteConfirmationModal, DialogForm, Portal } from "..";
 import {
   createSprintSchema,
-  createTaskSchema,
   createSprintGoalSchema,
   editSprintGoalSchema,
   createGoalTaskSchema,
@@ -18,6 +17,7 @@ import TicketEditDialog from "../ticketEditDialog/TicketEditDialog";
 
 const DialogsContainer: React.FC<DialogsContainerProps> = ({
   //Tasks
+  selectedTicketId,
   setSelectedTicketId,
   openTaskDialog,
   setOpenTaskDialog,
@@ -137,21 +137,19 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
       )}
 
       {openTaskDialog && (
-        <DialogForm
-          open={openTaskDialog}
-          title="Create Task"
+        <TaskEditDialog
+          open
+          task={null}
           onClose={() => setOpenTaskDialog(false)}
-          onSubmit={handleCreateTask}
-          schema={createTaskSchema}
+          onCreate={handleCreateTask}
+          onSave={handleEditTask}
+          users={project?.users}
+          projectName={project?.title}
+          parentTicket={allTickets.find(
+            (ticket) => ticket.id === selectedTicketId,
+          )}
+          initialValues={{ title: "", description: "" }}
           disabled={loadingPostTasks}
-          defaultValues={{
-            title: "",
-            description: "",
-            createdBy: currentUser?.email,
-          }}
-          fieldConfig={{
-            createdBy: { disabled: true, hidden: true },
-          }}
         />
       )}
 
@@ -217,6 +215,19 @@ const DialogsContainer: React.FC<DialogsContainerProps> = ({
 
       {selectedTask && openEditTaskDialog && (
         <TaskEditDialog
+          key={selectedTask.id}
+          statuses={project?.taskStatuses}
+          projectName={project?.title}
+          parentTicket={allTickets.find(
+            (ticket) => ticket.id === selectedTask.ticketId,
+          )}
+          onBackToTicket={() => {
+            const params = new URLSearchParams(searchParams);
+            params.delete("taskId");
+            params.set("ticketId", String(selectedTask.ticketId));
+            params.set("ticketTab", "tasks");
+            setSearchParams(params);
+          }}
           onSave={handleEditTask}
           open={openEditTaskDialog}
           onClose={() => {

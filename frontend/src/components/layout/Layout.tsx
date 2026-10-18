@@ -25,7 +25,6 @@ import {
 } from "../../types";
 import {
   changeSprintHandler,
-  createTaskHandler,
   // createTicketHandler,
   // deleteTicketHandler,
   // editTicketHandler,
@@ -62,9 +61,7 @@ const Layout = () => {
     tickets,
     allTickets,
     removeAllTickets,
-    addAllTickets,
     updateAllTickets,
-    updateListOfTickets,
     applyTaskUpdate,
     removeTask,
   } = useTicket();
@@ -236,11 +233,11 @@ const Layout = () => {
         ...data,
       });
       if (newTicket) {
-        addAllTickets(newTicket);
+        await reloadProject();
       }
       return Boolean(newTicket);
     },
-    [createTicket, addAllTickets],
+    [createTicket, reloadProject],
   );
 
   const handleEditTicket = useCallback(
@@ -280,13 +277,19 @@ const Layout = () => {
 
   // Functions -> Tasks
   const handleCreateTask = useCallback(
-    createTaskHandler(
-      createTask,
-      selectedTicketId,
-      tickets,
-      updateListOfTickets,
-    ),
-    [createTask, selectedTicketId, tickets, updateListOfTickets],
+    async (data: Partial<Task>) => {
+      const task = await createTask({
+        title: data.title,
+        description: data.description,
+        createdBy: data.createdBy,
+        ticketId: selectedTicketId,
+      });
+      // Read the current workspace: a delayed creation response cannot resurrect
+      // a task removed by another visitor while that response was in flight.
+      if (task) await reloadProject();
+      return Boolean(task);
+    },
+    [createTask, selectedTicketId, reloadProject],
   );
 
   const handleEditTask = useCallback(
@@ -520,6 +523,7 @@ const Layout = () => {
         {/* // All Dialog / Modals */}
         <DialogsContainer
           //Tasks
+          selectedTicketId={selectedTicketId}
           setSelectedTicketId={setSelectedTicketId}
           handleCreateTask={handleCreateTask}
           handleDeleteTask={handleDeleteTask}

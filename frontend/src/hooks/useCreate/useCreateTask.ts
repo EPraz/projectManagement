@@ -1,40 +1,32 @@
 import { useState } from "react";
-import { useApi, useAuth, useSnackbar } from "../../context";
-import { Task } from "../../types";
-
+import { useAuth } from "../../context/authContext";
+import { useSnackbar } from "../../context/snackbarContext";
+import { readCreatedTask } from "../../services/workItemUpdates";
+import type { Task } from "../../types";
 export const useCreateTask = () => {
-  const { apiUrl } = useApi();
-  const { accessToken } = useAuth();
+  const { request } = useAuth();
   const { showSnackbarMessage } = useSnackbar();
   const [loading, setLoading] = useState(false);
-
   const createTask = async (data: Partial<Task>): Promise<Task | null> => {
     setLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/tasks`, {
+      const response = await request<unknown>("/tasks", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          ...data,
-        }),
+        body: data,
+        errorMessage: "Failed to create task. Please try again.",
       });
-
-      if (!response.ok) throw new Error("Failed to create task");
-
-      const newTask: Task = await response.json();
+      const task = readCreatedTask(response, data.ticketId);
       showSnackbarMessage("Task created successfully", "success");
-      return newTask;
+      return task;
     } catch (error) {
-      console.error("Error creating task:", error);
-      showSnackbarMessage("Failed to create task", "error");
+      showSnackbarMessage(
+        error instanceof Error ? error.message : "Failed to create task",
+        "error",
+      );
       return null;
     } finally {
       setLoading(false);
     }
   };
-
   return { createTask, loading };
 };

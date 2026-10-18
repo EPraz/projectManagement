@@ -37,6 +37,7 @@ export class TaskService {
         data: { ...request, statusId: newTaskStatus?.id },
         include: {
           status: true,
+          assignedUser: true,
         },
       });
 

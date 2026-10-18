@@ -158,7 +158,7 @@ export interface LayoutContextProps {
   ) => Promise<void>;
 
   // Functions -> Tasks
-  handleCreateTask: (data: Partial<Task>) => Promise<void>;
+  handleCreateTask: (data: Partial<Task>) => Promise<boolean>;
   handleEditTask: (data: TaskUpdate) => Promise<boolean>;
   handleDeleteTask: (task: Partial<Task>) => Promise<boolean>;
   handleOnDragEndTask: (event: DragEndEvent) => Promise<void>;

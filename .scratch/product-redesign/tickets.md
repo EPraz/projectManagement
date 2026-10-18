@@ -6,7 +6,7 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 
 ## Current frontier
 
-**05 — Create, edit and change task status within its ticket** is the current frontier. Progress: 4/14 resolved; ticket 05 claimed.
+**06 — Execute a sprint through the responsive Taskboard** is the current frontier. Progress: 5/14 resolved; ticket 06 claimed.
 
 ## Tickets and immediate blockers
 
@@ -16,9 +16,9 @@ Owner approved all 14 tickets and their dependency edges on 2026-10-18 with "apr
 | 02 | [Navigate a project with shared sprint context](issues/02-project-navigation-sprint-context.md) | 01 | resolved |
 | 03 | [See a truthful operational Overview](issues/03-truthful-overview.md) | 02 | resolved |
 | 04 | [Create and edit tickets without losing context](issues/04-ticket-editor.md) | 02 | resolved |
-| 05 | [Create, edit and change task status within its ticket](issues/05-task-editor-status.md) | 04 | claimed |
-| 06 | [Execute a sprint through the responsive Taskboard](issues/06-responsive-taskboard.md) | 05 | ready-for-agent |
-| 07 | [Work from a selected-sprint Backlog](issues/07-selected-sprint-backlog.md) | 05 | ready-for-agent |
+| 05 | [Create, edit and change task status within its ticket](issues/05-task-editor-status.md) | 04 | resolved |
+| 06 | [Execute a sprint through the responsive Taskboard](issues/06-responsive-taskboard.md) | 05 | claimed |
+| 07 | [Work from a selected-sprint Backlog](issues/07-selected-sprint-backlog.md) | 05 | claimed |
 | 08 | [Explore project hierarchy and open linked tickets](issues/08-project-hierarchy.md) | 04 | ready-for-agent |
 | 09 | [Plan sprint goals and checklists](issues/09-sprint-goals-checklists.md) | 02 | ready-for-agent |
 | 10 | [Plan member capacity for the selected sprint](issues/10-member-capacity.md) | 02 | ready-for-agent |

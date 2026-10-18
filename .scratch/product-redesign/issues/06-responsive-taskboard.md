@@ -4,7 +4,7 @@
 
 **Blocked by:** 05 — Create, edit and change task status within its ticket.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -25,3 +25,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after 05; retain ticket rows/task-state columns with local scrolling, use grouped ticket/task access on narrow layouts and preserve canonical mutations/filter scope.

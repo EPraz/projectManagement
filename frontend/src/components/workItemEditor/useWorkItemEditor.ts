@@ -3,7 +3,7 @@ import { validateWorkItem } from "../../services/workItemUpdates";
 import type { Task, Ticket } from "../../types";
 
 // One draft per opened item: socket snapshots of the same item cannot erase typing.
-export const useWorkItemEditor = <T extends Task | Partial<Ticket>>(
+export const useWorkItemEditor = <T extends Partial<Task> | Partial<Ticket>>(
   item: T | null,
   open: boolean,
   onClose: () => void,

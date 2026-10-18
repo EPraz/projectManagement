@@ -11,11 +11,12 @@ import {
 
 export interface DialogsContainerProps {
   //Tasks
+  selectedTicketId: number;
   setSelectedTicketId: React.Dispatch<React.SetStateAction<number>>;
   openTaskDialog: boolean;
   setOpenTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;
   openEditTaskDialog: boolean;
-  handleCreateTask: (data: Partial<Task>) => void;
+  handleCreateTask: (data: Partial<Task>) => Promise<boolean>;
   handleDeleteTask: (data: Partial<Task>) => Promise<boolean>;
   loadingPostTasks: boolean;
   setOpenEditTaskDialog: React.Dispatch<React.SetStateAction<boolean>>;

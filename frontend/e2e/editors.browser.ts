@@ -481,7 +481,7 @@ for (const kind of ["task", "ticket"] as const) {
           : route.continue(),
       );
       await dialog.getByRole("button", { name: "Delete", exact: true }).click();
-      if (kind === "ticket") {
+      {
         const confirmation = page.getByRole("dialog", {
           name: "Confirm Delete",
           exact: true,
@@ -501,11 +501,10 @@ for (const kind of ["task", "ticket"] as const) {
         dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`),
       ).toHaveValue(draft);
       await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
-      if (kind === "ticket")
-        await page
-          .getByRole("alertdialog", { name: "Unsaved changes", exact: true })
-          .getByRole("button", { name: "Discard changes", exact: true })
-          .click();
+      await page
+        .getByRole("alertdialog", { name: "Unsaved changes", exact: true })
+        .getByRole("button", { name: "Discard changes", exact: true })
+        .click();
       await expect(dialog).toHaveCount(0);
       expect(new URL(page.url()).searchParams.has(`${kind}Id`)).toBe(false);
     } finally {

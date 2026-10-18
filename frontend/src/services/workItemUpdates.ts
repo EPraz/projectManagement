@@ -131,9 +131,13 @@ const estimates = (item: Pick<Partial<Task>, keyof NullableEstimates>) => ({
 });
 
 // Editors send writable fields explicitly, never nested response objects or metadata.
-export const taskUpdateFromDraft = (task: Task, actor: string): TaskUpdate => ({
+export const taskUpdateFromDraft = (
+  task: Partial<Task>,
+  actor: string,
+): TaskUpdate => ({
   id: task.id,
-  title: task.title.trim(),
+  title: task.title?.trim(),
+  statusId: task.statusId,
   description: task.description,
   discussion: task.discussion,
   updatedBy: actor,
@@ -219,3 +223,9 @@ export const ticketCreateFromDraft = (
   notes: ticket.notes,
   discussion: ticket.discussion,
 });
+
+export const readCreatedTask = (
+  value: unknown,
+  ticketId: number | undefined,
+): Task =>
+  taskResponse(value) && value.ticketId === ticketId ? value : unconfirmed();
