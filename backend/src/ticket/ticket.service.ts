@@ -177,9 +177,9 @@ export class TicketService {
 
       if (!ticket) throw new NotFoundException('Ticket not found');
 
-      this.eventsGateway.emitTicketDelete(ticket);
-
       await this.prisma.ticket.delete({ where: { id } });
+
+      this.eventsGateway.emitTicketDelete(ticket);
 
       return true;
     } catch (error) {

@@ -1,6 +1,93 @@
 import { expect, test } from "@playwright/test";
 import { enterDemo } from "./support/demo";
 
+test("ticket deletion during refresh cannot be restored by an older project snapshot", async ({
+  page,
+  request,
+}) => {
+  await enterDemo(page);
+  await page.getByText("Orbit — Product Delivery", { exact: true }).click();
+  await expect(
+    page.getByText("Overall Progress", { exact: true }),
+  ).toBeVisible();
+  const id = new URL(page.url()).pathname.split("/")[2];
+  const login = await request.post("/api/auth/instant-login", { data: {} });
+  const { accessToken } = await login.json();
+  const headers = { Authorization: `Bearer ${accessToken}` };
+  const project: { sprints: { id: string; name: string }[] } = await (
+    await request.get(`/api/projects/${id}`, { headers })
+  ).json();
+  const sprintName = await page.getByRole("combobox").inputValue();
+  const sprint = project.sprints.find((item) => item.name === sprintName)!;
+  const marker = `Pending refresh deletion ${Date.now()}`;
+  const created = await request.post("/api/tickets", {
+    headers,
+    data: {
+      title: marker,
+      sprintId: sprint.id,
+      createdBy: "visitor@demo.example",
+    },
+  });
+  expect(created.status()).toBe(201);
+  const ticket: { id: number } = await created.json();
+  const pattern = `**/api/projects/${id}`;
+  let release!: () => void;
+  let reached!: () => void;
+  let finished!: () => void;
+  const delayed = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const received = new Promise<void>((resolve) => {
+    reached = resolve;
+  });
+  const fulfilled = new Promise<void>((resolve) => {
+    finished = resolve;
+  });
+  try {
+    await page.getByRole("button", { name: "Board", exact: true }).click();
+    await expect(page.getByRole("heading", { name: marker, exact: true })).toBeVisible();
+    let first = true;
+    await page.route(pattern, async (route) => {
+      if (!first) return route.continue();
+      first = false;
+      const oldSnapshot = await route.fetch();
+      reached();
+      await delayed;
+      try {
+        await route.fulfill({ response: oldSnapshot });
+      } finally {
+        finished();
+      }
+    });
+    await page
+      .getByRole("button", { name: "Refresh project", exact: true })
+      .click();
+    await received;
+    const refreshed = page.waitForResponse(
+      (response) =>
+        response.url().endsWith(`/api/projects/${id}`) && response.ok(),
+    );
+    expect(
+      (await request.delete(`/api/tickets/${ticket.id}`, { headers })).ok(),
+    ).toBe(true);
+    await refreshed;
+    await expect(page.getByRole("heading", { name: marker, exact: true })).toHaveCount(0);
+    release();
+    await fulfilled;
+    await page.evaluate(
+      () =>
+        new Promise((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        ),
+    );
+    await expect(page.getByRole("heading", { name: marker, exact: true })).toHaveCount(0);
+  } finally {
+    release();
+    await page.unroute(pattern);
+    await request.delete(`/api/tickets/${ticket.id}`, { headers });
+  }
+});
+
 for (const failure of ["unavailable", "non-JSON"]) {
   test(`project-list ${failure} failure stays recoverable instead of showing an empty workspace`, async ({
     page,

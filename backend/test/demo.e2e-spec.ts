@@ -458,6 +458,71 @@ describe('Acceso demo HTTP API', () => {
     }
   });
 
+  it('publishes ticket deletion only after a fresh read confirms it is gone', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const ticket = await prisma.ticket.create({
+      data: {
+        title: 'Isolated delayed deletion',
+        createdBy: 'visitor@demo.example',
+      },
+    });
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      reconnection: false,
+      autoConnect: false,
+      timeout: 5000,
+    });
+    let timer: NodeJS.Timeout | undefined;
+    try {
+      // A test-only database delay exposes reads racing the DELETE commit.
+      await prisma.$executeRawUnsafe(`CREATE FUNCTION quality_delay_ticket_delete()
+        RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN
+        PERFORM pg_sleep(1); RETURN OLD; END $$`);
+      await prisma.$executeRawUnsafe(`CREATE TRIGGER quality_delay_ticket_delete
+        BEFORE DELETE ON "Ticket" FOR EACH ROW WHEN (OLD.id = ${ticket.id})
+        EXECUTE FUNCTION quality_delay_ticket_delete()`);
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      const readAfterEvent = new Promise<number>((resolve, reject) => {
+        timer = setTimeout(
+          () => reject(new Error('Ticket deletion event missing')),
+          5000,
+        );
+        observer.on('ticketDeleted', (event: { id: number }) => {
+          if (event.id !== ticket.id) return;
+          void request(app.getHttpServer())
+            .get(`/tickets/${ticket.id}`)
+            .auth(token, { type: 'bearer' })
+            .then((response) => resolve(response.status), reject);
+        });
+      });
+      void readAfterEvent.catch(() => undefined);
+      await request(app.getHttpServer())
+        .delete(`/tickets/${ticket.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(await readAfterEvent).toBe(404);
+    } finally {
+      clearTimeout(timer);
+      observer.disconnect();
+      await prisma.$executeRawUnsafe(
+        'DROP TRIGGER IF EXISTS quality_delay_ticket_delete ON "Ticket"',
+      );
+      await prisma.$executeRawUnsafe(
+        'DROP FUNCTION IF EXISTS quality_delay_ticket_delete()',
+      );
+      await prisma.ticket.deleteMany({ where: { id: ticket.id } });
+    }
+  });
+
   it('preserves visitor edits on repeated initialization and restores only with explicit confirmation', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')
