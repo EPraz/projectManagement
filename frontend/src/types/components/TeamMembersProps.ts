@@ -16,9 +16,10 @@ export type TeamMembersDialogProps = {
   mutationError: string | null;
   onRetryUsers: () => Promise<void>;
   setSelectedUser: (value: React.SetStateAction<string | null>) => void;
-  handleAddMember: () => Promise<void>;
+  handleAddMember: () => Promise<boolean>;
   loadingCreateProjectUser: boolean;
   selectedUser: string | null;
+  projectName?: string;
 };
 
 export type TeamMembersTableProps = {
@@ -26,7 +27,7 @@ export type TeamMembersTableProps = {
   theme: themeType;
   handleMenuClick: (
     event: React.MouseEvent<HTMLButtonElement>,
-    memberId: string
+    memberId: string,
   ) => void;
   searchQuery: searchQueryType;
   hasActiveFilters: hasActiveFiltersType;
@@ -37,7 +38,8 @@ export type TeamMembersMenuProps = {
   anchorEl: HTMLElement | null;
   handleMenuClose: () => void;
   selectedMember: string | null;
-  handleRemoveFromProject: () => Promise<void>;
+  memberName?: string;
+  handleRemoveFromProject: () => Promise<boolean>;
   loading: boolean;
   error: string | null;
 };
@@ -62,7 +64,7 @@ export type TeamMembersSearchBarProps = {
       name: string;
       email: string;
       roles: Record<string, boolean>;
-    }>
+    }>,
   ) => void;
   handleRoleFilterChange: (role: string) => void;
   theme: themeType;

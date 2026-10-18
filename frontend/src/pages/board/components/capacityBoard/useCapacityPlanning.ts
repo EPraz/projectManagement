@@ -18,9 +18,17 @@ export const useCapacityPlanning = () => {
   const { begin, finish, isPending } = usePendingWorkItems<string>();
   const save = async (
     current: TeamMemberCapacity | null,
-    data: CapacityDraft
+    data: CapacityDraft,
   ) => {
     if (!sprint) throw new Error("Select a sprint before planning capacity.");
+    if (
+      !project?.users.some(
+        (member) => member.id === (current?.userId ?? data.userId),
+      )
+    )
+      throw new Error(
+        "That person is no longer a member of this project. Close this draft and choose a current member.",
+      );
     const key = `save:${current?.id ?? sprint.id}`;
     if (!begin(key)) return false;
     try {
@@ -32,11 +40,11 @@ export const useCapacityPlanning = () => {
             capacity: data.capacity,
             daysOff: data.daysOff,
             remainingWork: data.remainingWork,
-            ...(!current && { userId: data.userId, sprintId: sprint.id })
+            ...(!current && { userId: data.userId, sprintId: sprint.id }),
           },
           errorMessage:
-            "Could not save capacity. Your changes are kept. Please try again."
-        }
+            "Could not save capacity. Your changes are kept. Please try again.",
+        },
       );
       if (
         !record(result) ||
@@ -45,11 +53,11 @@ export const useCapacityPlanning = () => {
         result.sprintId !== sprint.id ||
         result.userId !== (current?.userId ?? data.userId) ||
         !["capacity", "daysOff", "remainingWork"].every(
-          (key) => typeof result[key] === "number"
+          (key) => typeof result[key] === "number",
         )
       )
         throw new Error(
-          "The server did not confirm this capacity change. Please refresh and try again."
+          "The server did not confirm this capacity change. Please refresh and try again.",
         );
       await reloadProject();
       return true;
@@ -66,12 +74,12 @@ export const useCapacityPlanning = () => {
         `team-member-capacities/${current.id}`,
         {
           method: "DELETE",
-          errorMessage: "Could not delete capacity. Please try again."
-        }
+          errorMessage: "Could not delete capacity. Please try again.",
+        },
       );
       if (result !== true)
         throw new Error(
-          "The server did not confirm deletion. Please refresh and try again."
+          "The server did not confirm deletion. Please refresh and try again.",
         );
       await reloadProject();
       return true;
@@ -82,10 +90,14 @@ export const useCapacityPlanning = () => {
   return {
     project,
     sprint,
-    teamMembers: sprint?.teamMemberCapacities ?? [],
+    // Membership is canonical; keep stored plans available if someone rejoins,
+    // while current sprint reporting includes only the current project roster.
+    teamMembers: (sprint?.teamMemberCapacities ?? []).filter((record) =>
+      project?.users.some((member) => member.id === record.userId),
+    ),
     save,
     remove,
     isSaving: (id?: string) => isPending(`save:${id ?? sprint?.id}`),
-    isDeleting: (id?: string) => isPending(`delete:${id}`)
+    isDeleting: (id?: string) => isPending(`delete:${id}`),
   };
 };

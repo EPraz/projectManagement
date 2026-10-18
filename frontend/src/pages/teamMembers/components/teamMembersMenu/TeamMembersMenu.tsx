@@ -1,67 +1,111 @@
-import { Alert, Menu, MenuItem, Typography } from "@mui/material";
+import { useLayoutEffect, useRef, useState } from "react";
 import {
-  Edit as EditIcon,
-  PersonAdd as PersonAddIcon,
-  Work as WorkIcon,
-  PowerSettingsNew as PowerIcon,
-  Delete as DeleteIcon
-} from "@mui/icons-material";
-import { TeamMembersMenuProps } from "../../../../types";
-
-const TeamMembersMenu = ({
-  anchorEl,
-  handleMenuClose,
-  selectedMember,
-  handleRemoveFromProject,
-  loading = false,
-  error
-}: TeamMembersMenuProps) => {
-  return (
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={() => {
-        if (!loading) handleMenuClose();
-      }}
-      elevation={3}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "right"
-      }}
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right"
-      }}
-    >
-      {error && <Alert severity="error">{error}</Alert>}
-      <MenuItem onClick={handleMenuClose} disabled>
-        <EditIcon fontSize="small" sx={{ mr: 1 }} />
-        <Typography>Edit Member</Typography>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose} disabled>
-        <PersonAddIcon fontSize="small" sx={{ mr: 1 }} />
-        <Typography>Change Role</Typography>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose} disabled>
-        <WorkIcon fontSize="small" sx={{ mr: 1 }} />
-        <Typography>Manage Projects</Typography>
-      </MenuItem>
-      <MenuItem
-        onClick={handleMenuClose}
-        sx={{
-          color: selectedMember && "success.main"
-        }}
-        disabled
-      >
-        <PowerIcon fontSize="small" sx={{ mr: 1 }} />
-        <Typography>{selectedMember && "Activate"}</Typography>
-      </MenuItem>
-      <MenuItem onClick={handleRemoveFromProject} disabled={loading}>
-        <DeleteIcon fontSize="small" sx={{ mr: 1 }} color={"error"} />
-        <Typography color="error">Remove From Project</Typography>
-      </MenuItem>
-    </Menu>
+  Alert,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
+import { PersonRemoveOutlined } from "@mui/icons-material";
+import type { TeamMembersMenuProps } from "../../../../types";
+export default function TeamMembersMenu(props: TeamMembersMenuProps) {
+  const [confirming, setConfirming] = useState(false);
+  const [failure, setFailure] = useState(false);
+  const active = useRef(false);
+  const generation = useRef(0);
+  useLayoutEffect(
+    () => () => {
+      generation.current++;
+    },
+    [],
   );
-};
-
-export default TeamMembersMenu;
+  const confirm = async () => {
+    if (active.current || props.loading) return;
+    active.current = true;
+    const started = generation.current;
+    setFailure(false);
+    try {
+      const confirmed = await props.handleRemoveFromProject();
+      if (started === generation.current) {
+        if (confirmed) props.handleMenuClose();
+        else setFailure(true);
+      }
+    } catch {
+      if (started === generation.current) setFailure(true);
+    } finally {
+      active.current = false;
+    }
+  };
+  return (
+    <>
+      <Menu
+        anchorEl={props.anchorEl}
+        open={Boolean(props.anchorEl)}
+        onClose={() => {
+          if (!props.loading) props.handleMenuClose();
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MenuItem onClick={() => setConfirming(true)} disabled={props.loading}>
+          <PersonRemoveOutlined fontSize="small" color="error" sx={{ mr: 1 }} />
+          <Typography color="error">Remove From Project</Typography>
+        </MenuItem>
+      </Menu>
+      <Dialog
+        open={confirming}
+        maxWidth="xs"
+        fullWidth
+        aria-labelledby="member-removal-title"
+        onClose={(_, reason) => {
+          if (!props.loading && reason !== "backdropClick")
+            props.handleMenuClose();
+        }}
+      >
+        <DialogTitle id="member-removal-title">
+          Remove project member
+        </DialogTitle>
+        <DialogContent>
+          {failure && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {props.error ??
+                "Could not remove this project member. Please try again."}
+            </Alert>
+          )}
+          <Typography>
+            Remove <strong>{props.memberName ?? "this person"}</strong> from
+            this project?
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+            Their entry remains in the demo user catalog. This changes project
+            membership.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={props.handleMenuClose} disabled={props.loading}>
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            aria-busy={props.loading}
+            disabled={props.loading}
+            startIcon={
+              props.loading ? <CircularProgress size={18} /> : undefined
+            }
+            onClick={() => {
+              void confirm();
+            }}
+          >
+            Remove member
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}

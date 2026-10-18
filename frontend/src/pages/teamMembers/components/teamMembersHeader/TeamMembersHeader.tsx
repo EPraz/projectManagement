@@ -1,29 +1,34 @@
 import { Box, Button, Typography } from "@mui/material";
-import { Add as AddIcon } from "@mui/icons-material";
-import { TeamMembersHeaderProps } from "../../../../types";
-import { Header } from "../../TeamMembersPage.styles";
-
-const TeamMembersHeader = ({ setOpenDialog }: TeamMembersHeaderProps) => {
+import { Add } from "@mui/icons-material";
+import type { TeamMembersHeaderProps } from "../../../../types";
+export default function TeamMembersHeader({
+  setOpenDialog,
+}: TeamMembersHeaderProps) {
   return (
-    <Header elevation={0}>
-      <Box>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
-          Team Members
+    <Box
+      sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}
+    >
+      <Box sx={{ flex: "1 1 240px" }}>
+        <Typography variant="overline" color="primary">
+          People / Project-wide
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Inspect your demo team and manage project membership.
+        <Typography component="h1" variant="h1">
+          Team Members
+          <Box component="span" sx={{ color: "primary.main" }}>
+            .
+          </Box>
+        </Typography>
+        <Typography color="text.secondary" sx={{ mt: 1 }}>
+          The people sharing this project.
         </Typography>
       </Box>
       <Button
         variant="contained"
-        startIcon={<AddIcon />}
+        startIcon={<Add />}
         onClick={() => setOpenDialog(true)}
-        sx={{ height: 40 }}
       >
         Add Member
       </Button>
-    </Header>
+    </Box>
   );
-};
-
-export default TeamMembersHeader;
+}

@@ -1,153 +1,205 @@
+import { useLayoutEffect, useRef } from "react";
 import {
   Alert,
   Autocomplete,
   Box,
   Button,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   MenuItem,
   Paper,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
-import { TeamMembersDialogProps } from "../../../../types";
-
-const TeamMembersDialog = ({
-  openDialog,
-  setOpenDialog,
-  loadingUsers,
-  availableUsers,
-  setSelectedUser,
-  handleAddMember,
-  loadingCreateProjectUser,
-  selectedUser,
-  catalogError,
-  mutationError,
-  onRetryUsers
-}: TeamMembersDialogProps) => {
+import type { TeamMembersDialogProps } from "../../../../types";
+import EditorShell from "../../../../components/workItemEditor/EditorShell";
+import EditorNavigationGuard from "../../../../components/workItemEditor/EditorNavigationGuard";
+import UnsavedChangesDialog from "../../../../components/workItemEditor/UnsavedChangesDialog";
+import { useEditorExit } from "../../../../components/workItemEditor/useEditorExit";
+export default function TeamMembersDialog(props: TeamMembersDialogProps) {
+  const generation = useRef(0);
+  useLayoutEffect(
+    () => () => {
+      generation.current++;
+    },
+    [],
+  );
+  const selectedSnapshot = useRef<
+    TeamMembersDialogProps["availableUsers"][number] | null
+  >(null);
+  const availableSelection = props.availableUsers.find(
+    (user) => user.id === props.selectedUser,
+  );
+  if (availableSelection) selectedSnapshot.current = availableSelection;
+  else if (!props.selectedUser) selectedSnapshot.current = null;
+  // A confirmed socket event can remove the just-added person from available
+  // options before the HTTP save finishes. Keep that pending choice visible.
+  const selection =
+    availableSelection ??
+    (props.loadingCreateProjectUser &&
+    selectedSnapshot.current?.id === props.selectedUser
+      ? selectedSnapshot.current
+      : null);
+  const options =
+    selection && !props.availableUsers.some((user) => user.id === selection.id)
+      ? [selection, ...props.availableUsers]
+      : props.availableUsers;
+  const valid = props.availableUsers.some(
+    (user) => user.id === props.selectedUser,
+  );
+  const close = () => {
+    props.setSelectedUser(null);
+    props.setOpenDialog(false);
+  };
+  const save = async () => {
+    if (!valid || props.loadingCreateProjectUser) return;
+    const started = generation.current;
+    if ((await props.handleAddMember()) && started === generation.current)
+      exit.finish();
+  };
+  const exit = useEditorExit({
+    identity: `${props.openDialog}:membership`,
+    dirty: Boolean(props.selectedUser),
+    pending: props.loadingCreateProjectUser,
+    onClose: close,
+    onSave: () => {
+      void save();
+    },
+    failure: props.mutationError ?? "",
+  });
   return (
-    <Dialog
-      open={openDialog}
-      onClose={() => {
-        if (!loadingCreateProjectUser) setOpenDialog(false);
-      }}
-      maxWidth="sm"
-      fullWidth
-      PaperProps={{
-        elevation: 3,
-        sx: {
-          borderRadius: 2
+    <>
+      <EditorNavigationGuard {...exit.guardProps} />
+      <EditorShell
+        open={props.openDialog}
+        title="Add Team Member"
+        context={props.projectName}
+        panelWidth={760}
+        closeLabel="Close member selector"
+        pending={props.loadingCreateProjectUser}
+        onClose={exit.requestClose}
+        actions={
+          <>
+            <Button
+              disabled={props.loadingCreateProjectUser}
+              onClick={exit.requestClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              aria-busy={props.loadingCreateProjectUser}
+              startIcon={
+                props.loadingCreateProjectUser ? (
+                  <CircularProgress size={18} />
+                ) : undefined
+              }
+              onClick={() => {
+                void save();
+              }}
+              disabled={
+                Boolean(props.catalogError) ||
+                props.loadingCreateProjectUser ||
+                !valid ||
+                props.loadingUsers
+              }
+            >
+              Add Member
+            </Button>
+          </>
         }
-      }}
-    >
-      <DialogTitle sx={{ borderBottom: 1, borderColor: "divider", px: 3 }}>
-        Add Team Member
-      </DialogTitle>
-      <DialogContent sx={{ p: 3 }}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
-          {mutationError && <Alert severity="error">{mutationError}</Alert>}
-          {catalogError ? (
+      >
+        <Box sx={{ display: "grid", gap: 3, pt: 1 }}>
+          <Typography color="text.secondary">
+            Choose someone from the existing demo catalog to join this project.
+          </Typography>
+          {props.mutationError && (
+            <Alert severity="error">{props.mutationError}</Alert>
+          )}
+          {props.catalogError ? (
             <Alert
               severity="error"
               action={
                 <Button
-                  disabled={loadingUsers}
+                  disabled={props.loadingUsers}
                   onClick={() => {
-                    void onRetryUsers();
+                    void props.onRetryUsers();
                   }}
                 >
                   Retry users
                 </Button>
               }
             >
-              {catalogError}
+              {props.catalogError}
             </Alert>
-          ) : loadingUsers ? (
-            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
-              <CircularProgress />
-            </Box>
-          ) : availableUsers.length === 0 ? (
-            <Paper
-              sx={{
-                p: 3,
-                textAlign: "center",
-                bgcolor: "background.default"
-              }}
+          ) : props.loadingUsers ? (
+            <Box
+              role="status"
+              aria-label="Loading people"
+              sx={{ display: "flex", gap: 2, alignItems: "center", py: 3 }}
             >
-              <Typography variant="body1" gutterBottom>
-                No available users to add
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <CircularProgress size={24} />
+              Loading people…
+            </Box>
+          ) : !options.length ? (
+            <Paper
+              sx={{ p: 3, bgcolor: "background.default", borderRadius: "8px" }}
+            >
+              <Typography>No available users to add</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                 All users are already part of this project
               </Typography>
             </Paper>
           ) : (
-            <Autocomplete
-              id="user-select"
-              disabled={loadingCreateProjectUser}
-              value={
-                availableUsers.find((user) => user.id === selectedUser) ?? null
-              }
-              options={availableUsers}
-              getOptionLabel={(option) => `${option.email} (${option.name})`}
-              renderOption={(props, option) => (
-                <MenuItem {...props}>
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Typography variant="body2">{option.email}</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {option.name}
-                    </Typography>
-                  </Box>
-                </MenuItem>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Select User"
-                  placeholder="Search by email or name"
-                  fullWidth
-                  size="small"
-                />
-              )}
-              onChange={(_, newValue) => setSelectedUser(newValue?.id || null)}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              fullWidth
-            />
+            <>
+              {props.selectedUser &&
+                !valid &&
+                !props.loadingCreateProjectUser && (
+                  <Alert severity="info">
+                    The selected person is no longer available to add. Choose
+                    someone else.
+                  </Alert>
+                )}
+              <Autocomplete
+                id="user-select"
+                disabled={props.loadingCreateProjectUser}
+                value={selection}
+                options={options}
+                getOptionLabel={(option) => `${option.email} (${option.name})`}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                onChange={(_, value) =>
+                  props.setSelectedUser(value?.id ?? null)
+                }
+                renderOption={(optionProps, option) => (
+                  <MenuItem {...optionProps} key={option.id}>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography sx={{ overflowWrap: "anywhere" }}>
+                        {option.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ overflowWrap: "anywhere" }}
+                      >
+                        {option.email}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Select User"
+                    placeholder="Search by email or name"
+                    fullWidth
+                    size="small"
+                  />
+                )}
+              />
+            </>
           )}
         </Box>
-      </DialogContent>
-      <DialogActions sx={{ p: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
-        <Button
-          disabled={loadingCreateProjectUser}
-          onClick={() => setOpenDialog(false)}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          aria-label="Add Member"
-          aria-busy={loadingCreateProjectUser}
-          onClick={handleAddMember}
-          disabled={
-            Boolean(catalogError) ||
-            loadingCreateProjectUser ||
-            !selectedUser ||
-            loadingUsers ||
-            availableUsers.length === 0
-          }
-        >
-          {loadingCreateProjectUser ? (
-            <CircularProgress size={24} />
-          ) : (
-            "Add Member"
-          )}
-        </Button>
-      </DialogActions>
-    </Dialog>
+      </EditorShell>
+      <UnsavedChangesDialog {...exit.warningProps} />
+    </>
   );
-};
-
-export default TeamMembersDialog;
+}

@@ -9,7 +9,7 @@ const isOption = (value: unknown): value is MemberOption =>
   Boolean(value) &&
   typeof value === "object" &&
   ["id", "name", "email"].every(
-    (key) => typeof (value as Record<string, unknown>)[key] === "string"
+    (key) => typeof (value as Record<string, unknown>)[key] === "string",
   );
 
 export const useTeamMembers = () => {
@@ -19,6 +19,7 @@ export const useTeamMembers = () => {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [mutationError, setMutationError] = useState<string | null>(null);
+  const resetMutationError = useCallback(() => setMutationError(null), []);
   const active = useRef<AbortController | null>(null);
   const { begin, finish, isPending } = usePendingWorkItems<string>();
   const loadUsers = useCallback(async () => {
@@ -29,11 +30,11 @@ export const useTeamMembers = () => {
     try {
       const data = await request<unknown>("users", {
         signal: controller.signal,
-        errorMessage: "Could not load team users. Please try again."
+        errorMessage: "Could not load team users. Please try again.",
       });
       if (!Array.isArray(data) || !data.every(isOption))
         throw new Error(
-          "Could not load team users: the server returned an unexpected response."
+          "Could not load team users: the server returned an unexpected response.",
         );
       if (!controller.signal.aborted) {
         setAllUsers(data);
@@ -44,7 +45,7 @@ export const useTeamMembers = () => {
         setCatalogError(
           error instanceof Error
             ? error.message
-            : "Could not load team users. Please try again."
+            : "Could not load team users. Please try again.",
         );
     } finally {
       if (active.current === controller) {
@@ -71,8 +72,9 @@ export const useTeamMembers = () => {
         `projects/${project.id}/users/${userId}`,
         {
           method,
-          errorMessage: "Could not change project membership. Please try again."
-        }
+          errorMessage:
+            "Could not change project membership. Please try again.",
+        },
       );
       if (
         !Array.isArray(result) ||
@@ -82,7 +84,7 @@ export const useTeamMembers = () => {
           : result.some((user) => user.id === userId))
       )
         throw new Error(
-          "The server did not confirm this membership change. Please refresh and try again."
+          "The server did not confirm this membership change. Please refresh and try again.",
         );
       await reloadProject();
       return true;
@@ -90,7 +92,7 @@ export const useTeamMembers = () => {
       setMutationError(
         error instanceof Error
           ? error.message
-          : "Could not change project membership. Please try again."
+          : "Could not change project membership. Please try again.",
       );
       return false;
     } finally {
@@ -103,10 +105,11 @@ export const useTeamMembers = () => {
     loadingUsers,
     catalogError,
     mutationError,
+    resetMutationError,
     loadUsers,
     addMember: (id: string | null) => change(id, "POST"),
     removeMember: (id: string | null) => change(id, "DELETE"),
     isPending: (id: string | null) =>
-      Boolean(id) && isPending(`${project?.id}:${id}`)
+      Boolean(id) && isPending(`${project?.id}:${id}`),
   };
 };

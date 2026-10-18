@@ -2,11 +2,11 @@ import { Box, Button, Card, TableCell } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 export const Container = styled(Box)(({ theme }) => ({
-  height: "100%",
+  minWidth: 0,
   display: "flex",
   flexDirection: "column",
   backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(3),
+  padding: 0,
   gap: theme.spacing(3),
 }));
 

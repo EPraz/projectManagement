@@ -1,17 +1,7 @@
 import {
-  ActiveFilterCountBox,
-  FilterActions,
-  FilterButton,
-  FilterContainer,
-  FilterHeader,
-  FilterSection,
-  SearchBar,
-} from "../../TeamMembersPage.styles";
-import {
   Box,
   Button,
   Checkbox,
-  Divider,
   FormControlLabel,
   FormGroup,
   IconButton,
@@ -19,176 +9,136 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-
-import {
-  FilterList as FilterListIcon,
-  Search as SearchIcon,
-  Close as CloseIcon,
-  FilterAlt as FilterAltIcon,
-} from "@mui/icons-material";
+import { Close, FilterList, Search } from "@mui/icons-material";
 import { Role } from "../../../../constants";
-import { formatRoleName, getRoleColor } from "../../../../helpers";
-import { TeamMembersSearchBarProps } from "../../../../types";
-
-const TeamMembersSearchBar = ({
-  searchQuery,
-  setSearchQuery,
-  handleOpenFilter,
-  hasActiveFilters,
-  activeFilterCount,
-  filterAnchorEl,
-  handleCloseFilter,
-  tempFilters,
-  setTempFilters,
-  handleRoleFilterChange,
-  theme,
-  handleResetFilters,
-  handleApplyFilters,
-}: TeamMembersSearchBarProps) => {
+import { formatRoleName } from "../../../../helpers";
+import type { TeamMembersSearchBarProps } from "../../../../types";
+export default function TeamMembersSearchBar(props: TeamMembersSearchBarProps) {
   return (
-    <SearchBar>
-      <TextField
-        size="small"
-        placeholder="Search members..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        sx={{ width: { xs: "100%", sm: 300 } }}
-        InputProps={{
-          startAdornment: <SearchIcon sx={{ mr: 1, color: "action.active" }} />,
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 1.5,
+          alignItems: "center",
+          flexWrap: "wrap",
         }}
-      />
-      <FilterButton
-        variant="outlined"
-        startIcon={<FilterListIcon />}
-        onClick={handleOpenFilter}
-        hasActiveFilters={hasActiveFilters}
       >
-        Filter
-        {activeFilterCount > 0 && (
-          <ActiveFilterCountBox>{activeFilterCount}</ActiveFilterCountBox>
+        <TextField
+          label="Search members"
+          placeholder="Search members..."
+          value={props.searchQuery}
+          onChange={(event) => props.setSearchQuery(event.target.value)}
+          size="small"
+          sx={{ flex: "1 1 240px" }}
+          InputProps={{
+            startAdornment: <Search sx={{ mr: 1, color: "text.secondary" }} />,
+            endAdornment: props.searchQuery ? (
+              <IconButton
+                aria-label="Clear member search"
+                onClick={() => props.setSearchQuery("")}
+              >
+                <Close fontSize="small" />
+              </IconButton>
+            ) : undefined,
+          }}
+        />
+        <Button
+          variant="outlined"
+          startIcon={<FilterList />}
+          onClick={props.handleOpenFilter}
+        >
+          Filters
+          {props.activeFilterCount ? ` (${props.activeFilterCount})` : ""}
+        </Button>
+        {(props.hasActiveFilters || props.searchQuery) && (
+          <Button onClick={props.handleResetFilters}>Clear Filters</Button>
         )}
-      </FilterButton>
-
+      </Box>
       <Popover
-        open={Boolean(filterAnchorEl)}
-        anchorEl={filterAnchorEl}
-        onClose={handleCloseFilter}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
+        open={Boolean(props.filterAnchorEl)}
+        anchorEl={props.filterAnchorEl}
+        onClose={props.handleCloseFilter}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
         PaperProps={{
-          sx: {
-            width: 320,
-            p: 0,
-            mt: 1,
-            overflow: "hidden",
-            boxShadow: 4,
-            borderRadius: 2,
-          },
+          sx: { width: "min(360px,calc(100vw - 32px))", borderRadius: "12px" },
         }}
       >
-        <FilterContainer>
-          <FilterHeader>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <FilterAltIcon sx={{ mr: 1 }} />
-              <Typography variant="subtitle1" fontWeight="medium">
-                Filters
-              </Typography>
-            </Box>
-            <IconButton size="small" onClick={handleCloseFilter}>
-              <CloseIcon fontSize="small" />
+        <Box sx={{ p: 3, display: "grid", gap: 3 }}>
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            <Typography component="h2" variant="h4" sx={{ flex: 1 }}>
+              Member filters
+            </Typography>
+            <IconButton
+              aria-label="Close member filters"
+              onClick={props.handleCloseFilter}
+            >
+              <Close />
             </IconButton>
-          </FilterHeader>
-
-          <FilterSection>
-            <Typography variant="subtitle2" gutterBottom>
-              Member Name
-            </Typography>
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="Filter by name"
-              value={tempFilters.name}
-              onChange={(e) =>
-                setTempFilters((prev) => ({ ...prev, name: e.target.value }))
-              }
-            />
-          </FilterSection>
-
-          <FilterSection>
-            <Typography variant="subtitle2" gutterBottom>
-              Email
-            </Typography>
-            <TextField
-              fullWidth
-              size="small"
-              placeholder="Filter by email"
-              value={tempFilters.email}
-              onChange={(e) =>
-                setTempFilters((prev) => ({ ...prev, email: e.target.value }))
-              }
-            />
-          </FilterSection>
-
-          <FilterSection>
-            <Typography variant="subtitle2" gutterBottom>
+          </Box>
+          <TextField
+            label="Member name"
+            placeholder="Filter by name"
+            fullWidth
+            size="small"
+            value={props.tempFilters.name}
+            onChange={(event) =>
+              props.setTempFilters((current) => ({
+                ...current,
+                name: event.target.value,
+              }))
+            }
+          />
+          <TextField
+            label="Member email"
+            placeholder="Filter by email"
+            fullWidth
+            size="small"
+            value={props.tempFilters.email}
+            onChange={(event) =>
+              props.setTempFilters((current) => ({
+                ...current,
+                email: event.target.value,
+              }))
+            }
+          />
+          <Box>
+            <Typography id="member-role-filter" sx={{ fontWeight: 500, mb: 1 }}>
               Role
             </Typography>
-            <FormGroup>
+            <FormGroup aria-labelledby="member-role-filter">
               {Object.values(Role).map((role) => (
                 <FormControlLabel
                   key={role}
                   control={
                     <Checkbox
-                      checked={tempFilters.roles[role] || false}
-                      onChange={() => handleRoleFilterChange(role)}
-                      size="small"
-                      sx={{
-                        color: getRoleColor(role, theme),
-                        "&.Mui-checked": {
-                          color: getRoleColor(role, theme),
-                        },
-                      }}
+                      checked={props.tempFilters.roles[role] || false}
+                      onChange={() => props.handleRoleFilterChange(role)}
                     />
                   }
-                  label={
-                    <Typography variant="body2">
-                      {formatRoleName(role)}
-                    </Typography>
-                  }
+                  label={formatRoleName(role)}
                 />
               ))}
             </FormGroup>
-          </FilterSection>
-
-          <Divider />
-
-          <FilterActions>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={handleResetFilters}
-              startIcon={<CloseIcon />}
-            >
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 1,
+              justifyContent: "flex-end",
+              flexWrap: "wrap",
+            }}
+          >
+            <Button variant="outlined" onClick={props.handleResetFilters}>
               Reset
             </Button>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={handleApplyFilters}
-            >
+            <Button variant="contained" onClick={props.handleApplyFilters}>
               Apply Filters
             </Button>
-          </FilterActions>
-        </FilterContainer>
+          </Box>
+        </Box>
       </Popover>
-    </SearchBar>
+    </>
   );
-};
-
-export default TeamMembersSearchBar;
+}

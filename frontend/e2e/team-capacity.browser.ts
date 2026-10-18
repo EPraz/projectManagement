@@ -207,13 +207,21 @@ test("membership failures retain selection and retry synchronizes a second brows
     await page
       .getByRole("menuitem", { name: "Remove From Project", exact: true })
       .click();
-    await expect(page.getByRole("menu").getByRole("alert")).toContainText(
+    const removal = page.getByRole("dialog", {
+      name: "Remove project member",
+      exact: true,
+    });
+    await removal
+      .getByRole("button", { name: "Remove member", exact: true })
+      .click();
+    await expect(removal.getByRole("alert")).toContainText(
       "Could not change project membership",
     );
     await page.unroute(path);
-    await page
-      .getByRole("menuitem", { name: "Remove From Project", exact: true })
+    await removal
+      .getByRole("button", { name: "Remove member", exact: true })
       .click();
+    await expect(removal).toHaveCount(0);
     for (const current of [page, other])
       await expect(
         current.getByRole("row").filter({ hasText: fixture.outsider.email }),

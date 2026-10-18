@@ -2,10 +2,11 @@ import React, { useState, useMemo, useCallback } from "react";
 import { Container } from "../../TeamMembersPage.styles";
 import { Role } from "../../../../constants";
 import { useDebounce } from "../../../../hooks/useDebounce";
+import { useProject } from "../../../../context/projectContext";
 import { useTeamMembers } from "../../useTeamMembers";
 import TeamMembersSearchBar from "../teamMembersSearchBar/TeamMembersSearchBar";
 import TeamMembersTable from "../teamMembersTable/TeamMembersTable";
-import { useTheme } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import TeamMembersHeader from "../teamMembersHeader/TeamMembersHeader";
 import { Portal } from "../../../../components";
 import TeamMembersMenu from "../teamMembersMenu/TeamMembersMenu";
@@ -13,16 +14,18 @@ import TeamMembersDialog from "../teamMembersDialog/TeamMembersDialog";
 
 const TeamMembersContainer = () => {
   const theme = useTheme();
+  const { project } = useProject();
   const {
     members,
     allUsers,
     loadingUsers,
     catalogError,
     mutationError,
+    resetMutationError,
     loadUsers,
     addMember,
     removeMember,
-    isPending
+    isPending,
   } = useTeamMembers();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
@@ -33,7 +36,7 @@ const TeamMembersContainer = () => {
 
   // Filter state
   const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
-    null
+    null,
   );
 
   const [filters, setFilters] = useState({
@@ -41,30 +44,20 @@ const TeamMembersContainer = () => {
     email: "",
     roles: Object.values(Role).reduce(
       (acc, role) => ({ ...acc, [role]: false }),
-      {} as Record<string, boolean>
-    )
+      {} as Record<string, boolean>,
+    ),
   });
   const [tempFilters, setTempFilters] = useState({
     name: "",
     email: "",
     roles: Object.values(Role).reduce(
       (acc, role) => ({ ...acc, [role]: false }),
-      {} as Record<string, boolean>
-    )
+      {} as Record<string, boolean>,
+    ),
   });
 
-  const handleAddMember = async () => {
-    if (await addMember(selectedUser)) {
-      setSelectedUser(null);
-      setOpenDialog(false);
-    }
-  };
-  const handleRemoveFromProject = async () => {
-    if (await removeMember(selectedMember)) {
-      setAnchorEl(null);
-      setSelectedMember(null);
-    }
-  };
+  const handleAddMember = () => addMember(selectedUser);
+  const handleRemoveFromProject = () => removeMember(selectedMember);
 
   // Get available users (not already in the project)
   const availableUsers = useMemo(() => {
@@ -83,7 +76,7 @@ const TeamMembersContainer = () => {
         (member) =>
           member.name.toLowerCase().includes(query) ||
           member.email.toLowerCase().includes(query) ||
-          (member.role && member.role.toLowerCase().includes(query))
+          (member.role && member.role.toLowerCase().includes(query)),
       );
     }
 
@@ -91,7 +84,7 @@ const TeamMembersContainer = () => {
     if (filters.name) {
       const nameQuery = filters.name.toLowerCase();
       result = result.filter((member) =>
-        member.name.toLowerCase().includes(nameQuery)
+        member.name.toLowerCase().includes(nameQuery),
       );
     }
 
@@ -99,7 +92,7 @@ const TeamMembersContainer = () => {
     if (filters.email) {
       const emailQuery = filters.email.toLowerCase();
       result = result.filter((member) =>
-        member.email.toLowerCase().includes(emailQuery)
+        member.email.toLowerCase().includes(emailQuery),
       );
     }
 
@@ -110,7 +103,7 @@ const TeamMembersContainer = () => {
 
     if (activeRoles.length > 0) {
       result = result.filter(
-        (member) => member.role && activeRoles.includes(member.role)
+        (member) => member.role && activeRoles.includes(member.role),
       );
     }
 
@@ -120,10 +113,11 @@ const TeamMembersContainer = () => {
   const handleMenuClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>, memberId: string) => {
       event.stopPropagation();
+      resetMutationError();
       setAnchorEl(event.currentTarget);
       setSelectedMember(memberId);
     },
-    []
+    [resetMutationError],
   );
 
   const handleMenuClose = useCallback(() => {
@@ -147,13 +141,14 @@ const TeamMembersContainer = () => {
   };
 
   const handleResetFilters = () => {
+    setSearchQuery("");
     const resetFilters = {
       name: "",
       email: "",
       roles: Object.values(Role).reduce(
         (acc, role) => ({ ...acc, [role]: false }),
-        {} as Record<string, boolean>
-      )
+        {} as Record<string, boolean>,
+      ),
     };
     setTempFilters(resetFilters);
     setFilters(resetFilters);
@@ -165,8 +160,8 @@ const TeamMembersContainer = () => {
       ...prev,
       roles: {
         ...prev.roles,
-        [role]: !prev.roles[role]
-      }
+        [role]: !prev.roles[role],
+      },
     }));
   };
 
@@ -190,7 +185,15 @@ const TeamMembersContainer = () => {
 
   return (
     <Container>
-      <TeamMembersHeader setOpenDialog={setOpenDialog} />
+      <TeamMembersHeader
+        setOpenDialog={(value) => {
+          if (value === true) {
+            resetMutationError();
+            setSelectedUser(null);
+          }
+          setOpenDialog(value);
+        }}
+      />
 
       <TeamMembersSearchBar
         activeFilterCount={activeFilterCount}
@@ -208,6 +211,9 @@ const TeamMembersContainer = () => {
         theme={theme}
       />
 
+      <Typography variant="body2" color="text.secondary">
+        {filteredMembers.length} of {members.length} project members
+      </Typography>
       <TeamMembersTable
         filteredMembers={filteredMembers}
         handleMenuClick={handleMenuClick}
@@ -223,6 +229,9 @@ const TeamMembersContainer = () => {
             anchorEl={anchorEl}
             handleMenuClose={handleMenuClose}
             selectedMember={selectedMember}
+            memberName={
+              members.find((member) => member.id === selectedMember)?.name
+            }
             handleRemoveFromProject={handleRemoveFromProject}
             loading={isPending(selectedMember)}
             error={mutationError}
@@ -234,6 +243,7 @@ const TeamMembersContainer = () => {
         <Portal>
           <TeamMembersDialog
             availableUsers={availableUsers}
+            projectName={project?.title}
             handleAddMember={handleAddMember}
             loadingCreateProjectUser={isPending(selectedUser)}
             catalogError={catalogError}
@@ -243,7 +253,10 @@ const TeamMembersContainer = () => {
             openDialog={openDialog}
             selectedUser={selectedUser}
             setOpenDialog={setOpenDialog}
-            setSelectedUser={setSelectedUser}
+            setSelectedUser={(value) => {
+              resetMutationError();
+              setSelectedUser(value);
+            }}
           />
         </Portal>
       )}
