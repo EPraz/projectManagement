@@ -4,15 +4,15 @@
 
 **Blocked by:** 07: Coherent project loading and selection.
 
-**Status:** claimed
+**Status:** resolved
 
 Type: task
 
-- [ ] Measure representative list/detail payloads, requests and query work before optimizing; distinguish provider wake-up from application cost.
-- [ ] Map consumers before changing a projection/response, and migrate real callers/tests in the same compatible slice.
-- [ ] Preserve project summaries, hierarchy/sprint requirements, credential exclusion and HTTP/socket contracts used by the affected views.
-- [ ] Verify populated, empty and failed/read-retry paths and correct data after relevant mutations.
-- [ ] Demonstrate a comparable measured improvement and record the trade-off; do not introduce a general API redesign or silently remove fields a current consumer uses.
+- [x] Measure representative list/detail payloads, requests and query work before optimizing; distinguish provider wake-up from application cost.
+- [x] Map consumers before changing a projection/response, and migrate real callers/tests in the same compatible slice.
+- [x] Preserve project summaries, hierarchy/sprint requirements, credential exclusion and HTTP/socket contracts used by the affected views.
+- [x] Verify populated, empty and failed/read-retry paths and correct data after relevant mutations.
+- [x] Demonstrate a comparable measured improvement and record the trade-off; do not introduce a general API redesign or silently remove fields a current consumer uses.
 
 ## Comments
 
@@ -21,3 +21,7 @@ Type: task
 2026-10-17: Claimed after13resolved atc21f8cf. Measure populated list/detail payload and Prisma query work against the isolated local PostgreSQL/application before selecting projections. Map project list/progress/avatar/team and canonical workspace/socket consumers; retain compatibility for default full reads and current stored data.
 
 2026-10-17 review correction: both axes found the summary guard rejected valid nullable Ticket.statusId. A real-browser mixed completed/null payload regression reproduced the list load error (missing50%progress). The summary type/guard and progress helper now preserve nullable/missing-status semantics and retain those tickets in the denominator. A local PostgreSQL HTTP fixture also verifies a stored null-status ticket survives summary/workspace reads. No stored status is renamed or invented. Final84-browser/45API checks required before closure.
+
+## Answer
+
+Resolved with compatible opt-in summary/workspace reads and actual-consumer types/canonical projection. List JSON−98.4%/queries43→6; detail JSON−33.8%/queries43→33, with default complete HTTP/socket contracts unchanged. Nullable status regression reproduced/fixed/re-reviewed. [Evidence](../evidence/14-project-reads.md), [measurements](../evidence/14-read-measurements.json), [review](../evidence/14-review.md);d8088b4/b944896/3723701.84production-browser/45API/77Jest and type/build/lint checks pass; both axes0remaining.

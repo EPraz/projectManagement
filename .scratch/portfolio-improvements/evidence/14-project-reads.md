@@ -30,3 +30,9 @@ All16focused project browser journeys pass, including both new cases: summary gr
 All77Jest tests/15suites/12snapshots, frontend types/build/lint pass (15visiblewarnings/0errors, no suppressions or snapshot changes). A missing updatedBy summary field was caught by types and added because it is a real grid consumer. Final integrated83production-browser journeys and independent two-axis review remain pending before closure.
 
 Ticket13 hostedCI39092022632 passed. Final presentation remains deferred through16 and explicit owner design/readiness confirmation before recording.
+
+## Review correction and final closure
+
+Both independent axes identified the same P2: Ticket.statusId is legitimately nullable, including legacy/deleted-status data, but the new summary guard required a string. A browser regression with one completed and one null-status ticket first failed to show50%because the whole list was rejected. The type/guard now accept explicit null and the progress helper retains missing/null/non-completed records in its denominator. Missing required properties remain malformed. A separate real PostgreSQL fixture confirms stored null statuses survive both compact HTTP reads.
+
+Final application3723701797d23356b6d56e77950b6742dd33ceba (backend projection unchanged fromd8088b4) passes **84/84 production-browser journeys in2.6minutes**, **45API/startup tests**, **77Jest tests/15suites/12snapshots**, types/build/lint. Frontend15visiblewarnings/0errors, backend0warnings; no suppressions or regenerated snapshots. All three new project-read browser journeys pass, including50%grid/list with null status. Both axes re-reviewed and report0remainingfindings. No verification remains pending for this slice.
