@@ -97,7 +97,7 @@ test("watching preserves an existing demo session and ignores an expired cookie"
 }) => {
   await enterDemo(page);
   const before = await context.cookies();
-  expect(before.length).toBeGreaterThan(0);
+  expect(before.some((cookie) => cookie.name === "jwt")).toBe(true);
   const requests: string[] = [];
   page.on("request", (request) => {
     if (new URL(request.url()).pathname.startsWith("/api/"))
@@ -117,8 +117,13 @@ test("watching preserves an existing demo session and ignores an expired cookie"
   await context.clearCookies();
   await context.addCookies([
     {
-      name: "refreshToken",
-      value: "expired-fictional-token",
+      name: "jwt",
+      // Expired, untrusted fixture: the public viewer must never attempt to use it.
+      value: [
+        Buffer.from('{"alg":"HS256","typ":"JWT"}').toString("base64url"),
+        Buffer.from('{"sub":"fictional-demo","exp":1}').toString("base64url"),
+        "fictional-signature",
+      ].join("."),
       url: baseURL!,
       httpOnly: true,
     },

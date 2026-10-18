@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-18",
+  "reviewBase": "2339dbc",
+  "candidate": "f41866b",
+  "frontend": {
+    "types": "passed",
+    "lintErrors": 0,
+    "existingFastRefreshWarnings": 12,
+    "jestSuites": 16,
+    "tests": 80,
+    "snapshots": 12
+  },
+  "backend": {
+    "types": "passed",
+    "lint": "passed",
+    "suites": 2,
+    "tests": 58
+  },
+  "browser": {
+    "productionBuilds": "passed",
+    "passed": 280,
+    "durationMinutes": 9.2,
+    "database": "project_quality_browser_test",
+    "remoteDatabase": false
+  },
+  "viewerVisual": "eight static production layouts passed; see06-viewer-visual.json",
+  "publication": "owner approval pending; not pushed/deployed/uploaded",
+  "finalViewer": {
+    "passed": 9,
+    "seconds": 11.3,
+    "production": true,
+    "strongerCookieFixture": "actual jwt name; expired/untrusted payload",
+    "exportSha256": "ba1ea7fad4dac5a94521630219703a5250aa369af5355c6a8ce8ecfe0bac6ece",
+    "servedBuildMatchesReviewedFile": true,
+    "pausedFullscreenVisualReview": "passed"
+  }
+}

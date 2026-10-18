@@ -142,3 +142,10 @@ Owner confirms final review base2339dbc. All commits and media stay local until 
 06 claimed: public viewer outside AuthProvider, native playback/chapters/transcript/downloads, media-error recovery and preserved sessions. Local viewer tests pass at390/1440 in both appearances, including keyboard and fullscreen. Full production-browser suite and final two-axis review against2339dbc are in progress.80frontend tests/12snapshots and58backend tests pass; types/lint pass with only12existing frontend Fast Refresh warnings. No dependencies/schema/API changes.
 
 All source/media/docs commits remain local. Owner must review the finished MP4 and local viewer and explicitly approve publication before push/deploy/upload. Final hosted delivery checks/publication revision remain outstanding under06. No cloud visitor-data reset/staging is authorized or needed.
+
+
+## Owner-review handoff — local preparation complete
+
+Full isolated production-browser run:280passed (9.2m). Final viewer run:9passed (11.3s) after strengthening the real-cookie fixture and moving the video caption band clear of paused native controls. Video is now5,228,724bytes,182.56s/1080p/silent; raw source/timings unchanged. Re-decoded/reviewed all8 chronological sheets and actual paused/fullscreen key moments. Final production build matches reviewed media hash. Viewer additionally passes all8 layouts320/768/1024/1440 × light/dark without API calls or overflow. [Complete verification](../../docs/verification.md), [local checks](evidence/06-checks.json).
+
+Standards and Spec reviews against2339dbc have no material findings; final small fixture/export adjustments receive a follow-up review.01–05 resolved.06 needs-info solely for the owner's explicit finished-video publication approval and subsequent actual hosted-delivery checks; local implementation is complete. No push/deploy/upload occurred. Review locally at `http://127.0.0.1:64998/walkthrough` or open the repository MP4. Preserve the owner's unrelated untracked design/history files; suite-generated tracked historical screenshots were restored to their initial versions.

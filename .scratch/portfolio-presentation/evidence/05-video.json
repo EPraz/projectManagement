@@ -7,7 +7,7 @@
     1080
   ],
   "fps": 25.0,
-  "bytes": 6092074,
+  "bytes": 5228724,
   "audio": "none; English captions are embedded",
   "checks": {
     "database": "project_management_presentation",
@@ -157,8 +157,8 @@
     "frontend/public/walkthrough/project-management-walkthrough.vtt",
     "frontend/public/walkthrough/poster.jpg"
   ],
-  "sha256": "6caced47616574e2fe86d8702f8aa209009e0eb5a0a57d9f5d5e142854d64097",
+  "sha256": "ba1ea7fad4dac5a94521630219703a5250aa369af5355c6a8ce8ecfe0bac6ece",
   "fastStart": "moov precedes mdat",
-  "captionConsistency": "all 21 cues match metadata and transcript",
+  "captionConsistency": "all21 cues match metadata and transcript",
   "publication": "Not published; owner approval required before push/deploy/upload."
 }

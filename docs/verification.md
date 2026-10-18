@@ -11,7 +11,7 @@ Evidence date: **2026-10-18**. This is scoped verification of the delivered port
 | Clean local setup | Both locked npm installs, example-only configuration with generated local secret, Prisma generation, 19 committed migrations, explicit seed, backend build, both startups and populated demo entry. Archive source `fa754a8`, Node 22, new empty local PostgreSQL database. [Setup](../.scratch/portfolio-presentation/evidence/04-setup.json). |
 | README | Locally rendered Markdown, tables, all four embedded images and actual Mermaid graph; inspected overview, engineering and setup. Repository-relative links checked. This is local preview evidence, not a claim about a new GitHub publication. |
 | Video | 182.56s; 1920×1080; H.264/yuv420p, 25fps, no audio, fast-start. Full decode; chronological review every two seconds; full-resolution collaboration/mobile key frames. 17 chapters and 21 English captions match the transcript. [Media evidence](../.scratch/portfolio-presentation/evidence/05-video.md), [hash/metadata](../.scratch/portfolio-presentation/evidence/05-video.json). |
-| Public viewer implementation | Retained browser journeys cover anonymous entry, unavailable API, expired/existing cookies, preserved session, native playback/seek/fullscreen, keyboard chapters, 390/1440px in both themes, remembered preference, media error/retry and HTTP byte-range/caption/transcript delivery. Full suite completion is recorded below. |
+| Public viewer implementation | Retained browser journeys cover anonymous entry, unavailable API, expired/existing cookies, preserved session, native playback/seek/fullscreen, keyboard chapters, 390/1440px in both themes, remembered preference, media error/retry and HTTP byte-range/caption/transcript delivery. Full suite completion is recorded below. A separate static production review also covers320/768/1024/1440px in both themes, with no API calls, overflow or browser exceptions. |
 
 The video records application source `fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d`, matching the shipped redesigned workspace. Presentation/routing changes are subsequent local commits reviewed against the owner-confirmed base `2339dbc`. Capture and eventual publication revisions must not be conflated.
 
@@ -19,7 +19,7 @@ The video records application source `fa754a8c9f6894f98f3111db7d4ff9d7dfa8292d`,
 
 - Frontend: typecheck passes; ESLint has zero errors and the existing 12 Fast Refresh warnings; 16 Jest suites, 80 tests and 12 snapshots pass.
 - Backend: typecheck and lint pass; two guarded PostgreSQL-backed suites, 58 tests pass.
-- Production application builds and complete isolated browser suite: **running at preparation time; final outcome will be appended before owner handoff**.
+- Production builds pass; **280 browser journeys pass** in the complete isolated run (9.2 minutes): the retained271 journeys plus9 viewing-page journeys. The final export and strengthened expired/untrusted `jwt` cookie fixture also pass all9 focused viewer journeys on the final production build. Native paused/fullscreen key moments are visually inspected after the caption-band adjustment.
 
 No runtime dependency or database/schema/API change is introduced by this presentation package. The browser runner owns production applications and a separate disposable local PostgreSQL database; API tests use another dedicated local database. See [development](development.md) for exact commands, safety boundaries and CI. Local results do not imply a hosted CI run has completed.
 

@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-18",
+  "source": "f41866b",
+  "build": "production static assets; no API required",
+  "checks": [
+    {
+      "width": 320,
+      "mode": "light",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 320,
+      "mode": "dark",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 768,
+      "mode": "light",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 768,
+      "mode": "dark",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 1024,
+      "mode": "light",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 1024,
+      "mode": "dark",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 1440,
+      "mode": "light",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    },
+    {
+      "width": 1440,
+      "mode": "dark",
+      "overflow": false,
+      "apiCalls": 0,
+      "exceptions": []
+    }
+  ]
+}

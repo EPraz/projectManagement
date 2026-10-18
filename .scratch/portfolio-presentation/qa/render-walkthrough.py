@@ -68,15 +68,15 @@ def wrapped(draw, text, face, width):
 def overlay(file, scene, caption, index, count):
     canvas = Image.new("RGBA", (WIDTH, HEIGHT))
     draw = ImageDraw.Draw(canvas)
-    draw.text((80, 5), "EP / PROJECT MANAGEMENT", font=font(22, True), fill="#91B8FF")
-    draw.text((405, 8), "PLAN · BUILD · DELIVER", font=font(17), fill="#B8C4D5")
+    draw.text((180, 5), "EP / PROJECT MANAGEMENT", font=font(22, True), fill="#91B8FF")
+    draw.text((505, 8), "PLAN · BUILD · DELIVER", font=font(17), fill="#B8C4D5")
     title = scene["title"]
     title_width = draw.textlength(title, font=font(19))
-    draw.text((1840 - title_width, 7), title, font=font(19), fill="#F2F2EF")
+    draw.text((1740 - title_width, 7), title, font=font(19), fill="#F2F2EF")
     if scene["source"] != "mobile":
-        draw.rectangle((79, 39, 1840, 942), outline="#35405A", width=1)
+        draw.rectangle((179, 39, 1740, 840), outline="#35405A", width=1)
     else:
-        draw.rounded_rectangle((1194, 57, 1611, 948), radius=22, outline="#4B5873", width=2)
+        draw.rounded_rectangle((1212, 34, 1594, 846), radius=22, outline="#4B5873", width=2)
         draw.text((180, 240), "Same workflow.", font=font(62, True), fill="#F2F2EF")
         draw.text((180, 322), "Smaller screen.", font=font(62, True), fill="#91B8FF")
         for y, text in [(466, "Clear navigation"), (534, "Real sprint workflows"), (602, "Light and dark appearance")]:
@@ -86,8 +86,8 @@ def overlay(file, scene, caption, index, count):
     lines = wrapped(draw, caption, face, 1650)
     if len(lines) > 2:
         raise ValueError(f"Caption is too long: {caption}")
-    # Reserve the bottom 64px for native video controls, including paused playback.
-    y = 944 + (64 - len(lines) * 32) / 2
+    # Keep captions above the native controls/gradient, including paused fullscreen playback.
+    y = 852 + (64 - len(lines) * 32) / 2
     for line in lines:
         w = draw.textlength(line, font=face)
         draw.text(((WIDTH - w) / 2, y), line, font=face, fill="#F2F2EF")
@@ -153,15 +153,15 @@ def render(take):
         for image in overlays:
             arguments += ["-loop", "1", "-framerate", FPS, "-i", image]
         if scene["source"] == "mobile":
-            app = "scale=406:878:flags=lanczos"
-            x, y = 1200, 64
+            app = "scale=370:800:flags=lanczos"
+            x, y = 1218, 40
         elif scene.get("camera") == "gentle-center":
             # A subtle camera move over the actual application footage, never synthetic UI.
-            app = "crop=iw:ih-20:0:0,zoompan=z='1+0.08*if(between(on,150,275),sin((on-150)*PI/125),0)':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s=1760x902:fps=25"
-            x, y = 80, 40
+            app = "crop=iw:ih-20:0:0,zoompan=z='1+0.08*if(between(on,150,275),sin((on-150)*PI/125),0)':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d=1:s=1560x800:fps=25"
+            x, y = 180, 40
         else:
-            app = "crop=iw:ih-20:0:0,scale=1760:902:flags=lanczos"
-            x, y = 80, 40
+            app = "crop=iw:ih-20:0:0,scale=1560:800:flags=lanczos"
+            x, y = 180, 40
         filters = [f"[0:v]trim=duration={seconds},setpts=PTS-STARTPTS,fps={FPS},tpad=stop_mode=clone:stop_duration=0.12,{app},setsar=1[app]", f"color=c=0x171717:s={WIDTH}x{HEIGHT}:r={FPS}:d={seconds}[bg]", f"[bg][app]overlay={x}:{y}:shortest=1[base]"]
         previous = "base"
         for number in range(len(overlays)):
