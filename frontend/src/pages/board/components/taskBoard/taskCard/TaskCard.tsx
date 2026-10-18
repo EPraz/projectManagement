@@ -1,99 +1,111 @@
-import React, { memo } from "react";
-import { Box, Typography, Tooltip, Avatar } from "@mui/material";
+import { memo } from "react";
+import {
+  Box,
+  Button,
+  ButtonBase,
+  IconButton,
+  Paper,
+  Typography,
+} from "@mui/material";
+import { DragIndicator } from "@mui/icons-material";
 import { useDraggable } from "@dnd-kit/core";
-import {
-  DragIndicator as DragIcon,
-  AccessTime as TimeIcon,
-} from "@mui/icons-material";
-import {
-  DragHandle,
-  MetricItem,
-  TaskContent,
-  TaskFooter,
-  TaskHeader,
-  TaskMetrics,
-  TaskPaper,
-  TaskTitle,
-} from "../TaskBoard.styles";
-import { TaskCardProps } from "../../../../../types";
-
-const TaskCard: React.FC<TaskCardProps> = ({ task, onClick }) => {
+import type { TaskCardProps } from "../../../../../types";
+import { formatStatusName } from "../../../../../helpers";
+function TaskCard({
+  task,
+  onClick,
+  draggable = true,
+  disabled = false,
+}: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
-    useDraggable({
-      id: task.id,
-    });
-
-  const formattedDate = new Date(task.updatedAt).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-  });
-
+    useDraggable({ id: task.id, disabled: disabled || !draggable });
   return (
-    <TaskPaper
+    <Paper
       ref={setNodeRef}
-      elevation={0}
-      isdragging={isDragging}
+      variant="outlined"
       sx={{
+        p: 1.5,
+        borderRadius: 2,
+        minWidth: 0,
+        position: "relative",
+        zIndex: isDragging ? 6 : "auto",
+        opacity: disabled ? 0.6 : 1,
         transform: transform
-          ? `translate(${transform.x}px, ${transform.y}px)`
-          : "none",
+          ? `translate(${transform.x}px,${transform.y}px)`
+          : undefined,
+        borderLeft: "3px solid",
+        borderLeftColor:
+          task.status?.name === "DONE"
+            ? "success.main"
+            : task.status?.name === "BLOCKED"
+              ? "error.main"
+              : "primary.main",
       }}
-      onClick={onClick}
     >
-      <DragHandle {...attributes} {...listeners}>
-        <DragIcon fontSize="small" />
-      </DragHandle>
-
-      <TaskContent>
-        <TaskHeader>
-          <Box sx={{ flex: 1 }}>
-            <Tooltip title={task.title} arrow>
-              <TaskTitle variant="body2">{task.title}</TaskTitle>
-            </Tooltip>
-
-            <TaskMetrics>
-              <Tooltip title="Task ID" arrow>
-                <MetricItem>
-                  <Typography variant="caption" fontFamily="monospace">
-                    #{task.id}
-                  </Typography>
-                </MetricItem>
-              </Tooltip>
-
-              <Tooltip title="Last updated" arrow>
-                <MetricItem>
-                  <TimeIcon fontSize="small" />
-                  <Typography variant="caption">{formattedDate}</Typography>
-                </MetricItem>
-              </Tooltip>
-            </TaskMetrics>
-          </Box>
-        </TaskHeader>
-
-        <TaskFooter>
-          {task.assignedUser ? (
-            <Tooltip title={`Assigned to ${task.assignedUser.name}`} arrow>
-              <Avatar
-                src={task.assignedUser.email}
-                alt={task.assignedUser.name}
-                sx={{
-                  width: 24,
-                  height: 24,
-                  backgroundColor: "secondary.main",
-                }}
-              />
-            </Tooltip>
-          ) : (
-            <Tooltip title="Unassigned" arrow>
-              <Avatar sx={{ width: 24, height: 24, fontSize: "0.75rem" }}>
-                ?
-              </Avatar>
-            </Tooltip>
-          )}
-        </TaskFooter>
-      </TaskContent>
-    </TaskPaper>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+        <ButtonBase
+          onClick={onClick}
+          disabled={disabled}
+          sx={{ borderRadius: 1, color: "primary.main", fontSize: 14 }}
+        >
+          #{task.id}
+        </ButtonBase>
+        <Typography color="text.secondary" variant="body2" sx={{ flex: 1 }}>
+          {formatStatusName(task.status?.name ?? "No state")}
+        </Typography>
+        {draggable && (
+          <IconButton
+            {...attributes}
+            {...listeners}
+            aria-label={`Drag task #${task.id}`}
+            disabled={disabled}
+            size="small"
+            sx={{ touchAction: "none", cursor: "grab" }}
+          >
+            <DragIndicator fontSize="small" />
+          </IconButton>
+        )}
+      </Box>
+      <ButtonBase
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={`Open task #${task.id} ${task.title}`}
+        sx={{
+          display: "block",
+          width: "100%",
+          textAlign: "left",
+          py: 1,
+          borderRadius: 1,
+        }}
+      >
+        <Typography
+          sx={{ fontWeight: 500, overflowWrap: "anywhere", fontSize: 16 }}
+        >
+          {task.title}
+        </Typography>
+      </ButtonBase>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ overflowWrap: "anywhere" }}
+      >
+        {task.assignedUser?.name ?? "Unassigned"}
+      </Typography>
+      {task.remainingHours != null && (
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          {task.remainingHours} h remaining
+        </Typography>
+      )}
+      <Button
+        size="small"
+        onClick={onClick}
+        disabled={disabled}
+        aria-label={`Change status for task #${task.id}`}
+        sx={{ mt: 1, px: 0 }}
+      >
+        Change status
+      </Button>
+    </Paper>
   );
-};
-
+}
 export default memo(TaskCard);

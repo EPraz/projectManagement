@@ -142,7 +142,7 @@ Round 6 settled:
 
 ## Resume
 
-C / Project studio, extended representative screens and all 14 tickets are approved; publication is complete. Start a future implementation run from the ticket index and first open/unblocked/unclaimed issue (currently 01); follow local claim/resolve conventions and append real evidence as work proceeds. Preserve the approved brief, selected C light/neutral-carbon appearance, current quality guarantees, selected-sprint-only Backlog and full real status catalog/fields/capabilities. Keep staged implementation separate from the production deployment branch until the verified coherent release in 14. Prototype source/verdict/captures remain archived. The final pre-recording approval still applies; do not repeat completed design/breakdown approval, record a video early or reopen the 16 completed quality tickets.
+All 14 implementation tickets remain approved. The [ticket index](tickets.md) and individual issue statuses are authoritative for current progress; use their first open/unblocked frontier rather than the historical publication notes above. Work is on `feat/project-studio-redesign` against owner-confirmed review base `d355d98`. Preserve the approved C design, real contracts, shared demo and free infrastructure. Complete integration/review in 13 and coherent publication in 14. No intermediate owner approval is pending; explicit final owner design/readiness confirmation is still required before recording the deferred walkthrough.
 
 ## Implementation run
 
@@ -158,3 +158,5 @@ C / Project studio, extended representative screens and all 14 tickets are appro
 - Integration note for 13: evaluate the new data-router bundle cost and convert the licensed production Plex TTFs to WOFF2 if local tooling supports lossless conversion; no runtime-performance claim has been made from chunk sizes alone. Retire obsolete TicketEditDialog/Header/Sidebar/Overview styles only when final caller checks establish they are unused.
 
 - 2026-10-18 implementation: [ticket 05](issues/05-task-editor-status.md) resolved: contextual task CRUD/full catalog, protected parent return and canonical creation reconciliation. 35 editor regressions, 13 isolated production journeys, 16 component/move checks, types/lint/build pass. Ticket 06 claimed; 5/14 resolved. Final review base remains owner-confirmed d355d98.
+
+- 2026-10-18 implementation: [ticket 06](issues/06-responsive-taskboard.md) resolved. Responsive C ticket/task matrix and narrow groups, scoped filters, real drag/failure recovery and per-item pending guards; 50 browser regressions plus final mobile/types/lint pass. Ticket 07 claimed; 6/14 resolved. Integration note: expanded browser suite will need a justified larger global runtime budget than the original five minutes; preserve per-action/test timeouts and isolation guards. Local Python lacks fontTools, so no font conversion has been performed.

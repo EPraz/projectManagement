@@ -5,4 +5,6 @@ export interface TaskColumnProps {
   tasks: Task[];
   addTask?: () => void;
   id: string;
+  pending?: boolean;
+  isTaskPending: (id: number) => boolean;
 }

@@ -35,8 +35,9 @@ const StatusConfig: React.FC<StatusConfigProps> = ({
 
   return (
     <>
-      <Tooltip title="Configure Columns" arrow>
+      <Tooltip title="Task columns" arrow>
         <IconButton
+          aria-label="Task columns"
           onClick={(e) => setAnchorEl(e.currentTarget)}
           size="small"
           sx={{
@@ -69,7 +70,7 @@ const StatusConfig: React.FC<StatusConfigProps> = ({
         }}
       >
         <MenuHeader>
-          <Typography variant="subtitle2">Column Visibility</Typography>
+          <Typography variant="subtitle2">Task-state columns</Typography>
         </MenuHeader>
 
         {items &&
@@ -93,6 +94,10 @@ const StatusConfig: React.FC<StatusConfigProps> = ({
                 <Switch
                   size="small"
                   checked={selectedStatuses?.some((s) => s.id === status.id)}
+                  inputProps={{
+                    "aria-label": `Show ${formatStatusName(status.name)} task column`,
+                  }}
+                  onClick={(event) => event.stopPropagation()}
                   onChange={() => toggleStatus(status)}
                   sx={{
                     "& .MuiSwitch-switchBase.Mui-checked": {

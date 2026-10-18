@@ -508,6 +508,8 @@ const Layout = () => {
                 handleDeleteTicket,
                 handleUpdateTicketStatus,
                 // Functions -> Tasks
+                isTaskPending: isUpdatingTask,
+                isTicketPending: isUpdatingTicket,
                 handleCreateTask,
                 handleEditTask,
                 handleDeleteTask,

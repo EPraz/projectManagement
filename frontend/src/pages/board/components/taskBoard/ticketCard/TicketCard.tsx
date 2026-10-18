@@ -1,189 +1,120 @@
-import React, { memo, useState } from "react";
+import { memo } from "react";
 import {
   Box,
-  Typography,
-  Select,
+  ButtonBase,
+  Chip,
+  IconButton,
   MenuItem,
-  Tooltip,
-  Avatar,
-  AvatarGroup,
+  Typography,
 } from "@mui/material";
-import { Ticket, TicketCardProps } from "../../../../../types";
-import {
-  formatStatusName,
-  getPriorityColor,
-  getTypeIcon,
-  truncatedTitle,
-} from "../../../../../helpers";
-import {
-  MetricItem,
-  PriorityChip,
-  StyledCard,
-  TicketHeader,
-  TicketInfo,
-  TicketMetrics,
-  TicketTitle,
-} from "../TaskBoard.styles";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { StatusIndicator } from "../../../../../components";
+import { ArrowUpward, ArrowDownward } from "@mui/icons-material";
 import { useSearchParams } from "react-router-dom";
-
-const TicketCard: React.FC<TicketCardProps> = ({
+import type { TicketCardProps } from "../../../../../types";
+import { formatStatusName } from "../../../../../helpers";
+import EditorSelect from "../../../../../components/workItemEditor/EditorSelect";
+function TicketCard({
   ticket,
   onChange,
   ticketStatuses,
-}) => {
-  const [statusOpen, setStatusOpen] = useState<boolean>(false);
-  const [, setSearchParams] = useSearchParams();
-
-  const currentStatus = ticketStatuses?.find(
-    (status) => status.id === ticket.statusId
-  );
-
-  const handleOpenEdit = (ticket: Ticket) => {
-    setSearchParams(
-      { tab: "board", ticketId: ticket.id.toString() },
-      { replace: true }
-    );
+  disabled,
+}: TicketCardProps) {
+  const [params, setParams] = useSearchParams();
+  const open = () => {
+    const next = new URLSearchParams(params);
+    next.set("ticketId", String(ticket.id));
+    next.delete("taskId");
+    next.delete("ticketTab");
+    setParams(next, { replace: true });
   };
-
+  const completed = ticket.tasks.filter(
+    (task) => task.status?.name === "DONE",
+  ).length;
   return (
-    <StyledCard
-      type={ticket.type}
-      elevation={0}
-      onClick={() => handleOpenEdit(ticket)}
-    >
-      <TicketInfo>
-        <TicketHeader>
-          <TicketTitle>
-            <Tooltip title={ticket.type} arrow>
-              <Box>{getTypeIcon(ticket.type)}</Box>
-            </Tooltip>
-            <Tooltip title={ticket.title} arrow>
-              <Typography
-                variant="subtitle1"
-                fontWeight="medium"
-                sx={{ cursor: "pointer" }}
-              >
-                {truncatedTitle(ticket.title)}
-              </Typography>
-            </Tooltip>
-          </TicketTitle>
-          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-            <StatusIndicator
-              status={currentStatus?.name || ""}
-              color={currentStatus?.color || ""}
-            />
-            <Select
-              value={ticket.statusId}
-              onChange={(e) => {
-                e.stopPropagation();
-                onChange(ticket.id, e.target.value);
-              }}
-              onOpen={(e) => {
-                e.stopPropagation();
-                setStatusOpen(true);
-              }}
-              onClose={() => setStatusOpen(false)}
-              open={statusOpen}
-              size="small"
-              onClick={(e) => e.stopPropagation()}
-              disabled={ticket.isBlocked}
-              sx={{
-                minWidth: 130,
-                "& .MuiSelect-select": {
-                  paddingTop: 0.5,
-                  paddingBottom: 0.5,
-                  paddingLeft: 1,
-                  paddingRight: 1,
-                  fontSize: "0.875rem",
-                },
-              }}
-            >
-              {ticketStatuses?.map((status) => (
-                <MenuItem key={status.id} value={status.id}>
-                  {formatStatusName(status.name)}
-                </MenuItem>
-              ))}
-            </Select>
-          </Box>
-        </TicketHeader>
-
-        <Box
+    <Box sx={{ minWidth: 0, display: "grid", gap: 1.5 }}>
+      <Box
+        sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}
+      >
+        <Typography variant="overline" color="primary">
+          #{ticket.id}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {formatStatusName(ticket.type)}
+        </Typography>
+        {ticket.isBlocked && (
+          <Chip label="Blocked" color="error" size="small" />
+        )}
+      </Box>
+      <ButtonBase
+        onClick={open}
+        aria-label={`Open ticket #${ticket.id} ${ticket.title}`}
+        sx={{
+          display: "block",
+          width: "100%",
+          textAlign: "left",
+          borderRadius: 1,
+        }}
+      >
+        <Typography
+          component="h3"
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            fontSize: 17,
+            fontWeight: 600,
+            overflowWrap: "anywhere",
+            lineHeight: 1.4,
           }}
         >
-          <TicketMetrics>
-            <Tooltip title="Ticket ID" arrow>
-              <MetricItem>
-                <Typography variant="caption" fontFamily="monospace">
-                  #{ticket.id}
-                </Typography>
-              </MetricItem>
-            </Tooltip>
-
-            {ticket.priority && (
-              <Tooltip title="Priority" arrow>
-                <MetricItem>
-                  {/* <FlagIcon fontSize="small" /> */}
-                  <PriorityChip
-                    size="small"
-                    label={ticket.priority}
-                    priorityColor={getPriorityColor(ticket.priority)}
-                  />
-                  {/* {getTypeIcon(ticket.priority)} */}
-                </MetricItem>
-              </Tooltip>
-            )}
-
-            {ticket.dueDate && (
-              <Tooltip title="Due Date" arrow>
-                <MetricItem>
-                  <CalendarMonthIcon fontSize="small" />
-                  <Typography variant="caption">
-                    {new Date(ticket.dueDate).toLocaleDateString()}
-                  </Typography>
-                </MetricItem>
-              </Tooltip>
-            )}
-          </TicketMetrics>
-
-          {ticket.assignedUser ? (
-            <AvatarGroup
-              max={3}
-              sx={{
-                "& .MuiAvatar-root": {
-                  width: 24,
-                  height: 24,
-                  backgroundColor: "secondary.dark",
-                },
-              }}
-            >
-              <Tooltip
-                key={ticket.assignedUser.id}
-                title={ticket.assignedUser.name}
-                arrow
-              >
-                <Avatar
-                  src={ticket.assignedUser.email}
-                  alt={ticket.assignedUser.name}
-                />
-              </Tooltip>
-            </AvatarGroup>
-          ) : (
-            <Tooltip title="Unassigned" arrow>
-              <Avatar sx={{ width: 24, height: 24, fontSize: "0.75rem" }}>
-                ?
-              </Avatar>
-            </Tooltip>
-          )}
-        </Box>
-      </TicketInfo>
-    </StyledCard>
+          {ticket.title}
+        </Typography>
+      </ButtonBase>
+      <EditorSelect
+        label={`Ticket state #${ticket.id}`}
+        value={ticket.statusId ?? ""}
+        onChange={(state) => onChange(ticket.id, state)}
+        disabled={disabled || ticket.isBlocked}
+      >
+        {ticketStatuses?.map((status) => (
+          <MenuItem key={status.id} value={status.id}>
+            {formatStatusName(status.name)}
+          </MenuItem>
+        ))}
+      </EditorSelect>
+      <Typography variant="body2" color="text.secondary">
+        {ticket.assignedUser?.name ?? "Unassigned"} · {completed}/
+        {ticket.tasks.length} tasks done
+      </Typography>
+      <Box
+        sx={{ display: "flex", gap: 1, alignItems: "center", flexWrap: "wrap" }}
+      >
+        <Typography variant="body2" sx={{ flex: 1 }}>
+          {formatStatusName(ticket.priority)} priority
+        </Typography>
+        <IconButton
+          size="small"
+          sx={{ display: { xs: "none", lg: "inline-flex" } }}
+          aria-label="Move ticket up (unavailable)"
+          disabled
+        >
+          <ArrowUpward fontSize="small" />
+        </IconButton>
+        <IconButton
+          size="small"
+          sx={{ display: { xs: "none", lg: "inline-flex" } }}
+          aria-label="Move ticket down (unavailable)"
+          disabled
+        >
+          <ArrowDownward fontSize="small" />
+        </IconButton>
+      </Box>
+      {ticket.dueDate && (
+        <Typography variant="body2" color="text.secondary">
+          Due{" "}
+          {new Date(ticket.dueDate).toLocaleDateString(undefined, {
+            month: "short",
+            day: "numeric",
+          })}
+        </Typography>
+      )}
+    </Box>
   );
-};
-
+}
 export default memo(TicketCard);

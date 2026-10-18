@@ -4,7 +4,7 @@
 
 **Blocked by:** 05 — Create, edit and change task status within its ticket.
 
-**Status:** ready-for-agent
+**Status:** claimed
 
 Type: task
 
@@ -24,3 +24,5 @@ Type: task
 ## Comments
 
 - 2026-10-18: Owner approved the 14-ticket breakdown and requested publication. Published with the approved scope and blocking edges; implementation has not started.
+
+- 2026-10-18: Claimed after 06. Reuse the verified work-filter surface with ticket assignment semantics; retain column choice, child-task actions and selected-sprint-only scope in readable C table/mobile lists.

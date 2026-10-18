@@ -66,11 +66,13 @@ export default function Board() {
           </Tooltip>
         )}
         {tabValue === 0 && (
-          <StatusConfig
-            selectedStatuses={selectedTasksStatuses}
-            setSelectedStatuses={setSelectedTasksStatuses}
-            items={project?.taskStatuses}
-          />
+          <Box sx={{ display: { xs: "none", lg: "block" } }}>
+            <StatusConfig
+              selectedStatuses={selectedTasksStatuses}
+              setSelectedStatuses={setSelectedTasksStatuses}
+              items={project?.taskStatuses}
+            />
+          </Box>
         )}
       </Box>
       {tabValue === 1 && (

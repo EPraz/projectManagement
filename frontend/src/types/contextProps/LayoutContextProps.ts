@@ -158,6 +158,8 @@ export interface LayoutContextProps {
   ) => Promise<void>;
 
   // Functions -> Tasks
+  isTaskPending: (id: number) => boolean;
+  isTicketPending: (id: number) => boolean;
   handleCreateTask: (data: Partial<Task>) => Promise<boolean>;
   handleEditTask: (data: TaskUpdate) => Promise<boolean>;
   handleDeleteTask: (task: Partial<Task>) => Promise<boolean>;
