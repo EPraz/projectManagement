@@ -5,7 +5,7 @@ import { RetroTypes } from "../../../../constants";
 import {
   ThumbUp as ThumbUpIcon,
   ThumbDown as ThumbDownIcon,
-  Lightbulb as LightbulbIcon,
+  Lightbulb as LightbulbIcon
 } from "@mui/icons-material";
 
 const RetrospectiveColumnsContainer = ({
@@ -13,10 +13,11 @@ const RetrospectiveColumnsContainer = ({
   handleOpenAddDialog,
   getUserNamesByIds,
   currentTab,
-  isAnonymous,
+  hideNames,
   theme,
   handleMenuClick,
   handleLikeToggle,
+  isPending
 }: RetrospectiveColumnsContainerProps) => {
   return (
     <ColumnsContainer>
@@ -28,9 +29,10 @@ const RetrospectiveColumnsContainer = ({
         currentTab={currentTab}
         getUserNamesByIds={getUserNamesByIds}
         handleLikeToggle={handleLikeToggle}
+        isPending={isPending}
         handleMenuClick={handleMenuClick}
         handleOpenAddDialog={handleOpenAddDialog}
-        isAnonymous={isAnonymous}
+        hideNames={hideNames}
         retroCards={retroCards}
         theme={theme}
       />
@@ -42,9 +44,10 @@ const RetrospectiveColumnsContainer = ({
         currentTab={currentTab}
         getUserNamesByIds={getUserNamesByIds}
         handleLikeToggle={handleLikeToggle}
+        isPending={isPending}
         handleMenuClick={handleMenuClick}
         handleOpenAddDialog={handleOpenAddDialog}
-        isAnonymous={isAnonymous}
+        hideNames={hideNames}
         retroCards={retroCards}
         theme={theme}
       />
@@ -56,9 +59,10 @@ const RetrospectiveColumnsContainer = ({
         currentTab={currentTab}
         getUserNamesByIds={getUserNamesByIds}
         handleLikeToggle={handleLikeToggle}
+        isPending={isPending}
         handleMenuClick={handleMenuClick}
         handleOpenAddDialog={handleOpenAddDialog}
-        isAnonymous={isAnonymous}
+        hideNames={hideNames}
         retroCards={retroCards}
         theme={theme}
       />

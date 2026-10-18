@@ -4,7 +4,7 @@ import {
   ColumnContent,
   ColumnHeader,
   ColumnTitle,
-  EmptyColumnMessage,
+  EmptyColumnMessage
 } from "../../RetrospectivePage.styles";
 import { Button, Tooltip, Typography } from "@mui/material";
 import { RetrospectiveColumnProps } from "../../../../types";
@@ -19,10 +19,11 @@ const RetrospectiveColumn = ({
   handleOpenAddDialog,
   getUserNamesByIds,
   currentTab,
-  isAnonymous,
+  hideNames,
   theme,
   handleMenuClick,
   handleLikeToggle,
+  isPending
 }: RetrospectiveColumnProps) => {
   const columnCards = retroCards.filter((card) => card.type === type);
   return (
@@ -40,7 +41,7 @@ const RetrospectiveColumn = ({
               px: 1.5,
               py: 0.5,
               borderRadius: 1,
-              bgcolor: `${color}.soft`,
+              bgcolor: `${color}.soft`
             }}
           >
             {columnCards.length}
@@ -66,15 +67,16 @@ const RetrospectiveColumn = ({
                 new Date(b.timestamp).getTime() -
                 new Date(a.timestamp).getTime()
             )
-            .map((card, index) => (
+            .map((card) => (
               <RetrospectiveCard
-                key={index}
+                key={card.id}
                 card={card}
                 currentTab={currentTab}
                 getUserNamesByIds={getUserNamesByIds}
                 handleLikeToggle={handleLikeToggle}
+                isPending={isPending}
                 handleMenuClick={handleMenuClick}
-                isAnonymous={isAnonymous}
+                hideNames={hideNames}
                 theme={theme}
               />
             ))

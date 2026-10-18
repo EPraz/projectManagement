@@ -7,27 +7,37 @@ import {
   CardHeader,
   LikeButton,
   LikedByTooltip,
-  RetroCard as RetroCardStyled,
+  RetroCard as RetroCardStyled
 } from "../../RetrospectivePage.styles";
 import { getCardColor, getCardIcon } from "../../RetrospectivePage.helpers";
+import { useAuth } from "../../../../context/authContext";
 import { getInitials } from "../../../../helpers";
 
 const RetrospectiveCard = ({
   card,
   getUserNamesByIds,
   currentTab,
-  isAnonymous,
+  hideNames,
   theme,
   handleMenuClick,
   handleLikeToggle,
+  isPending
 }: RetrospectiveCardProps) => {
+  const { user } = useAuth();
   const cardColor = getCardColor(card.type);
   const cardIcon = getCardIcon(card.type);
-  const likedByNames = card.likedBy ? getUserNamesByIds(card.likedBy) : [];
+  const likedByNames =
+    !hideNames && card.likedBy ? getUserNamesByIds(card.likedBy) : [];
 
   return (
-    <RetroCardStyled key={card.id} elevation={0} isBlurred={currentTab === 1}>
-      {!isAnonymous && (
+    <RetroCardStyled
+      role="article"
+      aria-label="Retrospective card"
+      key={card.id}
+      elevation={0}
+      isBlurred={currentTab === 1}
+    >
+      {!hideNames && (
         <CardHeader className="content">
           <Avatar
             sx={{
@@ -35,7 +45,7 @@ const RetrospectiveCard = ({
               height: 40,
               border: `2px solid ${theme.palette.background.paper}`,
               boxShadow: theme.shadows[2],
-              bgcolor: theme.palette.secondary.main,
+              bgcolor: theme.palette.secondary.main
             }}
             alt={card.author.name}
           >
@@ -51,6 +61,8 @@ const RetrospectiveCard = ({
           </Box>
           <IconButton
             size="small"
+            aria-label="Card actions"
+            disabled={isPending(card.id)}
             onClick={(e) => {
               e.stopPropagation();
               handleMenuClick(e, card.id);
@@ -78,6 +90,8 @@ const RetrospectiveCard = ({
                   ))}
                 </ul>
               </LikedByTooltip>
+            ) : hideNames ? (
+              `${card.likes} reactions`
             ) : (
               "Be the first to like"
             )
@@ -85,6 +99,9 @@ const RetrospectiveCard = ({
           arrow
         >
           <LikeButton
+            aria-label="Like feedback"
+            aria-pressed={card.likedBy.includes(user?.id ?? "")}
+            disabled={isPending(card.id)}
             size="small"
             startIcon={cardIcon}
             variant="text"
@@ -94,9 +111,11 @@ const RetrospectiveCard = ({
             {card.likes || 0}
           </LikeButton>
         </Tooltip>
-        {isAnonymous && (
+        {hideNames && (
           <IconButton
             size="small"
+            aria-label="Card actions"
+            disabled={isPending(card.id)}
             onClick={(e) => {
               e.stopPropagation();
               handleMenuClick(e, card.id);

@@ -1,14 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Alert, Box, Button, useTheme } from "@mui/material";
 
 import type { RetroCard as RetroCardModel } from "../../../../types";
-import {
-  // useGetRetroCards,
-  useCreateRetroCard,
-  useUpdateRetroCard,
-  useDeleteRetroCard,
-} from "../../../../hooks";
-import { useSprint, useProject, useAuth } from "../../../../context";
+import { useRetrospective } from "../../useRetrospective";
 
 import { formatStatusName } from "../../../../helpers";
 import { retrospectiveSchema } from "../../../../validations";
@@ -17,12 +11,6 @@ import Portal from "../../../../components/portal/Portal";
 import SprintSelector from "../../../../components/sprintSelector/SprintSelector";
 import DialogForm from "../../../../components/dialogForm/DialogForm";
 import DeleteConfirmationModal from "../../../../components/deleteConfirmationModal/DeleteConfirmationModal";
-import {
-  createDialogSubmit,
-  deleteDialogSubmit,
-  editDialogSubmit,
-  likeTogglehandler,
-} from "../../RetrospectivePage.helpers";
 import RetrospectiveHeader from "../retrospectiveHeader/RetrospectiveHeader";
 import { ColumnContent, Container } from "../../RetrospectivePage.styles";
 import RetrospectiveColumnsContainer from "../retrospectiveColumnsContainer/RetrospectiveColumnsContainer";
@@ -30,16 +18,20 @@ import RetrospectiveMenu from "../retrospectiveMenu/RetrospectiveMenu";
 
 const RetrospectiveContainer = () => {
   const theme = useTheme();
-  const { sprint, updateListOfSprints } = useSprint();
-  const { project } = useProject();
-  const { user: currentUser } = useAuth();
-
-  // State for retrospective cards (current sprint)
-  const [retroCards, setRetroCards] = useState<RetroCardModel[]>(
-    sprint?.retroCard || []
-  );
+  const {
+    project,
+    sprint,
+    retroCards,
+    save,
+    remove,
+    isPending,
+    isSaving,
+    reactionError,
+    retryReaction,
+    toggleReaction
+  } = useRetrospective();
   const [currentTab, setCurrentTab] = useState(0);
-  const [isAnonymous, setIsAnonymous] = useState(false);
+  const [hideNames, setHideNames] = useState(false);
 
   // State for card menu
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -50,30 +42,21 @@ const RetrospectiveContainer = () => {
   const [editingCard, setEditingCard] = useState<RetroCardModel | null>(null);
   const [formData, setFormData] = useState<Partial<RetroCardModel>>({
     content: "",
-    type: RetroTypes.POSITIVE,
+    type: RetroTypes.POSITIVE
   });
 
   // State for delete confirmation modal
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [cardToDelete, setCardToDelete] = useState<RetroCardModel | null>(null);
 
-  // API hooks for retrospectives
-  // const { getRetroCards } = useGetRetroCards();
-  const { createRetroCard, loading: loadingCreate } = useCreateRetroCard();
-  const { updateRetroCard, loading: loadingUpdate } = useUpdateRetroCard();
-  const { deleteRetroCard } = useDeleteRetroCard();
-
-  // Load retrospectives for the current sprint
-  // const fetchRetroCards = useCallback(async () => {
-  //   if (!sprint?.id) return;
-  //   const data = await getRetroCards(sprint.id);
-  //   if (data) setRetroCards(data);
-  // }, [sprint?.id, getRetroCards]);
-
   useEffect(() => {
-    // fetchRetroCards();
-    setRetroCards(sprint?.retroCard || []);
-  }, [sprint]);
+    setOpenDialog(false);
+    setEditingCard(null);
+    setOpenDeleteModal(false);
+    setCardToDelete(null);
+    setAnchorEl(null);
+    setSelectedCardId(null);
+  }, [sprint?.id]);
 
   // Get user names by IDs for tooltip (likes)
   const getUserNamesByIds = useCallback(
@@ -84,7 +67,7 @@ const RetrospectiveContainer = () => {
           const user = project.users.find((u) => u.id === id);
           return user ? user.name : null;
         })
-        .filter(Boolean) as string[];
+        .filter((name): name is string => name !== null);
     },
     [project?.users]
   );
@@ -108,7 +91,7 @@ const RetrospectiveContainer = () => {
     (typeColumn: RetroTypes) => {
       setFormData({
         content: "",
-        type: typeColumn,
+        type: typeColumn
       });
       setEditingCard(null);
       setOpenDialog(true);
@@ -121,7 +104,7 @@ const RetrospectiveContainer = () => {
       setEditingCard(card);
       setFormData({
         content: card.content,
-        type: card.type,
+        type: card.type
       });
       setOpenDialog(true);
     },
@@ -133,81 +116,21 @@ const RetrospectiveContainer = () => {
     setEditingCard(null);
   }, [setOpenDialog, setEditingCard]);
 
-  // Submit handler for the DialogForm (create/edit)
-  const handleDialogSubmit = async (data: typeof formData) => {
-    if (editingCard) {
-      await editDialogSubmit(
-        editingCard,
-        updateRetroCard,
-        data,
-        currentUser,
-        // setRetroCards,
-        sprint,
-        updateListOfSprints,
-        handleCloseDialog
-      );
-    } else {
-      await createDialogSubmit(
-        sprint,
-        createRetroCard,
-        data,
-        currentUser,
-        // setRetroCards,
-        // updateListOfSprints,
-        handleCloseDialog
-      );
-    }
-  };
-
-  // Handler for deleting a card
+  const handleDialogSubmit = (data: typeof formData) => save(editingCard, data);
   const handleOpenDeleteModal = (card: RetroCardModel) => {
     setCardToDelete(card);
     setOpenDeleteModal(true);
   };
-
-  const handleConfirmDelete = useCallback(() => {
-    deleteDialogSubmit(
-      cardToDelete,
-      sprint,
-      deleteRetroCard,
-      // setRetroCards,
-      updateListOfSprints,
-      setOpenDeleteModal,
-      setCardToDelete
-    );
-  }, [
-    cardToDelete,
-    sprint,
-    deleteRetroCard,
-    setRetroCards,
-    updateListOfSprints,
-    setOpenDeleteModal,
-    setCardToDelete,
-  ]);
-
-  // Handler for toggling like on a card
-  const handleLikeToggle = useCallback(
-    async (card: RetroCardModel) => {
-      await likeTogglehandler(
-        currentUser,
-        card,
-        updateRetroCard,
-        sprint
-        // setRetroCards,
-        // updateListOfSprints
-      );
-    },
-    [currentUser, updateRetroCard, sprint, setRetroCards, updateListOfSprints]
-  );
+  const handleConfirmDelete = () => remove(cardToDelete);
 
   return (
     <Container>
       <RetrospectiveHeader
         currentTab={currentTab}
         handleOpenAddDialog={handleOpenAddDialog}
-        isAnonymous={isAnonymous}
+        hideNames={hideNames}
         setCurrentTab={setCurrentTab}
-        setIsAnonymous={setIsAnonymous}
+        setHideNames={setHideNames}
         sprint={sprint}
       />
 
@@ -215,18 +138,42 @@ const RetrospectiveContainer = () => {
         <SprintSelector />
       </Box>
 
-      <ColumnContent>
-        <RetrospectiveColumnsContainer
-          currentTab={currentTab}
-          getUserNamesByIds={getUserNamesByIds}
-          handleLikeToggle={handleLikeToggle}
-          handleMenuClick={handleMenuClick}
-          handleOpenAddDialog={handleOpenAddDialog}
-          isAnonymous={isAnonymous}
-          retroCards={retroCards}
-          theme={theme}
-        />
-      </ColumnContent>
+      {reactionError && (
+        <Alert
+          severity="error"
+          action={
+            <Button
+              color="inherit"
+              disabled={isPending(reactionError.cardId)}
+              onClick={() => void retryReaction()}
+            >
+              Retry reaction
+            </Button>
+          }
+        >
+          {reactionError.message}
+        </Alert>
+      )}
+      {!sprint && (
+        <Alert severity="info">
+          Select a sprint to view its retrospective.
+        </Alert>
+      )}
+      {sprint && (
+        <ColumnContent>
+          <RetrospectiveColumnsContainer
+            currentTab={currentTab}
+            getUserNamesByIds={getUserNamesByIds}
+            handleLikeToggle={toggleReaction}
+            isPending={isPending}
+            handleMenuClick={handleMenuClick}
+            handleOpenAddDialog={handleOpenAddDialog}
+            hideNames={hideNames}
+            retroCards={retroCards}
+            theme={theme}
+          />
+        </ColumnContent>
+      )}
 
       {anchorEl && (
         <Portal>
@@ -244,20 +191,20 @@ const RetrospectiveContainer = () => {
       {openDialog && (
         <Portal>
           <DialogForm
-            key={editingCard ? editingCard.id : "new"}
+            key={`${sprint?.id}:${editingCard?.id ?? "new"}`}
             open={openDialog}
             onClose={handleCloseDialog}
             onSubmit={handleDialogSubmit}
             schema={retrospectiveSchema}
             defaultValues={formData}
             title={editingCard ? "Edit Retro Card" : "Add Retro Card"}
-            disabled={loadingCreate || loadingUpdate}
+            disabled={isSaving(editingCard?.id)}
             fieldConfig={{
               content: {
                 label: "Content",
                 type: "textarea",
                 multiline: true,
-                rows: 4,
+                rows: 4
               },
               type: {
                 label: "Type",
@@ -266,18 +213,18 @@ const RetrospectiveContainer = () => {
                 options: [
                   {
                     value: RetroTypes.POSITIVE,
-                    label: formatStatusName(RetroTypes.POSITIVE),
+                    label: formatStatusName(RetroTypes.POSITIVE)
                   },
                   {
                     value: RetroTypes.NEGATIVE,
-                    label: formatStatusName(RetroTypes.NEGATIVE),
+                    label: formatStatusName(RetroTypes.NEGATIVE)
                   },
                   {
                     value: RetroTypes.IMPROVEMENT,
-                    label: formatStatusName(RetroTypes.IMPROVEMENT),
-                  },
-                ],
-              },
+                    label: formatStatusName(RetroTypes.IMPROVEMENT)
+                  }
+                ]
+              }
             }}
           />
         </Portal>
@@ -289,7 +236,13 @@ const RetrospectiveContainer = () => {
             open={openDeleteModal}
             onClose={() => setOpenDeleteModal(false)}
             onConfirm={handleConfirmDelete}
-            itemName={`this card by ${cardToDelete?.author.name || "Unknown"}`}
+            itemKey={cardToDelete?.id}
+            disabled={cardToDelete ? isPending(cardToDelete.id) : false}
+            itemName={
+              hideNames
+                ? "this feedback card"
+                : `this card by ${cardToDelete?.author.name || "Unknown"}`
+            }
           />
         </Portal>
       )}

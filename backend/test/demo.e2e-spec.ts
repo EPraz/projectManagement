@@ -275,6 +275,266 @@ describe('Acceso demo HTTP API', () => {
     );
   }, 30000);
 
+  it('attributes retrospective cards to the authenticated demo instead of a supplied author', async () => {
+    const login = await request(app.getHttpServer())
+      .post('/auth/instant-login')
+      .send({})
+      .expect(201);
+    const token = tokenOf(login);
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const sprintId = (projects.body as { sprints: { id: string }[] }[])[0]
+      .sprints[0].id;
+    const users = await request(app.getHttpServer())
+      .get('/users')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const other = (users.body as { id: string }[]).find(
+      (user) => user.id !== demoId,
+    )!;
+    const created = await request(app.getHttpServer())
+      .post('/retrospectives')
+      .auth(token, { type: 'bearer' })
+      .send({
+        sprintId,
+        authorId: other.id,
+        content: 'Authenticated retrospective attribution',
+        type: 'IMPROVEMENT',
+      })
+      .expect(201);
+    try {
+      expect(created.body).toMatchObject({
+        authorId: demoId,
+        sprintId,
+        type: 'IMPROVEMENT',
+      });
+      const saved = await request(app.getHttpServer())
+        .get(`/retrospectives/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(saved.body).toMatchObject({ authorId: demoId });
+      expect(JSON.stringify(saved.body)).not.toMatch(/password|refreshToken/);
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/retrospectives/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+  });
+
+  it('validates retrospective drafts, scope and immutable relationships', async () => {
+    const token = tokenOf(
+      await request(app.getHttpServer()).post('/auth/instant-login').send({}),
+    );
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const [project, otherProject] = projects.body as {
+      sprints: { id: string }[];
+    }[];
+    const sprintId = project.sprints[0].id;
+    for (const path of [
+      '/retrospectives',
+      '/retrospectives?sprintId=',
+      '/retrospectives?sprintId=a&sprintId=b',
+    ])
+      await request(app.getHttpServer())
+        .get(path)
+        .auth(token, { type: 'bearer' })
+        .expect(400);
+    await request(app.getHttpServer())
+      .get('/retrospectives?sprintId=missing')
+      .auth(token, { type: 'bearer' })
+      .expect(404);
+    for (const invalid of [
+      { content: '   ' },
+      { type: 'OTHER' },
+      { content: null },
+    ])
+      await request(app.getHttpServer())
+        .post('/retrospectives')
+        .auth(token, { type: 'bearer' })
+        .send({ sprintId, content: 'Feedback', type: 'POSITIVE', ...invalid })
+        .expect(400);
+    await request(app.getHttpServer())
+      .post('/retrospectives')
+      .auth(token, { type: 'bearer' })
+      .send({ sprintId: 'missing', content: 'Feedback', type: 'POSITIVE' })
+      .expect(404);
+    const created = await request(app.getHttpServer())
+      .post('/retrospectives')
+      .auth(token, { type: 'bearer' })
+      .send({ sprintId, content: '  Retained feedback  ', type: 'NEGATIVE' })
+      .expect(201);
+    try {
+      expect(created.body).toMatchObject({
+        authorId: demoId,
+        content: 'Retained feedback',
+        likes: 0,
+        likedBy: [],
+      });
+      for (const invalid of [
+        { content: '   ' },
+        { content: null },
+        { type: null },
+        { liked: 'true' },
+        { liked: null },
+        { likedBy: null },
+        { likes: -1 },
+        { authorId: 'missing' },
+        { sprintId: otherProject.sprints[0].id },
+        { liked: true, likedBy: [] },
+      ])
+        await request(app.getHttpServer())
+          .patch(`/retrospectives/${idOf(created)}`)
+          .auth(token, { type: 'bearer' })
+          .send(invalid)
+          .expect(400);
+      const edited = await request(app.getHttpServer())
+        .patch(`/retrospectives/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .send({ content: '  Confirmed feedback  ', type: 'IMPROVEMENT' })
+        .expect(200);
+      expect(edited.body).toMatchObject({
+        content: 'Confirmed feedback',
+        type: 'IMPROVEMENT',
+        authorId: demoId,
+        sprintId,
+      });
+      const list = await request(app.getHttpServer())
+        .get(`/retrospectives?sprintId=${sprintId}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(list.body).toContainEqual(
+        expect.objectContaining({
+          id: idOf(created),
+          content: 'Confirmed feedback',
+        }),
+      );
+      expect(JSON.stringify(list.body)).not.toMatch(
+        /"password"|"refreshToken"/,
+      );
+    } finally {
+      await request(app.getHttpServer())
+        .delete(`/retrospectives/${idOf(created)}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+    }
+    await request(app.getHttpServer())
+      .patch('/retrospectives/missing')
+      .auth(token, { type: 'bearer' })
+      .send({ content: 'Feedback' })
+      .expect(404);
+    await request(app.getHttpServer())
+      .delete('/retrospectives/missing')
+      .auth(token, { type: 'bearer' })
+      .expect(404);
+  });
+
+  it('preserves other reactions, makes shared-demo likes idempotent and publishes committed retrospective state', async () => {
+    const token = tokenOf(
+      await request(app.getHttpServer()).post('/auth/instant-login').send({}),
+    );
+    const otherToken = tokenOf(
+      await request(app.getHttpServer()).post('/auth/instant-login').send({}),
+    );
+    const projects = await request(app.getHttpServer())
+      .get('/projects')
+      .auth(token, { type: 'bearer' })
+      .expect(200);
+    const sprintId = (projects.body as { sprints: { id: string }[] }[])[0]
+      .sprints[0].id;
+    const otherUser = await prisma.user.findFirstOrThrow({
+      where: { id: { not: demoId } },
+    });
+    // Fictional pre-existing reaction belongs to this isolated fixture only.
+    const card = await prisma.retroCard.create({
+      data: {
+        content: 'Reaction concurrency fixture',
+        type: 'POSITIVE',
+        authorId: demoId,
+        sprintId,
+        likedBy: [otherUser.id],
+        likes: 1,
+      },
+    });
+    const observer = io(await app.getUrl(), {
+      transports: ['websocket'],
+      extraHeaders: { Origin: 'http://localhost:5173' },
+      autoConnect: false,
+      reconnection: false,
+      timeout: 5000,
+    });
+    const events: {
+      id: string;
+      retroCard: { id: string; likes: number; likedBy: string[] }[];
+    }[] = [];
+    try {
+      await new Promise<void>((resolve, reject) => {
+        observer.once('connect', resolve);
+        observer.once('connect_error', reject);
+        observer.connect();
+      });
+      observer.on('sprintUpdated', (event: (typeof events)[number]) => {
+        if (event.id === sprintId) events.push(event);
+      });
+      await Promise.all(
+        [token, otherToken].map((session) =>
+          request(app.getHttpServer())
+            .patch(`/retrospectives/${card.id}`)
+            .auth(session, { type: 'bearer' })
+            .send({ liked: true })
+            .expect(200),
+        ),
+      );
+      const saved = await request(app.getHttpServer())
+        .get(`/retrospectives/${card.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      expect(saved.body).toMatchObject({ likes: 2 });
+      expect((saved.body as { likedBy: string[] }).likedBy).toEqual(
+        expect.arrayContaining([otherUser.id, demoId]),
+      );
+      // The already deployed client submits its old whole-array snapshot. It may
+      // change its own intent, but cannot erase or impersonate other reactions.
+      const unliked = await request(app.getHttpServer())
+        .patch(`/retrospectives/${card.id}`)
+        .auth(token, { type: 'bearer' })
+        .send({ likedBy: ['spoofed-id'], likes: 99 })
+        .expect(200);
+      expect(unliked.body).toMatchObject({ likes: 1, likedBy: [otherUser.id] });
+      await request(app.getHttpServer())
+        .delete(`/retrospectives/${card.id}`)
+        .auth(token, { type: 'bearer' })
+        .expect(200);
+      await request(app.getHttpServer())
+        .get(`/retrospectives/${card.id}`)
+        .auth(otherToken, { type: 'bearer' })
+        .expect(404);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(events).toHaveLength(4);
+      expect(
+        events[0].retroCard.find((item) => item.id === card.id),
+      ).toMatchObject({ likes: 2 });
+      expect(
+        events[1].retroCard.find((item) => item.id === card.id),
+      ).toMatchObject({ likes: 2 });
+      expect(
+        events[2].retroCard.find((item) => item.id === card.id),
+      ).toMatchObject({ likes: 1, likedBy: [otherUser.id] });
+      expect(events[3].retroCard.some((item) => item.id === card.id)).toBe(
+        false,
+      );
+      expect(JSON.stringify(events)).not.toMatch(/"password"|"refreshToken"/);
+    } finally {
+      observer.disconnect();
+      await prisma.retroCard.deleteMany({ where: { id: card.id } });
+    }
+  });
+
   it('validates project membership removals and preserves confirmed user lists', async () => {
     const login = await request(app.getHttpServer())
       .post('/auth/instant-login')

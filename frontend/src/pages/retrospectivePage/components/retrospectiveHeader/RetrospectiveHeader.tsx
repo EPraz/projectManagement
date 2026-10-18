@@ -2,7 +2,7 @@ import { Box, Button, Tab, Tabs, Typography } from "@mui/material";
 import {
   Add as AddIcon,
   Visibility as VisibilityIcon,
-  VisibilityOff as VisibilityOffIcon,
+  VisibilityOff as VisibilityOffIcon
 } from "@mui/icons-material";
 import { RetrospectiveContainerProps } from "../../../../types";
 import { RetroTypes } from "../../../../constants";
@@ -12,13 +12,21 @@ const RetrospectiveHeader = ({
   sprint,
   currentTab,
   setCurrentTab,
-  isAnonymous,
-  setIsAnonymous,
-  handleOpenAddDialog,
+  hideNames,
+  setHideNames,
+  handleOpenAddDialog
 }: RetrospectiveContainerProps) => {
   return (
     <Header elevation={0}>
-      <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          alignItems: "center",
+          flexWrap: "wrap",
+          minWidth: 0
+        }}
+      >
         <Typography variant="h5" fontWeight="bold">
           {sprint ? `${sprint.name} Retrospective` : "Retrospective"}
         </Typography>
@@ -26,28 +34,30 @@ const RetrospectiveHeader = ({
           value={currentTab}
           onChange={(_, value) => setCurrentTab(value)}
           sx={{
-            ml: 2,
+            ml: { xs: 0, md: 2 },
             "& .MuiTab-root": {
               minHeight: 48,
               textTransform: "none",
-              fontSize: "0.875rem",
-            },
+              fontSize: "0.875rem"
+            }
           }}
         >
           <Tab label="Team Discussion" />
-          <Tab label="Anonymous Feedback" />
+          <Tab label="Blurred feedback" />
         </Tabs>
       </Box>
-      <Box sx={{ display: "flex", gap: 1 }}>
+      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
         <Button
           variant="outlined"
-          startIcon={isAnonymous ? <VisibilityOffIcon /> : <VisibilityIcon />}
-          onClick={() => setIsAnonymous(!isAnonymous)}
+          aria-pressed={hideNames}
+          startIcon={hideNames ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          onClick={() => setHideNames(!hideNames)}
         >
-          {isAnonymous ? "Show Names" : "Hide Names"}
+          {hideNames ? "Show Names" : "Hide Names"}
         </Button>
         <Button
           variant="contained"
+          disabled={!sprint}
           startIcon={<AddIcon />}
           onClick={() => handleOpenAddDialog(RetroTypes.POSITIVE)}
         >

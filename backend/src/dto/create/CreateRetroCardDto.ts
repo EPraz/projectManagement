@@ -1,26 +1,30 @@
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsOptional,
   IsString,
+  Min,
 } from 'class-validator';
 import { RetroCardType } from '@prisma/client';
 
 export class CreateRetroCardDto {
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   @IsNotEmpty()
   @IsString()
   content: string;
 
-  @IsEnum(RetroCardType, {
-    message: 'Type must be either POSITIVE or NEGATIVE',
-  })
+  @IsEnum(RetroCardType)
   type: RetroCardType;
 
-  @IsNotEmpty()
+  // Accepted for already deployed clients; attribution comes from the session.
+  @IsOptional()
   @IsString()
-  authorId: string;
+  authorId?: string;
 
   @IsNotEmpty()
   @IsString()
@@ -28,10 +32,11 @@ export class CreateRetroCardDto {
 
   @IsOptional()
   @IsArray()
-  @IsString({ each: true }) // Validación para cada elemento del array
-  likedBy: string[];
+  @IsString({ each: true })
+  likedBy?: string[];
 
   @IsOptional()
-  @IsNumber()
-  likes: number;
+  @IsInt()
+  @Min(0)
+  likes?: number;
 }
