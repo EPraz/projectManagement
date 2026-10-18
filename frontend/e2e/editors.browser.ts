@@ -1,5 +1,5 @@
 import { expect, test, type APIRequestContext } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 
 async function editingFixture(request: APIRequestContext) {
   const login = await request.post("/api/auth/instant-login", { data: {} });
@@ -22,17 +22,17 @@ async function editingFixture(request: APIRequestContext) {
   }[] = await (await request.get("/api/projects/", { headers })).json();
   const project = projects[0];
   const delivery = project.sprints.find(
-    (item) => item.name === "Sprint 2 — Delivery"
+    (item) => item.name === "Sprint 2 — Delivery",
   )!;
   const ticket = project.tickets.find(
-    (item) => item.tasks.length && item.sprintId === delivery.id
+    (item) => item.tasks.length && item.sprintId === delivery.id,
   )!;
   return { headers, project, ticket, task: ticket.tasks[0] };
 }
 
 test("a pending editor cannot close a later editor after browser navigation", async ({
   page,
-  request
+  request,
 }) => {
   const { headers, project, ticket, task } = await editingFixture(request);
   const nextTask = ticket.tasks[1];
@@ -55,12 +55,10 @@ test("a pending editor cannot close a later editor after browser navigation", as
   try {
     await enterDemo(page);
     await page.getByText(project.title, { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    const row = page
-      .getByRole("row")
-      .filter({
-        has: page.getByRole("heading", { name: ticket.title, exact: true })
-      });
+    await navigateSection(page, "Taskboard");
+    const row = page.getByRole("row").filter({
+      has: page.getByRole("heading", { name: ticket.title, exact: true }),
+    });
     await test.step("Open the first task", async () => {
       await row
         .getByText(`#${task.id}`, { exact: true })
@@ -80,7 +78,7 @@ test("a pending editor cannot close a later editor after browser navigation", as
       await page.goBack({ waitUntil: "commit" });
     });
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await page.getByRole("button", { name: "Board", exact: true }).click();
+    await navigateSection(page, "Taskboard");
     await test.step("Open the second task", async () => {
       await row
         .getByText(`#${nextTask.id}`, { exact: true })
@@ -93,21 +91,21 @@ test("a pending editor cannot close a later editor after browser navigation", as
       (response) =>
         response.url().endsWith(`/api/tasks/${task.id}`) &&
         response.request().method() === "PATCH",
-      { timeout: 5000 }
+      { timeout: 5000 },
     );
     release();
     await completed;
     await page.evaluate(
       () =>
         new Promise((resolve) =>
-          requestAnimationFrame(() => requestAnimationFrame(resolve))
-        )
+          requestAnimationFrame(() => requestAnimationFrame(resolve)),
+        ),
     );
     await expect(page.getByPlaceholder("Task title")).toHaveValue(
-      "Second unsaved editor draft"
+      "Second unsaved editor draft",
     );
     expect(new URL(page.url()).searchParams.get("taskId")).toBe(
-      String(nextTask.id)
+      String(nextTask.id),
     );
   } finally {
     release();
@@ -117,15 +115,15 @@ test("a pending editor cannot close a later editor after browser navigation", as
       data: {
         id: task.id,
         title: task.title,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
   }
 });
 
 test("task validation and unconfirmed server responses keep the editor open", async ({
   page,
-  request
+  request,
 }) => {
   const { project, task } = await editingFixture(request);
   await enterDemo(page);
@@ -140,20 +138,20 @@ test("task validation and unconfirmed server responses keep the editor open", as
     return route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: "{}"
+      body: "{}",
     });
   });
   await title.fill("   ");
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   await expect(
-    dialog.getByText("Title is required", { exact: true })
+    dialog.getByText("Title is required", { exact: true }),
   ).toBeVisible();
   expect(submissions).toBe(0);
   await title.fill("Retained validated draft");
   await dialog.getByLabel("Estimated Hours", { exact: true }).fill("-1");
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   await expect(
-    dialog.getByText("Enter a non-negative number", { exact: true })
+    dialog.getByText("Enter a non-negative number", { exact: true }),
   ).toBeVisible();
   expect(submissions).toBe(0);
   await dialog.getByLabel("Estimated Hours", { exact: true }).fill("1");
@@ -168,13 +166,13 @@ test("task validation and unconfirmed server responses keep the editor open", as
 for (const kind of ["task", "ticket"] as const) {
   test(`an incomplete nonempty ${kind} response cannot confirm a save`, async ({
     page,
-    request
+    request,
   }) => {
     const fixture = await editingFixture(request);
     const item = fixture[kind];
     await enterDemo(page);
     await page.goto(
-      `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`
+      `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`,
     );
     const draft = `Incomplete response ${kind} draft`;
     const dialog = page.getByRole("dialog");
@@ -189,22 +187,22 @@ for (const kind of ["task", "ticket"] as const) {
             body: JSON.stringify({
               id: item.id,
               title: draft,
-              updatedAt: new Date().toISOString()
-            })
+              updatedAt: new Date().toISOString(),
+            }),
           })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(
-      dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`)
+      dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`),
     ).toHaveValue(draft);
   });
 }
 
 test("a delayed ticket-save response preserves a newer independent task change on the board", async ({
   page,
-  request
+  request,
 }) => {
   const { headers, project, ticket, task } = await editingFixture(request);
   const pattern = `**/api/tickets/${ticket.id}`;
@@ -228,7 +226,7 @@ test("a delayed ticket-save response preserves a newer independent task change o
   try {
     await enterDemo(page);
     await page.goto(
-      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`
+      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`,
     );
     const dialog = page.getByRole("dialog");
     await dialog.getByPlaceholder("Ticket title").fill(title);
@@ -241,10 +239,10 @@ test("a delayed ticket-save response preserves a newer independent task change o
           data: {
             id: task.id,
             title: taskTitle,
-            updatedBy: "visitor@demo.example"
-          }
+            updatedBy: "visitor@demo.example",
+          },
         })
-      ).ok()
+      ).ok(),
     ).toBe(true);
     // The real task event is rendered even while the modal makes the board inert.
     await expect(page.getByText(taskTitle, { exact: true })).toHaveCount(1);
@@ -259,16 +257,16 @@ test("a delayed ticket-save response preserves a newer independent task change o
       data: {
         id: task.id,
         title: task.title,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
     await request.patch(`/api/tickets/${ticket.id}`, {
       headers,
       data: {
         id: ticket.id,
         title: ticket.title,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
   }
 });
@@ -277,20 +275,20 @@ for (const width of [390, 1280]) {
   for (const kind of ["task", "ticket"] as const) {
     test(`${kind} editor keeps keyboard focus and controls usable at ${width}px`, async ({
       page,
-      request
+      request,
     }, info) => {
       const fixture = await editingFixture(request);
       const item = fixture[kind];
       await page.setViewportSize({ width, height: 844 });
       await enterDemo(page);
       await page.goto(
-        `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`
+        `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`,
       );
       const dialog = page.getByRole("dialog");
       await expect(dialog).toBeVisible();
       const dimensions = await dialog.evaluate((element) => ({
         scroll: element.scrollWidth,
-        client: element.clientWidth
+        client: element.clientWidth,
       }));
       expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client + 2);
       await dialog
@@ -300,8 +298,8 @@ for (const width of [390, 1280]) {
         await page.keyboard.press("Tab");
         expect(
           await dialog.evaluate((element) =>
-            element.contains(document.activeElement)
-          )
+            element.contains(document.activeElement),
+          ),
         ).toBe(true);
       }
       await dialog
@@ -323,27 +321,27 @@ for (const width of [390, 1280]) {
 
 test("an existing assigned task saves an allowed payload and remains saved after reload", async ({
   page,
-  request
+  request,
 }) => {
   const { headers, project, task } = await editingFixture(request);
   const title = `Verified task edit ${Date.now()}`;
   try {
     await enterDemo(page);
     await page.goto(
-      `/projects/${project.id}/board?tab=board&taskId=${task.id}`
+      `/projects/${project.id}/board?tab=board&taskId=${task.id}`,
     );
     const dialog = page.getByRole("dialog");
     await dialog.getByPlaceholder("Task title").fill(title);
     const saved = page.waitForResponse(
       (response) =>
         response.url().endsWith(`/api/tasks/${task.id}`) &&
-        response.request().method() === "PATCH"
+        response.request().method() === "PATCH",
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     expect((await saved).status()).toBe(200);
     await expect(dialog).toHaveCount(0);
     await page.goto(
-      `/projects/${project.id}/board?tab=board&taskId=${task.id}`
+      `/projects/${project.id}/board?tab=board&taskId=${task.id}`,
     );
     await expect(page.getByPlaceholder("Task title")).toHaveValue(title);
   } finally {
@@ -352,21 +350,21 @@ test("an existing assigned task saves an allowed payload and remains saved after
       data: {
         id: task.id,
         title: task.title,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
   }
 });
 
 test("planning selections and cleared assignment/estimates persist from the ticket editor", async ({
   page,
-  request
+  request,
 }) => {
   const { headers, project, ticket } = await editingFixture(request);
   try {
     await enterDemo(page);
     await page.goto(
-      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`
+      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`,
     );
     const dialog = page.getByRole("dialog");
     await dialog.getByRole("combobox", { name: /^Assigned To/ }).click();
@@ -386,16 +384,16 @@ test("planning selections and cleared assignment/estimates persist from the tick
       sprintId: null,
       featureId: null,
       assignedTo: null,
-      estimatedHours: null
+      estimatedHours: null,
     });
     await page.goto(
-      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`
+      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`,
     );
     await expect(
-      page.getByRole("combobox", { name: /^Assigned To/ })
+      page.getByRole("combobox", { name: /^Assigned To/ }),
     ).toHaveText("Unassigned");
     await expect(
-      page.getByLabel("Estimated Hours", { exact: true })
+      page.getByLabel("Estimated Hours", { exact: true }),
     ).toHaveValue("");
   } finally {
     await request.patch(`/api/tickets/${ticket.id}`, {
@@ -406,8 +404,8 @@ test("planning selections and cleared assignment/estimates persist from the tick
         featureId: ticket.featureId,
         assignedTo: ticket.assignedTo,
         estimatedHours: ticket.estimatedHours,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
   }
 });
@@ -415,7 +413,7 @@ test("planning selections and cleared assignment/estimates persist from the tick
 for (const kind of ["task", "ticket"] as const) {
   test(`${kind} editor preserves typing after an independent update and a failed deletion`, async ({
     page,
-    request
+    request,
   }) => {
     const fixture = await editingFixture(request);
     const item = fixture[kind];
@@ -435,12 +433,12 @@ for (const kind of ["task", "ticket"] as const) {
           frame.payload.includes(marker)
         )
           received();
-      })
+      }),
     );
     try {
       await enterDemo(page);
       await page.goto(
-        `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`
+        `/projects/${fixture.project.id}/board?tab=board&${kind}Id=${item.id}`,
       );
       const dialog = page.getByRole("dialog");
       await dialog
@@ -453,24 +451,24 @@ for (const kind of ["task", "ticket"] as const) {
             data: {
               id: item.id,
               title: marker,
-              updatedBy: "visitor@demo.example"
-            }
+              updatedBy: "visitor@demo.example",
+            },
           })
-        ).ok()
+        ).ok(),
       ).toBe(true);
       await event;
       await expect(
-        dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`)
+        dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`),
       ).toHaveValue(draft);
       await page.route(pattern, (route) =>
         route.request().method() === "DELETE"
           ? route.fulfill({ status: 503, body: "unavailable" })
-          : route.continue()
+          : route.continue(),
       );
       await dialog.getByRole("button", { name: "Delete", exact: true }).click();
       await expect(dialog.getByRole("alert")).toContainText("Could not delete");
       await expect(
-        dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`)
+        dialog.getByPlaceholder(`${kind === "task" ? "Task" : "Ticket"} title`),
       ).toHaveValue(draft);
       await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
       await expect(dialog).toHaveCount(0);
@@ -482,8 +480,8 @@ for (const kind of ["task", "ticket"] as const) {
         data: {
           id: item.id,
           title: item.title,
-          updatedBy: "visitor@demo.example"
-        }
+          updatedBy: "visitor@demo.example",
+        },
       });
     }
   });
@@ -491,7 +489,7 @@ for (const kind of ["task", "ticket"] as const) {
 
 test("failed task edits keep the draft and retry only after the pending request completes", async ({
   page,
-  request
+  request,
 }) => {
   const { headers, project, task } = await editingFixture(request);
   const title = `Recoverable task edit ${Date.now()}`;
@@ -513,20 +511,20 @@ test("failed task edits keep the draft and retry only after the pending request 
     await route.fulfill({
       status: 503,
       contentType: "application/json",
-      body: '{"message":"unavailable"}'
+      body: '{"message":"unavailable"}',
     });
   });
   try {
     await enterDemo(page);
     await page.goto(
-      `/projects/${project.id}/board?tab=board&taskId=${task.id}`
+      `/projects/${project.id}/board?tab=board&taskId=${task.id}`,
     );
     const dialog = page.getByRole("dialog");
     await dialog.getByPlaceholder("Task title").fill(title);
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: /saving/i })
+      dialog.getByRole("button", { name: /saving/i }),
     ).toBeDisabled();
     expect(submissions).toBe(1);
     release();
@@ -537,7 +535,7 @@ test("failed task edits keep the draft and retry only after the pending request 
     await expect(dialog).toHaveCount(0);
     expect(
       (await (await request.get(`/api/tasks/${task.id}`, { headers })).json())
-        .title
+        .title,
     ).toBe(title);
   } finally {
     release();
@@ -547,15 +545,15 @@ test("failed task edits keep the draft and retry only after the pending request 
       data: {
         id: task.id,
         title: task.title,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
   }
 });
 
 test("ticket tabs retain edited requirements across a failed save and retry", async ({
   page,
-  request
+  request,
 }) => {
   const { headers, project, ticket } = await editingFixture(request);
   const notes = `Recoverable requirements ${Date.now()}`;
@@ -563,32 +561,32 @@ test("ticket tabs retain edited requirements across a failed save and retry", as
   try {
     await enterDemo(page);
     await page.goto(
-      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`
+      `/projects/${project.id}/board?tab=board&ticketId=${ticket.id}`,
     );
     const dialog = page.getByRole("dialog");
     await expect(dialog.getByPlaceholder("Ticket title")).toHaveValue(
-      ticket.title
+      ticket.title,
     );
     await dialog.getByRole("tab", { name: "Planning", exact: true }).click();
     await expect(
-      dialog.getByLabel("Story Points", { exact: true })
+      dialog.getByLabel("Story Points", { exact: true }),
     ).toBeVisible();
     await dialog
       .getByRole("tab", { name: "Additional Info", exact: true })
       .click();
     await expect(
-      dialog.getByPlaceholder("Define what makes this ticket complete...")
+      dialog.getByPlaceholder("Define what makes this ticket complete..."),
     ).toBeVisible();
     await dialog.getByPlaceholder("Add notes...", { exact: true }).fill(notes);
     await page.route(pattern, (route) =>
       route.request().method() === "PATCH"
         ? route.fulfill({ status: 503, body: "unavailable" })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText(/try again/i);
     await expect(
-      dialog.getByPlaceholder("Add notes...", { exact: true })
+      dialog.getByPlaceholder("Add notes...", { exact: true }),
     ).toHaveValue(notes);
     await page.unroute(pattern);
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
@@ -598,7 +596,7 @@ test("ticket tabs retain edited requirements across a failed save and retry", as
         await (
           await request.get(`/api/tickets/${ticket.id}`, { headers })
         ).json()
-      ).notes
+      ).notes,
     ).toBe(notes);
   } finally {
     await page.unroute(pattern);
@@ -607,8 +605,8 @@ test("ticket tabs retain edited requirements across a failed save and retry", as
       data: {
         id: ticket.id,
         notes: ticket.notes,
-        updatedBy: "visitor@demo.example"
-      }
+        updatedBy: "visitor@demo.example",
+      },
     });
   }
 });

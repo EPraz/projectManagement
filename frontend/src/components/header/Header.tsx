@@ -1,104 +1,154 @@
-import React, { useMemo } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { MENU_ITEMS } from "../../constants/menuItems";
+import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
-  HeaderContainer,
-  ProjectTitle,
-  StyledTab,
-  StyledTabs,
-  TabsBox,
-  TopBar,
-} from "./Header.styles";
-import { HeaderProps } from "../../types";
+  Box,
+  Button,
+  Chip,
+  Drawer,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { Close, Menu, Refresh, ChevronRight } from "@mui/icons-material";
+import type { HeaderProps } from "../../types";
+import AppearanceControl from "../appearanceControl/AppearanceControl";
 import UserMenu from "./userMenu/UserMenu";
-import { Breadcrumbs, IconButton, Link, Tooltip } from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
-import RefreshIcon from "@mui/icons-material/Refresh";
-
-const Header: React.FC<HeaderProps> = ({
+import ProjectNavigation from "../projectNavigation/ProjectNavigation";
+import { currentSection } from "../projectNavigation/sections";
+export default function Header({
   projectName,
   projectId,
   onRefresh,
   refreshing = false,
-}) => {
+}: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const pathSegments = location.pathname.split("/");
-  const currentTab = pathSegments[pathSegments.length - 1];
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
-    event.stopPropagation();
-    if (currentTab !== newValue) {
-      navigate(`/projects/${projectId}/${newValue}`, { replace: true });
-    }
-  };
-
-  const tabs = useMemo(
-    () =>
-      MENU_ITEMS.map((tab) => (
-        <StyledTab
-          key={tab.path}
-          label={
-            <TabsBox>
-              {tab.icon && <tab.icon sx={{ fontSize: 18 }} />}
-              {tab.text}
-            </TabsBox>
-          }
-          value={tab.path}
-          disableRipple
-          disabled={tab?.disabled}
-        />
-      )),
-    [],
-  );
-
-  const handleBreadcrumbClick = () => {
-    // Navegar a la URL base del proyecto
-    navigate(`/projects`, { replace: true });
-  };
-
+  const [open, setOpen] = useState(false);
+  const section = currentSection(location.pathname, location.search);
   return (
-    <HeaderContainer>
-      <TopBar>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            component="button"
-            type="button"
-            aria-label="Back to projects"
-            color="inherit"
-            onClick={handleBreadcrumbClick}
-            underline="hover"
-            sx={{ cursor: "pointer" }}
-          >
-            <HomeIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-          </Link>
-          <ProjectTitle>{projectName}</ProjectTitle>
-        </Breadcrumbs>
-        {onRefresh && (
-          <Tooltip title="Refresh project">
-            <span>
-              <IconButton
-                aria-label="Refresh project"
-                onClick={onRefresh}
-                disabled={refreshing}
-              >
-                <RefreshIcon fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-        )}
-      </TopBar>
-      <StyledTabs
-        value={currentTab}
-        onChange={handleTabChange}
-        variant="scrollable"
-        scrollButtons="auto"
+    <Box
+      component="header"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+        gap: 1,
+        pb: 3,
+        minWidth: 0,
+      }}
+    >
+      <IconButton
+        aria-label="Open project navigation"
+        onClick={() => setOpen(true)}
+        sx={{ display: { md: "none" } }}
       >
-        {tabs}
-      </StyledTabs>
+        <Menu />
+      </IconButton>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          minWidth: 0,
+          flex: 1,
+          gap: 0.5,
+        }}
+      >
+        <Button
+          aria-label="Back to projects"
+          onClick={() => navigate("/projects")}
+          sx={{
+            display: { xs: "none", sm: "inline-flex" },
+            color: "text.secondary",
+            px: 0.5,
+          }}
+        >
+          Projects
+        </Button>
+        <ChevronRight
+          sx={{
+            display: { xs: "none", sm: "block" },
+            color: "text.secondary",
+            fontSize: 16,
+          }}
+        />
+        <Typography
+          variant="body2"
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            maxWidth: { xs: 130, sm: 280 },
+          }}
+        >
+          {projectName}
+        </Typography>
+        <ChevronRight
+          sx={{
+            display: { xs: "none", sm: "block" },
+            color: "text.secondary",
+            fontSize: 16,
+          }}
+        />
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ display: { xs: "none", sm: "block" } }}
+        >
+          {section.label}
+        </Typography>
+      </Box>
+      <Chip
+        variant="outlined"
+        size="small"
+        label="Demo workspace"
+        sx={{ display: { xs: "none", lg: "flex" } }}
+      />
+      {onRefresh && (
+        <Tooltip title="Refresh project">
+          <span>
+            <IconButton
+              aria-label="Refresh project"
+              onClick={onRefresh}
+              disabled={refreshing}
+            >
+              <Refresh fontSize="small" />
+            </IconButton>
+          </span>
+        </Tooltip>
+      )}
+      <AppearanceControl />
       <UserMenu />
-    </HeaderContainer>
+      <Drawer open={open} onClose={() => setOpen(false)}>
+        <Box sx={{ width: "min(300px, 90vw)", p: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              p: 1,
+            }}
+          >
+            <Typography fontWeight={600}>EPProject Management</Typography>
+            <IconButton
+              aria-label="Close project navigation"
+              onClick={() => setOpen(false)}
+            >
+              <Close />
+            </IconButton>
+          </Box>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ px: 2, overflowWrap: "anywhere" }}
+          >
+            {projectName}
+          </Typography>
+          <ProjectNavigation
+            projectId={projectId}
+            onNavigate={() => setOpen(false)}
+          />
+        </Box>
+      </Drawer>
+    </Box>
   );
-};
-
-export default Header;
+}

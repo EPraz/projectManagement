@@ -19,7 +19,7 @@ import {
 import { useOutletContext } from "react-router-dom";
 import { LayoutContextProps } from "../../types";
 import { format } from "date-fns";
-import { SprintSelector } from "../../components";
+
 import { getDaysRemaining } from "./DashBoard.helpers";
 import RecentActivityFeed from "./components/recentActivity/RecentActivity";
 import SprintMetricsChart from "./components/sprintMetricsChart/SprintMetricsChart";
@@ -32,7 +32,10 @@ import { getProjectProgress } from "../../helpers/projectsPage/ProjectsPage.help
 const DashBoard = () => {
   const { project, sprint, allTickets, tickets, listOfSprints } =
     useOutletContext<LayoutContextProps>();
-  const projectProgress = getProjectProgress(project?.ticketStatuses ?? [], allTickets);
+  const projectProgress = getProjectProgress(
+    project?.ticketStatuses ?? [],
+    allTickets,
+  );
 
   return (
     <DashboardContainer>
@@ -81,7 +84,10 @@ const DashBoard = () => {
                     {projectProgress}%
                   </Typography>
                 </Box>
-                <StyledLinearProgress variant="determinate" value={projectProgress} />
+                <StyledLinearProgress
+                  variant="determinate"
+                  value={projectProgress}
+                />
               </ProgressContainer>
 
               <Divider sx={{ my: 3 }} />
@@ -102,7 +108,6 @@ const DashBoard = () => {
               alignItems={"center"}
             >
               Sprint
-              <SprintSelector />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
               <StatCard>

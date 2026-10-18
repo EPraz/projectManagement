@@ -4,7 +4,7 @@ import { enterDemo } from "./support/demo";
 for (const failure of ["unavailable", "malformed", "incomplete"]) {
   test(`project creation retains its draft after a ${failure} response and confirms retry`, async ({
     page,
-    request
+    request,
   }) => {
     await enterDemo(page);
     const marker = `Finish fixture ${failure} ${Date.now()}`;
@@ -36,23 +36,23 @@ for (const failure of ["unavailable", "malformed", "incomplete"]) {
                       taskStatuses: [],
                       epics: [],
                       epicStatuses: [],
-                      featureStatuses: []
+                      featureStatuses: [],
                     })
-                  : "{}"
-          })
+                  : "{}",
+          }),
     );
     let createdId: string | undefined;
     try {
       await dialog.getByRole("button", { name: "Save", exact: true }).click();
       await expect(dialog.getByRole("alert")).toBeVisible();
       await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
-        marker
+        marker,
       );
       await page.unroute("**/api/projects");
       const response = page.waitForResponse(
         (item) =>
           new URL(item.url()).pathname === "/api/projects" &&
-          item.request().method() === "POST"
+          item.request().method() === "POST",
       );
       await dialog.getByRole("button", { name: "Save", exact: true }).click();
       const created = await response;
@@ -71,9 +71,9 @@ for (const failure of ["unavailable", "malformed", "incomplete"]) {
         expect(
           (
             await request.delete(`/api/projects/${createdId}`, {
-              headers: { Authorization: `Bearer ${accessToken}` }
+              headers: { Authorization: `Bearer ${accessToken}` },
             })
-          ).ok()
+          ).ok(),
         ).toBe(true);
       }
     }
@@ -81,7 +81,7 @@ for (const failure of ["unavailable", "malformed", "incomplete"]) {
 }
 
 test("project entry works through a keyboard link in grid and list views", async ({
-  page
+  page,
 }) => {
   await enterDemo(page);
   for (const view of ["grid", "list"]) {
@@ -91,39 +91,41 @@ test("project entry works through a keyboard link in grid and list views", async
         .click();
     const link = page.getByRole("link", {
       name: "Orbit — Product Delivery",
-      exact: true
+      exact: true,
     });
     await link.focus();
     await expect(link).toBeFocused();
     await page.keyboard.press("Enter");
     await expect(
-      page.getByText("Overall Progress", { exact: true })
+      page.getByText("Overall Progress", { exact: true }),
     ).toBeVisible();
     await page.goBack();
   }
 });
 
 for (const width of [390, 1280])
-  test(`settings show the shared demo identity and unavailable features at ${width}px`, async ({
-    page
+  test(`shared demo information and appearance preferences are reachable at ${width}px`, async ({
+    page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await enterDemo(page);
-    await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page.getByRole("button", { name: "Settings", exact: true }).click();
-    await expect(page.getByLabel("Full Name", { exact: true })).toHaveValue(
-      "Demo Visitor"
-    );
-    await expect(page.getByLabel("Email Address", { exact: true })).toHaveValue(
-      "visitor@demo.example"
-    );
+    await page
+      .getByRole("link", { name: "Orbit \u2014 Product Delivery", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Open user menu", exact: true })
+      .click();
+    await expect(page.getByRole("menu")).toContainText("Demo Visitor");
+    await expect(page.getByRole("menu")).toContainText("Shared demo workspace");
     await expect(
-      page.getByRole("button", { name: "Edit Profile", exact: true })
-    ).toBeDisabled();
-    await expect(page.getByRole("alert")).toContainText("shared demo");
+      page.getByRole("menuitemcheckbox", { name: /Follow system appearance/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("menuitem", { name: "Settings", exact: true }),
+    ).toHaveCount(0);
     expect(
       await page.evaluate(
-        () => document.documentElement.scrollWidth <= window.innerWidth
-      )
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
     ).toBe(true);
   });

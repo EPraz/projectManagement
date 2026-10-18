@@ -1,27 +1,13 @@
-import React from "react";
-import { Box, Divider, Tooltip } from "@mui/material";
-
+import { Box, Button, Tooltip, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useOutletContext } from "react-router-dom";
-
 import StatusConfig from "../../components/statusConfig/StatusConfig";
-import { SprintSelector } from "../../components";
 import type { LayoutContextProps } from "../../types";
-import {
-  ActionContainer,
-  AddButton,
-  AddButtonWrapper,
-  BoardContainer,
-  BoardHeader as BoardHeaderStyled,
-  TabButton,
-  TabsWrapper
-} from "./Board.styles";
 import { backlogColumns } from "../../constants";
 import { TabPanels } from "../../constants/tabPanels";
 import DeferredSurface from "../../components/deferredSurface/DeferredSurface";
 import BoardHeader from "./components/backlogBoard/boardHeader/BoardHeader";
-
-const Board = () => {
+export default function Board() {
   const {
     project,
     setOpenCreateTicketDialog,
@@ -32,142 +18,75 @@ const Board = () => {
     setFilters,
     handleApplyFilter,
     tabValue,
-    handleChangeTabValue,
     selectedTasksStatuses,
     setSelectedTasksStatuses,
-    setOpenCreateSprintGoalDialog
+    setOpenCreateSprintGoalDialog,
   } = useOutletContext<LayoutContextProps>();
-
   const Panel = TabPanels[tabValue].component;
-  const isDisabled = !listOfSprints?.length;
-
+  const disabled = !listOfSprints?.length;
   return (
-    <BoardContainer>
-      <BoardHeaderStyled>
-        <TabsWrapper>
-          {TabPanels.map((tab, index) => (
-            <TabButton
-              key={tab.label}
-              active={tabValue === index}
-              type="button"
-              aria-pressed={tabValue === index}
-              onClick={() => handleChangeTabValue(index)}
-            >
-              {React.cloneElement(tab.icon, { fontSize: "small" })}
-              {tab.label}
-            </TabButton>
-          ))}
-
-          <Divider
-            orientation="vertical"
-            variant="middle"
-            flexItem
-            sx={{ borderColor: "#888888" }}
+    <Box sx={{ minWidth: 0 }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
+          mb: 3,
+        }}
+      >
+        <Box sx={{ flex: 1 }}>
+          <Typography variant="overline" color="primary">
+            {tabValue === 0 || tabValue === 1 ? "Work" : "Planning"} / Selected
+            sprint
+          </Typography>
+          <Typography component="h1" variant="h1">
+            {tabValue === 0 ? "Taskboard" : TabPanels[tabValue].label}
+            <Box component="span" sx={{ color: "primary.main" }}>
+              .
+            </Box>
+          </Typography>
+        </Box>
+        {(tabValue === 0 || tabValue === 1 || tabValue === 3) && (
+          <Tooltip title={disabled ? "You must create a Sprint first" : ""}>
+            <span>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                disabled={disabled}
+                onClick={() =>
+                  tabValue === 3
+                    ? setOpenCreateSprintGoalDialog(true)
+                    : setOpenCreateTicketDialog(true)
+                }
+              >
+                {tabValue === 3 ? "Add New Goal" : "Add New Item"}
+              </Button>
+            </span>
+          </Tooltip>
+        )}
+        {tabValue === 0 && (
+          <StatusConfig
+            selectedStatuses={selectedTasksStatuses}
+            setSelectedStatuses={setSelectedTasksStatuses}
+            items={project?.taskStatuses}
           />
-
-          {tabValue === 0 && (
-            <ActionContainer>
-              <AddButtonWrapper>
-                <Tooltip
-                  title={isDisabled ? "You must create a Sprint first" : ""}
-                  arrow
-                  placement="bottom"
-                >
-                  <span>
-                    <AddButton
-                      onClick={() =>
-                        !isDisabled && setOpenCreateTicketDialog(true)
-                      }
-                      disabled={isDisabled}
-                    >
-                      Add New Item
-                      <AddIcon fontSize="small" />
-                    </AddButton>
-                  </span>
-                </Tooltip>
-              </AddButtonWrapper>
-            </ActionContainer>
-          )}
-
-          {tabValue === 3 && (
-            <ActionContainer>
-              <AddButtonWrapper>
-                <Tooltip
-                  title={isDisabled ? "You must create a Sprint first" : ""}
-                  arrow
-                  placement="bottom"
-                >
-                  <span>
-                    <AddButton
-                      onClick={() =>
-                        !isDisabled && setOpenCreateSprintGoalDialog(true)
-                      }
-                      disabled={isDisabled}
-                    >
-                      Add New Goal
-                      <AddIcon fontSize="small" />
-                    </AddButton>
-                  </span>
-                </Tooltip>
-              </AddButtonWrapper>
-            </ActionContainer>
-          )}
-          <Divider
-            orientation="vertical"
-            variant="middle"
-            flexItem
-            sx={{ borderColor: "#888888" }}
-          />
-
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%"
-            }}
-          >
-            <SprintSelector />
-
-            {tabValue === 0 && (
-              <Box sx={{ marginLeft: "auto" }}>
-                <Divider
-                  orientation="vertical"
-                  variant="middle"
-                  flexItem
-                  sx={{ borderColor: "#888888" }}
-                />
-
-                <StatusConfig
-                  selectedStatuses={selectedTasksStatuses}
-                  setSelectedStatuses={setSelectedTasksStatuses}
-                  items={project?.taskStatuses}
-                />
-              </Box>
-            )}
-
-            {tabValue === 1 && (
-              <BoardHeader
-                columns={backlogColumns}
-                visibleColumns={visibleColumns}
-                setVisibleColumns={setVisibleColumns}
-                onApplyFilter={handleApplyFilter}
-                filters={filters}
-                setFilters={setFilters}
-                project={project}
-              />
-            )}
-          </Box>
-        </TabsWrapper>
-      </BoardHeaderStyled>
-
-      <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
-        <DeferredSurface key={tabValue} label={TabPanels[tabValue].label}>
-          <Panel />
-        </DeferredSurface>
+        )}
       </Box>
-    </BoardContainer>
+      {tabValue === 1 && (
+        <BoardHeader
+          columns={backlogColumns}
+          visibleColumns={visibleColumns}
+          setVisibleColumns={setVisibleColumns}
+          onApplyFilter={handleApplyFilter}
+          filters={filters}
+          setFilters={setFilters}
+          project={project}
+        />
+      )}
+      <DeferredSurface key={tabValue} label={TabPanels[tabValue].label}>
+        <Panel />
+      </DeferredSurface>
+    </Box>
   );
-};
-
-export default Board;
+}

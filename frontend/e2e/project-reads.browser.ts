@@ -1,8 +1,8 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 
 test("compact project reads preserve progress in grid, list and the selected workspace", async ({
-  page
+  page,
 }) => {
   const list = page.waitForResponse("**/api/projects/?view=summary");
   await enterDemo(page);
@@ -24,12 +24,12 @@ test("compact project reads preserve progress in grid, list and the selected wor
               project.tickets.filter(
                 (ticket) =>
                   project.ticketStatuses.find(
-                    (status) => status.id === ticket.statusId
-                  )?.name === "COMPLETED"
+                    (status) => status.id === ticket.statusId,
+                  )?.name === "COMPLETED",
               ).length) /
-              project.tickets.length
+              project.tickets.length,
           )
-        : 0
+        : 0,
     )
     .sort((a, b) => a - b);
   const shownProgress = () =>
@@ -38,7 +38,7 @@ test("compact project reads preserve progress in grid, list and the selected wor
       .evaluateAll((nodes) =>
         nodes
           .map((node) => Number(node.getAttribute("aria-valuenow")))
-          .sort((a, b) => a - b)
+          .sort((a, b) => a - b),
       );
   expect(await shownProgress()).toEqual(expected);
   await page
@@ -52,7 +52,7 @@ test("compact project reads preserve progress in grid, list and the selected wor
   const detail = page.waitForResponse(
     (response) =>
       new URL(response.url()).pathname.startsWith("/api/projects/") &&
-      new URL(response.url()).searchParams.get("view") === "workspace"
+      new URL(response.url()).searchParams.get("view") === "workspace",
   );
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
   const workspace: { sprints: { id: string }[]; tickets: { id: number }[] } =
@@ -61,16 +61,16 @@ test("compact project reads preserve progress in grid, list and the selected wor
     expect(sprint).not.toHaveProperty("tickets");
   expect(workspace.tickets.length).toBeGreaterThan(0);
   await expect(
-    page.getByText("Overall Progress", { exact: true })
+    page.getByText("Overall Progress", { exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Board", exact: true }).click();
+  await navigateSection(page, "Taskboard");
   await expect(
-    page.getByRole("button", { name: "Add New Item", exact: true })
+    page.getByRole("button", { name: "Add New Item", exact: true }),
   ).toBeVisible();
 });
 
 test("malformed compact summary data stays distinct from an empty list and can retry", async ({
-  page
+  page,
 }) => {
   const pattern = "**/api/projects/?view=summary";
   await page.route(pattern, async (route) => {
@@ -82,28 +82,28 @@ test("malformed compact summary data stays distinct from an empty list and can r
   await page.goto("/auth/instantLogin");
   await page.getByRole("button", { name: /explore demo/i }).click();
   await expect(page.getByRole("alert")).toContainText(
-    "unexpected project list"
+    "unexpected project list",
   );
   await expect(page.getByText("No projects yet", { exact: true })).toHaveCount(
-    0
+    0,
   );
   await page.unroute(pattern);
   await page
     .getByRole("button", { name: "Retry projects", exact: true })
     .click();
   await expect(
-    page.getByText("Orbit — Product Delivery", { exact: true })
+    page.getByText("Orbit — Product Delivery", { exact: true }),
   ).toBeVisible();
 });
 
 test("a valid null-status ticket remains incomplete in populated grid and list progress", async ({
-  page
+  page,
 }) => {
   await page.route("**/api/projects/?view=summary", async (route) => {
     const response = await route.fetch();
     const data = await response.json();
     const completed = data[0].ticketStatuses.find(
-      (status: { name: string }) => status.name === "COMPLETED"
+      (status: { name: string }) => status.name === "COMPLETED",
     );
     data[0].tickets = [{ statusId: completed.id }, { statusId: null }];
     await route.fulfill({ response, json: data });

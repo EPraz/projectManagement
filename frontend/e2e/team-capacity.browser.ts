@@ -1,19 +1,19 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 
 test.use({ actionTimeout: 5000 });
 
 test("a failed capacity edit retains the draft and saved summary", async ({
-  page
+  page,
 }) => {
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page.getByRole("button", { name: "Board", exact: true }).click();
-  await page.getByRole("button", { name: "Capacity", exact: true }).click();
+  await navigateSection(page, "Taskboard");
+  await navigateSection(page, "Capacity");
   const row = page
     .getByRole("row")
     .filter({
-      has: page.getByRole("button", { name: "Edit member", exact: true })
+      has: page.getByRole("button", { name: "Edit member", exact: true }),
     })
     .first();
   await row.getByRole("button", { name: "Edit member", exact: true }).click();
@@ -22,36 +22,36 @@ test("a failed capacity edit retains the draft and saved summary", async ({
   await page.route("**/api/team-member-capacities/*", (route) =>
     route.request().method() === "PATCH"
       ? route.fulfill({ status: 503, body: "unavailable" })
-      : route.continue()
+      : route.continue(),
   );
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("alert")).toContainText("Could not save");
   await expect(
-    dialog.getByLabel("Capacity (hours)", { exact: true })
+    dialog.getByLabel("Capacity (hours)", { exact: true }),
   ).toHaveValue("99");
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(row).not.toContainText("99h");
 });
 
 test("an unavailable member catalog stays distinct from an empty list and can retry", async ({
-  page
+  page,
 }) => {
   await page.route(/\/api\/users\/?$/, (route) =>
-    route.fulfill({ status: 503, body: "unavailable" })
+    route.fulfill({ status: 503, body: "unavailable" }),
   );
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page.getByRole("button", { name: "Team Members", exact: true }).click();
+  await navigateSection(page, "Team");
   await page.getByRole("button", { name: "Add Member", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByRole("alert")).toContainText(
-    "Could not load team users"
+    "Could not load team users",
   );
   await expect(
     dialog.getByText("All users are already part of this project", {
-      exact: true
-    })
+      exact: true,
+    }),
   ).toHaveCount(0);
   await page.unroute(/\/api\/users\/?$/);
   await dialog
@@ -60,13 +60,13 @@ test("an unavailable member catalog stays distinct from an empty list and can re
   await expect(dialog.getByRole("alert")).toHaveCount(0);
   await expect(
     dialog.getByText("All users are already part of this project", {
-      exact: true
-    })
+      exact: true,
+    }),
   ).toBeVisible();
 });
 
 async function teamFixture(
-  request: import("@playwright/test").APIRequestContext
+  request: import("@playwright/test").APIRequestContext,
 ) {
   const { accessToken } = await (
     await request.post("/api/auth/instant-login", { data: {} })
@@ -82,14 +82,14 @@ async function teamFixture(
     data: {
       title: `Isolated team capacity ${Date.now()}`,
       description: "Temporary browser fixture",
-      createdBy: demo.email
-    }
+      createdBy: demo.email,
+    },
   });
   expect(created.status()).toBe(201);
   const project = await created.json();
   const dispose = async () => {
     expect(
-      (await request.delete(`/api/projects/${project.id}`, { headers })).ok()
+      (await request.delete(`/api/projects/${project.id}`, { headers })).ok(),
     ).toBe(true);
   };
   try {
@@ -97,7 +97,7 @@ async function teamFixture(
     const capacities: { id: string; capacity: number }[] = [];
     for (const [name, capacity] of [
       ["Capacity A", 40],
-      ["Capacity B", 80]
+      ["Capacity B", 80],
     ] as const) {
       const response = await request.post("/api/sprints", {
         headers,
@@ -106,8 +106,8 @@ async function teamFixture(
           name,
           startDate: "2026-10-17T00:00:00Z",
           endDate: "2026-10-31T00:00:00Z",
-          createdBy: demo.email
-        }
+          createdBy: demo.email,
+        },
       });
       expect(response.status()).toBe(201);
       const sprint = await response.json();
@@ -119,8 +119,8 @@ async function teamFixture(
           sprintId: sprint.id,
           capacity,
           daysOff: 1,
-          remainingWork: 20
-        }
+          remainingWork: 20,
+        },
       });
       expect(planned.status()).toBe(201);
       capacities.push(await planned.json());
@@ -133,11 +133,11 @@ async function teamFixture(
 }
 async function chooseSprint(
   page: import("@playwright/test").Page,
-  name: string
+  name: string,
 ) {
   const selector = page.getByRole("combobox", {
-    name: "Select Sprint",
-    exact: true
+    name: "Selected sprint",
+    exact: true,
   });
   if ((await selector.inputValue()) === name) return;
   await selector.click();
@@ -148,7 +148,7 @@ async function chooseSprint(
 test("membership failures retain selection and retry synchronizes a second browser session", async ({
   page,
   request,
-  browser
+  browser,
 }) => {
   const fixture = await teamFixture(request);
   const otherContext = await browser.newContext();
@@ -157,9 +157,7 @@ test("membership failures retain selection and retry synchronizes a second brows
     for (const current of [page, other]) {
       await enterDemo(current);
       await current.getByText(fixture.project.title, { exact: true }).click();
-      await current
-        .getByRole("button", { name: "Team Members", exact: true })
-        .click();
+      await current.getByRole("button", { name: "Team", exact: true }).click();
     }
     await page.getByRole("button", { name: "Add Member", exact: true }).click();
     const dialog = page.getByRole("dialog");
@@ -172,16 +170,16 @@ test("membership failures retain selection and retry synchronizes a second brows
       .click();
     const path = `**/api/projects/${fixture.project.id}/users/${fixture.outsider.id}`;
     await page.route(path, (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await dialog
       .getByRole("button", { name: "Add Member", exact: true })
       .click();
     await expect(dialog.getByRole("alert")).toContainText(
-      "Could not change project membership"
+      "Could not change project membership",
     );
     await expect(dialog.getByRole("combobox")).toHaveValue(
-      `${fixture.outsider.email} (${fixture.outsider.name})`
+      `${fixture.outsider.email} (${fixture.outsider.name})`,
     );
     await page.unroute(path);
     await dialog
@@ -190,22 +188,22 @@ test("membership failures retain selection and retry synchronizes a second brows
     await expect(dialog).toHaveCount(0);
     for (const current of [page, other])
       await expect(
-        current.getByRole("row").filter({ hasText: fixture.outsider.email })
+        current.getByRole("row").filter({ hasText: fixture.outsider.email }),
       ).toBeVisible();
     await page
       .getByRole("button", {
         name: `Actions for ${fixture.outsider.name}`,
-        exact: true
+        exact: true,
       })
       .click();
     await page.route(path, (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await page
       .getByRole("menuitem", { name: "Remove From Project", exact: true })
       .click();
     await expect(page.getByRole("menu").getByRole("alert")).toContainText(
-      "Could not change project membership"
+      "Could not change project membership",
     );
     await page.unroute(path);
     await page
@@ -213,13 +211,13 @@ test("membership failures retain selection and retry synchronizes a second brows
       .click();
     for (const current of [page, other])
       await expect(
-        current.getByRole("row").filter({ hasText: fixture.outsider.email })
+        current.getByRole("row").filter({ hasText: fixture.outsider.email }),
       ).toHaveCount(0);
     await page
       .getByPlaceholder("Search members...")
       .fill("No such fictional member");
     await expect(
-      page.getByText("No team members found", { exact: true })
+      page.getByText("No team members found", { exact: true }),
     ).toBeVisible();
   } finally {
     await otherContext.close();
@@ -229,7 +227,7 @@ test("membership failures retain selection and retry synchronizes a second brows
 
 test("independent capacity changes update only their own sprint", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await teamFixture(request);
   let connected = false;
@@ -254,9 +252,9 @@ test("independent capacity changes update only their own sprint", async ({
       (
         await request.patch(
           `/api/team-member-capacities/${fixture.capacities[0].id}`,
-          { headers: fixture.headers, data: { capacity: 68 } }
+          { headers: fixture.headers, data: { capacity: 68 } },
         )
-      ).ok()
+      ).ok(),
     ).toBe(true);
     await expect(row).toContainText("68h");
     await chooseSprint(page, "Capacity B");
@@ -265,9 +263,9 @@ test("independent capacity changes update only their own sprint", async ({
       (
         await request.patch(
           `/api/team-member-capacities/${fixture.capacities[0].id}`,
-          { headers: fixture.headers, data: { capacity: 70 } }
+          { headers: fixture.headers, data: { capacity: 70 } },
         )
-      ).ok()
+      ).ok(),
     ).toBe(true);
     await expect(row).toContainText("80h");
     await chooseSprint(page, "Capacity A");
@@ -281,7 +279,7 @@ test("independent capacity changes update only their own sprint", async ({
 
 test("a late capacity response preserves the next sprint's draft", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await teamFixture(request);
   let release!: () => void;
@@ -295,8 +293,8 @@ test("a late capacity response preserves the next sprint's draft", async ({
   try {
     await enterDemo(page);
     await page.getByText(fixture.project.title, { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Capacity", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Capacity");
     await chooseSprint(page, "Capacity A");
     await page
       .getByRole("button", { name: "Edit member", exact: true })
@@ -310,13 +308,13 @@ test("a late capacity response preserves the next sprint's draft", async ({
         reached();
         await delay;
         await route.fulfill({ response });
-      }
+      },
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await received;
     await page.goBack();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Capacity", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Capacity");
     await chooseSprint(page, "Capacity B");
     await page
       .getByRole("button", { name: "Edit member", exact: true })
@@ -326,11 +324,11 @@ test("a late capacity response preserves the next sprint's draft", async ({
     await page.unrouteAll({ behavior: "wait" });
     await expect(dialog).toBeVisible();
     await expect(
-      dialog.getByLabel("Capacity (hours)", { exact: true })
+      dialog.getByLabel("Capacity (hours)", { exact: true }),
     ).toHaveValue("90");
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await expect(
-      page.getByRole("row").filter({ hasText: fixture.demo.email })
+      page.getByRole("row").filter({ hasText: fixture.demo.email }),
     ).toContainText("80h");
   } finally {
     release();
@@ -341,14 +339,12 @@ test("a late capacity response preserves the next sprint's draft", async ({
 
 for (const width of [390, 1280]) {
   test(`team and capacity controls remain reachable at ${width}px`, async ({
-    page
+    page,
   }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await enterDemo(page);
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page
-      .getByRole("button", { name: "Team Members", exact: true })
-      .click();
+    await navigateSection(page, "Team");
     const add = page.getByRole("button", { name: "Add Member", exact: true });
     const teamBounds = await add.boundingBox();
     expect(teamBounds!.x + teamBounds!.width).toBeLessThanOrEqual(width);
@@ -356,15 +352,15 @@ for (const width of [390, 1280]) {
     await page.keyboard.press("Enter");
     await expect(page.getByRole("dialog")).toContainText("Add Team Member");
     await page.getByRole("button", { name: "Cancel", exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Capacity", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Capacity");
     const create = page.getByRole("button", {
       name: "Add team member",
-      exact: true
+      exact: true,
     });
     const capacityBounds = await create.boundingBox();
     expect(capacityBounds!.x + capacityBounds!.width).toBeLessThanOrEqual(
-      width
+      width,
     );
     await create.focus();
     await page.keyboard.press("Enter");
@@ -372,7 +368,7 @@ for (const width of [390, 1280]) {
     await expect(dialog.getByRole("combobox", { name: /^User/ })).toBeVisible();
     await page.screenshot({
       path: info.outputPath(`capacity-form-${width}.png`),
-      animations: "disabled"
+      animations: "disabled",
     });
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   });
@@ -380,7 +376,7 @@ for (const width of [390, 1280]) {
 
 test("capacity create, edit and failed deletion recover from an empty sprint", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await teamFixture(request);
   try {
@@ -388,17 +384,17 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
       (
         await request.delete(
           `/api/team-member-capacities/${fixture.capacities[0].id}`,
-          { headers: fixture.headers }
+          { headers: fixture.headers },
         )
-      ).ok()
+      ).ok(),
     ).toBe(true);
     expect(
       (
         await request.post(
           `/api/projects/${fixture.project.id}/users/${fixture.outsider.id}`,
-          { headers: fixture.headers }
+          { headers: fixture.headers },
         )
-      ).ok()
+      ).ok(),
     ).toBe(true);
     await enterDemo(page);
     await page.goto(`/projects/${fixture.project.id}/board?tab=capacity`);
@@ -406,8 +402,8 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     await expect(
       page.getByRole("heading", {
         name: "No team members added yet",
-        exact: true
-      })
+        exact: true,
+      }),
     ).toBeVisible();
     await page
       .getByRole("button", { name: "Add team member", exact: true })
@@ -426,14 +422,14 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     await page.route("**/api/team-member-capacities", (route) =>
       route.request().method() === "POST"
         ? route.fulfill({ status: 503, body: "unavailable" })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText(
-      "Could not save capacity"
+      "Could not save capacity",
     );
     await expect(
-      dialog.getByLabel("Capacity (hours)", { exact: true })
+      dialog.getByLabel("Capacity (hours)", { exact: true }),
     ).toHaveValue("40");
     await page.unroute("**/api/team-member-capacities");
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
@@ -444,10 +440,10 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     await expect(row).toContainText("40h");
     await expect(row.getByRole("progressbar")).toHaveAttribute(
       "aria-valuenow",
-      "75"
+      "75",
     );
     await expect(
-      page.getByRole("columnheader", { name: "Completed work", exact: true })
+      page.getByRole("columnheader", { name: "Completed work", exact: true }),
     ).toBeVisible();
     await expect(row).toContainText("30.0h");
     await row.getByRole("button", { name: "Edit member", exact: true }).click();
@@ -460,7 +456,7 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     const records: { id: string; userId: string; capacity: number }[] = await (
       await request.get(
         `/api/team-member-capacities?sprintId=${fixture.sprints[0].id}`,
-        { headers: fixture.headers }
+        { headers: fixture.headers },
       )
     ).json();
     const record = records.find((item) => item.userId === fixture.outsider.id)!;
@@ -470,13 +466,13 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
       .click();
     const path = `**/api/team-member-capacities/${record.id}`;
     await page.route(path, (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await dialog.getByRole("button", { name: "Proceed", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not delete");
     const retained = await request.get(
       `/api/team-member-capacities/${record.id}`,
-      { headers: fixture.headers }
+      { headers: fixture.headers },
     );
     expect(retained.ok()).toBe(true);
     expect((await retained.json()).capacity).toBe(80);
@@ -486,8 +482,8 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
     await expect(
       page.getByRole("heading", {
         name: "No team members added yet",
-        exact: true
-      })
+        exact: true,
+      }),
     ).toBeVisible();
   } finally {
     await fixture.dispose();
@@ -496,7 +492,7 @@ test("capacity create, edit and failed deletion recover from an empty sprint", a
 
 test("pending membership saves keep the selected user and block duplicate actions", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await teamFixture(request);
   let release!: () => void;
@@ -511,9 +507,7 @@ test("pending membership saves keep the selected user and block duplicate action
   try {
     await enterDemo(page);
     await page.getByText(fixture.project.title, { exact: true }).click();
-    await page
-      .getByRole("button", { name: "Team Members", exact: true })
-      .click();
+    await navigateSection(page, "Team");
     await page.getByRole("button", { name: "Add Member", exact: true }).click();
     const dialog = page.getByRole("dialog");
     await dialog
@@ -530,26 +524,26 @@ test("pending membership saves keep the selected user and block duplicate action
         reached();
         await delay;
         await route.fulfill({ status: 503, body: "unavailable" });
-      }
+      },
     );
     await dialog
       .getByRole("button", { name: "Add Member", exact: true })
       .click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: "Add Member", exact: true })
+      dialog.getByRole("button", { name: "Add Member", exact: true }),
     ).toBeDisabled();
     await expect(
-      dialog.getByRole("button", { name: "Cancel", exact: true })
+      dialog.getByRole("button", { name: "Cancel", exact: true }),
     ).toBeDisabled();
     await expect(dialog.getByRole("combobox")).toHaveValue(
-      `${fixture.outsider.email} (${fixture.outsider.name})`
+      `${fixture.outsider.email} (${fixture.outsider.name})`,
     );
     expect(submissions).toBe(1);
     release();
     await expect(dialog.getByRole("alert")).toContainText("Could not change");
     await expect(
-      dialog.getByRole("button", { name: "Add Member", exact: true })
+      dialog.getByRole("button", { name: "Add Member", exact: true }),
     ).toBeEnabled();
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   } finally {

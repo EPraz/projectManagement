@@ -1,35 +1,35 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 
 const boardModule =
   /\/(?:src\/pages\/board\/Board\.tsx(?:\?.*)?|assets\/Board-[^/]+\.js)$/;
 test.use({ actionTimeout: 5000 });
 
 test("a failed board module keeps entry usable and the deep link can reload after recovery", async ({
-  page
+  page,
 }) => {
   await page.route(boardModule, (route) =>
     route.fulfill({
       status: 503,
       contentType: "text/javascript",
-      body: "unavailable"
-    })
+      body: "unavailable",
+    }),
   );
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page.getByRole("button", { name: "Board", exact: true }).click();
+  await navigateSection(page, "Taskboard");
   await expect(page.getByRole("alert")).toContainText("Could not open Board");
   await expect(page).toHaveURL(/\/board/);
   await page.unroute(boardModule);
   await page.getByRole("button", { name: "Reload view", exact: true }).click();
   await expect(
-    page.getByRole("button", { name: "Add New Item", exact: true })
+    page.getByRole("button", { name: "Add New Item", exact: true }),
   ).toBeVisible();
   await expect(page).toHaveURL(/\/board/);
 });
 
 test("a pending board download keeps navigation available and cannot replace a later view", async ({
-  page
+  page,
 }) => {
   let release!: () => void;
   const delay = new Promise<void>((resolve) => {
@@ -47,22 +47,20 @@ test("a pending board download keeps navigation available and cannot replace a l
     });
     await enterDemo(page);
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
+    await navigateSection(page, "Taskboard");
     await received;
     await expect(
-      page.getByText("Loading Board…", { exact: true })
+      page.getByText("Loading Board…", { exact: true }),
     ).toBeVisible();
-    await page
-      .getByRole("button", { name: "Retrospective", exact: true })
-      .click();
+    await navigateSection(page, "Retrospective");
     await expect(
-      page.getByRole("button", { name: "Add new card", exact: true })
+      page.getByRole("button", { name: "Add new card", exact: true }),
     ).toBeVisible();
     release();
     await page.unrouteAll({ behavior: "wait" });
     await expect(page).toHaveURL(/\/retrospective/);
     await expect(
-      page.getByRole("button", { name: "Add new card", exact: true })
+      page.getByRole("button", { name: "Add new card", exact: true }),
     ).toBeVisible();
   } finally {
     release();
@@ -71,7 +69,7 @@ test("a pending board download keeps navigation available and cannot replace a l
 });
 
 test("an unavailable capacity panel preserves the board and another planning tab remains usable", async ({
-  page
+  page,
 }) => {
   const capacityModule =
     /\/(?:src\/pages\/board\/components\/capacityBoard\/CapacityBoard\.tsx(?:\?.*)?|assets\/CapacityBoard-[^/]+\.js)$/;
@@ -79,19 +77,19 @@ test("an unavailable capacity panel preserves the board and another planning tab
     route.fulfill({
       status: 503,
       contentType: "text/javascript",
-      body: "unavailable"
-    })
+      body: "unavailable",
+    }),
   );
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page.getByRole("button", { name: "Board", exact: true }).click();
-  await page.getByRole("button", { name: "Capacity", exact: true }).click();
+  await navigateSection(page, "Taskboard");
+  await navigateSection(page, "Capacity");
   await expect(page.getByRole("alert")).toContainText(
-    "Could not open Capacity"
+    "Could not open Capacity",
   );
-  await page.getByRole("button", { name: "Goals", exact: true }).click();
+  await navigateSection(page, "Goals");
   await expect(
-    page.getByRole("button", { name: "Add New Goal", exact: true })
+    page.getByRole("button", { name: "Add New Goal", exact: true }),
   ).toBeVisible();
   await expect(page.getByRole("alert")).toHaveCount(0);
 });

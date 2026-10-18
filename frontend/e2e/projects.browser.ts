@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 
 test("ticket deletion during refresh cannot be restored by an older project snapshot", async ({
   page,
@@ -44,8 +44,10 @@ test("ticket deletion during refresh cannot be restored by an older project snap
     finished = resolve;
   });
   try {
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await expect(page.getByRole("heading", { name: marker, exact: true })).toBeVisible();
+    await navigateSection(page, "Taskboard");
+    await expect(
+      page.getByRole("heading", { name: marker, exact: true }),
+    ).toBeVisible();
     let first = true;
     await page.route(pattern, async (route) => {
       if (!first) return route.continue();
@@ -65,13 +67,16 @@ test("ticket deletion during refresh cannot be restored by an older project snap
     await received;
     const refreshed = page.waitForResponse(
       (response) =>
-        new URL(response.url()).pathname === `/api/projects/${id}` && response.ok(),
+        new URL(response.url()).pathname === `/api/projects/${id}` &&
+        response.ok(),
     );
     expect(
       (await request.delete(`/api/tickets/${ticket.id}`, { headers })).ok(),
     ).toBe(true);
     await refreshed;
-    await expect(page.getByRole("heading", { name: marker, exact: true })).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: marker, exact: true }),
+    ).toHaveCount(0);
     release();
     await fulfilled;
     await page.evaluate(
@@ -80,7 +85,9 @@ test("ticket deletion during refresh cannot be restored by an older project snap
           requestAnimationFrame(() => requestAnimationFrame(resolve)),
         ),
     );
-    await expect(page.getByRole("heading", { name: marker, exact: true })).toHaveCount(0);
+    await expect(
+      page.getByRole("heading", { name: marker, exact: true }),
+    ).toHaveCount(0);
   } finally {
     release();
     await page.unroute(pattern);

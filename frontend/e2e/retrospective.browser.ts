@@ -1,27 +1,25 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 test.use({ actionTimeout: 5000 });
 test("failed retrospective creation retains feedback and offers retry", async ({
-  page
+  page,
 }) => {
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page
-    .getByRole("button", { name: "Retrospective", exact: true })
-    .click();
+  await navigateSection(page, "Retrospective");
   await page.getByRole("button", { name: "Add new card", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await dialog
     .getByLabel("Content", { exact: true })
     .fill("Keep this retrospective feedback draft");
   await page.route("**/api/retrospectives", (route) =>
-    route.fulfill({ status: 503, body: "unavailable" })
+    route.fulfill({ status: 503, body: "unavailable" }),
   );
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   await expect(dialog).toBeVisible();
   await expect(dialog.getByRole("alert")).toContainText("Could not save");
   await expect(dialog.getByLabel("Content", { exact: true })).toHaveValue(
-    "Keep this retrospective feedback draft"
+    "Keep this retrospective feedback draft",
   );
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
 });
@@ -39,14 +37,14 @@ async function retroFixture(request: APIRequestContext) {
     data: {
       title: `Isolated retrospective ${Date.now()}`,
       description: "Temporary browser fixture",
-      createdBy: "visitor@demo.example"
-    }
+      createdBy: "visitor@demo.example",
+    },
   });
   expect(response.status()).toBe(201);
   const project = await response.json();
   const dispose = async () => {
     expect(
-      (await request.delete(`/api/projects/${project.id}`, { headers })).ok()
+      (await request.delete(`/api/projects/${project.id}`, { headers })).ok(),
     ).toBe(true);
   };
   try {
@@ -60,8 +58,8 @@ async function retroFixture(request: APIRequestContext) {
           name,
           startDate: "2026-10-17T00:00:00Z",
           endDate: "2026-10-31T00:00:00Z",
-          createdBy: "visitor@demo.example"
-        }
+          createdBy: "visitor@demo.example",
+        },
       });
       expect(sprintResponse.status()).toBe(201);
       const sprint = await sprintResponse.json();
@@ -71,8 +69,8 @@ async function retroFixture(request: APIRequestContext) {
         data: {
           sprintId: sprint.id,
           content: `${name} feedback`,
-          type: "POSITIVE"
-        }
+          type: "POSITIVE",
+        },
       });
       expect(cardResponse.status()).toBe(201);
       cards.push(await cardResponse.json());
@@ -85,8 +83,8 @@ async function retroFixture(request: APIRequestContext) {
 }
 async function chooseSprint(page: Page, name: string) {
   const selector = page.getByRole("combobox", {
-    name: "Select Sprint",
-    exact: true
+    name: "Selected sprint",
+    exact: true,
   });
   if ((await selector.inputValue()) === name) return;
   await selector.click();
@@ -96,9 +94,7 @@ async function chooseSprint(page: Page, name: string) {
 async function openRetro(page: Page, title: string) {
   await enterDemo(page);
   await page.getByText(title, { exact: true }).click();
-  await page
-    .getByRole("button", { name: "Retrospective", exact: true })
-    .click();
+  await navigateSection(page, "Retrospective");
 }
 const cardWith = (page: Page, content: string) =>
   page
@@ -107,7 +103,7 @@ const cardWith = (page: Page, content: string) =>
 
 test("retrospective create, edit and delete retain failed drafts and persist retries", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await retroFixture(request);
   try {
@@ -121,12 +117,12 @@ test("retrospective create, edit and delete retain failed drafts and persist ret
       .getByLabel("Content", { exact: true })
       .fill("Browser retrospective draft");
     await page.route("**/api/retrospectives", (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(dialog.getByLabel("Content", { exact: true })).toHaveValue(
-      "Browser retrospective draft"
+      "Browser retrospective draft",
     );
     await page.unroute("**/api/retrospectives");
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
@@ -143,12 +139,12 @@ test("retrospective create, edit and delete retain failed drafts and persist ret
     await page.route("**/api/retrospectives/*", (route) =>
       route.request().method() === "PATCH"
         ? route.fulfill({ status: 503, body: "unavailable" })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(dialog.getByLabel("Content", { exact: true })).toHaveValue(
-      "Edited browser retrospective"
+      "Edited browser retrospective",
     );
     await page.unroute("**/api/retrospectives/*");
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
@@ -163,7 +159,7 @@ test("retrospective create, edit and delete retain failed drafts and persist ret
     await page.route("**/api/retrospectives/*", (route) =>
       route.request().method() === "DELETE"
         ? route.fulfill({ status: 503, body: "unavailable" })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Proceed", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not delete");
@@ -180,7 +176,7 @@ test("retrospective create, edit and delete retain failed drafts and persist ret
 
 test("reaction failure retains the saved count and retries without duplicating the shared-demo like", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await retroFixture(request);
   try {
@@ -189,16 +185,16 @@ test("reaction failure retains the saved count and retries without duplicating t
     const card = cardWith(page, "Retro A feedback");
     const like = card.getByRole("button", {
       name: "Like feedback",
-      exact: true
+      exact: true,
     });
     await expect(like).toHaveAttribute("aria-pressed", "false");
     await expect(like).toHaveText("0");
     await page.route(`**/api/retrospectives/${fixture.cards[0].id}`, (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await like.click();
     await expect(page.getByRole("alert")).toContainText(
-      "Could not update this reaction"
+      "Could not update this reaction",
     );
     await expect(like).toHaveText("0");
     await expect(like).toHaveAttribute("aria-pressed", "false");
@@ -219,7 +215,7 @@ test("reaction failure retains the saved count and retries without duplicating t
 });
 
 test("pending retrospective saves retain input and prevent duplicate submissions", async ({
-  page
+  page,
 }) => {
   let release!: () => void;
   const delay = new Promise<void>((resolve) => {
@@ -248,13 +244,13 @@ test("pending retrospective saves retain input and prevent duplicate submissions
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: "Save", exact: true })
+      dialog.getByRole("button", { name: "Save", exact: true }),
     ).toBeDisabled();
     await expect(
-      dialog.getByRole("button", { name: "Cancel", exact: true })
+      dialog.getByRole("button", { name: "Cancel", exact: true }),
     ).toBeDisabled();
     await expect(dialog.getByLabel("Content", { exact: true })).toHaveValue(
-      "Pending retrospective feedback"
+      "Pending retrospective feedback",
     );
     expect(submissions).toBe(1);
     release();
@@ -268,7 +264,7 @@ test("pending retrospective saves retain input and prevent duplicate submissions
 test("retrospective follows the selected sprint and confirmed changes from another session", async ({
   page,
   request,
-  browser
+  browser,
 }) => {
   const fixture = await retroFixture(request);
   const otherContext = await browser.newContext();
@@ -284,8 +280,8 @@ test("retrospective follows the selected sprint and confirmed changes from anoth
     await expect(
       cardWith(page, "Retro A feedback").getByRole("button", {
         name: "Like feedback",
-        exact: true
-      })
+        exact: true,
+      }),
     ).toHaveText("1");
     await chooseSprint(page, "Retro B");
     await expect(cardWith(page, "Retro A feedback")).toHaveCount(0);
@@ -294,9 +290,9 @@ test("retrospective follows the selected sprint and confirmed changes from anoth
       (
         await request.patch(`/api/retrospectives/${fixture.cards[0].id}`, {
           headers: fixture.headers,
-          data: { content: "Remote revised retro A" }
+          data: { content: "Remote revised retro A" },
         })
-      ).ok()
+      ).ok(),
     ).toBe(true);
     await expect(cardWith(page, "Retro B feedback")).toBeVisible();
     await expect(cardWith(page, "Remote revised retro A")).toHaveCount(0);
@@ -312,7 +308,7 @@ test("retrospective follows the selected sprint and confirmed changes from anoth
 
 test("a late retrospective save cannot close the next sprint's draft", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await retroFixture(request);
   let release!: () => void;
@@ -341,14 +337,12 @@ test("a late retrospective save cannot close the next sprint's draft", async ({
         reached();
         await delay;
         await route.fulfill({ response });
-      }
+      },
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await received;
     await page.goBack();
-    await page
-      .getByRole("button", { name: "Retrospective", exact: true })
-      .click();
+    await navigateSection(page, "Retrospective");
     await chooseSprint(page, "Retro B");
     await page
       .getByRole("button", { name: "Add new card", exact: true })
@@ -360,7 +354,7 @@ test("a late retrospective save cannot close the next sprint's draft", async ({
     await page.unrouteAll({ behavior: "wait" });
     await expect(dialog).toBeVisible();
     await expect(dialog.getByLabel("Content", { exact: true })).toHaveValue(
-      "Next sprint unsaved draft"
+      "Next sprint unsaved draft",
     );
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await expect(cardWith(page, "Retro B feedback")).toBeVisible();
@@ -373,7 +367,7 @@ test("a late retrospective save cannot close the next sprint's draft", async ({
 
 test("hiding names also hides reaction attribution and blurred feedback describes the display truthfully", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await retroFixture(request);
   try {
@@ -384,33 +378,33 @@ test("hiding names also hides reaction attribution and blurred feedback describe
       .getByRole("button", { name: "Like feedback", exact: true })
       .click();
     await expect(
-      card.getByRole("button", { name: "Like feedback", exact: true })
+      card.getByRole("button", { name: "Like feedback", exact: true }),
     ).toHaveText("1");
     await expect(card.getByText("Demo Visitor", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Hide Names", exact: true }).click();
     await expect(card.getByText("Demo Visitor", { exact: true })).toHaveCount(
-      0
+      0,
     );
     await card
       .getByRole("button", { name: "Like feedback", exact: true })
       .hover();
     await expect(page.getByRole("tooltip")).toHaveText("1 reactions");
     await expect(
-      page.getByRole("tab", { name: "Anonymous Feedback", exact: true })
+      page.getByRole("tab", { name: "Anonymous Feedback", exact: true }),
     ).toHaveCount(0);
     await page
       .getByRole("tab", { name: "Blurred feedback", exact: true })
       .click();
     await expect(card.getByText("Retro A feedback", { exact: true })).toHaveCSS(
       "filter",
-      "blur(4px)"
+      "blur(4px)",
     );
     await page
       .getByRole("tab", { name: "Team Discussion", exact: true })
       .click();
     await expect(card.getByText("Retro A feedback", { exact: true })).toHaveCSS(
       "filter",
-      "none"
+      "none",
     );
     await page.getByRole("button", { name: "Show Names", exact: true }).click();
     await expect(card.getByText("Demo Visitor", { exact: true })).toBeVisible();
@@ -421,7 +415,7 @@ test("hiding names also hides reaction attribution and blurred feedback describe
 
 for (const width of [390, 1280]) {
   test(`retrospective controls and form remain reachable with keyboard at ${width}px`, async ({
-    page
+    page,
   }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await openRetro(page, "Orbit — Product Delivery");
@@ -439,7 +433,7 @@ for (const width of [390, 1280]) {
     await expect(dialog.getByRole("combobox", { name: /^Type/ })).toBeFocused();
     await page.screenshot({
       path: info.outputPath(`retrospective-form-${width}.png`),
-      animations: "disabled"
+      animations: "disabled",
     });
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await expect(add).toBeFocused();

@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import Sidebar from "../Sidebar";
 import { MemoryRouter } from "react-router-dom";
 import { Project } from "../../../types";
-import { MENU_ITEMS } from "../../../constants";
+import { projectSections } from "../../projectNavigation/sections";
 import { createAppTheme } from "../../../utils";
 import { ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
 import { ThemeProvider as CustomThemeProvider } from "../../../context"; // Asegúrate de usar el provider que creaste en tu contexto
@@ -50,14 +50,18 @@ describe("Sidebar Component", () => {
           <StyledComponentsThemeProvider theme={theme}>
             <MemoryRouter>
               <Sidebar
-                project={{ id: "123", title: "Test Project" } as React.ComponentProps<typeof Sidebar>["project"]}
+                project={
+                  { id: "123", title: "Test Project" } as React.ComponentProps<
+                    typeof Sidebar
+                  >["project"]
+                }
                 sidebarOpen={sidebarOpen}
                 setSidebarOpen={setSidebarOpenMock}
               />
             </MemoryRouter>
           </StyledComponentsThemeProvider>
         </MuiThemeProvider>
-      </CustomThemeProvider>
+      </CustomThemeProvider>,
     );
 
   beforeEach(() => {
@@ -71,25 +75,35 @@ describe("Sidebar Component", () => {
 
   it("renders logo with project title when sidebar is open", () => {
     renderSidebar(true);
-    expect(screen.getByText("Test Project")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Test Project navigation"),
+    ).toBeInTheDocument();
   });
 
   it("renders menu items based on MENU_ITEMS and navigates on click", () => {
     renderSidebar(true);
-    MENU_ITEMS.forEach((item) => {
-      expect(screen.getByText(item.text)).toBeInTheDocument();
+    projectSections.forEach((item) =>
+      expect(
+        screen.getByRole("button", { name: item.label }),
+      ).toBeInTheDocument(),
+    );
+    const firstItem = screen.getByRole("button", {
+      name: "Overview",
     });
-    const firstItem = screen.getByText(MENU_ITEMS[0].text);
     fireEvent.click(firstItem);
     expect(mockNavigate).toHaveBeenCalledWith(
-      `/projects/${project.id}/${MENU_ITEMS[0].path}`
+      `/projects/${project.id}/${projectSections[0].path}`,
     );
   });
 
-  it("calls setSidebarOpen on collapse button click", () => {
+  it("marks the current destination and removes unavailable settings", () => {
     renderSidebar(true);
-    const collapseButton = screen.getByTestId("collapse-button");
-    fireEvent.click(collapseButton);
-    expect(setSidebarOpenMock).toHaveBeenCalledWith(false);
+    expect(screen.getByRole("button", { name: "Overview" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+    expect(
+      screen.queryByRole("button", { name: "Settings" }),
+    ).not.toBeInTheDocument();
   });
 });

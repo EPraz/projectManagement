@@ -1,50 +1,33 @@
-import { Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
-
+import { Box, styled } from "@mui/material";
 export const LayoutWrapper = styled("div")({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  minHeight: "99vh",
+  minHeight: "100dvh",
   width: "100%",
-  // backgroundColor: "#f5f5f5",
 });
-
 export const LayoutRoot = styled("div")({
-  display: "flex",
   width: "100%",
-  position: "relative",
-  minHeight: "99vh",
-  overflow: "hidden",
-  margin: "auto",
+  minWidth: 0,
+  minHeight: "100dvh",
 });
-
 export const MainContent = styled(Box, {
   shouldForwardProp: (prop) => prop !== "sidebarOpen",
 })<{ sidebarOpen: boolean }>(({ theme }) => ({
-  flex: 1,
   display: "flex",
   flexDirection: "column",
-  minHeight: "100vh",
-  overflow: "hidden",
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  padding: "16px 16px 16px 0",
+  minWidth: 0,
+  minHeight: "100dvh",
+  padding: theme.spacing(2),
+  [theme.breakpoints.up("md")]: { padding: "22px 36px 36px 128px" },
 }));
-
-export const PageContent = styled(Box)(() => ({
+export const PageContent = styled(Box)({
   flex: 1,
-  overflow: "hidden",
   display: "flex",
   flexDirection: "column",
+  minWidth: 0,
   width: "100%",
-}));
-
-export const ContentContainer = styled(Box)(() => ({
-  maxWidth: "1440px",
+});
+export const ContentContainer = styled(Box)({
+  maxWidth: 1600,
+  width: "100%",
   margin: "0 auto",
-  width: "100%",
-  height: "100%",
-}));
+  minWidth: 0,
+});

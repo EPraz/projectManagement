@@ -1,16 +1,20 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import {
+  enterDemo,
+  navigateSection,
+  showProjectNavigation,
+} from "./support/demo";
 
 test.use({ actionTimeout: 5000 });
 
 test("a failed goal save retains the draft and retry creates one goal", async ({
   page,
-  request
+  request,
 }) => {
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page.getByRole("button", { name: "Board", exact: true }).click();
-  await page.getByText("Goals", { exact: true }).click();
+  await navigateSection(page, "Taskboard");
+  await navigateSection(page, "Goals");
   await page.getByRole("button", { name: /Add New Goal/i }).click();
   const dialog = page.getByRole("dialog");
   const title = `Recoverable planning goal ${Date.now()}`;
@@ -19,8 +23,8 @@ test("a failed goal save retains the draft and retry creates one goal", async ({
     route.fulfill({
       status: 503,
       contentType: "application/json",
-      body: JSON.stringify({ message: "Temporary planning outage" })
-    })
+      body: JSON.stringify({ message: "Temporary planning outage" }),
+    }),
   );
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   await expect(dialog).toBeVisible();
@@ -29,7 +33,7 @@ test("a failed goal save retains the draft and retry creates one goal", async ({
   await page.unroute("**/api/sprint-goals");
   const saved = page.waitForResponse(
     (r) =>
-      r.request().method() === "POST" && /\/api\/sprint-goals$/.test(r.url())
+      r.request().method() === "POST" && /\/api\/sprint-goals$/.test(r.url()),
   );
   await dialog.getByRole("button", { name: "Save", exact: true }).click();
   const response = await saved;
@@ -46,28 +50,29 @@ test("a failed goal save retains the draft and retry creates one goal", async ({
     expect(
       (
         await request.delete(`/api/sprint-goals/${goal.id}`, {
-          headers: { Authorization: `Bearer ${accessToken}` }
+          headers: { Authorization: `Bearer ${accessToken}` },
         })
-      ).ok()
+      ).ok(),
     ).toBe(true);
   }
 });
 
 test("planning tabs and new-sprint creation are reachable with the keyboard", async ({
-  page
+  page,
 }) => {
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-  await page.getByRole("button", { name: "Board", exact: true }).click();
+  await navigateSection(page, "Taskboard");
+  await showProjectNavigation(page);
   const goals = page.getByRole("button", { name: "Goals", exact: true });
   await goals.focus();
   await page.keyboard.press("Enter");
   await expect(
-    page.getByRole("heading", { name: "Sprint Goals", exact: true })
+    page.getByRole("heading", { name: "Sprint Goals", exact: true }),
   ).toBeVisible();
   const selector = page.getByRole("combobox", {
-    name: "Select Sprint",
-    exact: true
+    name: "Selected sprint",
+    exact: true,
   });
   await selector.fill("New Sprint");
   await page.keyboard.press("ArrowDown");
@@ -76,7 +81,7 @@ test("planning tabs and new-sprint creation are reachable with the keyboard", as
 });
 
 async function planningFixture(
-  request: import("@playwright/test").APIRequestContext
+  request: import("@playwright/test").APIRequestContext,
 ) {
   const { accessToken } = await (
     await request.post("/api/auth/instant-login", { data: {} })
@@ -87,14 +92,14 @@ async function planningFixture(
     data: {
       title: `Isolated planning ${Date.now()}`,
       description: "Temporary planning fixture",
-      createdBy: "visitor@demo.example"
-    }
+      createdBy: "visitor@demo.example",
+    },
   });
   expect(response.status()).toBe(201);
   const project = await response.json();
   const dispose = async () => {
     expect(
-      (await request.delete(`/api/projects/${project.id}`, { headers })).ok()
+      (await request.delete(`/api/projects/${project.id}`, { headers })).ok(),
     ).toBe(true);
   };
   try {
@@ -108,14 +113,14 @@ async function planningFixture(
           name,
           startDate: "2026-10-17T00:00:00Z",
           endDate: "2026-10-31T00:00:00Z",
-          createdBy: "visitor@demo.example"
-        }
+          createdBy: "visitor@demo.example",
+        },
       });
       expect(sprint.status()).toBe(201);
       sprints.push(await sprint.json());
       const goal = await request.post("/api/sprint-goals", {
         headers,
-        data: { sprintId: sprints.at(-1)!.id, title: `${name} goal` }
+        data: { sprintId: sprints.at(-1)!.id, title: `${name} goal` },
       });
       expect(goal.status()).toBe(201);
       goals.push(await goal.json());
@@ -124,7 +129,7 @@ async function planningFixture(
     for (const title of ["Planning check one", "Planning check two"]) {
       const response = await request.post("/api/sprint-goals/goalTask", {
         headers,
-        data: { goalId: goals[0].id, title }
+        data: { goalId: goals[0].id, title },
       });
       expect(response.status()).toBe(201);
       tasks.push(await response.json());
@@ -138,11 +143,11 @@ async function planningFixture(
 
 async function selectSprint(
   page: import("@playwright/test").Page,
-  name: string
+  name: string,
 ) {
   const selector = page.getByRole("combobox", {
-    name: "Select Sprint",
-    exact: true
+    name: "Selected sprint",
+    exact: true,
   });
   if ((await selector.inputValue()) === name) return;
   await selector.click();
@@ -152,7 +157,7 @@ async function selectSprint(
 
 test("checklist failure, retry and deletion keep board, overview and persistence consistent", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await planningFixture(request);
   try {
@@ -167,8 +172,8 @@ test("checklist failure, retry and deletion keep board, overview and persistence
       route.fulfill({
         status: 503,
         contentType: "application/json",
-        body: '{"message":"Temporary checklist outage"}'
-      })
+        body: '{"message":"Temporary checklist outage"}',
+      }),
     );
     await toggle.click();
     await expect(page.getByRole("alert")).toContainText("Could not save");
@@ -179,21 +184,21 @@ test("checklist failure, retry and deletion keep board, overview and persistence
     // Second independent HTTP client confirms the same saved checklist.
     const goals = await (
       await request.get(`/api/sprint-goals/${fixture.sprints[0].id}`, {
-        headers: fixture.headers
+        headers: fixture.headers,
       })
     ).json();
     expect(goals[0]).toMatchObject({
       progress: 50,
-      goalsStatus: "IN_PROGRESS"
+      goalsStatus: "IN_PROGRESS",
     });
     await page
       .getByRole("button", { name: "Mark as complete", exact: true })
       .click();
     await expect(page.getByText("100%", { exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "Overview", exact: true }).click();
+    await navigateSection(page, "Overview");
     await expect(page.getByText("completed", { exact: true })).toBeVisible();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Goals", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Goals");
     await page
       .getByRole("button", { name: "Mark as incomplete", exact: true })
       .first()
@@ -209,7 +214,7 @@ test("checklist failure, retry and deletion keep board, overview and persistence
     await expect(page.getByText("100%", { exact: true })).toBeVisible();
     await page.reload();
     await expect(
-      page.getByText(fixture.tasks[0].title, { exact: true })
+      page.getByText(fixture.tasks[0].title, { exact: true }),
     ).toHaveCount(0);
     await expect(page.getByText("100%", { exact: true })).toBeVisible();
   } finally {
@@ -219,7 +224,7 @@ test("checklist failure, retry and deletion keep board, overview and persistence
 
 test("a late goal response cannot replace another selected sprint or its new draft", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await planningFixture(request);
   let release!: () => void;
@@ -234,8 +239,8 @@ test("a late goal response cannot replace another selected sprint or its new dra
   try {
     await enterDemo(page);
     await page.getByText(fixture.project.title, { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Goals", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Goals");
     await selectSprint(page, "Planning A");
     await page.getByRole("button", { name: "Edit goal", exact: true }).click();
     await page
@@ -256,8 +261,8 @@ test("a late goal response cannot replace another selected sprint or its new dra
     // Browser navigation remains available while the old form is pending.
     await page.goBack();
     await expect(page.getByRole("dialog")).toHaveCount(0);
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Goals", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Goals");
     await selectSprint(page, "Planning B");
     await page.getByRole("button", { name: "Edit goal", exact: true }).click();
     const dialog = page.getByRole("dialog");
@@ -268,14 +273,14 @@ test("a late goal response cannot replace another selected sprint or its new dra
     await page.unrouteAll({ behavior: "wait" });
     await expect(dialog).toBeVisible();
     await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
-      "Unsaved planning B draft"
+      "Unsaved planning B draft",
     );
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await expect(
-      page.getByText("Planning B goal", { exact: true })
+      page.getByText("Planning B goal", { exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByText("Saved only in planning A", { exact: true })
+      page.getByText("Saved only in planning A", { exact: true }),
     ).toHaveCount(0);
   } finally {
     release();
@@ -285,12 +290,13 @@ test("a late goal response cannot replace another selected sprint or its new dra
 
 for (const width of [390, 1280]) {
   test(`planning controls and goal draft fit at ${width}px`, async ({
-    page
+    page,
   }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await enterDemo(page);
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await showProjectNavigation(page);
     const goals = page.getByRole("button", { name: "Goals", exact: true });
     await goals.focus();
     await page.keyboard.press("Enter");
@@ -307,7 +313,7 @@ for (const width of [390, 1280]) {
     expect(saveBounds!.x + saveBounds!.width).toBeLessThanOrEqual(width);
     await page.screenshot({
       path: info.outputPath(`planning-${width}.png`),
-      animations: "disabled"
+      animations: "disabled",
     });
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   });
@@ -315,7 +321,7 @@ for (const width of [390, 1280]) {
 
 test("confirmed independent goal changes preserve the current draft and failed task editing can retry", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await planningFixture(request);
   let connected = false;
@@ -349,17 +355,17 @@ test("confirmed independent goal changes preserve the current draft and failed t
       `/api/sprint-goals/${fixture.goals[0].id}`,
       {
         headers: fixture.headers,
-        data: { id: fixture.goals[0].id, title: "Independent confirmed goal" }
-      }
+        data: { id: fixture.goals[0].id, title: "Independent confirmed goal" },
+      },
     );
     expect(edited.ok()).toBe(true);
     await changed;
     await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
-      "Keep this unsaved goal draft"
+      "Keep this unsaved goal draft",
     );
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await expect(
-      page.getByText("Independent confirmed goal", { exact: true })
+      page.getByText("Independent confirmed goal", { exact: true }),
     ).toBeVisible();
     await page
       .getByRole("listitem")
@@ -371,18 +377,18 @@ test("confirmed independent goal changes preserve the current draft and failed t
       .fill("Recoverable checklist title");
     const path = `**/api/sprint-goals/goalTask/${fixture.tasks[0].id}`;
     await page.route(path, (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
-      "Recoverable checklist title"
+      "Recoverable checklist title",
     );
     await page.unroute(path);
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog).toHaveCount(0);
     await expect(
-      page.getByText("Recoverable checklist title", { exact: true })
+      page.getByText("Recoverable checklist title", { exact: true }),
     ).toBeVisible();
     await page.getByRole("button", { name: "Add Task", exact: true }).click();
     await dialog
@@ -391,14 +397,14 @@ test("confirmed independent goal changes preserve the current draft and failed t
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog).toHaveCount(0);
     await expect(
-      page.getByText("New confirmed checklist task", { exact: true })
+      page.getByText("New confirmed checklist task", { exact: true }),
     ).toBeVisible();
     await page
       .getByRole("button", { name: "Delete goal", exact: true })
       .click();
     const pathGoal = `**/api/sprint-goals/${fixture.goals[0].id}`;
     await page.route(pathGoal, (route) =>
-      route.fulfill({ status: 503, body: "unavailable" })
+      route.fulfill({ status: 503, body: "unavailable" }),
     );
     await dialog.getByRole("button", { name: "Proceed", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not delete");
@@ -406,7 +412,7 @@ test("confirmed independent goal changes preserve the current draft and failed t
     await dialog.getByRole("button", { name: "Proceed", exact: true }).click();
     await expect(dialog).toHaveCount(0);
     await expect(
-      page.getByText("No goals added yet.", { exact: false })
+      page.getByText("No goals added yet.", { exact: false }),
     ).toBeVisible();
   } finally {
     await fixture.dispose();
@@ -415,7 +421,7 @@ test("confirmed independent goal changes preserve the current draft and failed t
 
 test("assigning backlog work to another sprint updates its board and survives reload", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await planningFixture(request);
   try {
@@ -424,14 +430,14 @@ test("assigning backlog work to another sprint updates its board and survives re
       data: {
         sprintId: fixture.sprints[0].id,
         title: "Planning assignment fixture",
-        createdBy: "visitor@demo.example"
-      }
+        createdBy: "visitor@demo.example",
+      },
     });
     expect(created.status()).toBe(201);
     const ticket = await created.json();
     await enterDemo(page);
     await page.goto(
-      `/projects/${fixture.project.id}/board?tab=backlog&ticketId=${ticket.id}`
+      `/projects/${fixture.project.id}/board?tab=backlog&ticketId=${ticket.id}`,
     );
     const dialog = page.getByRole("dialog");
     await dialog.getByRole("tab", { name: "Planning", exact: true }).click();
@@ -440,33 +446,33 @@ test("assigning backlog work to another sprint updates its board and survives re
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog).toHaveCount(0);
     await page
-      .getByRole("button", { name: "Board", exact: true })
+      .getByRole("button", { name: "Taskboard", exact: true })
       .last()
       .click();
     await selectSprint(page, "Planning A");
     await expect(
       page.getByRole("heading", {
         name: "Planning assignment fixture",
-        exact: true
-      })
+        exact: true,
+      }),
     ).toHaveCount(0);
     await selectSprint(page, "Planning B");
     await expect(
       page.getByRole("heading", {
         name: "Planning assignment fixture",
-        exact: true
-      })
+        exact: true,
+      }),
     ).toBeVisible();
     await page.reload();
     await expect(
       page.getByRole("heading", {
         name: "Planning assignment fixture",
-        exact: true
-      })
+        exact: true,
+      }),
     ).toBeVisible();
     const saved = await (
       await request.get(`/api/tickets/${ticket.id}`, {
-        headers: fixture.headers
+        headers: fixture.headers,
       })
     ).json();
     expect(saved.sprintId).toBe(fixture.sprints[1].id);
@@ -477,15 +483,15 @@ test("assigning backlog work to another sprint updates its board and survives re
 
 test("new sprint creation preserves failed input and its empty goals remain selectable after reload", async ({
   page,
-  request
+  request,
 }) => {
   const fixture = await planningFixture(request);
   try {
     await enterDemo(page);
     await page.goto(`/projects/${fixture.project.id}/board?tab=goals`);
     const selector = page.getByRole("combobox", {
-      name: "Select Sprint",
-      exact: true
+      name: "Selected sprint",
+      exact: true,
     });
     await selector.fill("New Sprint");
     await page.keyboard.press("ArrowDown");
@@ -497,23 +503,23 @@ test("new sprint creation preserves failed input and its empty goals remain sele
     await page.route("**/api/sprints", (route) =>
       route.request().method() === "POST"
         ? route.fulfill({ status: 503, body: "unavailable" })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(dialog.getByLabel("name", { exact: true })).toHaveValue(
-      "New planned sprint"
+      "New planned sprint",
     );
     await page.unroute("**/api/sprints");
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await expect(dialog).toHaveCount(0);
     await selectSprint(page, "New planned sprint");
     await expect(
-      page.getByText("No goals added yet.", { exact: false })
+      page.getByText("No goals added yet.", { exact: false }),
     ).toBeVisible();
     await page.reload();
     await expect(
-      page.getByRole("combobox", { name: "Select Sprint", exact: true })
+      page.getByRole("combobox", { name: "Selected sprint", exact: true }),
     ).toHaveValue("New planned sprint");
     await selector.click();
     await page
@@ -528,7 +534,7 @@ test("new sprint creation preserves failed input and its empty goals remain sele
 });
 
 test("a pending goal submission keeps input and blocks duplicate saves", async ({
-  page
+  page,
 }) => {
   let release!: () => void;
   const delay = new Promise<void>((r) => {
@@ -542,8 +548,8 @@ test("a pending goal submission keeps input and blocks duplicate saves", async (
   try {
     await enterDemo(page);
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page.getByRole("button", { name: "Board", exact: true }).click();
-    await page.getByRole("button", { name: "Goals", exact: true }).click();
+    await navigateSection(page, "Taskboard");
+    await navigateSection(page, "Goals");
     await page
       .getByRole("button", { name: "Add New Goal", exact: true })
       .click();
@@ -560,16 +566,16 @@ test("a pending goal submission keeps input and blocks duplicate saves", async (
     await dialog.getByRole("button", { name: "Save", exact: true }).click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: "Save", exact: true })
+      dialog.getByRole("button", { name: "Save", exact: true }),
     ).toBeDisabled();
     await expect(dialog.getByLabel("title", { exact: true })).toHaveValue(
-      "Pending retained goal"
+      "Pending retained goal",
     );
     expect(submissions).toBe(1);
     release();
     await expect(dialog.getByRole("alert")).toContainText("Could not save");
     await expect(
-      dialog.getByRole("button", { name: "Save", exact: true })
+      dialog.getByRole("button", { name: "Save", exact: true }),
     ).toBeEnabled();
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   } finally {

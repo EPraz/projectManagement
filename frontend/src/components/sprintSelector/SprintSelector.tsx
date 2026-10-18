@@ -10,10 +10,23 @@ import {
   SprintIcon,
   SprintMenuItem,
   SprintNameContainer,
-  StyledTextField
+  StyledTextField,
 } from "./SprintSelector.styles";
 
-const SprintSelector = () => {
+export type SprintControls = Pick<
+  LayoutContextProps,
+  | "loadingDeleteSprint"
+  | "handleChangeSprint"
+  | "listOfSprints"
+  | "setSelectedSprint"
+  | "setOpenCreateSprintDialog"
+  | "setOpenDeleteSprintDialog"
+  | "sprint"
+  | "loadingCreateSprint"
+>;
+
+const SprintSelector = ({ controls }: { controls?: SprintControls } = {}) => {
+  const outlet = useOutletContext<LayoutContextProps>();
   const {
     loadingDeleteSprint,
     handleChangeSprint,
@@ -22,8 +35,8 @@ const SprintSelector = () => {
     setOpenCreateSprintDialog,
     setOpenDeleteSprintDialog,
     sprint,
-    loadingCreateSprint
-  } = useOutletContext<LayoutContextProps>();
+    loadingCreateSprint,
+  } = controls ?? outlet;
 
   return (
     <SelectorContainer>
@@ -46,6 +59,10 @@ const SprintSelector = () => {
         renderInput={(params) => (
           <StyledTextField
             {...params}
+            inputProps={{
+              ...params.inputProps,
+              "aria-label": "Selected sprint",
+            }}
             placeholder={
               loadingCreateSprint
                 ? "Creating sprint"
@@ -103,29 +120,7 @@ const SprintSelector = () => {
             </SprintMenuItem>
           );
         }}
-        sx={{
-          width: 200,
-          "& .MuiOutlinedInput-root": {
-            height: 32,
-            fontSize: "0.875rem",
-            backgroundColor: "transparent",
-            "& fieldset": {
-              border: "none"
-            },
-            "&:hover fieldset": {
-              border: "none"
-            },
-            "&.Mui-focused fieldset": {
-              border: "none"
-            },
-            "& .MuiOutlinedInput-input": {
-              padding: 1
-            }
-          },
-          "& .MuiAutocomplete-endAdornment": {
-            display: "none"
-          }
-        }}
+        sx={{ width: "100%", minWidth: 0 }}
         slotProps={{
           paper: {
             elevation: 4,
@@ -134,11 +129,11 @@ const SprintSelector = () => {
               "& .MuiAutocomplete-listbox": {
                 p: 0.5,
                 "& .MuiAutocomplete-option": {
-                  p: 0
-                }
-              }
-            }
-          }
+                  p: 0,
+                },
+              },
+            },
+          },
         }}
       />
     </SelectorContainer>

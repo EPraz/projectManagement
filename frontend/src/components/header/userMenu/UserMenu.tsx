@@ -1,147 +1,124 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Avatar,
   Box,
+  Divider,
   IconButton,
+  ListItemIcon,
   Menu,
   MenuItem,
-  Divider,
   Typography,
-  ListItemIcon,
 } from "@mui/material";
 import {
-  Logout as LogoutIcon,
-  Settings as SettingsIcon,
-  Person as PersonIcon,
+  Check,
+  LogoutOutlined,
+  SettingsBrightnessOutlined,
 } from "@mui/icons-material";
-import { useAuth } from "../../../context";
+import { useAuth } from "../../../context/authContext";
+import { useTheme } from "../../../context/themeContext";
 import { getInitials } from "../../../helpers";
-
-const UserMenu = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [logoutError, setLogoutError] = useState("");
-  const open = Boolean(anchorEl);
+export default function UserMenu() {
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const [error, setError] = useState("");
   const { user, logout, closing } = useAuth();
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleLogout = async () => {
-    setLogoutError("");
+  const { systemPreference, setSystemPreference } = useTheme();
+  const close = () => setAnchor(null);
+  const leave = async () => {
+    setError("");
     try {
       await logout();
-      handleClose();
+      close();
     } catch {
-      setLogoutError("Could not sign out. Please try again.");
+      setError("Could not sign out. Please try again.");
     }
   };
-
-  const handleProfile = () => {
-    // navigate("/profile");
-    handleClose();
-  };
-
-  const handleSettings = () => {
-    // navigate("/settings");
-    handleClose();
-  };
-
   return (
     <>
       <IconButton
-        onClick={handleClick}
         aria-label="Open user menu"
-        size="small"
-        aria-controls={open ? "user-menu" : undefined}
+        aria-controls={anchor ? "user-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={anchor ? "true" : undefined}
+        onClick={(event) => setAnchor(event.currentTarget)}
         sx={{
-          ml: 2,
-          border: "2px solid",
-          borderColor: "primary.main",
-          transition: "all 0.2s",
-          width: "fit-content",
-          "&:hover": {
-            backgroundColor: "primary.main",
-            color: "white",
-          },
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "background.paper",
         }}
       >
         <Avatar
           sx={{
-            width: 32,
-            height: 32,
-            bgcolor: "primary.main",
-            color: "white",
-            fontSize: "0.875rem",
-            fontWeight: "bold",
+            width: 28,
+            height: 28,
+            bgcolor: "primary.light",
+            color: "primary.main",
+            fontSize: 12,
+            fontWeight: 600,
           }}
         >
           {getInitials(user?.name)}
         </Avatar>
       </IconButton>
       <Menu
-        anchorEl={anchorEl}
         id="user-menu"
-        open={open}
-        onClose={handleClose}
-        // onClick={handleClose}
-        PaperProps={{
-          elevation: 3,
-          sx: {
-            overflow: "visible",
-            filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.15))",
-            mt: 1.5,
-            width: 220,
-            borderRadius: 2,
-            "& .MuiAvatar-root": {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
+        anchorEl={anchor}
+        open={Boolean(anchor)}
+        onClose={close}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        slotProps={{
+          paper: {
+            sx: {
+              width: 290,
+              maxWidth: "calc(100vw - 24px)",
+              mt: 1,
+              border: "1px solid",
+              borderColor: "divider",
             },
           },
         }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <Box sx={{ px: 2, py: 1.5 }}>
-          <Typography variant="subtitle1" fontWeight="bold">
-            {user?.name || "User"}
+        <Box sx={{ px: 2, py: 1 }}>
+          <Typography fontWeight={600}>
+            {user?.name || "Demo visitor"}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {user?.email || "user@example.com"}
+            Shared demo workspace
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Changes are visible to other visitors. Please use fictional
+            information.
           </Typography>
         </Box>
         <Divider />
-        <MenuItem onClick={handleProfile} disabled={true}>
+        <MenuItem
+          role="menuitemcheckbox"
+          aria-checked={systemPreference}
+          onClick={() => setSystemPreference(!systemPreference)}
+        >
           <ListItemIcon>
-            <PersonIcon fontSize="small" />
+            <SettingsBrightnessOutlined fontSize="small" />
           </ListItemIcon>
-          Profile
-        </MenuItem>
-        <MenuItem onClick={handleSettings} disabled={true}>
-          <ListItemIcon>
-            <SettingsIcon fontSize="small" />
-          </ListItemIcon>
-          Settings
+          Follow system appearance
+          {systemPreference && <Check fontSize="small" sx={{ ml: "auto" }} />}
         </MenuItem>
         <Divider />
-        {logoutError && <Typography role="alert" color="error" sx={{ px: 2 }}>{logoutError}</Typography>}
-        <MenuItem onClick={handleLogout} disabled={closing}>
+        {error && (
+          <Typography role="alert" color="error" sx={{ px: 2 }}>
+            {error}
+          </Typography>
+        )}
+        <MenuItem
+          onClick={leave}
+          disabled={closing}
+          sx={{ color: "error.main" }}
+        >
           <ListItemIcon>
-            <LogoutIcon fontSize="small" color="error" />
+            <LogoutOutlined fontSize="small" color="error" />
           </ListItemIcon>
-          <Typography color="error.main">{closing ? "Signing out…" : "Logout"}</Typography>
+          {closing ? "Signing out…" : "Logout"}
         </MenuItem>
       </Menu>
     </>
   );
-};
-
-export default UserMenu;
+}

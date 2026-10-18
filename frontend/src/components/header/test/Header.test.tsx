@@ -2,7 +2,8 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Header from "../Header";
-import { MENU_ITEMS } from "../../../constants";
+import { projectSections } from "../../projectNavigation/sections";
+import { ThemeProvider } from "../../../context/themeContext";
 import { AuthProvider } from "../../../context";
 
 // Mockear useNavigate y useLocation
@@ -36,11 +37,13 @@ describe("Header Component", () => {
 
   const renderHeader = () =>
     render(
-      <AuthProvider>
-        <MemoryRouter>
-          <Header projectName={projectName} projectId={projectId} />
-        </MemoryRouter>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <MemoryRouter>
+            <Header projectName={projectName} projectId={projectId} />
+          </MemoryRouter>
+        </AuthProvider>
+      </ThemeProvider>,
     );
 
   it("match snapshot", async () => {
@@ -61,9 +64,14 @@ describe("Header Component", () => {
     await act(async () => {
       renderHeader();
     });
-    MENU_ITEMS.forEach((item) => {
-      expect(screen.getByText(item.text)).toBeInTheDocument();
-    });
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open project navigation" }),
+    );
+    projectSections.forEach((item) =>
+      expect(
+        screen.getByRole("button", { name: item.label }),
+      ).toBeInTheDocument(),
+    );
   });
 
   it("navigates to a new tab when a different tab is clicked", async () => {
@@ -73,12 +81,17 @@ describe("Header Component", () => {
 
     // currentTab se obtiene de la URL: en nuestro mock es "overview"
     // Escogemos una tab cuyo valor (path) sea diferente, por ejemplo, "dashboard"
-    const tabToClick = screen.getByText(/board/i);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open project navigation" }),
+    );
+    const tabToClick = screen.getByRole("button", {
+      name: "Taskboard",
+    });
     fireEvent.click(tabToClick);
 
-    expect(mockNavigate).toHaveBeenCalledWith(`/projects/${projectId}/board`, {
-      replace: true,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      `/projects/${projectId}/board?tab=board`,
+    );
   });
 
   it("does not navigate if the selected tab is the current tab", async () => {
@@ -86,7 +99,10 @@ describe("Header Component", () => {
       renderHeader();
     });
     // En nuestro mock useLocation, la tab actual es "overview"
-    const tab = screen.getByText(/overview/i);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Open project navigation" }),
+    );
+    const tab = screen.getByRole("button", { name: "Overview" });
     fireEvent.click(tab);
     expect(mockNavigate).not.toHaveBeenCalled();
   });

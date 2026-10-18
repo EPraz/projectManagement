@@ -1,11 +1,11 @@
 import { expect, test } from "@playwright/test";
-import { enterDemo } from "./support/demo";
+import { enterDemo, navigateSection } from "./support/demo";
 
 test.use({ actionTimeout: 5000 });
 
 test("a confirmed project with no hierarchy explains the empty state", async ({
   page,
-  request
+  request,
 }) => {
   const login = await request.post("/api/auth/instant-login", { data: {} });
   const { accessToken } = await login.json();
@@ -15,8 +15,8 @@ test("a confirmed project with no hierarchy explains the empty state", async ({
     data: {
       title: `Isolated empty hierarchy ${Date.now()}`,
       description: "Temporary browser fixture",
-      createdBy: "visitor@demo.example"
-    }
+      createdBy: "visitor@demo.example",
+    },
   });
   expect(created.status()).toBe(201);
   const project: { id: string } = await created.json();
@@ -24,24 +24,24 @@ test("a confirmed project with no hierarchy explains the empty state", async ({
     await enterDemo(page);
     await page.goto(`/projects/${project.id}/epics`);
     await expect(
-      page.getByText("No epics yet.", { exact: true })
+      page.getByText("No epics yet.", { exact: true }),
     ).toBeVisible();
     await expect(
-      page.getByRole("button", { name: "New Feature", exact: true })
+      page.getByRole("button", { name: "New Feature", exact: true }),
     ).toBeDisabled();
     await expect(
-      page.getByRole("button", { name: "New Epic", exact: true })
+      page.getByRole("button", { name: "New Epic", exact: true }),
     ).toBeEnabled();
   } finally {
     expect(
-      (await request.delete(`/api/projects/${project.id}`, { headers })).ok()
+      (await request.delete(`/api/projects/${project.id}`, { headers })).ok(),
     ).toBe(true);
   }
 });
 
 test("independent hierarchy events refresh only the selected project", async ({
   page,
-  request
+  request,
 }) => {
   const login = await request.post("/api/auth/instant-login", { data: {} });
   const { accessToken } = await login.json();
@@ -83,16 +83,16 @@ test("independent hierarchy events refresh only the selected project", async ({
     await enterDemo(page);
     await page.goto(`/projects/${selected.id}/epics`);
     await expect(
-      page.getByRole("heading", { name: "Epics & Features", exact: true })
+      page.getByRole("heading", { name: "Epics & Features", exact: true }),
     ).toBeVisible();
     await expect.poll(() => connected).toBe(true);
     for (const item of [
       { projectId: selected.id, title },
-      { projectId: other.id, title: otherTitle }
+      { projectId: other.id, title: otherTitle },
     ]) {
       const response = await request.post("/api/epics", {
         headers,
-        data: { ...item, createdBy: "visitor@demo.example" }
+        data: { ...item, createdBy: "visitor@demo.example" },
       });
       expect(response.status()).toBe(201);
       created.push((await response.json()).id);
@@ -112,14 +112,12 @@ test("independent hierarchy events refresh only the selected project", async ({
 
 for (const width of [390, 1280]) {
   test(`hierarchy keyboard controls and form fit at ${width}px`, async ({
-    page
+    page,
   }, info) => {
     await page.setViewportSize({ width, height: 900 });
     await enterDemo(page);
     await page.getByText("Orbit — Product Delivery", { exact: true }).click();
-    await page
-      .getByRole("button", { name: "Epics & Features", exact: true })
-      .click();
+    await navigateSection(page, "Epics & Features");
     const editBounds = await page
       .getByRole("button", { name: /^Edit / })
       .first()
@@ -127,11 +125,11 @@ for (const width of [390, 1280]) {
     expect(editBounds!.x + editBounds!.width).toBeLessThanOrEqual(width);
     const cardBounds = await page.getByRole("article").first().boundingBox();
     expect(editBounds!.x + editBounds!.width).toBeLessThanOrEqual(
-      cardBounds!.x + cardBounds!.width
+      cardBounds!.x + cardBounds!.width,
     );
     await page.screenshot({
       path: info.outputPath(`hierarchy-read-${width}.png`),
-      animations: "disabled"
+      animations: "disabled",
     });
     const create = page.getByRole("button", { name: "New Epic", exact: true });
     await expect(create).toBeVisible();
@@ -145,13 +143,13 @@ for (const width of [390, 1280]) {
       await page.keyboard.press("Tab");
       expect(
         await dialog.evaluate((element) =>
-          element.contains(document.activeElement)
-        )
+          element.contains(document.activeElement),
+        ),
       ).toBe(true);
     }
     await page.screenshot({
       path: info.outputPath(`hierarchy-form-${width}.png`),
-      animations: "disabled"
+      animations: "disabled",
     });
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
@@ -159,13 +157,13 @@ for (const width of [390, 1280]) {
       .getByLabel("Search epics and features", { exact: true })
       .fill("No matching local hierarchy marker");
     await expect(
-      page.getByText("No matching epics or features.", { exact: true })
+      page.getByText("No matching epics or features.", { exact: true }),
     ).toBeVisible();
   });
 }
 
 test("a failed backlog deletion keeps the confirmation available for retry", async ({
-  page
+  page,
 }) => {
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
@@ -176,14 +174,14 @@ test("a failed backlog deletion keeps the confirmation available for retry", asy
   await page.route(`**/api/tickets/${id}`, (route) =>
     route.request().method() === "DELETE"
       ? route.fulfill({ status: 503, body: "unavailable" })
-      : route.continue()
+      : route.continue(),
   );
   await remove.click();
   const dialog = page.getByRole("dialog");
   await dialog.getByRole("button", { name: "Proceed", exact: true }).click();
   await expect(dialog.getByRole("alert")).toContainText(/try again/i);
   await expect(
-    dialog.getByRole("button", { name: "Proceed", exact: true })
+    dialog.getByRole("button", { name: "Proceed", exact: true }),
   ).toBeEnabled();
   await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(dialog).toHaveCount(0);
@@ -191,7 +189,7 @@ test("a failed backlog deletion keeps the confirmation available for retry", asy
 });
 
 test("backlog filters change the visible tickets without waiting for a data reload", async ({
-  page
+  page,
 }) => {
   await enterDemo(page);
   await page.getByText("Orbit — Product Delivery", { exact: true }).click();
@@ -199,7 +197,7 @@ test("backlog filters change the visible tickets without waiting for a data relo
   await page.goto(`/projects/${projectId}/board?tab=backlog`);
   const table = page.getByRole("table");
   await expect(
-    table.getByRole("cell", { name: "LOW", exact: true }).first()
+    table.getByRole("cell", { name: "LOW", exact: true }).first(),
   ).toBeVisible();
   await page.getByRole("button", { name: "Filter", exact: true }).click();
   const priority = page
@@ -210,10 +208,10 @@ test("backlog filters change the visible tickets without waiting for a data relo
   await page.getByRole("option", { name: "HIGH", exact: true }).click();
   await page.keyboard.press("Escape");
   await expect(
-    table.getByRole("cell", { name: "LOW", exact: true })
+    table.getByRole("cell", { name: "LOW", exact: true }),
   ).toHaveCount(0);
   await expect(
-    table.getByRole("cell", { name: "HIGH", exact: true }).first()
+    table.getByRole("cell", { name: "HIGH", exact: true }).first(),
   ).toBeVisible();
   await page.getByRole("button", { name: "Filter", exact: true }).click();
   await page
@@ -229,13 +227,13 @@ test("backlog filters change the visible tickets without waiting for a data relo
   await page.getByRole("option", { name: "All", exact: true }).click();
   await page.keyboard.press("Escape");
   await expect(
-    table.getByRole("cell", { name: "BLOCKED", exact: true }).first()
+    table.getByRole("cell", { name: "BLOCKED", exact: true }).first(),
   ).toBeVisible();
 });
 
 for (const width of [390, 1280]) {
   test(`backlog expansion and linked task editor work with the keyboard at ${width}px`, async ({
-    page
+    page,
   }) => {
     await page.setViewportSize({ width, height: 900 });
     await enterDemo(page);
@@ -255,20 +253,20 @@ for (const width of [390, 1280]) {
     await dialog.getByRole("button", { name: "Cancel", exact: true }).click();
     await expect(dialog).toHaveCount(0);
     await expect(page).toHaveURL(
-      new RegExp(`/projects/${projectId}/board\\?tab=backlog$`)
+      new RegExp(`/projects/${projectId}/board\\?tab=backlog$`),
     );
     await expect(
-      page.getByRole("button", { name: /^Collapse tasks for / }).first()
+      page.getByRole("button", { name: /^Collapse tasks for / }).first(),
     ).toBeVisible();
   });
 }
 
 test("hierarchy shows the selected project's real epics, features and linked tickets", async ({
   page,
-  request
+  request,
 }) => {
   page.on("pageerror", (error) =>
-    console.error("Hierarchy browser error:", error.message)
+    console.error("Hierarchy browser error:", error.message),
   );
   const login = await request.post("/api/auth/instant-login", { data: {} });
   const { accessToken } = await login.json();
@@ -282,7 +280,7 @@ test("hierarchy shows the selected project's real epics, features and linked tic
     tickets: { id: number; title: string; featureId: string | null }[];
   }[] = await (
     await request.get("/api/projects/", {
-      headers: { Authorization: `Bearer ${accessToken}` }
+      headers: { Authorization: `Bearer ${accessToken}` },
     })
   ).json();
   const project = projects[0];
@@ -298,20 +296,20 @@ test("hierarchy shows the selected project's real epics, features and linked tic
   await expect(page.getByText(feature.title, { exact: true })).toBeVisible();
   await page.getByRole("button", { name: ticket.title, exact: true }).click();
   await expect(
-    page.getByRole("dialog").getByPlaceholder("Ticket title")
+    page.getByRole("dialog").getByPlaceholder("Ticket title"),
   ).toHaveValue(ticket.title);
   await page
     .getByRole("dialog")
     .getByRole("button", { name: "Cancel", exact: true })
     .click();
   await expect(page).toHaveURL(
-    new RegExp(`/projects/${project.id}/board\\?tab=backlog`)
+    new RegExp(`/projects/${project.id}/board\\?tab=backlog`),
   );
 });
 
 test("hierarchy feature editing and deletion preserve confirmed parent associations", async ({
   page,
-  request
+  request,
 }) => {
   const login = await request.post("/api/auth/instant-login", { data: {} });
   const { accessToken } = await login.json();
@@ -323,7 +321,7 @@ test("hierarchy feature editing and deletion preserve confirmed parent associati
   const title = `Local hierarchy parent ${Date.now()}`;
   const epicResponse = await request.post("/api/epics", {
     headers,
-    data: { projectId: project.id, title, createdBy: "visitor@demo.example" }
+    data: { projectId: project.id, title, createdBy: "visitor@demo.example" },
   });
   expect(epicResponse.status()).toBe(201);
   const epic: { id: string } = await epicResponse.json();
@@ -372,7 +370,7 @@ test("hierarchy feature editing and deletion preserve confirmed parent associati
     await page.route(pattern, (route) =>
       route.request().method() === "DELETE"
         ? route.fulfill({ status: 503, body: "unavailable" })
-        : route.continue()
+        : route.continue(),
     );
     await dialog.getByRole("button", { name: "Delete", exact: true }).click();
     await expect(dialog.getByRole("alert")).toContainText(/try again/i);
@@ -387,7 +385,7 @@ test("hierarchy feature editing and deletion preserve confirmed parent associati
 
 test("creating an epic retains failed input and retries a confirmed write", async ({
   page,
-  request
+  request,
 }) => {
   const login = await request.post("/api/auth/instant-login", { data: {} });
   const { accessToken } = await login.json();
@@ -426,13 +424,13 @@ test("creating an epic retains failed input and retries a confirmed write", asyn
     await dialog.getByRole("button", { name: "Create", exact: true }).click();
     await received;
     await expect(
-      dialog.getByRole("button", { name: "Saving…", exact: true })
+      dialog.getByRole("button", { name: "Saving…", exact: true }),
     ).toBeDisabled();
     expect(submissions).toBe(1);
     release();
     await expect(dialog.getByRole("alert")).toContainText(/try again/i);
     await expect(dialog.getByLabel("Title", { exact: true })).toHaveValue(
-      title
+      title,
     );
     await page.unroute(pattern);
     await dialog.getByRole("button", { name: "Create", exact: true }).click();

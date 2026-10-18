@@ -1,5 +1,6 @@
 // UserMenu.test.tsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { ThemeProvider } from "../../../../context/themeContext";
 import UserMenu from "../UserMenu";
 import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "../../../../context";
@@ -24,25 +25,27 @@ describe("UserMenu Component", () => {
   // Crea una función para renderizar el componente envuelto en el AuthContext y MemoryRouter
   const renderWithAuth = () =>
     render(
-      <AuthContext.Provider
-        value={{
-          user,
-          logout: mockLogout,
-          instantLogin: jest.fn(),
-          loading: false,
-          accessToken: "fake-token",
-          restoring: false,
-          closing: false,
-          sessionError: null,
-          sessionNotice: "",
-          retrySession: jest.fn(),
-          request: jest.fn(),
-        }}
-      >
-        <MemoryRouter>
-          <UserMenu />
-        </MemoryRouter>
-      </AuthContext.Provider>
+      <ThemeProvider>
+        <AuthContext.Provider
+          value={{
+            user,
+            logout: mockLogout,
+            instantLogin: jest.fn(),
+            loading: false,
+            accessToken: "fake-token",
+            restoring: false,
+            closing: false,
+            sessionError: null,
+            sessionNotice: "",
+            retrySession: jest.fn(),
+            request: jest.fn(),
+          }}
+        >
+          <MemoryRouter>
+            <UserMenu />
+          </MemoryRouter>
+        </AuthContext.Provider>
+      </ThemeProvider>,
     );
 
   beforeEach(() => {
@@ -77,17 +80,21 @@ describe("UserMenu Component", () => {
     const logoutMenuItem = screen.getByText("Logout");
     fireEvent.click(logoutMenuItem);
     expect(mockLogout).toHaveBeenCalled();
-    await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.queryByRole("menu")).not.toBeInTheDocument(),
+    );
   });
 
-  it("renders disabled Profile and Settings menu items", () => {
+  it("explains the shared demo and offers appearance preferences without account placeholders", () => {
     renderWithAuth();
     fireEvent.click(screen.getByRole("button"));
-    // Los MenuItem con texto "Profile" y "Settings" están deshabilitados.
-    const profileMenuItem = screen.getByText("Profile").closest("li");
-    const settingsMenuItem = screen.getByText("Settings").closest("li");
-    // Material UI agrega la propiedad disabled como un atributo en el DOM (a veces 'aria-disabled')
-    expect(profileMenuItem).toHaveAttribute("aria-disabled", "true");
-    expect(settingsMenuItem).toHaveAttribute("aria-disabled", "true");
+    expect(screen.getByText("Shared demo workspace")).toBeInTheDocument();
+    expect(
+      screen.getByRole("menuitemcheckbox", {
+        name: /Follow system appearance/,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Profile")).not.toBeInTheDocument();
+    expect(screen.queryByText("Settings")).not.toBeInTheDocument();
   });
 });

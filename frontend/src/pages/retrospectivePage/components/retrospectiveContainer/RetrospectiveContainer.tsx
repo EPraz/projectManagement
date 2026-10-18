@@ -8,7 +8,7 @@ import { formatStatusName } from "../../../../helpers";
 import { retrospectiveSchema } from "../../../../validations";
 import { RetroTypes } from "../../../../constants";
 import Portal from "../../../../components/portal/Portal";
-import SprintSelector from "../../../../components/sprintSelector/SprintSelector";
+
 import DialogForm from "../../../../components/dialogForm/DialogForm";
 import DeleteConfirmationModal from "../../../../components/deleteConfirmationModal/DeleteConfirmationModal";
 import RetrospectiveHeader from "../retrospectiveHeader/RetrospectiveHeader";
@@ -28,7 +28,7 @@ const RetrospectiveContainer = () => {
     isSaving,
     reactionError,
     retryReaction,
-    toggleReaction
+    toggleReaction,
   } = useRetrospective();
   const [currentTab, setCurrentTab] = useState(0);
   const [hideNames, setHideNames] = useState(false);
@@ -42,7 +42,7 @@ const RetrospectiveContainer = () => {
   const [editingCard, setEditingCard] = useState<RetroCardModel | null>(null);
   const [formData, setFormData] = useState<Partial<RetroCardModel>>({
     content: "",
-    type: RetroTypes.POSITIVE
+    type: RetroTypes.POSITIVE,
   });
 
   // State for delete confirmation modal
@@ -69,7 +69,7 @@ const RetrospectiveContainer = () => {
         })
         .filter((name): name is string => name !== null);
     },
-    [project?.users]
+    [project?.users],
   );
 
   // Handlers for card action menu
@@ -79,7 +79,7 @@ const RetrospectiveContainer = () => {
       setAnchorEl(e.currentTarget);
       setSelectedCardId(cardId);
     },
-    [setAnchorEl, setSelectedCardId]
+    [setAnchorEl, setSelectedCardId],
   );
 
   const handleMenuClose = useCallback(() => {
@@ -91,12 +91,12 @@ const RetrospectiveContainer = () => {
     (typeColumn: RetroTypes) => {
       setFormData({
         content: "",
-        type: typeColumn
+        type: typeColumn,
       });
       setEditingCard(null);
       setOpenDialog(true);
     },
-    [setFormData, setEditingCard, setOpenDialog]
+    [setFormData, setEditingCard, setOpenDialog],
   );
 
   const handleOpenEditDialog = useCallback(
@@ -104,11 +104,11 @@ const RetrospectiveContainer = () => {
       setEditingCard(card);
       setFormData({
         content: card.content,
-        type: card.type
+        type: card.type,
       });
       setOpenDialog(true);
     },
-    [setEditingCard, setFormData, setOpenDialog]
+    [setEditingCard, setFormData, setOpenDialog],
   );
 
   const handleCloseDialog = useCallback(() => {
@@ -134,9 +134,7 @@ const RetrospectiveContainer = () => {
         sprint={sprint}
       />
 
-      <Box sx={{ display: "flex", justifyContent: "end", gap: 1 }}>
-        <SprintSelector />
-      </Box>
+      <Box sx={{ display: "flex", justifyContent: "end", gap: 1 }}></Box>
 
       {reactionError && (
         <Alert
@@ -204,7 +202,7 @@ const RetrospectiveContainer = () => {
                 label: "Content",
                 type: "textarea",
                 multiline: true,
-                rows: 4
+                rows: 4,
               },
               type: {
                 label: "Type",
@@ -213,18 +211,18 @@ const RetrospectiveContainer = () => {
                 options: [
                   {
                     value: RetroTypes.POSITIVE,
-                    label: formatStatusName(RetroTypes.POSITIVE)
+                    label: formatStatusName(RetroTypes.POSITIVE),
                   },
                   {
                     value: RetroTypes.NEGATIVE,
-                    label: formatStatusName(RetroTypes.NEGATIVE)
+                    label: formatStatusName(RetroTypes.NEGATIVE),
                   },
                   {
                     value: RetroTypes.IMPROVEMENT,
-                    label: formatStatusName(RetroTypes.IMPROVEMENT)
-                  }
-                ]
-              }
+                    label: formatStatusName(RetroTypes.IMPROVEMENT),
+                  },
+                ],
+              },
             }}
           />
         </Portal>

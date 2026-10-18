@@ -10,7 +10,7 @@ import {
   useDeleteTask,
   useDeleteTicket,
   useUpdateTask,
-  useUpdateTicket
+  useUpdateTicket,
 } from "../../hooks";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -20,7 +20,7 @@ import {
   SprintGoal,
   Task,
   TaskStatus,
-  Ticket
+  Ticket,
 } from "../../types";
 import {
   changeSprintHandler,
@@ -29,7 +29,7 @@ import {
   // deleteTicketHandler,
   // editTicketHandler,
   onDragEndTaskHandler,
-  updateTicketStatusHandler
+  updateTicketStatusHandler,
 } from "../../helpers";
 import { initialBacklogColumns } from "../../constants";
 import { TabPanels } from "../../constants/tabPanels";
@@ -37,8 +37,9 @@ import {
   LayoutRoot,
   LayoutWrapper,
   MainContent,
-  PageContent
+  PageContent,
 } from "./Layout.styles";
+import ProjectContextBar from "./ProjectContextBar";
 import DialogsContainer from "../dialogsContainer/DialogsContainer";
 import { Alert, Button } from "@mui/material";
 
@@ -49,7 +50,7 @@ const Layout = () => {
     loading: loadingProject,
     refreshing,
     error: projectError,
-    reloadProject
+    reloadProject,
   } = useProject();
   const { user: currentUser } = useAuth();
   const pendingTaskMoves = useRef(new Set<Task["id"]>());
@@ -63,7 +64,7 @@ const Layout = () => {
     updateAllTickets,
     updateListOfTickets,
     applyTaskUpdate,
-    removeTask
+    removeTask,
   } = useTicket();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -73,24 +74,24 @@ const Layout = () => {
   const {
     updateTicket,
     loading: loadingUpdateTickets,
-    isPending: isUpdatingTicket
+    isPending: isUpdatingTicket,
   } = useUpdateTicket();
   const {
     deleteTicket,
     loading: loadingDeleteTicket,
-    isPending: isDeletingTicket
+    isPending: isDeletingTicket,
   } = useDeleteTicket();
 
   const { createTask, loading: loadingPostTasks } = useCreateTask();
   const {
     updateTask,
     loading: loadingUpdateTask,
-    isPending: isUpdatingTask
+    isPending: isUpdatingTask,
   } = useUpdateTask();
   const {
     deleteTask,
     loading: loadingDeleteTask,
-    isPending: isDeletingTask
+    isPending: isDeletingTask,
   } = useDeleteTask();
 
   // Local States -> Sidebar
@@ -125,7 +126,7 @@ const Layout = () => {
   const [filters, setFilters] = useState<FilterProps>({});
 
   const [visibleColumns, setVisibleColumns] = useState<string[]>(
-    initialBacklogColumns
+    initialBacklogColumns,
   );
 
   const handleApplyFilter = (newFilters: FilterProps) => {
@@ -136,13 +137,13 @@ const Layout = () => {
   const requestedTab = searchParams.get("tab") || "board";
   const tabValue = Math.max(
     0,
-    TabPanels.findIndex((tab) => tab.label.toLowerCase() === requestedTab)
+    TabPanels.findIndex((tab) => tab.label.toLowerCase() === requestedTab),
   );
 
   const handleChangeTabValue = (newValue: number) => {
     setSearchParams(
       { tab: TabPanels[newValue].label.toLowerCase() },
-      { replace: true }
+      { replace: true },
     );
   };
 
@@ -198,7 +199,7 @@ const Layout = () => {
   const [selectedSprintGoal, setSelectedSprintGoal] =
     useState<SprintGoal | null>(null);
   const [selectedGoalTask, setSelectedGoalTask] = useState<GoalTask | null>(
-    null
+    null,
   );
   const [openCreateSprintGoalDialog, setOpenCreateSprintGoalDialog] =
     useState(false);
@@ -224,7 +225,7 @@ const Layout = () => {
     setOpenDeleteGoalTaskDialog(false);
     setSelectedSprintGoal(null);
     setSelectedGoalTask(null);
-  }, [sprint?.id, location.pathname]);
+  }, [sprint?.id, location.pathname, tabValue]);
 
   // Functions
 
@@ -232,26 +233,26 @@ const Layout = () => {
   const handleCreateTicket = useCallback(
     async (data: Partial<Ticket>) => {
       const newTicket = await createTicket({
-        ...data
+        ...data,
       });
       if (newTicket) {
         addAllTickets(newTicket);
       }
     },
-    [createTicket, addAllTickets]
+    [createTicket, addAllTickets],
   );
 
   const handleEditTicket = useCallback(
     async (data: TicketUpdate) => {
       const updatedTicket = await updateTicket({
-        ...data
+        ...data,
       });
       if (updatedTicket) {
         updateAllTickets(updatedTicket);
       }
       return Boolean(updatedTicket);
     },
-    [updateTicket, updateAllTickets]
+    [updateTicket, updateAllTickets],
   );
 
   const handleDeleteTicket = useCallback(
@@ -262,7 +263,7 @@ const Layout = () => {
       }
       return Boolean(success);
     },
-    [deleteTicket, removeAllTickets]
+    [deleteTicket, removeAllTickets],
   );
 
   const handleUpdateTicketStatus = useCallback(
@@ -270,9 +271,9 @@ const Layout = () => {
       updateTicket,
       tickets,
       currentUser?.email,
-      updateAllTickets
+      updateAllTickets,
     ),
-    [updateTicket, tickets, currentUser?.email, updateAllTickets]
+    [updateTicket, tickets, currentUser?.email, updateAllTickets],
   );
 
   // Functions -> Tasks
@@ -281,9 +282,9 @@ const Layout = () => {
       createTask,
       selectedTicketId,
       tickets,
-      updateListOfTickets
+      updateListOfTickets,
     ),
-    [createTask, selectedTicketId, tickets, updateListOfTickets]
+    [createTask, selectedTicketId, tickets, updateListOfTickets],
   );
 
   const handleEditTask = useCallback(
@@ -292,7 +293,7 @@ const Layout = () => {
       if (updatedTask) applyTaskUpdate(updatedTask);
       return Boolean(updatedTask);
     },
-    [updateTask, applyTaskUpdate]
+    [updateTask, applyTaskUpdate],
   );
 
   const handleDeleteTask = useCallback(
@@ -303,7 +304,7 @@ const Layout = () => {
       }
       return Boolean(success);
     },
-    [deleteTask, removeTask]
+    [deleteTask, removeTask],
   );
 
   const handleOnDragEndTask = useCallback(
@@ -313,15 +314,15 @@ const Layout = () => {
       project?.taskStatuses,
       applyTaskUpdate,
       currentUser?.email,
-      pendingTaskMoves.current
+      pendingTaskMoves.current,
     ),
     [
       updateTask,
       tickets,
       project?.taskStatuses,
       applyTaskUpdate,
-      currentUser?.email
-    ]
+      currentUser?.email,
+    ],
   );
 
   const {
@@ -343,12 +344,12 @@ const Layout = () => {
     loadingDeleteSprintGoal,
     loadingCreateGoalTask,
     loadingUpdateGoalTask,
-    loadingDeleteGoalTask
+    loadingDeleteGoalTask,
   } = useSprintPlanning(sprint, selectedSprintGoal, selectedGoalTask);
   const loadingDeleteSprint = isDeletingSprint(selectedSprint?.id);
   const handleChangeSprint = useCallback(
     changeSprintHandler(listOfSprints, sprint, setSprint),
-    [listOfSprints, sprint, setSprint]
+    [listOfSprints, sprint, setSprint],
   );
 
   return (
@@ -388,6 +389,25 @@ const Layout = () => {
                 {projectError.message}
               </Alert>
             )}
+            <ProjectContextBar
+              scope={
+                location.pathname.endsWith("/teammembers")
+                  ? "team"
+                  : location.pathname.endsWith("/epics")
+                    ? "hierarchy"
+                    : "sprint"
+              }
+              controls={{
+                loadingDeleteSprint,
+                handleChangeSprint,
+                listOfSprints,
+                setSelectedSprint,
+                setOpenCreateSprintDialog,
+                setOpenDeleteSprintDialog,
+                sprint,
+                loadingCreateSprint,
+              }}
+            />
             <Outlet
               context={{
                 // Project
@@ -488,7 +508,7 @@ const Layout = () => {
                 handleOnDragEndTask,
                 // Functions -> Sprint Goal
                 handleCreateSprintGoal,
-                handleToggleGoalTaskCompletion
+                handleToggleGoalTaskCompletion,
               }}
             />
           </PageContent>
