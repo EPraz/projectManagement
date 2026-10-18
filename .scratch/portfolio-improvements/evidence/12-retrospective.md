@@ -19,3 +19,9 @@ All nine new browser journeys pass: failed create retention; create/edit/delete 
 Frontend types pass; frontend lint0 errors/15 visible warnings (down from17, no suppressions). Backend types/build pass and final lint is checked after correcting a Jest matcher any-assignment at its response boundary. Full integrated browser/Jest/build and two-axis review results will be appended before closure.
 
 Ticket11 hosted CI39089695839 completed successfully. Final presentation remains deferred through16 and explicit owner design/readiness confirmation before recording.
+
+## Review correction and final verification
+
+Standards P2 exposed a bootstrap/fixture mismatch: production implicit DTO conversion accepted liked="false" as true. A probe against the actual isolated bootstrapped API confirmed200/likes1 before the correction and400 afterward. Main and HTTP fixtures now share createValidationPipe, preserving explicit DTO conversions without implicit JSON-body coercion. The strict string-boolean regression is retained. All42 API/startup tests pass under this shared configuration; backend rebuilt successfully.
+
+The first integrated run passed77/78; the demo-entry failure occurred while this agent restarted the owned backend to apply the validation correction. This overlapping run is not final evidence. An uninterrupted exact rebuilt run is required. All77 Jest tests/15suites/12snapshots, frontend types and build passed; bundle1,627.35kB raw/483.49kB gzip. No snapshots were regenerated.

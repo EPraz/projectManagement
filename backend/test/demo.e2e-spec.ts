@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
+import { createValidationPipe } from '../src/validation';
 import { PrismaClient } from '@prisma/client';
 import * as request from 'supertest';
 import * as cookieParser from 'cookie-parser';
@@ -87,13 +88,7 @@ describe('Acceso demo HTTP API', () => {
     }).compile();
     app = module.createNestApplication<INestApplication<App>>();
     app.use(cookieParser());
-    app.useGlobalPipes(
-      new ValidationPipe({
-        transform: true,
-        whitelist: true,
-        forbidNonWhitelisted: true,
-      }),
-    );
+    app.useGlobalPipes(createValidationPipe());
     await app.listen(0, '127.0.0.1');
   });
 
@@ -381,6 +376,7 @@ describe('Acceso demo HTTP API', () => {
         { content: null },
         { type: null },
         { liked: 'true' },
+        { liked: 'false' },
         { liked: null },
         { likedBy: null },
         { likes: -1 },
